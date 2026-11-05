@@ -1,3 +1,8 @@
 git add .
 git commit -m "Added new file"
 git push origin main
+
+
+
+
+git pull origin main
