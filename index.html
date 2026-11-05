@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>All Web Pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* default = dark; overwritten by script from the Mock Portal's Appearance Studio theme */
+  --bg:#0b1020; --bg2:#121936; --tx:#f1f5f9; --mute:rgba(241,245,249,.68);
+  --card:rgba(255,255,255,.055); --card2:rgba(255,255,255,.10); --line:rgba(255,255,255,.14);
+  --a1:#6366f1; --a2:#a5b4fc; --on:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--tx); background:var(--bg); overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+/* ---------- Background (static, no blinking) ---------- */
+.bg{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  background:
+    radial-gradient(900px 560px at 12% -8%, color-mix(in srgb,var(--a1) 30%,transparent), transparent 62%),
+    radial-gradient(800px 520px at 100% 105%, color-mix(in srgb,var(--a2) 22%,transparent), transparent 60%),
+    linear-gradient(160deg,var(--bg),var(--bg2));
+}
+.bg::before{content:""; position:absolute; inset:0; opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 70%);
+          mask-image:radial-gradient(ellipse at 50% 0%,#000 0%,transparent 70%);
+}
+.spot{position:fixed; z-index:0; width:520px; height:520px; border-radius:50%; pointer-events:none;
+  left:0; top:0; transform:translate(var(--sx,50vw),var(--sy,20vh)) translate(-50%,-50%);
+  background:radial-gradient(circle,color-mix(in srgb,var(--a1) 20%,transparent),transparent 65%);
+  transition:transform .25s ease-out;}
+
+/* ---------- Layout ---------- */
+.wrap{position:relative; z-index:1; width:min(1120px,100%); margin:0 auto; padding:34px 20px 60px}
+.top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:46px}
+.logo{display:flex; align-items:center; gap:11px; font-weight:800; letter-spacing:.3px}
+.logo-mark{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(135deg,var(--a1),var(--a2)); color:var(--on);
+  box-shadow:0 8px 22px color-mix(in srgb,var(--a1) 40%,transparent)}
+.mode-btn{cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--tx);
+  border-radius:999px; padding:9px 16px; font:700 13px 'Inter',sans-serif; display:inline-flex; gap:8px; align-items:center;
+  transition:all .2s ease; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px)}
+.mode-btn:hover{border-color:var(--a1); background:var(--card2); transform:translateY(-2px)}
+
+/* ---------- Hero ---------- */
+.hero{text-align:center; margin-bottom:46px}
+.eyebrow{display:inline-flex; align-items:center; gap:8px; padding:5px 15px; border-radius:999px; margin-bottom:18px;
+  font-size:11px; font-weight:800; letter-spacing:1.6px; background:var(--card); border:1px solid var(--line)}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--a1);display:inline-block}
+h1{font-size:clamp(2.4rem,7vw,4.4rem); font-weight:900; line-height:1.04; letter-spacing:-1.2px;
+  background:linear-gradient(120deg,var(--tx) 25%,var(--a2) 70%,var(--a1)); -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent}
+.rule{width:76px;height:4px;border-radius:999px;margin:20px auto 16px;background:linear-gradient(90deg,transparent,var(--a1),var(--a2),transparent)}
+.lead{max-width:560px;margin:0 auto;font-size:1.05rem;line-height:1.6;color:var(--mute)}
+
+/* ---------- Cards ---------- */
+.grid{display:flex; flex-wrap:wrap; justify-content:center; gap:18px; perspective:1200px}
+.card{
+  position:relative; display:flex; flex-direction:column; gap:16px; padding:24px 22px 22px; border-radius:26px;
+  flex:0 0 calc((100% - 36px) / 3);
+  text-decoration:none; color:var(--tx); overflow:hidden; isolation:isolate;
+  background:linear-gradient(160deg,var(--card2),var(--card)); border:1px solid var(--line);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  transform-style:preserve-3d; transition:transform .18s ease-out, border-color .25s ease, box-shadow .25s ease;
+  opacity:0; animation:rise .6s ease forwards;
+}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.19s}
+.card:nth-child(4){animation-delay:.26s}.card:nth-child(5){animation-delay:.33s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.card::before{ /* cursor spotlight */
+  content:""; position:absolute; inset:0; z-index:-1; opacity:0; transition:opacity .3s ease;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--a1) 28%,transparent),transparent 65%);
+}
+.card:hover{border-color:var(--a1); box-shadow:0 24px 60px color-mix(in srgb,var(--a1) 28%,rgba(0,0,0,.35))}
+.card:hover::before{opacity:1}
+.card:focus-visible{outline:2px solid var(--a1); outline-offset:3px}
+
+.ico{width:62px;height:62px;border-radius:19px;display:grid;place-items:center;font-size:30px;
+  background:linear-gradient(135deg,var(--a1),var(--a2)); color:var(--on);
+  box-shadow:0 10px 24px color-mix(in srgb,var(--a1) 38%,transparent); transition:transform .25s ease;
+  transform:translateZ(30px)}
+.card:hover .ico{transform:translateZ(40px) scale(1.08)}
+.num{position:absolute; top:18px; right:22px; font-size:12px; font-weight:800; letter-spacing:1.2px; color:var(--mute)}
+.name{font-size:1.2rem; font-weight:800; line-height:1.2; transform:translateZ(18px)}
+.desc{font-size:.88rem; line-height:1.5; color:var(--mute); flex:1}
+.open{display:inline-flex; align-items:center; gap:8px; font-size:.82rem; font-weight:800; letter-spacing:.4px; color:var(--tx)}
+.open b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--card2);border:1px solid var(--line);
+  transition:all .25s ease}
+.card:hover .open b{background:var(--a1);border-color:var(--a1);color:var(--on);transform:translateX(5px)}
+
+.sec{display:flex; align-items:center; gap:14px; margin:34px 4px 18px; font-size:.78rem; font-weight:800; letter-spacing:2px; color:var(--mute)}
+.sec::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent)}
+.foot{margin-top:46px; text-align:center; font-size:.8rem; color:var(--mute)}
+
+/* ---------- Light themes: pure black & white ---------- */
+body[data-mode="light"] .ico{background:var(--card2); border:1px solid var(--line); box-shadow:none; filter:grayscale(1); color:var(--tx)}
+body[data-mode="light"] .card:hover{box-shadow:0 20px 50px rgba(0,0,0,.16)}
+body[data-mode="light"] .logo-mark{background:var(--tx); color:var(--bg); box-shadow:0 8px 20px rgba(0,0,0,.2)}
+body[data-mode="light"] .spot{display:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){ .card{flex-basis:calc((100% - 18px) / 2)} }
+@media (max-width:640px){
+  .wrap{padding:22px 14px 44px} .top{margin-bottom:30px} .hero{margin-bottom:32px}
+  .grid{gap:14px}
+  .card{flex:0 0 100%; flex-direction:row; align-items:center; padding:18px; gap:16px}
+  .card .ico{width:54px;height:54px;font-size:26px;flex:0 0 auto}
+  .card .num,.card .open span{display:none}
+  .card .main{flex:1;min-width:0}
+}
+@media (prefers-reduced-motion:reduce){ .card{animation:none;opacity:1} .card,.spot{transition:none} }
+</style>
+</head>
+<body data-mode="dark">
+<div class="bg"></div>
+<div class="spot" id="spot"></div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><span class="logo-mark">🌐</span><span>All Web Pages</span></div>
+    <button class="mode-btn" id="modeBtn" type="button" aria-label="Toggle light or dark mode"><span id="modeIco">☀️</span><span id="modeTxt">Light</span></button>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow"><i></i>YOUR COMPLETE TOOLKIT</div>
+    <h1>All Web Pages</h1>
+    <div class="rule"></div>
+    <p class="lead">Every tool and your Mock Test Portal in one beautiful place. Choose a page to open it.</p>
+  </section>
+
+  <div class="sec">ALL PAGES</div>
+  <main class="grid" id="grid"></main>
+
+  <div class="foot">Keep all the pages in the same folder so every button opens correctly.</div>
+</div>
+
+<script>
+/* ✏️ Edit names, descriptions or file names here */
+var PAGES = [
+    { name:'Mock Portal',     icon:'🎯', url:'mock-portal.html',     desc:'Your full mock test platform with exam mode, battle mode, PDF tutor and instant feedback.' }
+,
+  { name:'PDF OCR Reader',  icon:'🔍', url:'pdf-ocr-reader.html',  desc:'Read scanned PDFs and extract selectable text with OCR.' },
+  { name:'PDF Page Getter', icon:'📑', url:'pdf-page-getter.html', desc:'Pick and pull out just the pages you need from any PDF.' },
+  { name:'Typing Engine',   icon:'⌨️', url:'typing-engine.html',   desc:'Practise speed and accuracy with timed typing tests.' },
+  { name:'PixelForge',      icon:'🎨', url:'PixelForge.html', desc:'Craft, edit and convert images and PDFs in your browser.' }
+];
+
+var grid = document.getElementById('grid');
+PAGES.forEach(function(p, i){
+  var a = document.createElement('a');
+  a.className = 'card';
+  a.href = encodeURI(p.url);
+  a.innerHTML = '<span class="num">0' + (i + 1) + '</span><span class="ico"></span>' +
+    '<div class="main" style="display:flex;flex-direction:column;gap:10px;flex:1"><div class="name"></div><div class="desc"></div></div>' +
+    '<span class="open"><span>Open</span><b>➜</b></span>';
+  a.querySelector('.ico').textContent = p.icon;
+  a.querySelector('.name').textContent = p.name;
+  a.querySelector('.desc').textContent = p.desc;
+  grid.appendChild(a);
+});
+
+/* ---------- Tilt + cursor spotlight ---------- */
+var canHover = window.matchMedia('(hover:hover)').matches;
+document.querySelectorAll('.card').forEach(function(c){
+  c.addEventListener('mousemove', function(e){
+    var r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
+    if(canHover){
+      var rx = ((y / r.height) - .5) * -7, ry = ((x / r.width) - .5) * 7;
+      c.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-4px)';
+    }
+  });
+  c.addEventListener('mouseleave', function(){ c.style.transform = ''; });
+});
+window.addEventListener('mousemove', function(e){
+  document.getElementById('spot').style.setProperty('--sx', e.clientX + 'px');
+  document.getElementById('spot').style.setProperty('--sy', e.clientY + 'px');
+});
+
+/* ---------- Theme: follows the Mock Portal's Appearance Studio, with a manual toggle ---------- */
+function parse(c){ c=(c||'').trim(); var m;
+  if((m=/^#([0-9a-f]{3})$/i.exec(c))) return [0,1,2].map(function(i){return parseInt(m[1][i]+m[1][i],16);});
+  if((m=/^#([0-9a-f]{6})/i.exec(c))) return [0,2,4].map(function(i){return parseInt(m[1].substr(i,2),16);});
+  return null; }
+function lum(c){ return (0.299*c[0]+0.587*c[1]+0.114*c[2])/255; }
+function mix(a,b,t){ return [0,1,2].map(function(i){return Math.round(a[i]*(1-t)+b[i]*t);}); }
+function rgb(c){ return 'rgb('+c.join(',')+')'; }
+function setTheme(bg,tx,box){
+  var light = lum(bg) > 0.55, a1, a2;
+  if(light){ a1 = tx; a2 = mix(tx,bg,.45); }
+  else { a1 = lum(box) < 0.28 ? mix(box,tx,.6) : box; a2 = mix(a1,tx,.4); }
+  var r = document.documentElement.style;
+  r.setProperty('--bg', rgb(bg)); r.setProperty('--bg2', rgb(mix(bg,tx,.07)));
+  r.setProperty('--tx', rgb(tx)); r.setProperty('--mute', rgb(mix(tx,bg,.32)));
+  r.setProperty('--card', rgb(mix(bg,tx,.06))); r.setProperty('--card2', rgb(mix(bg,tx,.11)));
+  r.setProperty('--line', rgb(mix(bg,tx,.2)));
+  r.setProperty('--a1', rgb(a1)); r.setProperty('--a2', rgb(a2));
+  r.setProperty('--on', lum(a1) > 0.6 ? '#0b1020' : '#ffffff');
+  document.body.setAttribute('data-mode', light ? 'light' : 'dark');
+  document.getElementById('modeIco').textContent = light ? '🌙' : '☀️';
+  document.getElementById('modeTxt').textContent = light ? 'Dark' : 'Light';
+  var tc = document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content', rgb(bg));
+}
+function loadTheme(){
+  var manual = null, gp = null;
+  try{ manual = localStorage.getItem('awpMode'); }catch(e){}
+  try{ gp = JSON.parse(localStorage.getItem('gpAppearanceSettings') || 'null'); }catch(e){}
+  if(manual === 'light') return setTheme([248,250,252],[15,23,42],[51,65,85]);
+  if(manual === 'dark')  return setTheme([11,16,32],[241,245,249],[99,102,241]);
+  if(gp && parse(gp.bg) && parse(gp.text)) return setTheme(parse(gp.bg), parse(gp.text), parse(gp.box) || [99,102,241]);
+  setTheme([11,16,32],[241,245,249],[99,102,241]);
+}
+document.getElementById('modeBtn').addEventListener('click', function(){
+  var next = document.body.getAttribute('data-mode') === 'light' ? 'dark' : 'light';
+  try{ localStorage.setItem('awpMode', next); }catch(e){}
+  loadTheme();
+});
+loadTheme();
+</script>
+</body>
+</html>
