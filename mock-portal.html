@@ -3889,6 +3889,8 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
 @keyframes cpBoxIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 .cp-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 22px 10px; }
+.cp-lang-btn { order: 2; margin-left: auto; white-space: nowrap; cursor: pointer; user-select: none; }
+.cp-lang-btn.dl-active { border-color: rgba(59,130,246,.75); background: linear-gradient(135deg,rgba(59,130,246,.25),rgba(56,189,248,.12)); color: #93c5fd; }
 .cp-tag {
   padding: 4px 12px; border-radius: 999px; font: 800 .72rem 'Inter', system-ui, sans-serif; letter-spacing: 1.4px;
   background: rgba(var(--cp-rgb), .2); border: 1px solid rgba(var(--cp-rgb), .6); color: #fff;
@@ -4692,6 +4694,8 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             <div class="glass test-resizable-box" id="conceptBox" style="display:none;">
               <div class="cp-top">
                 <span class="cp-tag" id="cpTag">📖 CONCEPT</span>
+                <!-- 🌐 language button (same languages + same translator as the question page) -->
+                <button type="button" id="cpLangBtn" class="btn btn-glass btn-sm cp-lang-btn" title="Show translation under the English text">🌐 Translate</button>
               </div>
               <div class="cp-progress"><i id="cpReadBar"></i></div>
 
@@ -5848,6 +5852,10 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         state.qCount = state.qIds.length;
         state.currentIndex = 0;
 
+        // exam mode starts ON (concept pages stay hidden while it is on)
+        state.examMode = true;
+        state.cluelessMode = true;
+
         // ── Concept pages: unified sequence of questions + concept pages ──
         buildConceptSequence(conceptsList, seqRaw);
         syncMainBoxes();
@@ -5939,9 +5947,10 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           b.addEventListener('click', () => goToIndex(idx));
           wrap.appendChild(b);
         });
-        $('navLegend').textContent = `${state.qCount} Qs` + (state.hasConcepts ? ` · ${state.concepts.length} 📖` : '');
+        const _showC = state.hasConcepts && !state.examMode;   // exam mode ON -> no concept pages anywhere
+        $('navLegend').textContent = `${state.qCount} Qs` + (_showC ? ` · ${state.concepts.length} 📖` : '');
         const _cl = $('navConceptLegend');
-        if (_cl) _cl.style.display = state.hasConcepts ? '' : 'none';
+        if (_cl) _cl.style.display = _showC ? '' : 'none';
       }
 
       function updateNavigator() {
@@ -6889,6 +6898,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         if (!state.hasConcepts) {
           state.seq = state.qIds.map((_, i) => ({ t: 'q', idx: i }));
+          state.seqAll = state.seq.slice();
           return;
         }
 
@@ -6910,6 +6920,32 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           c.firstQ = state.seq[j].idx + 1;
           c.lastQ = state.seq[j + n - 1].idx + 1;
         });
+
+        // full sequence (questions + concept pages); state.seq is the part that is
+        // actually reachable right now (concept pages are dropped while exam mode is ON)
+        state.seqAll = state.seq.slice();
+        applyConceptVisibility();
+      }
+
+      /* 🔒 Exam mode ON  -> overview + every concept page disappear (navigator, Next/Previous, swipe, keys)
+         💡 Exam mode OFF -> they come back exactly where they were */
+      function applyConceptVisibility() {
+        if (!state.seqAll) return;
+        if (!state.hasConcepts) { state.seq = state.seqAll.slice(); return; }
+        const hide = !!state.examMode;
+        // standing on a concept page while exam mode turns ON -> move to the question it leads into
+        if (hide && state.conceptView) {
+          const it = state.seq[state.seqPos];
+          const c = it && state.concepts[it.ci];
+          state.currentIndex = (c && c.nextQ >= 0) ? c.nextQ : Math.max(0, state.qCount - 1);
+          state.conceptView = false;
+          state.timerPaused = false;
+          try { syncMainBoxes(); } catch (_) { }
+        }
+        state.seq = hide ? state.seqAll.filter(s => s.t === 'q') : state.seqAll.slice();
+        if (state.qState) {            // navigator exists already -> rebuild it for the new sequence
+          try { buildNavigator(); updateNavigator(); } catch (_) { }
+        }
       }
 
       let activeTestBoxResize = null;
@@ -7078,6 +7114,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         box.style.setProperty('--cp-on', (0.299 * r + 0.587 * g + 0.114 * b) > 170 ? '#0b1220' : '#ffffff');
 
         // content
+        try { cpSyncLangBtn(); } catch (_) { }
         $('cpIcon').textContent = c.icon;
         try { if (window.ytStudioBind) window.ytStudioBind(c); } catch (e) { console.error('ytStudioBind', e); }
         $('cpTitle').innerHTML = c.title;
@@ -7192,6 +7229,14 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       }
 
       /* one-time wiring for the concept box (buttons, scroll bar, swipe) */
+      function cpSyncLangBtn() {
+        const lb = $('cpLangBtn'); if (!lb) return;
+        const lang = state.dualLang;
+        const item = lang ? document.querySelector('#dualLangDropdown .dlang-item[data-lang="' + lang + '"]') : null;
+        lb.classList.toggle('dl-active', !!lang);
+        lb.textContent = lang && item ? '🌐 ' + item.textContent.replace(/^\S+\s*/, '').trim() : '🌐 Translate';
+      }
+
       function bindConceptUi() {
         $('cpPrevBtn').onclick = () => goPrev();
         $('cpNextBtn').onclick = () => cpPrimary();
@@ -7199,6 +7244,23 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         const box = $('conceptBox');
         if (!box || box._cpBound) return;
         box._cpBound = true;
+
+        // 🌐 language button on concept pages → opens the same language list as the question page
+        const lb = $('cpLangBtn'), dd = $('dualLangDropdown');
+        if (lb && dd) {
+          lb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (dd.classList.contains('open')) { dd.classList.remove('open'); return; }
+            const r = lb.getBoundingClientRect();
+            dd.style.top = (r.bottom + 6) + 'px';          // opens BELOW the button (it sits at the top of the page)
+            dd.style.bottom = 'auto';
+            dd.style.left = 'auto';
+            dd.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+            dd.classList.add('open');
+          });
+          // keep this button's label in step with whatever language gets chosen (from either button)
+          dd.addEventListener('click', () => setTimeout(cpSyncLangBtn, 0));
+        }
 
         $('cpScroll').addEventListener('scroll', cpProgress, { passive: true });
         window.addEventListener('scroll', cpProgress, { passive: true });
@@ -7427,6 +7489,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           state.examMode = !state.examMode;
           state.cluelessMode = state.examMode;  // Sync clueless with exam mode
           updateExamModeUI();
+          applyConceptVisibility();   // exam ON: hide overview + all concept pages; OFF: show them again
           const qid = state.qIds[state.currentIndex];
 
           // Hide sticky panel if switching to exam mode
