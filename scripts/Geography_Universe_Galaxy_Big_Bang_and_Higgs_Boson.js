@@ -46,12 +46,12 @@
      The thumbnail box and the "Open Thumbnail & YouTube Kit" link are hidden on the page (see the first snippet); the chapter icon opens the studio.
 
      thumb : "444e9f79-776c-47d8-a079-f52d51ea904a.png"                      (image link, file next to index.html)
-             or { image, banner, line1, line2, line3, person, logo, badge, ribbon, burst, mode:"creator"|"pro"|"image" }
+             or { image, banner, line1, line2, line3, person, logo, badge, ribbon, burst:"", mode:"creator"|"pro"|"image" }
              mode "creator" = teacher-style thumbnail: red top banner (banner), white line1, big gold line2,
              cyan line3, teacher cut-out photo on the right, round channel logo top-right.
              Teacher photo + logo: put images/person.png (transparent PNG) and images/logo.png next to index.html, OR just pick them
              inside the studio once (they are remembered in the browser and reused for every chapter).
-             "pro" mode uses badge / ribbon / burst instead.
+             "pro" mode uses badge / ribbon instead. Keep burst:"" (empty) so no star sticker is drawn; the blank premium emblem is part of the background image instead.
      yt    : { title, altTitles:[], description, tags:[], hashtags:[], pinnedComment,
                thumbText, communityPost, chapters, playlist, extra:[{icon,label,text}] }
      NOTE: export needs the site opened over http(s)://, not file:// (browser canvas rule).
@@ -95,7 +95,7 @@ window.TEST_DATA = {
       line3: "UNIVERSE & GALAXY",
       badge: "FULL CLASS",
       ribbon: "FACTS • TRICKS • PRACTICE",
-      burst: "Competitive exams",
+      burst: "",
       mode: "creator"
     },
     yt: {
@@ -120,10 +120,13 @@ window.TEST_DATA = {
 "👍 Like, share and subscribe, and comment “DONE” after you finish the practice questions.\n\n" +
 "#Geography #Universe #BigBang #HiggsBoson #CompetitiveExams",
       tags: [
-        "universe", "galaxy", "big bang theory", "higgs boson", "god particle", "large hadron collider", "CERN",
-        "milky way galaxy", "andromeda galaxy", "georges lemaitre", "steady state theory", "pulsating universe theory",
-        "inflationary theory", "origin of universe", "geography for competitive exams", "lucent general knowledge geography",
-        "SSC geography", "UPSC geography", "railway geography", "competitive exams preparation"
+        "universe", "galaxy", "big bang theory", "higgs boson",
+        "god particle", "large hadron collider", "CERN", "milky way galaxy",
+        "andromeda galaxy", "georges lemaitre", "steady state theory", "pulsating universe theory",
+        "inflationary theory", "origin of universe", "geography for competitive exam", "lucent gk geography",
+        "SSC geography", "UPSC geography", "railway geography", "competitive exams preparation",
+        "universe and galaxy", "dwarf galaxy", "cosmology", "general science",
+        "big bang theory proposers", "SSC CGL geography universe", "space sciences"
       ],
       hashtags: ["Geography", "Universe", "BigBang", "HiggsBoson", "CompetitiveExams"],
       thumbText: "BIG BANG + UNIVERSE + HIGGS BOSON",
@@ -584,7 +587,7 @@ window.TEST_DATA = {
      6dd07b0d-799e-4463-9471-5d52cec5a2fb.png → ENTRY 13 (The Big Bang Theory — expansion schematic)
 
    FIGURE PROMPTS  (copy each line into ChatGPT, save the result under the given name)
-   444e9f79-776c-47d8-a079-f52d51ea904a.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle indigo gradient (accent #6366f1) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: a faint realistic spiral galaxy glowing in indigo and gold, a thin gold-lined circular ring like a particle-collider tunnel, and one small brushed-metal sphere with natural reflections. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image. Sophisticated, balanced, high-contrast, professional composition.
+   444e9f79-776c-47d8-a079-f52d51ea904a.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle indigo gradient (accent #6366f1) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: a faint realistic spiral galaxy glowing in indigo and gold, a thin gold-lined circular ring like a particle-collider tunnel, and one small brushed-metal sphere with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark-navy centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre of the frame (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.
    824f0f7a-bedf-485e-86cd-14643cc6222c.png: Create a clean flat vector diagram on a dark navy background, 16:9, 1200×675 px, no people, no logos, no watermarks, no map. Four circles of clearly increasing size arranged left to right with thick arrows between them, each with ONE short English label in VERY LARGE bold white text under it: "EARTH", "SOLAR SYSTEM", "MILKY WAY", "UNIVERSE". Use thick lines, simple shapes and a restrained colour palette (blue, violet, gold). Very few labels so it stays readable when shown small.
    6dd07b0d-799e-4463-9471-5d52cec5a2fb.png: Create a clean flat vector diagram on a dark navy background, 16:9, 1200×675 px, no people, no logos, no watermarks, no map. On the left a small bright gold starburst labelled "BIG BANG"; from it a wide expanding cone opens to the right through three stages drawn as simple shapes with ONE short label each in VERY LARGE bold white text: "ATOMS", "GAS CLOUDS", "GALAXIES". Add a thick arrow along the cone labelled "EXPANDING". Thick lines, simple shapes, restrained colours (gold, orange, violet), very few labels so it stays readable when shown small.
    ════════════════════════════════════════════════════════════════ */
