@@ -141,139 +141,45 @@ const PORTAL_DATA = [
       {
         name: "Geography",
         subtopics: [
-          { name: "Highlights", file: "Geography_Highlights" },
-          { name: "Indian's Contribution in Geography", file: "Geography_Indian_s_Contribution_in_Geography" },
-          { name: "Universe", file: "Geography_Universe" },
-          { name: "Galaxy", file: "Geography_Galaxy" },
-          { name: "The Big Bang Theory", file: "Geography_The_Big_Bang_Theory" },
-          { name: "Higgs Boson", file: "Geography_Higgs_Boson" },
-          { name: "Star", file: "Geography_Star" },
-          { name: "The Solar System", file: "Geography_The_Solar_System" },
-          { name: "Heliocentrism", file: "Geography_Heliocentrism" },
-          { name: "Geocentric Model", file: "Geography_Geocentric_Model" },
-          { name: "Members of the Solar System", file: "Geography_Members_of_the_Solar_System" },
-          { name: "Aditya-L1", file: "Geography_Aditya_L1" },
-          { name: "The Planets", file: "Geography_The_Planets" },
-          { name: "Classification of Planets", file: "Geography_Classification_of_Planets" },
-          { name: "Some Notable Facts About Various Planets and Satellites", file: "Geography_Some_Notable_Facts_About_Various_Planets_and_Satellites" },
-          { name: "Super Moon", file: "Geography_Super_Moon" },
-          { name: "Blue Moon", file: "Geography_Blue_Moon" },
-          { name: "Chandrayaan-1,2,3", file: "Geography_Chandrayaan_1_2_3" },
-          { name: "Some Facts and Figures about the Planets", file: "Geography_Some_Facts_and_Figures_about_the_Planets" },
-          { name: "Some Well Known Constellations", file: "Geography_Some_Well_Known_Constellations" },
-          { name: "The Earth: Shape and Size", file: "Geography_The_Earth_Shape_and_Size" },
-          { name: "Statistical Data of the Earth", file: "Geography_Statistical_Data_of_the_Earth" },
-          { name: "Continents of the World", file: "Geography_Continents_of_the_World" },
-          { name: "Oceans on the Earth", file: "Geography_Oceans_on_the_Earth" },
-          { name: "Pacific and Atlantic Ocean Currents", file: "Geography_Pacific_and_Atlantic_Ocean_Currents" },
-          { name: "Indian Ocean Currents", file: "Geography_Indian_Ocean_Currents" },
-          { name: "Biosphere", file: "Geography_Biosphere" },
-          { name: "Lithosphere", file: "Geography_Lithosphere" },
-          { name: "Hydrosphere", file: "Geography_Hydrosphere" },
-          { name: "Latitude and Longitude", file: "Geography_Latitude_and_Longitude" },
-          { name: "Local Time and Time Zones", file: "Geography_Local_Time_and_Time_Zones" },
-          { name: "The Date Line and Universal Time", file: "Geography_The_Date_Line_and_Universal_Time" },
-          { name: "Indian Standard Time (IST)", file: "Geography_Indian_Standard_Time_IST" },
-          { name: "Lines Crossing Different Countries", file: "Geography_Lines_Crossing_Different_Countries" },
-          { name: "Earth and its Relation with the Sun", file: "Geography_Earth_and_its_Relation_with_the_Sun" },
-          { name: "Coriolis Effect", file: "Geography_Coriolis_Effect" },
-          { name: "Solstice", file: "Geography_Solstice" },
-          { name: "Equinoxes", file: "Geography_Equinoxes" },
-          { name: "Midnight Sun", file: "Geography_Midnight_Sun" },
-          { name: "Eclipses", file: "Geography_Eclipses" },
-          { name: "Atmosphere", file: "Geography_Atmosphere" },
-          { name: "Layers of the Atmosphere", file: "Geography_Layers_of_the_Atmosphere" },
-          { name: "How The Sun Creates Energy", file: "Geography_How_The_Sun_Creates_Energy" },
-          { name: "Weather and Climate", file: "Geography_Weather_and_Climate" },
-          { name: "Humidity", file: "Geography_Humidity" },
-          { name: "Atmospheric Pressure", file: "Geography_Atmospheric_Pressure" },
-          { name: "Winds", file: "Geography_Winds" },
-          { name: "Clouds", file: "Geography_Clouds" },
-          { name: "Rain Fall", file: "Geography_Rain_Fall" },
-          { name: "Islands", file: "Geography_Islands" },
-          { name: "Internal Structure of the Earth", file: "Geography_Internal_Structure_of_the_Earth" },
-          { name: "Rocks", file: "Geography_Rocks" },
-          { name: "Earthquakes and Volcanoes", file: "Geography_Earthquakes_and_Volcanoes" },
-          { name: "World Distribution of Volcanoes", file: "Geography_World_Distribution_of_Volcanoes" },
-          { name: "Mountains", file: "Geography_Mountains" },
-          { name: "Plateaus", file: "Geography_Plateaus" },
-          { name: "Plains", file: "Geography_Plains" },
-          { name: "Forests", file: "Geography_Forests" },
-          { name: "India State of Forest Report-2019", file: "Geography_India_State_of_Forest_Report_2019" },
-          { name: "Land Forms Created by the River System", file: "Geography_Land_Forms_Created_by_the_River_System" },
-          { name: "Land Forms Created by the Actions of Wind", file: "Geography_Land_Forms_Created_by_the_Actions_of_Wind" },
-          { name: "Land Forms Created by the Actions of Groundwater", file: "Geography_Land_Forms_Created_by_the_Actions_of_Groundwater" },
-          { name: "Land Forms Created by the Actions of Sea Waves", file: "Geography_Land_Forms_Created_by_the_Actions_of_Sea_Waves" },
-          { name: "The Indian Sub-Continent: Position, Extent and Physical Features", file: "Geography_The_Indian_Sub_Continent_Position_Extent_and_Physical_Features" },
-          { name: "Division of Himalayas", file: "Geography_Division_of_Himalayas" },
-          { name: "Major Passes of India", file: "Geography_Major_Passes_of_India" },
-          { name: "The Coastal Plains", file: "Geography_The_Coastal_Plains" },
-          { name: "Soil Resources of the Indian Sub-continent", file: "Geography_Soil_Resources_of_the_Indian_Sub_continent" },
-          { name: "Kinds of Farming", file: "Geography_Kinds_of_Farming" },
-          { name: "Agriculture in India", file: "Geography_Agriculture_in_India" },
-          { name: "Minerals in India: Some Notable Facts", file: "Geography_Minerals_in_India_Some_Notable_Facts" },
-          { name: "Major Industries of India", file: "Geography_Major_Industries_of_India" },
-          { name: "The Drainage System of India", file: "Geography_The_Drainage_System_of_India" },
-          { name: "The River Systems of the Himalayan Drainage", file: "Geography_The_River_Systems_of_the_Himalayan_Drainage" },
-          { name: "Major Water Channels of India", file: "Geography_Major_Water_Channels_of_India" },
-          { name: "The Peninsular Drainage System", file: "Geography_The_Peninsular_Drainage_System" },
-          { name: "Water Resources and Their Utilisation in India", file: "Geography_Water_Resources_and_Their_Utilisation_in_India" },
-          { name: "Multipurpose River Valley Projects", file: "Geography_Multipurpose_River_Valley_Projects" },
-          { name: "Transport in India", file: "Geography_Transport_in_India" },
-          { name: "National Highways", file: "Geography_National_Highways" },
-          { name: "Rail Transport", file: "Geography_Rail_Transport" },
-          { name: "Civil Aviation", file: "Geography_Civil_Aviation" },
-          { name: "Maritime Transport", file: "Geography_Maritime_Transport" },
-          { name: "Major Ports and Non-Major Ports", file: "Geography_Major_Ports_and_Non_Major_Ports" },
-          { name: "India Facts and Figures", file: "Geography_India_Facts_and_Figures" },
-          { name: "State and UT's and their Capitals", file: "Geography_State_and_UT_s_and_their_Capitals" },
-          { name: "Census", file: "Geography_Census" },
-          { name: "Top 10 Most Populous Countries", file: "Geography_Top_10_Most_Populous_Countries" },
-          { name: "Wildlife Sanctuaries and National Parks in India", file: "Geography_Wildlife_Sanctuaries_and_National_Parks_in_India" },
-          { name: "RAMSAR Wetland Sites", file: "Geography_RAMSAR_Wetland_Sites" },
-          { name: "Important Irrigation and Power Projects", file: "Geography_Important_Irrigation_and_Power_Projects" },
-          { name: "Length of India's Border with the Neighbouring Countries", file: "Geography_Length_of_India_s_Border_with_the_Neighbouring_Countries" },
-          { name: "Colour Revolutions in India", file: "Geography_Colour_Revolutions_in_India" },
-          { name: "Project Tiger", file: "Geography_Project_Tiger" },
-          { name: "Tiger Reserves in India", file: "Geography_Tiger_Reserves_in_India" },
-          { name: "Protected Areas of India", file: "Geography_Protected_Areas_of_India" },
-          { name: "Cities at the Bank of River", file: "Geography_Cities_at_the_Bank_of_River" },
-          { name: "Towns Associated with Important Industries (India)", file: "Geography_Towns_Associated_with_Important_Industries_India" },
-          { name: "Famous Cities (India)", file: "Geography_Famous_Cities_India" },
-          { name: "New Changed Names (India)", file: "Geography_New_Changed_Names_India" },
-          { name: "Indian States with Longest Border", file: "Geography_Indian_States_with_Longest_Border" },
-          { name: "International Land Border", file: "Geography_International_Land_Border" },
-          { name: "Major Waterfalls of India", file: "Geography_Major_Waterfalls_of_India" },
-          { name: "Major Lakes of India", file: "Geography_Major_Lakes_of_India" },
-          { name: "Revised Length of Coastline of India", file: "Geography_Revised_Length_of_Coastline_of_India" },
-          { name: "Mount Everest", file: "Geography_Mount_Everest" },
-          { name: "Wonders of the World", file: "Geography_Wonders_of_the_World" },
-          { name: "Important Crops and their Producers", file: "Geography_Important_Crops_and_their_Producers" },
-          { name: "Important Minerals and their Producers", file: "Geography_Important_Minerals_and_their_Producers" },
-          { name: "World's Manufacturing Industries", file: "Geography_World_s_Manufacturing_Industries" },
-          { name: "Famous Sites (India)", file: "Geography_Famous_Sites_India" },
-          { name: "Famous Sites (World)", file: "Geography_Famous_Sites_World" },
-          { name: "Highest Mountain Peaks (World)", file: "Geography_Highest_Mountain_Peaks_World" },
-          { name: "Three Deepest Oceans", file: "Geography_Three_Deepest_Oceans" },
-          { name: "Major Straits of the World (Connects / Separates)", file: "Geography_Major_Straits_of_the_World_Connects_Separates" },
-          { name: "Important Discoveries", file: "Geography_Important_Discoveries" },
-          { name: "Major Canals", file: "Geography_Major_Canals" },
-          { name: "Major Waterfalls", file: "Geography_Major_Waterfalls" },
-          { name: "Major Lakes", file: "Geography_Major_Lakes" },
-          { name: "Major Islands", file: "Geography_Major_Islands" },
-          { name: "Major Deserts", file: "Geography_Major_Deserts" },
-          { name: "Top 10 Countries with Largest Aquatic Area", file: "Geography_Top_10_Countries_with_Largest_Aquatic_Area" },
-          { name: "Top 10 Countries with Longest Coastline", file: "Geography_Top_10_Countries_with_Longest_Coastline" },
-          { name: "Geographical Epithets", file: "Geography_Geographical_Epithets" },
-          { name: "International Boundary Lines", file: "Geography_International_Boundary_Lines" },
-          { name: "Tribes and their Homeland", file: "Geography_Tribes_and_their_Homeland" },
-          { name: "Map Lines", file: "Geography_Map_Lines" },
-          { name: "Land Locked Countries", file: "Geography_Land_Locked_Countries" },
-          { name: "Imp. Places in the World", file: "Geography_Imp_Places_in_the_World" },
-          { name: "Major Dams (World)", file: "Geography_Major_Dams_World" },
-          { name: "Country, Capital and Currency", file: "Geography_Country_Capital_and_Currency" },
-          { name: "Glossary of Geographical Terms", file: "Geography_Glossary_of_Geographical_Terms" },
-          { name: "Miscellaneous", file: "Geography_Miscellaneous" }
+          { name: "Highlights and Indian Contribution in Geography", file: "Geography_Highlights_and_Indian_Contribution" }, // Highlights + Indian's Contribution in Geography
+          { name: "Universe, Galaxy, Big Bang Theory and Higgs Boson", file: "Geography_Universe_Galaxy_Big_Bang_and_Higgs_Boson" }, // Universe + Galaxy + The Big Bang Theory + Higgs Boson
+          { name: "Stars and Well Known Constellations", file: "Geography_Stars_and_Constellations" }, // Star + Some Well Known Constellations
+          { name: "The Solar System, Heliocentrism, Geocentric Model, Members and Aditya-L1", file: "Geography_Solar_System_and_Members" }, // The Solar System + Heliocentrism + Geocentric Model + Members of the Solar System + Aditya-L1
+          { name: "The Planets: Classification, Notable Facts and Figures", file: "Geography_Planets_Classification_and_Facts" }, // The Planets + Classification of Planets + Some Notable Facts About Various Planets and Satellites + Some Facts and Figures about the Planets
+          { name: "Super Moon, Blue Moon and Chandrayaan-1,2,3", file: "Geography_Moon_Phenomena_and_Chandrayaan" }, // Super Moon + Blue Moon + Chandrayaan-1,2,3
+          { name: "The Earth: Shape, Size and Statistical Data", file: "Geography_Earth_Shape_Size_and_Statistical_Data" }, // The Earth: Shape and Size + Statistical Data of the Earth
+          { name: "Continents of the World", file: "Geography_Continents_of_the_World" }, // Continents of the World (unchanged)
+          { name: "Oceans and Ocean Currents (Pacific, Atlantic, Indian)", file: "Geography_Oceans_and_Ocean_Currents" }, // Oceans on the Earth + Pacific and Atlantic Ocean Currents + Indian Ocean Currents
+          { name: "Biosphere, Lithosphere and Hydrosphere", file: "Geography_Biosphere_Lithosphere_and_Hydrosphere" }, // Biosphere + Lithosphere + Hydrosphere
+          { name: "Latitude, Longitude, Time Zones, Date Line, IST and Lines Crossing Countries", file: "Geography_Latitude_Longitude_and_Time" }, // Latitude and Longitude + Local Time and Time Zones + The Date Line and Universal Time + Indian Standard Time (IST) + Lines Crossing Different Countries
+          { name: "Earth-Sun Relation, Coriolis Effect, Solstice, Equinoxes, Midnight Sun and Eclipses", file: "Geography_Earth_Sun_Relation_Seasons_and_Eclipses" }, // Earth and its Relation with the Sun + Coriolis Effect + Solstice + Equinoxes + Midnight Sun + Eclipses
+          { name: "Atmosphere, Its Layers and How the Sun Creates Energy", file: "Geography_Atmosphere_and_Layers" }, // Atmosphere + Layers of the Atmosphere + How The Sun Creates Energy
+          { name: "Weather, Climate, Humidity, Pressure, Winds, Clouds and Rainfall", file: "Geography_Weather_and_Climate_Elements" }, // Weather and Climate + Humidity + Atmospheric Pressure + Winds + Clouds + Rain Fall
+          { name: "Internal Structure of the Earth, Rocks, Earthquakes and Volcanoes", file: "Geography_Earth_Interior_Rocks_Earthquakes_and_Volcanoes" }, // Internal Structure of the Earth + Rocks + Earthquakes and Volcanoes + World Distribution of Volcanoes
+          { name: "Mountains, Plateaus and Plains", file: "Geography_Mountains_Plateaus_and_Plains" }, // Mountains + Plateaus + Plains
+          { name: "Landforms Created by River, Wind, Groundwater and Sea Waves", file: "Geography_Landforms_by_Agents_of_Erosion" }, // Land Forms Created by the River System + Actions of Wind + Actions of Groundwater + Actions of Sea Waves
+          { name: "Forests and India State of Forest Report-2019", file: "Geography_Forests_and_ISFR_2019" }, // Forests + India State of Forest Report-2019
+          { name: "Indian Sub-Continent: Position, Extent, Himalayas, Passes and Coastal Plains", file: "Geography_Indian_Sub_Continent_Physical_Features" }, // The Indian Sub-Continent: Position, Extent and Physical Features + Division of Himalayas + Major Passes of India + The Coastal Plains
+          { name: "Soil Resources, Kinds of Farming and Agriculture in India", file: "Geography_Soils_Farming_and_Agriculture_India" }, // Soil Resources of the Indian Sub-continent + Kinds of Farming + Agriculture in India
+          { name: "Minerals and Major Industries of India", file: "Geography_Minerals_and_Industries_India" }, // Minerals in India: Some Notable Facts + Major Industries of India
+          { name: "Drainage System, River Systems, Water Channels, Water Resources and River Valley Projects", file: "Geography_Drainage_and_Water_Resources_India" }, // The Drainage System of India + The River Systems of the Himalayan Drainage + Major Water Channels of India + The Peninsular Drainage System + Water Resources and Their Utilisation in India + Multipurpose River Valley Projects
+          { name: "Transport in India (Highways, Rail, Aviation, Maritime, Ports)", file: "Geography_Transport_in_India" }, // Transport in India + National Highways + Rail Transport + Civil Aviation + Maritime Transport + Major Ports and Non-Major Ports
+          { name: "India Facts and Figures, States and UTs with Capitals, Census", file: "Geography_India_Facts_States_and_Census" }, // India Facts and Figures + State and UT's and their Capitals + Census
+          { name: "Wildlife Sanctuaries, National Parks, RAMSAR Sites, Project Tiger and Protected Areas", file: "Geography_Wildlife_Protected_Areas_and_Tiger_Reserves" }, // Wildlife Sanctuaries and National Parks in India + RAMSAR Wetland Sites + Project Tiger + Tiger Reserves in India + Protected Areas of India
+          { name: "Important Irrigation and Power Projects and Major Dams (World)", file: "Geography_Irrigation_Power_Projects_and_Dams" }, // Important Irrigation and Power Projects + Major Dams (World)
+          { name: "India's Borders, Longest Border States, International Land Border and Coastline", file: "Geography_India_Borders_and_Coastline" }, // Length of India's Border with the Neighbouring Countries + Indian States with Longest Border + International Land Border + Revised Length of Coastline of India
+          { name: "Colour Revolutions, Important Crops, Minerals and Manufacturing Industries", file: "Geography_Colour_Revolutions_Crops_Minerals_and_Industries" }, // Colour Revolutions in India + Important Crops and their Producers + Important Minerals and their Producers + World's Manufacturing Industries
+          { name: "Cities and Towns of India (River Banks, Industries, Famous, New Names)", file: "Geography_Cities_and_Towns_of_India" }, // Cities at the Bank of River + Towns Associated with Important Industries (India) + Famous Cities (India) + New Changed Names (India)
+          { name: "Famous Sites (India and World), Important Places and Wonders of the World", file: "Geography_Famous_Sites_Places_and_Wonders" }, // Famous Sites (India) + Famous Sites (World) + Imp. Places in the World + Wonders of the World
+          { name: "Mount Everest and Highest Mountain Peaks", file: "Geography_Mount_Everest_and_Highest_Peaks" }, // Mount Everest + Highest Mountain Peaks (World)
+          { name: "Islands (Including Major Islands) and Major Deserts", file: "Geography_Islands_and_Deserts" }, // Islands + Major Islands + Major Deserts
+          { name: "Major Waterfalls and Lakes (India and World)", file: "Geography_Waterfalls_and_Lakes" }, // Major Waterfalls of India + Major Lakes of India + Major Waterfalls + Major Lakes
+          { name: "Major Canals, Straits and Three Deepest Oceans", file: "Geography_Canals_Straits_and_Deepest_Oceans" }, // Major Canals + Major Straits of the World (Connects / Separates) + Three Deepest Oceans
+          { name: "Top 10 Countries (Population, Aquatic Area, Coastline)", file: "Geography_Top_10_Countries" }, // Top 10 Most Populous Countries + Top 10 Countries with Largest Aquatic Area + Top 10 Countries with Longest Coastline
+          { name: "Important Discoveries, Geographical Epithets and Tribes", file: "Geography_Discoveries_Epithets_and_Tribes" }, // Important Discoveries + Geographical Epithets + Tribes and their Homeland
+          { name: "Map Lines, International Boundary Lines and Land Locked Countries", file: "Geography_Map_Lines_Boundaries_and_Land_Locked_Countries" }, // Map Lines + International Boundary Lines + Land Locked Countries
+          { name: "Country, Capital and Currency", file: "Geography_Country_Capital_and_Currency" }, // Country, Capital and Currency (unchanged)
+          { name: "Glossary of Geographical Terms and Miscellaneous", file: "Geography_Glossary_and_Miscellaneous" } // Glossary of Geographical Terms + Miscellaneous
         ]
       }
     ]
