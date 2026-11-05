@@ -18,7 +18,8 @@ SCOPE RULES (very important)
 
 STRUCTURE
 - Entry 1 = CLASS OVERVIEW concept page (type "concept", icon, accent, pauseTimer:true) with: lead, cp-stats (pages, questions, key facts, time), roadmap (cp-timeline), "What you will be able to do" cards, an exam-importance note, a tip note, chips.
-  Also add the YouTube fields on entry 1 only: thumb {image:"images/thumbnail.png", banner, line1, line2, line3, badge, ribbon, burst, mode:"creator"} and yt {title, altTitles, description, tags, hashtags, thumbText, pinnedComment, communityPost, chapters, playlist}.
+  Also add the YouTube fields on entry 1 only: thumb {image:"images/thumbnail.png", banner, line1, line2, line3, badge, ribbon, burst:"", mode:"creator"} (ALWAYS write burst as an empty string "": I do NOT want the star/burst sticker on my thumbnails) and yt {title, altTitles, description, tags, hashtags, thumbText, pinnedComment, communityPost, chapters, playlist}.
+  YOUTUBE TAGS RULE (important): the tags array must use the FULL 500-character limit, so the Kit counter shows 500 / 500. The counter measures tags.join(", ").length (tags joined with a comma AND a space). Make that length EXACTLY 500, never more. Use roughly 20-30 relevant, non-repeating tags (each tag max 30 characters): chapter/topic keywords, exam names (SSC CGL, UPSC, Banking, Railways, Defence), subject names, "class / full class / tricks / questions" style tags. Put the most important tag first. Build the list with a script, add or trim tags until the length is exactly 500, and print the final length.
 - Then, in the book's order: ONE concept page per subtopic, followed immediately by its practice questions, then the next concept page, and so on.
 - Concept page titles = the subtopic names exactly as written in the PDF (keep the book's wording and numbering). If the book has section headings that contain several subtopics, add a short roadmap page with the heading's exact name.
 - Every concept page: pauseTimer:true, an emoji icon, a different accent colour.
@@ -49,14 +50,15 @@ THUMBNAIL STYLE (important: standard, classic and premium, NOT cartoonish)
 - Colours: restrained and harmonious. One accent colour + muted gold / champagne / silver highlights. No rainbow colours, no neon overload, no harsh clashing colours.
 - Subject elements: 2 to 4 elegant, topic-related objects only, rendered realistically (matte, brushed metal, engraved, fine thin line-art or soft realistic 3D with natural reflections), softly blurred and placed mostly on the right/back. Fewer elements, more space. Example for Percentage: a thin gold-lined % symbol, a few real-looking coins, a subtle chart line.
 - Composition: left 62% calm, dark and uncluttered for the banner and title; premium, balanced, high-contrast, ultra-sharp.
-- Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces in the image.
+- NO STAR / STARBURST / EXPLOSION sticker anywhere. Instead, include ONE blank premium emblem that I can write on later: a refined, classic round seal (or small rounded plaque) with a thin champagne-gold rim, fine engraved double border and a smooth, empty dark-navy/charcoal centre, subtly glowing, realistic brushed-metal or enamel finish, about 20% of the frame height, placed near the lower centre (about 60% from the left, 72% from the top), so its empty centre is a clean writing area. The emblem must be completely EMPTY inside.
+- Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces in the image (the emblem stays blank).
 - In the FIGURE PROMPTS block, write the thumbnail prompt in this style (use the thumbnail prompt in the reference format at the bottom as the model).
 
 CODE RULES
 - Keep the first style snippet (hide thumbnail box/link) and the header comment as in concept-demo.js.
 - Use backtick template strings for html (no backticks or ${ inside).
 - Numbering must be continuous (1, 2, 3 ...) with a small comment before each entry.
-- Build the file with a script so numbering and answer positions are correct, then VALIDATE: the file loads in Node (stub window/document), every question has 4 distinct options and a valid "correct", no HTML tags inside questext/options/exptext.
+- Build the file with a script so numbering and answer positions are correct, then VALIDATE: the file loads in Node (stub window/document), every question has 4 distinct options and a valid "correct", no HTML tags inside questext/options/exptext, thumb.burst is "" and yt.tags.join(", ").length is exactly 500.
 
 END-OF-FILE COMMENT BLOCKS
 1. IMAGE LIST: which image belongs to which concept page.
@@ -125,13 +127,13 @@ REFERENCE FORMAT: concept-demo.js
      The thumbnail box and the "Open Thumbnail & YouTube Kit" link are hidden on the page (see the first snippet); the chapter icon opens the studio.
 
      thumb : "thumbnail.png"                      (image link, file next to index.html)
-             or { image, banner, line1, line2, line3, person, logo, badge, ribbon, burst, mode:"creator"|"pro"|"image" }
+             or { image, banner, line1, line2, line3, person, logo, badge, ribbon, burst:"", mode:"creator"|"pro"|"image" }
              mode "creator" = teacher-style thumbnail: red top banner (banner), white line1, big gold line2,
              cyan line3, teacher cut-out photo on the right, round channel logo top-right.
              Teacher photo + logo: put images/person.png (transparent PNG) and images/logo.png next to index.html, OR just pick them
              inside the studio once (they are remembered in the browser and reused for every chapter).
-             "pro" mode uses badge / ribbon / burst instead.
-     yt    : { title, altTitles:[], description, tags:[], hashtags:[], pinnedComment,
+             "pro" mode uses badge / ribbon instead. Keep burst:"" (empty) so no star sticker is drawn; the blank premium emblem is part of the background image instead.
+     yt    : { title, altTitles:[], description, tags:[] (join(", ") length = exactly 500), hashtags:[], pinnedComment,
                thumbText, communityPost, chapters, playlist, extra:[{icon,label,text}] }
      NOTE: export needs the site opened over http(s)://, not file:// (browser canvas rule).
 
@@ -175,7 +177,7 @@ window.TEST_DATA = {
       line3: "PROFIT & LOSS",
       badge: "FULL CLASS",
       ribbon: "FORMULAS • TRICKS • PRACTICE",
-      burst: "Competitive exams",
+      burst: "",
       mode: "creator"
     },
     yt: {
@@ -200,11 +202,12 @@ window.TEST_DATA = {
 "👍 Like, share and subscribe, and comment “DONE” after you finish the practice questions.\n\n" +
 "#SSCCGL #Percentage #ProfitAndLoss #Quant",
       tags: [
-        "percentage tricks", "percentage for Competitive exams", "successive change percentage", "percentage shortcut tricks",
+        "percentage tricks", "percentage for all exams", "successive change percentage", "percentage shortcut tricks",
         "profit and loss tricks", "profit loss discount", "successive discount formula", "single equivalent discount",
-        "price consumption percentage", "Competitive exams quant", "Competitive exams maths", "Competitive exams tier 1", "quantitative aptitude",
-        "quant for ssc", "maths tricks", "fast track maths", "percentage questions", "profit and loss questions",
-        "Competitive exams preparation", "Competitive exams maths"
+        "price consumption percentage", "Competitive exams quant", "Competitive exams maths", "Competitive exams tier 1",
+        "quantitative aptitude", "quant for ssc", "maths tricks", "fast track maths",
+        "percentage questions", "profit and loss questions", "Competitive exams preparation", "percentage in one line",
+        "maths shortcut"
       ],
       hashtags: ["SSCCGL", "Percentage", "ProfitAndLoss", "Quant"],
       thumbText: "PERCENTAGE + PROFIT & LOSS",
@@ -411,5 +414,5 @@ window.TEST_DATA = {
      (the demo has no other numbered figures; real chapters continue 1.png, 2.png …)
 
    FIGURE PROMPTS  (copy each line into ChatGPT, save the result under the given name)
-   thumbnail.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle indigo gradient (accent #6366f1) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: a thin gold-lined percent sign (%), a few real-looking gold coins and a subtle rising chart line, rendered matte or brushed-metal with natural reflections. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image. Sophisticated, balanced, high-contrast, professional composition.
+   thumbnail.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle indigo gradient (accent #6366f1) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: a thin gold-lined percent sign (%), a few real-looking gold coins and a subtle rising chart line, rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark-navy centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre of the frame (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.
    ════════════════════════════════════════════════════════════════ */
