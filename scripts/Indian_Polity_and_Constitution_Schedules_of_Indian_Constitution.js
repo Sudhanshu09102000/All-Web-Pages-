@@ -34,7 +34,7 @@ window.TEST_DATA = {
     pauseTimer: true,
     title: "Class Overview — What We Will Learn Today",
     thumb: {
-      image: "images/thumbnail.png",
+      image: "images/6517905a-d2cd-4a04-b1a2-ae23d17a2a62.png",
       banner: "COMPETITIVE EXAMS 2026",
       line1: "INDIAN POLITY",
       line2: "12 SCHEDULES",
@@ -139,7 +139,7 @@ window.TEST_DATA = {
   <div class="cp-stat"><b>12</b><span>Total today</span></div>
 </div>
 
-<div class="cp-fig"><img src="images/1.png" alt="Timeline: 8 Schedules in 1950, then 9th, 10th, 11th and 12th added" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+<div class="cp-fig"><img src="images/b6c28896-7838-41e0-b9eb-428dc27ea1fb.png" alt="Timeline: 8 Schedules in 1950, then 9th, 10th, 11th and 12th added" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
 
 <div class="cp-divider">The 12 Schedules at a glance</div>
 
@@ -535,7 +535,7 @@ window.TEST_DATA = {
     html: `
 <p class="cp-lead">India is a federation, so <u>who may make laws on what?</u> must be clear. The Seventh Schedule divides powers between the <b>Union</b> and the <b>States</b> into three lists (Article 246).</p>
 
-<div class="cp-fig"><img src="images/2.png" alt="Three lists: Union List, State List and Concurrent List" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+<div class="cp-fig"><img src="images/72d80b54-eeb1-4589-b885-7230f87581db.png" alt="Three lists: Union List, State List and Concurrent List" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
 
 <div class="cp-grid c3">
   <div class="cp-card blue"><div class="cp-card-title">Union List</div><b>Only Parliament</b> makes laws. About 100 subjects: defence, foreign affairs, atomic energy, railways, banking, currency, citizenship.</div>
@@ -624,7 +624,7 @@ window.TEST_DATA = {
     html: `
 <p class="cp-lead">India speaks hundreds of languages. The Eighth Schedule lists the <b>languages recognised by the Constitution</b>. Today there are <u>22</u>.</p>
 
-<div class="cp-fig"><img src="images/3.png" alt="Growth of the Eighth Schedule: 14 to 15 to 18 to 22 languages" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+<div class="cp-fig"><img src="images/6dfb7c6d-85ef-4214-a5a6-8636160ce00b.png" alt="Growth of the Eighth Schedule: 14 to 15 to 18 to 22 languages" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
 
 <div class="cp-stats">
   <div class="cp-stat"><b>14</b><span>At adoption</span></div>
@@ -899,7 +899,7 @@ window.TEST_DATA = {
 
 <div class="cp-vs">
   <div class="good"><h4>✅ 11th Schedule</h4>Panchayats · <b>29</b> subjects · <b>73rd</b> Amendment</div>
-  <div class="bad"><h4>🏙️ 12th Schedule</h4>Municipalities · <b>18</b> subjects · <b>74th</b> Amendment</div>
+  <div class="bad"><h4>🏙️ 12th Schedule</h4>Mthumbnail.pngunicipalities · <b>18</b> subjects · <b>74th</b> Amendment</div>
 </div>
 
 <div class="cp-note trap"><b>Trap:</b> <u>Rural = 73rd = 11th = 29</u> and <u>Urban = 74th = 12th = 18</u>. A wrong pair usually swaps the numbers.</div>
@@ -935,16 +935,16 @@ window.TEST_DATA = {
 
 /* ════════════════════════════════════════════════════════════════
    IMAGE LIST (which image belongs to which entry)
-     thumbnail.png → ENTRY 1 (class overview, "thumb" field) — not numbered
-     1.png → "5. Schedules of Indian Constitution" page (timeline: 8 at adoption, then 9th, 10th, 11th, 12th added)
-     2.png → "7th Schedule" page (three Lists: Union, State, Concurrent)
-     3.png → "8th Schedule" page (growth of the list: 14 → 15 → 18 → 22 languages)
+     6517905a-d2cd-4a04-b1a2-ae23d17a2a62.png → ENTRY 1 (class overview, "thumb" field) — not numbered
+     b6c28896-7838-41e0-b9eb-428dc27ea1fb.png → "5. Schedules of Indian Constitution" page (timeline: 8 at adoption, then 9th, 10th, 11th, 12th added)
+     72d80b54-eeb1-4589-b885-7230f87581db.png → "7th Schedule" page (three Lists: Union, State, Concurrent)
+     6dfb7c6d-85ef-4214-a5a6-8636160ce00b.png → "8th Schedule" page (growth of the list: 14 → 15 → 18 → 22 languages)
 
    FIGURE PROMPTS  (copy each line into ChatGPT, save the result under the given name)
-   images/thumbnail.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920x1080 px, ultra-sharp, vibrant cinematic 3D illustration in deep indigo, violet and electric-blue tones (accent #6366f1) with warm gold highlights. Dark edges and a bright soft glow behind the right-centre of the frame, where a teacher's photo will be placed later. Spread a few soft, glowing, slightly blurred decorative 3D elements around the frame, mostly behind the right side: an open antique book with glowing pages, a golden scale of justice, a gavel, and a few floating glossy scroll sheets. Keep the LEFT 62% of the frame calm, darker and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image. Clean, most beautiful, colorful, professional, high-contrast composition.
-   images/1.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. A horizontal timeline with thick lines and simple shapes: a large circle on the left labelled "1950" with the text "8 Schedules"; then three milestone circles labelled "1951 · 9th", "1985 · 10th", "1992 · 11th & 12th"; at the far right a large badge "12". Use VERY LARGE bold white and cyan English text, only these labels, thick lines, high contrast. No people, no logos, no watermarks.
-   images/2.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. Three big rounded boxes side by side with thick outlines: blue box labelled "UNION LIST" with the small text "Parliament", green box labelled "STATE LIST" with the small text "State Legislature", amber box labelled "CONCURRENT LIST" with the small text "Both". Above them a wide bar labelled "7th SCHEDULE". VERY LARGE bold white English text, only these labels, thick lines, simple shapes. No people, no logos, no watermarks.
-   images/3.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. Four ascending steps (staircase) with thick outlines, left to right labelled "14" with "1950", "15" with "1967", "18" with "1992", "22" with "2003", each step a different bright colour, and a title bar "8th SCHEDULE: LANGUAGES". VERY LARGE bold white English text, only these labels, thick lines, simple shapes. No people, no logos, no watermarks.
+   images/6517905a-d2cd-4a04-b1a2-ae23d17a2a62.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920x1080 px, ultra-sharp, vibrant cinematic 3D illustration in deep indigo, violet and electric-blue tones (accent #6366f1) with warm gold highlights. Dark edges and a bright soft glow behind the right-centre of the frame, where a teacher's photo will be placed later. Spread a few soft, glowing, slightly blurred decorative 3D elements around the frame, mostly behind the right side: an open antique book with glowing pages, a golden scale of justice, a gavel, and a few floating glossy scroll sheets. Keep the LEFT 62% of the frame calm, darker and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image. Clean, most beautiful, colorful, professional, high-contrast composition.
+   images/b6c28896-7838-41e0-b9eb-428dc27ea1fb.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. A horizontal timeline with thick lines and simple shapes: a large circle on the left labelled "1950" with the text "8 Schedules"; then three milestone circles labelled "1951 · 9th", "1985 · 10th", "1992 · 11th & 12th"; at the far right a large badge "12". Use VERY LARGE bold white and cyan English text, only these labels, thick lines, high contrast. No people, no logos, no watermarks.
+   images/72d80b54-eeb1-4589-b885-7230f87581db.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. Three big rounded boxes side by side with thick outlines: blue box labelled "UNION LIST" with the small text "Parliament", green box labelled "STATE LIST" with the small text "State Legislature", amber box labelled "CONCURRENT LIST" with the small text "Both". Above them a wide bar labelled "7th SCHEDULE". VERY LARGE bold white English text, only these labels, thick lines, simple shapes. No people, no logos, no watermarks.
+   images/6dfb7c6d-85ef-4214-a5a6-8636160ce00b.png: Create a 16:9 image, 1200x675 px, clean flat vector diagram on a dark navy background. Four ascending steps (staircase) with thick outlines, left to right labelled "14" with "1950", "15" with "1967", "18" with "1992", "22" with "2003", each step a different bright colour, and a title bar "8th SCHEDULE: LANGUAGES". VERY LARGE bold white English text, only these labels, thick lines, simple shapes. No people, no logos, no watermarks.
    ════════════════════════════════════════════════════════════════ */
 
 /* ════════════════════════════════════════════════════════════════
