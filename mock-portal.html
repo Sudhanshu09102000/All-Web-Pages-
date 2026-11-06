@@ -20103,6 +20103,36 @@ html.lite-mode #questionText .badge { background: #fff !important; background-im
 })();
 </script>
 
+
+<style id="pdfTutorScrollFix">
+/* PDF Tutor scroll fix: give the panel a definite height and make the canvas area the one scroller.
+   The mobile rule `.resizable-question-box:not(.test-resizable-box)` forced height:auto / overflow:visible / flex:none,
+   so the panel grew to the full PDF height and nothing inside it could scroll. ID + !important beats it. */
+#pdfTutorPanel.resizable-question-box {
+  height: calc(100vh - var(--topbar-h, 96px) - 16px) !important;
+  height: calc(100dvh - var(--topbar-h, 96px) - 16px) !important;
+  min-height: 300px !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  flex: none !important;
+  contain: layout style !important;
+}
+body.hide-top-bar #pdfTutorPanel.resizable-question-box { height: calc(100dvh - 16px) !important; }
+#pdfTutorPanel #pdfViewerWrap {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+#pdfTutorPanel #pdfCanvasArea {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+</style>
 </body>
 
 
