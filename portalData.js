@@ -141,42 +141,42 @@ const PORTAL_DATA = [
       {
         name: "Geography",
         subtopics: [
-  { name: "Universe, Solar System and Space Exploration", file: "Geography/Universe_Solar_System_and_Space_Exploration" },
-  // Merged: Highlights, Indian's Contribution in Geography, Universe, Galaxy, The Big Bang Theory, Higgs Boson, Star, The Solar System, Heliocentrism, Geocentric Model, Members of the Solar System, Aditya-L1, The Planets, Classification of Planets, Some Notable Facts About Various Planets and Satellites, Super Moon, Blue Moon, Chandrayaan 1-2-3, Some Facts and Figures about the Planets, Some well known Constellations.
+          { name: "Universe, Solar System and Space Exploration", file: "Geography/Universe_Solar_System_and_Space_Exploration" },
+          // Merged: Highlights, Indian's Contribution in Geography, Universe, Galaxy, The Big Bang Theory, Higgs Boson, Star, The Solar System, Heliocentrism, Geocentric Model, Members of the Solar System, Aditya-L1, The Planets, Classification of Planets, Some Notable Facts About Various Planets and Satellites, Super Moon, Blue Moon, Chandrayaan 1-2-3, Some Facts and Figures about the Planets, Some well known Constellations.
 
-  { name: "Earth, Geological Structure and Geomorphic Processes", file: "Geography/Earth_Geological_Structure_and_Geomorphic_Processes" },
-  // Merged: The Earth: Shape and Size, Internal Structure of the Earth, Rocks, Earthquakes and Volcanoes, World Distribution of Volcanoes, Mountains, Plateaus, Plains, Islands, Land Forms created by River System, the actions of Wind, the actions of Groundwater, the actions of Sea Waves.
+          { name: "Earth, Geological Structure and Geomorphic Processes", file: "Geography/Earth_Geological_Structure_and_Geomorphic_Processes" },
+          // Merged: The Earth: Shape and Size, Internal Structure of the Earth, Rocks, Earthquakes and Volcanoes, World Distribution of Volcanoes, Mountains, Plateaus, Plains, Islands, Land Forms created by River System, the actions of Wind, the actions of Groundwater, the actions of Sea Waves.
 
-  { name: "Latitude, Longitude, Time Zones and Earth's Movements", file: "Geography/Latitude_Longitude_Time_Zones_and_Earths_Movements" },
-  // Merged: Latitude and Longitude, Local Time and Time Zones, The Date Line and Universal Time, Indian Standard Time (IST), Lines crossing different countries, Earth and its Relation with the Sun, Coriolis Effect, Solstice, Equinoxes, Midnight Sun, Eclipses.
+          { name: "Latitude, Longitude, Time Zones and Earth's Movements", file: "Geography/Latitude_Longitude_Time_Zones_and_Earths_Movements" },
+          // Merged: Latitude and Longitude, Local Time and Time Zones, The Date Line and Universal Time, Indian Standard Time (IST), Lines crossing different countries, Earth and its Relation with the Sun, Coriolis Effect, Solstice, Equinoxes, Midnight Sun, Eclipses.
 
-  { name: "Atmosphere, Weather, Climate and Oceanography", file: "Geography/Atmosphere_Weather_Climate_and_Oceanography" },
-  // Merged: Atmosphere, Layers of the Atmosphere, How The Sun Creates Energy, Weather and Climate, Humidity, Atmospheric Pressure, Winds, Clouds, Rain Fall, Oceans on the Earth, Pacific and Atlantic Ocean Currents, Indian Ocean Currents, Hydrosphere.
+          { name: "Atmosphere, Weather, Climate and Oceanography", file: "Geography/Atmosphere_Weather_Climate_and_Oceanography" },
+          // Merged: Atmosphere, Layers of the Atmosphere, How The Sun Creates Energy, Weather and Climate, Humidity, Atmospheric Pressure, Winds, Clouds, Rain Fall, Oceans on the Earth, Pacific and Atlantic Ocean Currents, Indian Ocean Currents, Hydrosphere.
 
-  { name: "World Physical Geography and Major Landforms", file: "Geography/World_Physical_Geography_and_Major_Landforms" },
-  // Merged: Continents of the World, Biosphere, Lithosphere, Major Mountain Peaks (World), Three Deepest Oceans, Major Waterfalls, Major Lakes, Major Islands, Major Deserts, Major Canals, Major Dams (World), Top 10 Countries with Largest Aquatic Area, Top 10 Countries with Longest Coastline.
+          { name: "World Physical Geography and Major Landforms", file: "Geography/World_Physical_Geography_and_Major_Landforms" },
+          // Merged: Continents of the World, Biosphere, Lithosphere, Major Mountain Peaks (World), Three Deepest Oceans, Major Waterfalls, Major Lakes, Major Islands, Major Deserts, Major Canals, Major Dams (World), Top 10 Countries with Largest Aquatic Area, Top 10 Countries with Longest Coastline.
 
-  { name: "India: Location, Physical Features and Drainage Systems", file: "Geography/India_Location_Physical_Features_and_Drainage_Systems" },
-  // Merged: The Indian Sub-Continent: Position, Extent and Physical Features, Division of Himalayas, Major Passes of India, The Coastal Plains, The Drainage System of India, The River Systems of the Himalayan Drainage, The Peninsular Drainage System, Major Water Channels of India, Revised Length of the Coastline of India.
+          { name: "India: Location, Physical Features and Drainage Systems", file: "Geography/India_Location_Physical_Features_and_Drainage_Systems" },
+          // Merged: The Indian Sub-Continent: Position, Extent and Physical Features, Division of Himalayas, Major Passes of India, The Coastal Plains, The Drainage System of India, The River Systems of the Himalayan Drainage, The Peninsular Drainage System, Major Water Channels of India, Revised Length of the Coastline of India.
 
-  { name: "Indian Agriculture, Irrigation and Water Resources", file: "Geography/Indian_Agriculture_Irrigation_and_Water_Resources" },
-  // Merged: Soil Resources of the Indian Sub-continent, Kinds of Farming, Agriculture in India, Important Crops and their Producers, Important Irrigation and Power Projects, Water Resources and Their Utilisation in India, Multipurpose River Valley Projects, Colour Revolutions in India.
+          { name: "Indian Agriculture, Irrigation and Water Resources", file: "Geography/Indian_Agriculture_Irrigation_and_Water_Resources" },
+          // Merged: Soil Resources of the Indian Sub-continent, Kinds of Farming, Agriculture in India, Important Crops and their Producers, Important Irrigation and Power Projects, Water Resources and Their Utilisation in India, Multipurpose River Valley Projects, Colour Revolutions in India.
 
-  { name: "Indian Minerals, Industries, Energy and Transport", file: "Geography/Indian_Minerals_Industries_Energy_and_Transport" },
-  // Merged: Minerals in India: Some Notable Facts, Major Industries of India, Transport in India, National Highways, Rail Transport, Civil Aviation, Maritime Transport, Major Ports and Non-Major Ports, Towns Associated with Important Industries (India), Important Minerals and their Producers, World's Manufacturing Industries.
+          { name: "Indian Minerals, Industries, Energy and Transport", file: "Geography/Indian_Minerals_Industries_Energy_and_Transport" },
+          // Merged: Minerals in India: Some Notable Facts, Major Industries of India, Transport in India, National Highways, Rail Transport, Civil Aviation, Maritime Transport, Major Ports and Non-Major Ports, Towns Associated with Important Industries (India), Important Minerals and their Producers, World's Manufacturing Industries.
 
-  { name: "Indian Environment, Forests, Wildlife and Protected Areas", file: "Geography/Indian_Environment_Forests_Wildlife_and_Protected_Areas" },
-  // Merged: Forests, India State of Forest Report - 2019, Wildlife Sanctuaries and National Parks in India, RAMSAR Wetland Sites, Project Tiger, Tiger Reserves in India, Protected Areas of India.
+          { name: "Indian Environment, Forests, Wildlife and Protected Areas", file: "Geography/Indian_Environment_Forests_Wildlife_and_Protected_Areas" },
+          // Merged: Forests, India State of Forest Report - 2019, Wildlife Sanctuaries and National Parks in India, RAMSAR Wetland Sites, Project Tiger, Tiger Reserves in India, Protected Areas of India.
 
-  { name: "Indian States, Cities, Borders and Important Places", file: "Geography/Indian_States_Cities_Borders_and_Important_Places" },
-  // Merged: India facts and figures, State and UT's and their Capitals, Census, Top 10 Most Populous countries, Length of India's Border with the Neighbouring Countries, Cities at the Bank of River, Famous cities (India), New Changed Names (India), Indian States with Longest Border, International Land Border, Mount Everest, Wonders of the World, Famous Sites (India).
+          { name: "Indian States, Cities, Borders and Important Places", file: "Geography/Indian_States_Cities_Borders_and_Important_Places" },
+          // Merged: India facts and figures, State and UT's and their Capitals, Census, Top 10 Most Populous countries, Length of India's Border with the Neighbouring Countries, Cities at the Bank of River, Famous cities (India), New Changed Names (India), Indian States with Longest Border, International Land Border, Mount Everest, Wonders of the World, Famous Sites (India).
 
-  { name: "World Political Geography, Important Places and Geographical Features", file: "Geography/World_Political_Geography_Important_Places_and_Features" },
-  // Merged: Major Straits of the World (Connects / Separates), Important Discoveries, Major Canals, Major Waterfalls, Major Lakes, Major Islands, Major Deserts, Geographical Epithets, International Boundary Lines, Tribes and their Homeland, Map Lines, Land Locked Countries, Important Places in the World, Country, Capital and Currency, Famous Sites (World), Highest Mountain Peaks (World).
+          { name: "World Political Geography, Important Places and Geographical Features", file: "Geography/World_Political_Geography_Important_Places_and_Features" },
+          // Merged: Major Straits of the World (Connects / Separates), Important Discoveries, Major Canals, Major Waterfalls, Major Lakes, Major Islands, Major Deserts, Geographical Epithets, International Boundary Lines, Tribes and their Homeland, Map Lines, Land Locked Countries, Important Places in the World, Country, Capital and Currency, Famous Sites (World), Highest Mountain Peaks (World).
 
-  { name: "Geographical Discoveries, Statistics, Reports and Miscellaneous", file: "Geography/Geographical_Discoveries_Statistics_Reports_and_Miscellaneous" }
-  // Merged: Statistical Data of the Earth, India facts and figures, Census, Top 10 Most Populous countries, Important Discoveries, Wonders of the World, Top 10 Countries with Largest Aquatic Area, Top 10 Countries with Longest Coastline, Glossary of Geographical Terms, Miscellaneous.
-]
+          { name: "Geographical Discoveries, Statistics, Reports and Miscellaneous", file: "Geography/Geographical_Discoveries_Statistics_Reports_and_Miscellaneous" }
+          // Merged: Statistical Data of the Earth, India facts and figures, Census, Top 10 Most Populous countries, Important Discoveries, Wonders of the World, Top 10 Countries with Largest Aquatic Area, Top 10 Countries with Longest Coastline, Glossary of Geographical Terms, Miscellaneous.
+        ]
 
       }
     ]
@@ -207,48 +207,20 @@ const PORTAL_DATA = [
       {
         name: "Indian Polity and Constitution",
         subtopics: [
-          { name: "Evolution of Indian Constitution", file: "Indian_Polity_and_Constitution/Evolution_of_Indian_Constitution" },
-          { name: "Constituent Assembly and Making of the Constitution", file: "Indian_Polity_and_Constitution/Constituent_Assembly_and_Making_of_the_Constitution" },
-          { name: "Different Sources of Indian Constitution", file: "Indian_Polity_and_Constitution/Different_Sources_of_Indian_Constitution" },
-          { name: "Important Parts, Articles of the Constitution", file: "Indian_Polity_and_Constitution/Important_Parts_Articles_of_the_Constitution" },
-          { name: "Schedules of Indian Constitution", file: "Indian_Polity_and_Constitution/Schedules_of_Indian_Constitution" },
-          { name: "Special Features of Indian Constitution", file: "Indian_Polity_and_Constitution/Special_Features_of_Indian_Constitution" },
-          { name: "The Writs", file: "Indian_Polity_and_Constitution/The_Writs" },
-          { name: "Directive Principles of State Policy", file: "Indian_Polity_and_Constitution/Directive_Principles_of_State_Policy" },
-          { name: "Fundamental Duties", file: "Indian_Polity_and_Constitution/Fundamental_Duties" },
-          { name: "Procedure for Amending the Constitution", file: "Indian_Polity_and_Constitution/Procedure_for_Amending_the_Constitution" },
-          { name: "The Doctrine of Basic Features", file: "Indian_Polity_and_Constitution/The_Doctrine_of_Basic_Features" },
-          { name: "Some Important Constitutional Amendment Acts", file: "Indian_Polity_and_Constitution/Some_Important_Constitutional_Amendment_Acts" },
-          { name: "Executive of the Union", file: "Indian_Polity_and_Constitution/Executive_of_the_Union" },
-          { name: "Emergency Provisions", file: "Indian_Polity_and_Constitution/Emergency_Provisions" },
-          { name: "The Vice-President", file: "Indian_Polity_and_Constitution/The_Vice_President" },
-          { name: "The Prime Minister and The Union Council of Ministers", file: "Indian_Polity_and_Constitution/The_Prime_Minister_and_The_Union_Council_of_Ministers" },
-          { name: "The Attorney-General for India", file: "Indian_Polity_and_Constitution/The_Attorney_General_for_India" },
-          { name: "The Comptroller and Auditor General", file: "Indian_Polity_and_Constitution/The_Comptroller_and_Auditor_General" },
-          { name: "The Parliament of India", file: "Indian_Polity_and_Constitution/The_Parliament_of_India" },
-          { name: "Parliamentary Terms", file: "Indian_Polity_and_Constitution/Parliamentary_Terms" },
-          { name: "The Supreme Court", file: "Indian_Polity_and_Constitution/The_Supreme_Court" },
-          { name: "The High Court", file: "Indian_Polity_and_Constitution/The_High_Court" },
-          { name: "Centre-State Relations", file: "Indian_Polity_and_Constitution/Centre_State_Relations" },
-          { name: "Executive of the States", file: "Indian_Polity_and_Constitution/Executive_of_the_States" },
-          { name: "Panchayati Raj", file: "Indian_Polity_and_Constitution/Panchayati_Raj" },
-          { name: "Municipalities", file: "Indian_Polity_and_Constitution/Municipalities" },
-          { name: "Inter-State Relations", file: "Indian_Polity_and_Constitution/Inter_State_Relations" },
-          { name: "Planning Commission", file: "Indian_Polity_and_Constitution/Planning_Commission" },
-          { name: "NITI Aayog", file: "Indian_Polity_and_Constitution/NITI_Aayog" },
-          { name: "National Development Council (NDC)", file: "Indian_Polity_and_Constitution/National_Development_Council_NDC" },
-          { name: "National Integration Council", file: "Indian_Polity_and_Constitution/National_Integration_Council" },
-          { name: "Finance Commission", file: "Indian_Polity_and_Constitution/Finance_Commission" },
-          { name: "Public Service Commissions", file: "Indian_Polity_and_Constitution/Public_Service_Commissions" },
-          { name: "Election", file: "Indian_Polity_and_Constitution/Election" },
-          { name: "Delimitation Commission of India", file: "Indian_Polity_and_Constitution/Delimitation_Commission_of_India" },
-          { name: "The Official Languages", file: "Indian_Polity_and_Constitution/The_Official_Languages" },
-          { name: "National Symbols", file: "Indian_Polity_and_Constitution/National_Symbols" },
-          { name: "Some Important Comments", file: "Indian_Polity_and_Constitution/Some_Important_Comments" },
-          { name: "Some Important Statements", file: "Indian_Polity_and_Constitution/Some_Important_Statements" },
-          { name: "Some Important Definitions", file: "Indian_Polity_and_Constitution/Some_Important_Definitions" },
-          { name: "Some Important Books (Polity)", file: "Indian_Polity_and_Constitution/Some_Important_Books_Polity" },
-          { name: "Miscellaneous", file: "Indian_Polity_and_Constitution/Miscellaneous" }
+          { name: "Constitution: Evolution, Making and Sources", file: "Indian_Polity_and_Constitution/Constitution_Evolution_Making_and_Sources" }, // Merged: Evolution of Indian Constitution, Constituent Assembly and Making of the Constitution, Different Sources of Indian Constitution
+          { name: "Features, Parts, Articles and Schedules", file: "Indian_Polity_and_Constitution/Features_Parts_Articles_and_Schedules" }, // Merged: Important Parts, Articles of the Constitution, Schedules of Indian Constitution, Special Features of Indian Constitution
+          { name: "Fundamental Rights, Writs, DPSP and Duties", file: "Indian_Polity_and_Constitution/Fundamental_Rights_Writs_DPSP_and_Duties" }, // Merged: The Writs, Directive Principles of State Policy, Fundamental Duties
+          { name: "Amendments and Basic Structure", file: "Indian_Polity_and_Constitution/Amendments_and_Basic_Structure" }, // Merged: Procedure for Amending the Constitution, The Doctrine of Basic Features, Some Important Constitutional Amendment Acts
+          { name: "Union Executive and Emergency Provisions", file: "Indian_Polity_and_Constitution/Union_Executive_and_Emergency_Provisions" }, // Merged: Executive of the Union, Emergency Provisions, The Vice-President, The Prime Minister and The Union Council of Ministers
+          { name: "Constitutional Officers (AG and CAG)", file: "Indian_Polity_and_Constitution/Constitutional_Officers_AG_and_CAG" }, // Merged: The Attorney-General for India, The Comptroller and Auditor General
+          { name: "Parliament and Parliamentary Terms", file: "Indian_Polity_and_Constitution/Parliament_and_Parliamentary_Terms" }, // Merged: The Parliament of India, Parliamentary Terms
+          { name: "Judiciary (Supreme Court and High Court)", file: "Indian_Polity_and_Constitution/Judiciary_Supreme_Court_and_High_Court" }, // Merged: The Supreme Court, The High Court
+          { name: "Federalism: Centre-State and Inter-State Relations", file: "Indian_Polity_and_Constitution/Federalism_Centre_State_and_Inter_State_Relations" }, // Merged: Centre-State Relations, Inter-State Relations
+          { name: "State Executive and Local Government", file: "Indian_Polity_and_Constitution/State_Executive_and_Local_Government" }, // Merged: Executive of the States, Panchayati Raj, Municipalities
+          { name: "Planning and Advisory Bodies", file: "Indian_Polity_and_Constitution/Planning_and_Advisory_Bodies" }, // Merged: Planning Commission, NITI Aayog, National Development Council (NDC), National Integration Council
+          { name: "Commissions and Elections", file: "Indian_Polity_and_Constitution/Commissions_and_Elections" }, // Merged: Finance Commission, Public Service Commissions, Election, Delimitation Commission of India
+          { name: "Official Languages and National Symbols", file: "Indian_Polity_and_Constitution/Official_Languages_and_National_Symbols" }, // Merged: The Official Languages, National Symbols
+          { name: "Important Comments, Statements, Definitions, Books and Miscellaneous", file: "Indian_Polity_and_Constitution/Comments_Statements_Definitions_Books_and_Miscellaneous" } // Merged: Some Important Comments, Some Important Statements, Some Important Definitions, Some Important Books (Polity), Miscellaneous
         ]
       }
     ]
