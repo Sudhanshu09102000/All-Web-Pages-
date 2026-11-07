@@ -149,6 +149,117 @@ input.px-code{font:800 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spa
 .px-bar{height:5px;border-radius:9px;background:var(--bd);overflow:hidden}.px-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:width .2s}
 .px-z{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;padding:3px 0;border-top:1px solid var(--bd)}.px-z span{overflow-wrap:anywhere}
 
+/* ===== Device rooms: premium panel ===== */
+#px{padding:16px;background:radial-gradient(70% 55% at 50% 0%,rgba(109,94,252,.30),transparent 70%),rgba(3,4,10,.74);-webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35)}
+#px.on .box{animation:rmIn .45s cubic-bezier(.2,.9,.25,1)}
+@keyframes rmIn{from{opacity:0;transform:translateY(22px) scale(.965)}to{opacity:1;transform:none}}
+#px .box{display:block;width:min(532px,100%);padding:0;border-radius:30px;border:1px solid var(--bd);background:var(--bg);box-shadow:0 60px 140px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.09);scrollbar-width:thin;overscroll-behavior:contain}
+@supports(background:color-mix(in srgb,red,blue)){#px .box{background:linear-gradient(180deg,color-mix(in srgb,var(--a) 11%,var(--bg)),var(--bg) 280px)}}
+.rm{position:relative;isolation:isolate;overflow:hidden;display:grid;gap:18px;padding:24px 24px 26px;border-radius:inherit}
+.rm>*{min-width:0}
+.rm:before{content:"";position:absolute;z-index:-1;left:-10%;right:-10%;top:-90px;height:280px;pointer-events:none;background:radial-gradient(38% 60% at 22% 40%,rgba(109,94,252,.38),transparent 70%),radial-gradient(34% 55% at 80% 30%,rgba(24,198,232,.24),transparent 70%);filter:blur(14px)}
+.rm svg{flex:none}
+.rm-top{display:flex;align-items:center;gap:14px}
+.rm-badge{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;flex:none;color:#fff;background:linear-gradient(145deg,var(--a),#7c6cff 50%,var(--b));box-shadow:0 14px 32px -8px var(--glow),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -10px 18px rgba(0,0,0,.18)}
+.rm-ttl{flex:1;min-width:0}
+.rm-ttl b{display:block;font:800 20px/1.15 Manrope,Inter,sans-serif;letter-spacing:-.035em}
+.rm-ttl span{display:block;margin-top:4px;color:var(--mut);font-size:12.5px;line-height:1.4}
+.rm-x{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:13px;border:1px solid var(--bd);background:var(--in);color:var(--mut);cursor:pointer;transition:color .15s,background .15s,transform .15s}
+.rm-x:hover{color:var(--tx);background:var(--bd)}.rm-x:active{transform:scale(.94)}
+#px button:focus-visible,#px summary:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+
+.rm-forms{display:grid;gap:18px}
+.rm-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:17px;background:var(--in);border:1px solid var(--bd)}
+.rm-tabs i{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:13px;background:linear-gradient(135deg,var(--a),#7c6cff 55%,var(--b));box-shadow:0 8px 22px -6px var(--glow),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .42s cubic-bezier(.3,1.25,.4,1)}
+.rm-tabs[data-t=join] i{transform:translateX(100%)}
+.rm-tabs button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;height:42px;border:0;border-radius:13px;background:none;color:var(--mut);font:700 13.5px Manrope,Inter,sans-serif;cursor:pointer;transition:color .25s}
+.rm-tabs[data-t=create] button[data-tab=create],.rm-tabs[data-t=join] button[data-tab=join]{color:#fff}
+.rm-pan{display:none;gap:16px}
+.rm-forms[data-t=create] .rm-pan.c,.rm-forms[data-t=join] .rm-pan.j{display:grid}
+.rm-pan.fx{animation:rmFade .4s cubic-bezier(.2,.9,.25,1)}
+@keyframes rmFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.rm-ticket{--n:11px;--s:92px;position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--s);border-radius:24px;border:1px solid var(--bd);background:linear-gradient(155deg,var(--glow),transparent 64%),var(--in);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);-webkit-mask:radial-gradient(circle var(--n) at calc(100% - var(--s)) 0,#0000 calc(var(--n) - 1px),#000 var(--n)) top/100% 51% no-repeat,radial-gradient(circle var(--n) at calc(100% - var(--s)) 100%,#0000 calc(var(--n) - 1px),#000 var(--n)) bottom/100% 51% no-repeat;mask:radial-gradient(circle var(--n) at calc(100% - var(--s)) 0,#0000 calc(var(--n) - 1px),#000 var(--n)) top/100% 51% no-repeat,radial-gradient(circle var(--n) at calc(100% - var(--s)) 100%,#0000 calc(var(--n) - 1px),#000 var(--n)) bottom/100% 51% no-repeat}
+.rm-tk{display:grid;gap:12px;padding:18px 18px 18px 20px;min-width:0}
+.rm-lab{font:600 12.5px Inter,sans-serif;color:var(--mut)}
+.rm-code{display:flex;align-items:center;gap:6px;perspective:520px}
+.rm-sp{width:10px;height:2px;border-radius:2px;background:var(--bd);margin:0 3px;flex:none}
+.rm-ch{flex:1 1 0;min-width:0;max-width:38px;height:clamp(38px,11vw,54px);display:grid;place-items:center;border-radius:12px;border:1px solid var(--bd);font:800 clamp(18px,5.6vw,26px)/1 Manrope,Inter,sans-serif;font-variant-numeric:tabular-nums;color:var(--tx);background:linear-gradient(180deg,var(--in),transparent),var(--bg);box-shadow:0 8px 16px -10px rgba(0,0,0,.7),inset 0 -8px 14px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.1)}
+.rm-ch.r{animation:rmRoll .6s cubic-bezier(.2,.9,.25,1) backwards}
+@keyframes rmRoll{from{opacity:0;transform:translateY(-16px) rotateX(75deg)}to{opacity:1;transform:none}}
+.rm-stub{display:grid;place-items:center;border-left:2px dashed var(--bd);padding:10px 6px}
+.rm-sb{display:grid;justify-items:center;gap:7px;border:0;background:none;color:var(--mut);font:600 11.5px Inter,sans-serif;cursor:pointer;padding:6px;border-radius:14px;transition:color .15s}
+.rm-sb b{width:42px;height:42px;display:grid;place-items:center;border-radius:15px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);transition:transform .5s cubic-bezier(.3,1.3,.4,1),background .2s,border-color .2s}
+.rm-sb:hover{color:var(--tx)}.rm-sb:hover b{transform:rotate(180deg);border-color:var(--a);background:var(--in)}
+.rm-sb.cp:hover b{transform:scale(1.08)}
+
+.rm-fl{display:block;margin:0 0 7px;font:600 12.5px Inter,sans-serif;color:var(--mut)}
+.rm-inp{display:flex;align-items:center;gap:11px;height:52px;padding:0 10px 0 15px;border-radius:16px;border:1px solid var(--bd);background:var(--in);color:var(--mut);transition:border-color .15s,box-shadow .2s,background .2s}
+.rm-inp:focus-within{border-color:var(--a);box-shadow:0 0 0 4px var(--glow);color:var(--a)}
+#px .rm-inp input{flex:1;min-width:0;width:auto;height:100%;padding:0;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;outline:0;color:var(--tx);font:600 15px Inter,sans-serif;letter-spacing:0}
+#px .rm-inp input::placeholder{color:var(--mut);opacity:.7;font-weight:500}
+#px .rm-inp input.rm-ci{font:800 17px Manrope,Inter,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+#px .rm-inp input.rm-ci::placeholder{letter-spacing:.2em;text-transform:none}
+.rm-eye{width:34px;height:34px;flex:none;display:grid;place-items:center;border:0;border-radius:11px;background:none;color:var(--mut);cursor:pointer;transition:background .15s,color .15s}
+.rm-eye:hover{background:var(--bd);color:var(--tx)}
+.rm-meter{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:11px}
+.rm-meter i{height:4px;border-radius:9px;background:var(--bd);transition:background .3s}
+.rm-meter[data-s="1"] i:nth-child(-n+1){background:#e5484d}
+.rm-meter[data-s="2"] i:nth-child(-n+2){background:var(--warn)}
+.rm-meter[data-s="3"] i:nth-child(-n+3){background:#8ccf3f}
+.rm-meter[data-s="4"] i{background:var(--ok)}
+.rm-mt{min-height:18px;margin-top:7px;font:600 12px Inter,sans-serif;color:var(--mut)}
+
+.rm-cta,.rm-sec{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 22px;border-radius:17px;font:800 15px Manrope,Inter,sans-serif;letter-spacing:-.015em;cursor:pointer;transition:transform .15s,box-shadow .25s,filter .2s,background .2s}
+.rm-cta{width:100%;border:0;color:#fff;background:linear-gradient(135deg,var(--a) 0%,#8b5cf6 48%,var(--b) 125%);box-shadow:0 18px 38px -12px var(--glow),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -12px 22px rgba(0,0,0,.14)}
+.rm-cta:before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.rm-cta:hover:before{transform:translateX(130%)}
+.rm-cta:hover{transform:translateY(-1px);filter:saturate(1.12);box-shadow:0 24px 46px -12px var(--glow),inset 0 1px 0 rgba(255,255,255,.5),inset 0 -12px 22px rgba(0,0,0,.14)}
+.rm-cta:active,.rm-sec:active{transform:translateY(1px) scale(.985)}
+.rm-sec{border:1px solid var(--bd);background:var(--in);color:var(--tx)}
+.rm-sec:hover{border-color:var(--a);background:var(--glow)}
+.rm-hint{margin:0;color:var(--mut);font-size:12.5px;line-height:1.6;max-width:60ch}
+.rm-msg{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:15px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font-size:13px;line-height:1.5}
+.rm-msg svg{margin-top:1px;color:var(--a)}
+.rm-msg.bad{border-color:rgba(229,72,77,.45);background:rgba(229,72,77,.1)}.rm-msg.bad svg{color:#e5484d}
+.rm-foot{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--mut);font:600 12px Inter,sans-serif}.rm-foot svg{color:var(--ok)}
+
+.rm-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rm-pill{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--in);font:700 12.5px Inter,sans-serif}
+.rm-pill .d{position:relative;width:9px;height:9px;border-radius:50%;background:#e5484d;flex:none}
+.rm-pill.ok{border-color:rgba(18,167,122,.4);background:rgba(18,167,122,.1)}.rm-pill.ok .d{background:var(--ok)}
+.rm-pill.ok .d:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--ok);animation:rmPing 2s ease-out infinite}
+@keyframes rmPing{0%{transform:scale(.5);opacity:.8}100%{transform:scale(1.7);opacity:0}}
+.rm-pill.wait .d{background:var(--warn);animation:pxb 1s ease-in-out infinite}
+.rm-leave{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:12px;border:1px solid var(--bd);background:transparent;color:var(--mut);font:700 12.5px Manrope,Inter,sans-serif;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.rm-leave:hover{color:#e5484d;border-color:rgba(229,72,77,.5);background:rgba(229,72,77,.08)}
+.rm-row{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:17px;border:1px solid var(--bd);background:var(--in);color:var(--mut)}
+.rm-rt{flex:1;min-width:0;display:grid;gap:2px}.rm-rt span{font:600 11.5px Inter,sans-serif}
+.rm-rt b{color:var(--tx);font:700 15px/1.3 Manrope,Inter,sans-serif;letter-spacing:.06em;overflow-wrap:anywhere}
+.rm-inv{display:grid;gap:12px}
+.rm-invb{display:flex;gap:10px}.rm-invb .rm-sec{flex:none}
+.rm-sh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rm-sh b{font:800 14.5px Manrope,Inter,sans-serif;letter-spacing:-.02em}
+.rm-sh span{min-width:26px;height:24px;padding:0 9px;display:grid;place-items:center;border-radius:99px;border:1px solid var(--bd);background:var(--in);color:var(--mut);font:700 11.5px Inter,sans-serif}
+.rm-ppl{display:grid;gap:10px}
+.rm-pers{display:flex;align-items:center;gap:13px;padding:10px 14px 10px 10px;border-radius:17px;border:1px solid var(--bd);background:var(--in)}
+.rm-av{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:13px;background:var(--bg);border:1px solid var(--bd);color:var(--tx)}
+.rm-av.you{border:0;color:#fff;background:linear-gradient(145deg,var(--a),var(--b));box-shadow:0 8px 20px -6px var(--glow),inset 0 1px 0 rgba(255,255,255,.4)}
+.rm-pn{flex:1;min-width:0;display:grid;gap:1px}.rm-pn b{font:700 14px Manrope,Inter,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rm-pn span{color:var(--mut);font-size:12px}
+.rm-pers em{font:700 11.5px Inter,sans-serif;font-style:normal;padding:4px 10px;border-radius:99px;background:var(--glow);color:var(--tx)}
+.rm-on{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(18,167,122,.18)}
+.rm-empty{padding:16px;border-radius:17px;border:1.5px dashed var(--bd);color:var(--mut);font-size:12.5px;line-height:1.6;text-align:center}
+.rm-note{padding:12px 14px;border-radius:15px;border:1px solid var(--bd);background:var(--in);color:var(--mut);font-size:12.5px;line-height:1.55}
+#px .px-adv{border:1px solid var(--bd);border-radius:17px;background:var(--in);padding:0 15px}
+#px .px-adv summary{padding:13px 0;font:600 12.5px Inter,sans-serif;list-style-position:inside}
+#px .px-adv[open]{padding-bottom:14px}
+#px .px-f{border-radius:17px;padding:12px 14px;background:var(--in);border:1px solid var(--bd)}
+#px .px-f .nm{font:700 13.5px Manrope,Inter,sans-serif}
+#px .px-f .btn,#px .mb .btn{border-radius:11px;font-weight:700}
+#px .px-bar{height:6px}
+@media(max-width:480px){#px{padding:10px}.rm{padding:18px 16px 20px;gap:16px}.rm-ticket{--s:78px}.rm-tk{padding:16px 12px 16px 16px}.rm-code{gap:4px}.rm-sp{width:6px;margin:0 1px}.rm-ttl b{font-size:18px}.rm-invb{flex-direction:column}.rm-invb .rm-sec{width:100%}}
+@media(prefers-reduced-motion:reduce){#px *,#px *:before,#px *:after{animation:none!important;transition:none!important}}
+
 /* ===== overflow fixes: dialogs and scanner must never grow wider than the screen ===== */
 #pvw .box,#mo .box,#px .box{grid-template-columns:minmax(0,1fr);max-width:100%;box-sizing:border-box}
 #pvw .box>*,#mo .box>*,#px .box>*{min-width:0;max-width:100%}
@@ -1212,6 +1323,7 @@ const rnd=k=>{const a=new Uint32Array(k);crypto.getRandomValues(a);return[...a].
 const plat=(()=>{const u=navigator.userAgent||'';return/Android/i.test(u)?'Android':/iPhone|iPad|iPod/i.test(u)?'iPhone/iPad':/Windows/i.test(u)?'Windows':/Mac/i.test(u)?'Mac':/Linux/i.test(u)?'Linux':'Device'})();
 const me={u:rnd(6),n:plat+' · '+rnd(3)};
 let peer=null,role='',conns=[],others=[],code='',draft='',state='off',pending=null,msg='',rx=[],tx=[],chain=Promise.resolve(),seen=0,libP=null,timer=null,gen=0,n=0,rn=0,diag='',tries=0,LOG=[],att=0,want='',net=null,fbL=null,fbHello=0,fbTimer=0,fbSpd=0,fbT=0,fbR=0,fbX=0,lastCnt=null,lt=null,t0=Date.now();
+let rkey='',rpw='',rmode='',tab='create',pw1='',pw2='',ncode='',roll=0,msgBad=0,fails=[];
 const plog=m=>{LOG.push(((Date.now()-t0)/1000).toFixed(1)+'s '+String(m).slice(0,160));if(LOG.length>40)LOG.shift();clearTimeout(lt);lt=setTimeout(()=>{try{draw()}catch(e){}},200)};
 const getTurn=()=>{try{return JSON.parse(localStorage.getItem('pfturn')||'{}')}catch(e){return{}}};
 const saveTurn=()=>{const g=i=>($('#'+i)||{}).value;if(g('px_tu')===undefined)return;try{localStorage.setItem('pfturn',JSON.stringify({url:g('px_tu').trim(),user:g('px_tn').trim(),pass:g('px_tp').trim(),app:g('px_ta').trim(),key:g('px_tk').trim()}))}catch(e){}};
@@ -1276,8 +1388,8 @@ Broker.prototype.pkt=function(t,body){const b=this,ty=t>>4;
 Broker.prototype.sub=function(topic){const b=this;if(!b.ok||!b.ws||b.ws.readyState!==1)return;const pid=(b.net.pid++&65535)||1,v=[pid>>8,pid&255,...str2(topic),0];try{b.ws.send(new Uint8Array([0x82,...vlen(v.length),...v]))}catch(e){}};
 Broker.prototype.pub=function(topic,payload){const b=this;if(!b.ok||!b.ws||b.ws.readyState!==1)return false;const tb=str2(topic),rem=tb.length+payload.length,h=[0x30,...vlen(rem)],p=new Uint8Array(h.length+rem);p.set(h);p.set(tb,h.length);p.set(payload,h.length+tb.length);try{b.ws.send(p);b.net.txB+=p.length;return true}catch(e){return false}};
 Broker.prototype.close=function(){const b=this;b.stop=1;clearTimeout(b.ct);clearTimeout(b.rt);clearInterval(b.pi);const w=b.ws;b.ws=null;b.ok=0;try{w&&w.close()}catch(e){}};
-function Net(code,u,onmsg,log,onup){const n=this;n.u=u;n.onmsg=onmsg;n.log=log||(()=>{});n.onupCb=onup||(()=>{});n.subs=[];n.pid=1;n.txB=0;n.rxB=0;n.cid=hex(crypto.getRandomValues(new Uint8Array(5)));
- const kk=pbkdf2(enc(code),enc('pixelforge-fb-v1'),3000,2);n.ke=kk.slice(0,32);n.km=kk.slice(32);
+function Net(code,u,onmsg,log,onup,secret){const n=this;n.u=u;n.onmsg=onmsg;n.log=log||(()=>{});n.onupCb=onup||(()=>{});n.subs=[];n.pid=1;n.txB=0;n.rxB=0;n.cid=hex(crypto.getRandomValues(new Uint8Array(5)));
+ const kk=pbkdf2(enc(secret||code),enc('pixelforge-fb-v1'),3000,2);n.ke=kk.slice(0,32);n.km=kk.slice(32);
  n.base='pfg1/'+hex(sha256(enc('topic:'+code))).slice(0,20);n.th=n.base+'/h';n.tg=u2=>n.base+'/g/'+u2;n.bs=URLS.map((url,i)=>new Broker(url,i,n))}
 Net.prototype.want=function(t){this.subs.push(t);this.bs.forEach(b=>b.sub(t))};
 Net.prototype.up=function(i){this.onupCb(i)};
@@ -1319,39 +1431,62 @@ Lnk.prototype.tick=function(){const l=this;if(l.closed)return;const now=Date.now
 Lnk.prototype.close=function(){if(this.closed)return;this.closed=1;clearInterval(this.tm);for(const i of this.ready())try{this.net.pub(i,this.dest,3,new Uint8Array(1))}catch(e){}this.emit('close')};
 return{Net,Lnk,sha256,hmac,pbkdf2,chacha,URLS}})();
 
+/* ===== Rooms: password-derived key, invite links, handshake ===== */
+const enc=s=>new TextEncoder().encode(s),hex=b=>[...b].map(v=>v.toString(16).padStart(2,'0')).join(''),rbytes=k=>crypto.getRandomValues(new Uint8Array(k)),tick=()=>new Promise(r=>setTimeout(r,30));
+const ITER=50000;
+/* the room key is made from code + password, so the password itself never travels; WebCrypto is used when present, the built-in PBKDF2 otherwise (same result) */
+async function derive(pw,c){const salt=enc('pixelforge-room-v2|'+c),pb=enc(pw);let out=null;
+ try{if(window.crypto&&crypto.subtle){const k=await crypto.subtle.importKey('raw',pb,'PBKDF2',false,['deriveBits']);out=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:ITER},k,256))}}catch(e){out=null}
+ if(!out){await tick();out=FB.pbkdf2(pb,salt,ITER,1)}
+ return hex(out.subarray(0,16))}
+const proof=(k,a,b,c)=>hex(FB.hmac(enc(rkey),enc(k+'|'+a+'|'+b+'|'+c)));
+const same=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0};
+const inviteLink=()=>location.href.split('#')[0]+'#join='+code+'.'+rkey;
+const parseInvite=t=>{const m=/(?:^|[#?&\/])join=([A-Za-z0-9]{6,12})\.([0-9a-f]{32})/i.exec(String(t||''));return m?{code:m[1].toUpperCase(),key:m[2].toLowerCase()}:null};
+const persist=()=>{try{sessionStorage.setItem('pfroom',JSON.stringify({c:code,k:rkey,p:rpw}))}catch(e){}},forget=()=>{try{sessionStorage.removeItem('pfroom')}catch(e){}};
+function leaveRoom(m){want='';rkey='';rpw='';rmode='';forget();reset(m||'')}
+async function copyText(t,ok){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';document.body.append(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}toast(ok)}
+const blurNow=()=>{const a=document.activeElement;if(a&&a.blur)a.blur()};
 function lib(){if(window.Peer)return Promise.resolve();if(libP)return libP;
  const U=['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
  libP=(async()=>{for(const u of U){try{await new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s)});if(window.Peer)return}catch(e){}}libP=null;throw new Error('lib')})();return libP}
 function fbStop(){clearInterval(fbSpd);fbSpd=0;clearInterval(fbHello);clearTimeout(fbTimer);fbHello=fbTimer=0;fbL=null;if(net){try{net.close()}catch(e){}net=null}}
-function reset(m){clearTimeout(timer);gen++;const cs=conns,p=peer;conns=[];peer=null;role='';others=[];state='off';msg=m||'';
+function reset(m){clearTimeout(timer);gen++;const cs=conns,p=peer;conns=[];peer=null;role='';others=[];state='off';msg=m||'';msgBad=m?1:0;
  cs.forEach(c=>{try{c.close()}catch(e){}});fbStop();try{p&&p.destroy()}catch(e){}tx.forEach(o=>{if(o.st=='queue'||o.st=='send'||o.st=='wait')o.st=o.acks?'done':'fail'});badge();draw()}
 const mk=id=>new Promise(res=>{let ok=0;const o={config:{iceServers:iceCache||[{urls:'stun:stun.l.google.com:19302'}],sdpSemantics:'unified-plan',iceCandidatePoolSize:4},debug:0},p=id?new Peer(id,o):new Peer(o);p.on('open',i=>{ok=1;plog('Signalling server OK, id '+String(i).slice(-8));res(p)});p.on('error',e=>{plog('Peer error: '+((e&&e.type)||e)+' '+((e&&e.message)||'').slice(0,80));if(!ok){ok=1;try{p.destroy()}catch(_){}res(e.type==='unavailable-id'?null:{err:e})}})});
 async function connect(raw,keep){
- if(!keep)tries=0;saveTurn();const c=norm(raw);if(c.length<6){msg='Enter a code with at least 6 letters or digits. It must be identical on every device.';draw();return}
- reset();const my=gen;code=c;want=c;draft=c;diag='';LOG=[];lastCnt=null;t0=Date.now();plog('Start · '+plat+' · '+(navigator.onLine?'online':'OFFLINE')+' · '+location.protocol);state='wait';msg='Connecting to the network…';draw();
+ if(!keep)tries=0;saveTurn();let c=norm(raw);
+ if(c.length<6){msg='Enter the full room code.';msgBad=1;draw();return}
+ if(!rkey&&!rpw){msg='Enter the room password.';msgBad=1;draw();return}
+ reset();const my=gen;code=c;want=c;draft=c;diag='';LOG=[];lastCnt=null;t0=Date.now();plog('Start · '+plat+' · '+(navigator.onLine?'online':'OFFLINE')+' · '+location.protocol);state='wait';msg=rkey?'Connecting to the network…':'Securing the room…';msgBad=0;draw();
+ if(!rkey){await tick();try{rkey=await derive(rpw,c)}catch(e){if(my==gen)leaveRoom('This browser could not secure the room. Try again.');return}if(my!=gen)return;msg='Connecting to the network…';draw()}
  try{await lib()}catch(e){if(my==gen)reset('Could not load the connection library. Check your internet connection and try again.');return}
  await loadIce();if(my!=gen)return;
- const r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}
+ let r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}
+ if(!r&&rmode=='create'){for(let i=0;i<4&&!r;i++){c=rnd(8);code=want=ncode=c;rkey=await derive(rpw,c);if(my!=gen)return;r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}}
+  if(!r)return leaveRoom('Could not open a room right now. Please try again.')}
  if(r&&r.err)return reset('Could not reach the connection service ('+(r.err.type||'error')+'). Check your internet connection and try again.');
- if(r){peer=r;role='host';refresh();
+ if(r&&rmode=='join'){try{r.destroy()}catch(e){}return leaveRoom('No open room matches that code. Check the code, and make sure the host still has the room open.')}
+ rmode='auto';
+ if(r){peer=r;role='host';persist();refresh();
   peer.on('connection',cn=>{if(conns.length>=MAXG){cn.on('open',()=>{try{cn.close()}catch(e){}});return}attach(cn)});
   peer.on('disconnected',()=>{plog('Signalling server disconnected, retrying');try{peer&&peer.reconnect()}catch(e){}});
   peer.on('error',e=>sigErr(e,my))}
- else{plog('Code is taken, joining as guest');const g=await mk();if(my!=gen){g&&g.destroy&&g.destroy();return}
+ else{plog('Room is open, joining as a guest');const g=await mk();if(my!=gen){g&&g.destroy&&g.destroy();return}
   if(g&&g.err)return reset('Could not reach the connection service ('+(g.err.type||'error')+'). Check your internet connection and try again.');
-  peer=g;role='guest';msg='Joining the other devices…';draw();
+  peer=g;role='guest';persist();msg='Joining the room…';msgBad=0;draw();
   peer.on('error',e=>sigErr(e,my));
   peer.on('disconnected',()=>{plog('Signalling lost, reconnecting');try{peer&&peer.reconnect()}catch(e){}});
   att=0;dial(my,c)}}
 /* ---- fallback: when no direct link can be made, talk through encrypted public relay servers ---- */
 function fbStart(my){if(net||my!=gen||!code)return;plog('Direct link not working, starting the encrypted fallback server link');
  if(code.length<8)plog('Tip: use “Make a code” (8+ random characters) for better privacy on the fallback server');
- try{net=new FB.Net(code,me.u,(k,from,body,bk)=>fbMsg(my,k,from,body,bk),plog)}catch(e){plog('Fallback failed to start: '+e);net=null;return}
+ try{net=new FB.Net(code,me.u,(k,from,body,bk)=>fbMsg(my,k,from,body,bk),plog,null,rkey)}catch(e){plog('Fallback failed to start: '+e);net=null;return}
  fbT=Date.now();fbR=fbX=0;fbSpd=setInterval(()=>{if(!net)return;const e=document.getElementById('px_spd'),now=Date.now(),dt=(now-fbT)/1000||1,rx=(net.rxB-fbR)/dt,tx=(net.txB-fbX)/dt;fbT=now;fbR=net.rxB;fbX=net.txB;if(e)e.textContent='Speed: down '+(rx/1024).toFixed(0)+' KB/s · up '+(tx/1024).toFixed(0)+' KB/s · '+net.okCount()+' of '+net.bs.length+' server links up'},1000);
  if(role=='host')net.want(net.th);
  else{net.want(net.tg(me.u));
   fbHello=setInterval(()=>{if(my!=gen||fbL||up().length){clearInterval(fbHello);return}const k=net&&net.pubAll(net.th,1,new Uint8Array(1));plog('Fallback hello sent to '+k+' server(s)')},1500);
-  fbTimer=setTimeout(()=>{if(my==gen&&!up().length)reset('Could not connect directly or through the fallback servers. Check that both devices have working internet, use the exact same code, and keep PixelForge open on the first device.')},45000)}}
+  fbTimer=setTimeout(()=>{if(my==gen&&!up().length)reset('Could not connect directly or through the fallback servers. Check that both devices have working internet, that the room code and password are right, and that the host still has PixelForge open.')},45000)}}
 function fbMsg(my,k,from,body,bk){if(my!=gen||!net)return;
  if(role=='host'){let l=null;for(const c of conns)if(c.fb&&c.peer===from)l=c;
   if(k==1){if(l){if(!l.bks.includes(bk))l.bks.push(bk);net.pub(bk,l.dest,4,new Uint8Array(1));return}
@@ -1363,7 +1498,7 @@ function fbMsg(my,k,from,body,bk){if(my!=gen||!net)return;
 /* guest: every attempt has its own timeout; a failed or silent attempt is dropped and retried with a fresh link (up to 6 times) */
 function drop(cn){const i=conns.indexOf(cn);if(i>=0)conns.splice(i,1);if(cn.cx){clearTimeout(cn.cx.at);clearInterval(cn.cx.ka)}try{cn.close()}catch(e){}}
 function dial(my,c){if(my!=gen||!peer||up().length||fbL)return;if(att>=1)fbStart(my);
- if(att>=6){if(net)return;reset('Could not connect after 6 tries. Make sure the code is identical on every device and the first device still has PixelForge open. If the devices are on different networks, add a free relay under “Phone will not connect?” below on every device.');return}
+ if(att>=6){if(net)return;reset('Could not connect after 6 tries. Make sure the room code is right and the host still has PixelForge open. If the devices are on different networks, add a free relay under “Phone will not connect?” below on every device.');return}
  att++;plog('Dial attempt '+att+'/6');let cn;
  try{cn=peer.connect(pid(c),{reliable:true,serialization:'raw'})}catch(e){plog('connect() threw: '+e);setTimeout(()=>dial(my,c),1500);return}
  attach(cn);cn.cx.dial=1;cn.cx.at=setTimeout(()=>{if(my==gen&&conns.includes(cn)&&!cn.cx.up){plog('Attempt '+att+' timed out');drop(cn);setTimeout(()=>dial(my,c),500+Math.random()*700)}},att==1?8000:15000)}
@@ -1371,7 +1506,7 @@ function sigErr(e,my){if(my!=gen)return;const t=(e&&e.type)||'error';diag='Signa
  if(['network','socket-error','socket-closed','server-error','disconnected'].includes(t)){try{peer&&peer.disconnected&&peer.reconnect()}catch(_){}draw();return}
  if(up().length)return;
  if(t=='peer-unavailable'&&tries<6){tries++;const c=code;reset('Looking for the other device… (try '+tries+' of 6)');const g=gen;setTimeout(()=>{if(gen===g)connect(c,1)},1200+tries*700);return}
- reset(t=='peer-unavailable'?'The first device is not reachable. Make sure it pressed Connect with the same code and still has PixelForge open, then press Connect again.':'Connection problem ('+t+'). Press Connect to retry.')}
+ reset(t=='peer-unavailable'?'The room is not reachable. Make sure the host still has the room open, then try again.':'Connection problem ('+t+'). Try again.')}
 /* shows how the direct link is progressing, so a failure has a visible reason */
 function watch(cn){const iv=setInterval(()=>{if(!conns.includes(cn)||cn.cx.up){clearInterval(iv);return}const pc=cn.peerConnection;if(!pc)return;hook(cn);
  const st=pc.iceConnectionState;diag='Link: '+st+(pc.connectionState?' · '+pc.connectionState:'');
@@ -1388,20 +1523,39 @@ function hook(cn){if(cn.cx.hk)return;const pc=cn.peerConnection;if(!pc)return;cn
 function attach(cn){cn.cx={cur:null,p:null,up:0,last:Date.now()};conns.push(cn);hook(cn);
  if(role=='host'&&!cn.fb){const g0=gen;setTimeout(()=>{if(g0==gen&&conns.includes(cn)&&!cn.cx.up)fbStart(g0)},5000)}
  if(role=='host'&&!cn.fb)cn.cx.at=setTimeout(()=>{if(conns.includes(cn)&&!cn.cx.up){plog('Guest link never opened, dropping it');drop(cn);refresh()}},25000);
- cn.on('open',()=>{plog('Data channel OPEN');if(!conns.includes(cn))return;clearTimeout(timer);clearTimeout(cn.cx.at);cn.cx.up=1;cn.cx.last=Date.now();if(!cn.fb)att=0;if(!cn.fb&&role=='guest'&&net){plog('Direct link opened, closing fallback');const l=fbL;fbStop();if(l)drop(l)}clearTimeout(fbTimer);
-  cn.cx.kt=Date.now();cn.cx.ka=setInterval(()=>{if(!conns.includes(cn)||!cn.cx.up){clearInterval(cn.cx.ka);return}const now=Date.now(),gap=now-cn.cx.kt;cn.cx.kt=now;if(gap>15000)cn.cx.last=now;if(!document.hidden&&now-cn.cx.last>75000){plog('Link went silent, closing it');try{cn.close()}catch(e){}gone(cn);return}try{cn.send(JSON.stringify({t:'ping'}))}catch(e){}},5000);cn.send(JSON.stringify({t:'hi',u:me.u,n:me.n}));refresh();toast(cn.fb?'Device connected (via fallback server)':'Device connected')});
+ cn.on('open',()=>{plog('Data channel OPEN');if(!conns.includes(cn))return;clearTimeout(timer);clearTimeout(cn.cx.at);cn.cx.last=Date.now();
+  cn.cx.at=setTimeout(()=>{if(conns.includes(cn)&&!cn.cx.up){plog('Room check timed out');authFail(cn,'timeout')}},12000);
+  if(role=='host'){cn.cx.hn=hex(rbytes(16));try{cn.send(JSON.stringify({t:'chal',n:cn.cx.hn}))}catch(e){}}});
  cn.on('data',d=>onData(cn,d));cn.on('close',()=>gone(cn));cn.on('error',e=>{diag='Link error: '+((e&&e.type)||'error');plog(diag+' '+((e&&e.message)||'').slice(0,80));gone(cn)});watch(cn)}
+/* ---- room check: nothing is shown, sent or accepted until both sides prove they hold the room key ---- */
+function welcome(cn){clearTimeout(cn.cx.at);cn.cx.up=1;cn.cx.last=Date.now();if(!cn.fb)att=0;if(!cn.fb&&role=='guest'&&net){plog('Direct link opened, closing fallback');const l=fbL;fbStop();if(l)drop(l)}clearTimeout(fbTimer);clearTimeout(timer);
+ cn.cx.kt=Date.now();cn.cx.ka=setInterval(()=>{if(!conns.includes(cn)||!cn.cx.up){clearInterval(cn.cx.ka);return}const now=Date.now(),gap=now-cn.cx.kt;cn.cx.kt=now;if(gap>15000)cn.cx.last=now;if(!document.hidden&&now-cn.cx.last>75000){plog('Link went silent, closing it');try{cn.close()}catch(e){}gone(cn);return}try{cn.send(JSON.stringify({t:'ping'}))}catch(e){}},5000);
+ try{cn.send(JSON.stringify({t:'hi',u:me.u,n:me.n}))}catch(e){}refresh();toast(cn.fb?'Device connected (via fallback server)':'Device connected')}
+function authFail(cn,why){
+ if(role=='host'){drop(cn);refresh();return}
+ const inv=!rpw;
+ if(why=='deny'||why=='host'){leaveRoom(why=='deny'?(inv?'This invite link does not match the room any more. Ask for a new one.':'Wrong password. Check it and try again.'):'Could not verify this room. The code may belong to a different room.');tab='join';return}
+ reset('The room did not answer. Make sure the host still has PixelForge open and is on the latest version, then try again.')}
+function authMsg(cn,m){const x=cn.cx;
+ if(role=='guest'&&m.t=='chal'&&typeof m.n=='string'&&/^[0-9a-f]{32}$/.test(m.n)&&!x.gn){x.hn=m.n;x.gn=hex(rbytes(16));try{cn.send(JSON.stringify({t:'auth',g:x.gn,u:me.u,p:proof('a',x.hn,x.gn,me.u)}))}catch(e){}}
+ else if(role=='host'&&m.t=='auth'&&x.hn&&!x.done){x.done=1;const g=String(m.g||''),u=String(m.u||'').slice(0,12),now=Date.now();fails=fails.filter(t=>now-t<60000);
+  const locked=fails.length>=5;
+  if(!locked&&/^[0-9a-f]{32}$/.test(g)&&same(String(m.p||''),proof('a',x.hn,g,u))){try{cn.send(JSON.stringify({t:'ok',p:proof('h',g,x.hn,'')}))}catch(e){}welcome(cn)}
+  else{fails.push(now);plog(locked?'Too many wrong passwords, refusing for a minute':'A device tried a wrong password');setTimeout(()=>{try{cn.send(JSON.stringify({t:'deny'}))}catch(e){}setTimeout(()=>{drop(cn);refresh()},300)},locked?2500:700)}}
+ else if(role=='guest'&&m.t=='ok'&&x.gn&&!x.done){x.done=1;if(typeof m.p=='string'&&same(m.p,proof('h',x.gn,x.hn,'')))welcome(cn);else authFail(cn,'host')}
+ else if(role=='guest'&&m.t=='deny')authFail(cn,'deny')}
 function refresh(){const was=state,k=up().length;
- if(role=='host'){state=k?'on':'wait';msg=k?'':'Waiting for other devices to enter the same code…';peersOut()}
+ if(role=='host'){state=k?'on':'wait';msg='';peersOut()}
  else if(role=='guest'){state=k?'on':'wait';if(k)msg=''}
  badge();draw();if(state=='on'&&pending)flush()}
 function peersOut(){const list=[me,...up().map(c=>c.cx.p).filter(Boolean)];up().forEach(c=>{try{c.send(JSON.stringify({t:'peers',list}))}catch(e){}})}
 function gone(cn){plog('Link closed');const i=conns.indexOf(cn);if(i<0)return;conns.splice(i,1);clearTimeout(cn.cx.at);clearInterval(cn.cx.ka);
  if(role=='host'){const p=cn.cx.p;refresh();if(p&&!up().some(c=>c.cx.p&&c.cx.p.u===p.u))toast(p.n+' disconnected');return}
- if(!cn.cx.up){if(cn.cx.dial){const g=gen,c=code;setTimeout(()=>dial(g,c),900+Math.random()*900)}else reset('Could not connect. Check the code on every device and try again.');return}
- const c=code;reset('The first device left. Reconnecting…');const g=gen;setTimeout(()=>{if(gen===g)connect(c)},600+Math.random()*1600)}
+ if(!cn.cx.up){if(cn.cx.dial){const g=gen,c=code;setTimeout(()=>dial(g,c),900+Math.random()*900)}else reset('Could not connect to the room. Check the code and password, then try again.');return}
+ const c=code;reset('The host left the room. Reconnecting…');msgBad=0;const g=gen;setTimeout(()=>{if(gen===g)connect(c)},600+Math.random()*1600)}
 function onData(cn,d){const x=cn.cx;x.last=Date.now();
  if(typeof d=='string'){let m;try{m=JSON.parse(d)}catch(e){return}if(!m||typeof m!='object')return;
+  if(!x.up){authMsg(cn,m);return}
   if(m.t=='hi'){x.p=who(m);if(role=='host')for(const c of conns.slice()){if(c!==cn&&c.cx&&c.cx.p&&c.cx.p.u===x.p.u){const v=c.fb?c:(cn.fb?cn:null);if(v){plog('Same device linked twice, keeping the direct link');drop(v)}}}if(conns.includes(cn))refresh();else refresh()}
   else if(m.t=='peers'&&role=='guest'&&Array.isArray(m.list)){others=m.list.map(who).filter(p=>p.u!==me.u);draw()}
   else if(m.t=='file'){const size=+m.size;if(!isFinite(size)||size<0)return;
@@ -1423,7 +1577,7 @@ function onData(cn,d){const x=cn.cx;x.last=Date.now();
  c.parts.push(u);c.got+=u.byteLength;const b=box.querySelector('[data-pb="in'+conns.indexOf(cn)+'"]');if(b)b.style.width=Math.min(100,Math.round(c.got/(c.size||1)*100))+'%'}
 /* ---- sending: every transfer goes through one queue so chunks of different files never mix ---- */
 function send(files){if(!files||!files.length)return;
- if(state!='on'){pending=(pending||[]).concat(files);msg='Connect first. '+pending.length+' file'+(pending.length>1?'s':'')+' will be sent automatically as soon as another device joins.';show();toast('Connect a device first');return}
+ if(state!='on'){pending=(pending||[]).concat(files);msg='Open or join a room first. '+pending.length+' file'+(pending.length>1?'s':'')+' will be sent automatically once another device is in the room.';msgBad=0;show();toast('Join or create a room first');return}
  toast('Sending '+(files.length>1?files.length+' files':files[0].name)+' to '+up().length+' device'+(up().length>1?'s':'')+'…');
  files.forEach(f=>{const o={id:me.u+'-'+(++n),name:f.name,size:f.blob.size,st:'queue',at:Date.now(),acks:0};tx.unshift(o);chain=chain.then(()=>sendOne(o,f)).catch(()=>{})});draw()}
 function flush(){if(pending){const p=pending;pending=null;send(p)}}
@@ -1473,28 +1627,84 @@ const ST=o=>({queue:'Queued…',send:'Sending…',wait:'Sent · waiting for conf
 function dbg(){const c=lastCnt;let hint='';
  if(c&&/failed|disconnected/.test(diag)){hint=c.relay?'A relay was reachable but the link still failed. Try the same Wi-Fi on both devices.':c.srflx?'A direct link is not possible on this network. The encrypted fallback server link is being used instead; give it up to 30 seconds. Make sure BOTH devices have PixelForge open with the same code.':'No internet route candidates were found (STUN and relay both blocked). Check this device has working internet and no VPN or Private DNS blocking.'}
  return`<div style="border:1px solid #c9cbe0;border-radius:10px;padding:8px;margin:6px 0"><div class="mt"><b>🛠 Diagnostics (screenshot this)</b></div>${c?`<div class="mt">Candidates · host ${c.host} (mDNS ${c.mdns}) · srflx ${c.srflx} · relay ${c.relay}</div>`:''}${hint?`<div class="mt" style="color:#c2410c"><b>${esc(hint)}</b></div>`:''}<pre style="white-space:pre-wrap;word-break:break-all;font-size:10.5px;line-height:1.35;margin:4px 0 0;max-height:220px;overflow:auto">${esc(LOG.join('\n'))}</pre></div>`}
-function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.tagName=='INPUT'&&box.contains(ae)){saveTurn();return}const c0=$('#px_c');if(c0)draft=c0.value;const on=state=='on',oth=role=='host'?up().map(c=>c.cx.p).filter(Boolean):others;
- let h=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3>📲 Connected devices</h3><button class="btn" id="px_x">Close</button></div>
-<div class="px-st"><span class="px-dot ${on?'ok':state=='wait'?'wait':''}"></span>${on?'Connected · code <b class="px-cd">'+esc(code)+'</b>':state=='wait'?'Connecting…':'Not connected'}</div>${msg?`<div class="note" style="margin:0">${esc(msg)}</div>`:''}${!on&&(diag||relayInfo)?`<div class="mt">${relayInfo?esc(relayInfo)+'<br>':''}${esc(diag)}</div>`:''}`;
- if(role)h+=`${on&&up().some(c=>c.fb)?'<div class="note" style="margin:0">🔁 Connected through the encrypted fallback server. A direct link was not possible on this network, so files are slower but still end-to-end encrypted with your code.<br><b id="px_spd"></b></div>':''}<div class="mt">This device: <b>${esc(me.n)}</b>${on&&oth.length?'<br>Connected with ('+oth.length+'): '+oth.map(p=>esc(p.n)).join(', '):''}</div>`;
- if(!on)h+=`<div><label>Connection code · type the same code on every device</label><input id="px_c" class="px-code" maxlength="12" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text" placeholder="e.g. K7M2QX9P" value="${esc(draft)}"></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="px_g">🎲 Make a code</button><button class="btn pri" id="px_go">🔗 ${role?'Reconnect':'Connect'}</button></div>
-<p class="note" style="margin:0">Open PixelForge on each device, enter the same code and press Connect. Up to ${MAXG+1} devices can share one code, and everything you send goes to all of them. Files travel directly between devices when the network allows it. Otherwise they go through an encrypted relay (nothing is stored; use a long random code for best privacy). Every device needs internet access to find the others.</p>
-<details class="px-adv"${getTurn().app||getTurn().url||/failed|disconnected/.test(diag)?' open':''}><summary>Phone will not connect? Add a free relay</summary><div class="note" style="margin:6px 0"><b>Easy first test:</b> put both devices on the same Wi-Fi (or turn on the phone's hotspot and join the PC to it). Some Wi-Fi networks block device-to-device links.<br><br><b>Fix for most failures:</b> sign up free at <b>metered.ca</b> (2 minutes) → Dashboard → TURN Server → create an app → copy the <b>app name</b> (the part before .metered.live) and the <b>API key</b>. Paste both below on <b>every</b> device (PC and phone), then press Connect. The log will then say “Metered relay ready” and relay will be above 0.</div><div class="r2"><div><label>Metered app name</label><input id="px_ta" placeholder="e.g. myapp" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().app||'')}"></div><div><label>API key</label><input id="px_tk" placeholder="paste key" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().key||'')}"></div></div><label>Or your own TURN server URL(s)</label><input id="px_tu" placeholder="turn:your-server:3478" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().url||'')}"><div class="r2"><div><label>Username</label><input id="px_tn" autocapitalize="none" value="${esc(getTurn().user||'')}"></div><div><label>Password</label><input id="px_tp" autocapitalize="none" value="${esc(getTurn().pass||'')}"></div></div></details>${pending?`<div class="mb"><b>${pending.length} file${pending.length>1?'s':''} waiting to be sent</b><span class="mt">${pending.map(f=>esc(f.name)).join(', ')}</span></div>`:''}`;
- else h+=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" id="px_d">⏏ Disconnect</button><span class="mt">Use “📲 Send to connected device” on any file, the ZIP or a merged PDF/PPTX. It is delivered to every connected device, and any device can send.</span></div>`;
- if(tx.length)h+=`<h3>Sent · ${tx.length}</h3>`+tx.map(o=>`<div class="px-f"><div class="nm" title="${esc(o.name)}">${esc(o.name)}</div><div class="mt">${fk(o.size)} · ${ST(o)}</div><div class="mt">Sent: ${fmtT(o.at)}</div>${o.dAt?`<div class="mt">Delivered: ${fmtT(o.dAt)}</div>`:''}${o.st=='send'?`<div class="px-bar"><i data-pb="${o.id}"></i></div>`:''}</div>`).join('');
- h+=`<h3>Received · ${rx.length}</h3>`;
+const IC={
+ lock:'<rect x="4" y="10.5" width="16" height="10" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+ eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+ eyeoff:'<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4"/><path d="M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+ copy:'<rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+ link:'<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+ share:'<path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>',
+ refresh:'<path d="M20 11a8 8 0 0 0-14-4.5L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14 4.5L20 15"/><path d="M20 20v-5h-5"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ phone:'<rect x="7" y="2.5" width="10" height="19" rx="3"/><path d="M11 18h2"/>',
+ laptop:'<rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2.5 19.5h19"/>',
+ hash:'<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>',
+ out:'<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 8l4 4-4 4"/><path d="M20 12H9"/>',
+ enter:'<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8l4 4-4 4"/><path d="M14 12H4"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/>',
+ alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+ pair:'<rect x="2.5" y="5" width="13" height="9" rx="1.8"/><path d="M1.5 17.5h15"/><rect x="17.5" y="9" width="5" height="10" rx="1.6"/>'};
+const ic=(p,s)=>`<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const tiles=(c,r)=>{const a=String(c||'').split('');return a.map((ch,i)=>(a.length==8&&i==4?'<span class="rm-sp"></span>':'')+`<span class="rm-ch${r?' r':''}"${r?' style="animation-delay:'+i*45+'ms"':''}>${esc(ch)}</span>`).join('')};
+const strength=p=>{if(!p)return 0;if(p.length<6)return 1;let k=2;if(p.length>=10)k++;if((/[a-z]/.test(p)&&/[A-Z]/.test(p)&&/\d/.test(p))||(/[^A-Za-z0-9]/.test(p)&&p.length>=8))k++;return Math.min(k,4)};
+const SL=['','Too short · use at least 6 characters','Okay','Good','Strong'];
+const isPh=n=>/Android|iPhone|iPad/i.test(n||'');
+const person=(n,you)=>`<div class="rm-pers"><div class="rm-av${you?' you':''}">${ic(isPh(n)?IC.phone:IC.laptop,19)}</div><div class="rm-pn"><b>${esc(n)}</b><span>${you?'This device':'In the room'}</span></div>${you?'<em>You</em>':'<i class="rm-on" title="Connected"></i>'}</div>`;
+function setTab(t){tab=t=='join'?'join':'create';box.querySelectorAll('.rm-forms,.rm-tabs').forEach(e=>e.dataset.t=tab);box.querySelectorAll('.rm-tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab==tab));const p=box.querySelector('.rm-pan.'+(tab=='join'?'j':'c'));if(p){p.classList.remove('fx');void p.offsetWidth;p.classList.add('fx')}msg='';box.querySelectorAll(':scope .rm-msg').forEach(e=>e.remove())}
+function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.tagName=='INPUT'&&box.contains(ae)){saveTurn();return}
+ const gv=i=>{const e=document.getElementById(i);return e?e.value:null};let t;
+ if((t=gv('px_c'))!==null)draft=t;if((t=gv('px_p1'))!==null)pw1=t;if((t=gv('px_p2'))!==null)pw2=t;
+ if(!ncode)ncode=rnd(8);
+ const on=state=='on',oth=role=='host'?up().map(c=>c.cx.p).filter(Boolean):others,live=!!(role||want||state=='wait');
+ const note=msg?`<div class="rm-msg${msgBad?' bad':''}" role="${msgBad?'alert':'status'}">${ic(msgBad?IC.alert:IC.info,17)}<span>${esc(msg)}</span></div>`:'';
+ const adv=`<details class="px-adv"${getTurn().app||getTurn().url||/failed|disconnected/.test(diag)?' open':''}><summary>Phone will not connect? Add a free relay</summary><div class="note" style="margin:6px 0"><b>Easy first test:</b> put both devices on the same Wi-Fi (or turn on the phone's hotspot and join the PC to it). Some Wi-Fi networks block device-to-device links.<br><br><b>Fix for most failures:</b> sign up free at <b>metered.ca</b> (2 minutes) → Dashboard → TURN Server → create an app → copy the <b>app name</b> (the part before .metered.live) and the <b>API key</b>. Paste both below on <b>every</b> device (PC and phone), then join the room again. The log will then say “Metered relay ready” and relay will be above 0.</div><div class="r2"><div><label>Metered app name</label><input id="px_ta" placeholder="e.g. myapp" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().app||'')}"></div><div><label>API key</label><input id="px_tk" placeholder="paste key" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().key||'')}"></div></div><label>Or your own TURN server URL(s)</label><input id="px_tu" placeholder="turn:your-server:3478" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().url||'')}"><div class="r2"><div><label>Username</label><input id="px_tn" autocapitalize="none" value="${esc(getTurn().user||'')}"></div><div><label>Password</label><input id="px_tp" autocapitalize="none" value="${esc(getTurn().pass||'')}"></div></div></details>`;
+ const wait=pending?`<div class="mb"><b>${pending.length} file${pending.length>1?'s':''} waiting to be sent</b><span class="mt">${pending.map(f=>esc(f.name)).join(', ')}</span></div>`:'';
+ let h=`<div class="rm"><div class="rm-top"><div class="rm-badge">${ic(IC.pair,25)}</div><div class="rm-ttl"><b>Device rooms</b><span>${live?'Files go straight between the devices in this room':'Private, direct file transfer between your devices'}</span></div><button class="rm-x" id="px_x" aria-label="Close">${ic(IC.x,18)}</button></div>`;
+ if(!live){
+  h+=`${note}<div class="rm-forms" data-t="${tab}"><div class="rm-tabs" data-t="${tab}" role="tablist"><i></i><button type="button" role="tab" data-tab="create" aria-selected="${tab=='create'}">${ic(IC.plus,16)}Create a room</button><button type="button" role="tab" data-tab="join" aria-selected="${tab=='join'}">${ic(IC.enter,16)}Join a room</button></div>
+<div class="rm-pan c"><div class="rm-ticket"><div class="rm-tk"><span class="rm-lab">Your room code · made for you</span><div class="rm-code">${tiles(ncode,roll)}</div></div><div class="rm-stub"><button type="button" class="rm-sb" id="px_g" title="Get a different room code"><b>${ic(IC.refresh,19)}</b>New code</button></div></div>
+<div><label class="rm-fl" for="px_p1">Set a room password</label><div class="rm-inp">${ic(IC.lock,19)}<input id="px_p1" type="password" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="At least 6 characters" value="${esc(pw1)}"><button type="button" class="rm-eye" data-eye="px_p1" aria-label="Show password">${ic(IC.eye,18)}</button></div><div class="rm-meter" id="rm_m" data-s="${strength(pw1)}"><i></i><i></i><i></i><i></i></div><div class="rm-mt" id="rm_mt">${SL[strength(pw1)]}</div></div>
+<button type="button" class="rm-cta" id="px_create">${ic(IC.plus,19)}Create room</button>
+<p class="rm-hint">After creating, you get an invite link to share. People with the link join instantly. Everyone else needs the room code and this password.</p></div>
+<div class="rm-pan j"><div><label class="rm-fl" for="px_c">Room code</label><div class="rm-inp">${ic(IC.hash,19)}<input id="px_c" class="rm-ci" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text" placeholder="K7M2 QX9P" value="${esc(draft)}"></div></div>
+<div><label class="rm-fl" for="px_p2">Room password</label><div class="rm-inp">${ic(IC.lock,19)}<input id="px_p2" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ask the person who made the room" value="${esc(pw2)}"><button type="button" class="rm-eye" data-eye="px_p2" aria-label="Show password">${ic(IC.eye,18)}</button></div></div>
+<button type="button" class="rm-cta" id="px_join">${ic(IC.enter,19)}Join room</button>
+<p class="rm-hint">Got an invite link? Just open it, or paste it into the room code box. You will not need the password.</p></div></div>
+${wait}${adv}<div class="rm-foot">${ic(IC.shield,16)}Encrypted from device to device. Nothing is stored on a server.</div>`}
+ else{
+  const lab=on?(oth.length?'Connected · '+(oth.length+1)+' devices':'Connected'):role=='host'?'Room is open · waiting for others':state=='wait'?(role=='guest'?'Joining room…':'Connecting…'):'Not connected',cls=on||role=='host'?'ok':state=='wait'?'wait':'';
+  h+=`<div class="rm-bar"><div class="rm-pill ${cls}" role="status"><span class="d"></span><span>${esc(lab)}</span></div><button type="button" class="rm-leave" id="px_d">${ic(IC.out,15)}Leave room</button></div>${note}
+<div class="rm-ticket"><div class="rm-tk"><span class="rm-lab">Room code</span><div class="rm-code">${tiles(code)}</div></div><div class="rm-stub"><button type="button" class="rm-sb cp" id="px_cc" title="Copy the room code"><b>${ic(IC.copy,19)}</b>Copy code</button></div></div>
+${rpw?`<div class="rm-row">${ic(IC.lock,19)}<div class="rm-rt"><span>Room password</span><b id="rm_pw">••••••••••</b></div><button type="button" class="rm-eye" id="px_pv" aria-label="Show password">${ic(IC.eye,18)}</button><button type="button" class="rm-eye" id="px_cp" aria-label="Copy password">${ic(IC.copy,18)}</button></div>`:`<div class="rm-row">${ic(IC.link,19)}<div class="rm-rt"><span>How you joined</span><b style="letter-spacing:0">With an invite link</b></div></div>`}
+<div class="rm-inv"><div class="rm-invb"><button type="button" class="rm-cta" id="px_link">${ic(IC.link,19)}Copy invite link</button>${navigator.share?`<button type="button" class="rm-sec" id="px_share" aria-label="Share the invite link">${ic(IC.share,19)}Share</button>`:''}</div><p class="rm-hint">Anyone with this link lands straight in this room, no password needed. Every device in the room can share it, so send it only to people you trust.</p></div>
+<div class="rm-ppl"><div class="rm-sh"><b>In this room</b><span>${1+oth.length}</span></div>${person(me.n,1)}${oth.map(p=>person(p.n,0)).join('')}${on||role!='host'?'':'<div class="rm-empty">Nobody else is here yet. Send the invite link, or share the room code and password.</div>'}</div>
+${on&&up().some(c=>c.fb)?'<div class="rm-note">🔁 Connected through the encrypted fallback server. A direct link was not possible on this network, so files are slower but still end-to-end encrypted with your room key.<br><b id="px_spd"></b></div>':''}
+${!on&&role!='host'&&(diag||relayInfo)?`<div class="mt">${relayInfo?esc(relayInfo)+'<br>':''}${esc(diag)}</div>`:''}
+${!on&&role!='host'?`<button type="button" class="rm-sec" id="px_retry" style="width:100%">${ic(IC.refresh,18)}Try again</button>`:''}${!on?adv:''}${wait}`}
+ if(tx.length)h+=`<div class="rm-sh"><b>Sent</b><span>${tx.length}</span></div>`+tx.map(o=>`<div class="px-f"><div class="nm" title="${esc(o.name)}">${esc(o.name)}</div><div class="mt">${fk(o.size)} · ${ST(o)}</div><div class="mt">Sent: ${fmtT(o.at)}</div>${o.dAt?`<div class="mt">Delivered: ${fmtT(o.dAt)}</div>`:''}${o.st=='send'?`<div class="px-bar"><i data-pb="${o.id}"></i></div>`:''}</div>`).join('');
+ if(live||rx.length)h+=`<div class="rm-sh"><b>Received</b><span>${rx.length}</span></div>`;
  conns.forEach((c,i)=>{const q=c.cx.cur;if(q&&q.role!='orig')h+=`<div class="px-f"><div class="nm">${esc(q.name)}</div><div class="mt">Receiving · ${fk(q.size)}</div><div class="px-bar"><i data-pb="in${i}" style="width:${Math.min(100,Math.round(q.got/(q.size||1)*100))}%"></i></div></div>`});
  if(rx.length>1)h+=`<div style="display:flex;gap:8px;flex-wrap:wrap">${rx.filter(x=>x.card&&x.card.orig).length>1?'<button class="btn go1 pri" id="px_cqa">➕ Copy all to my PixelForge</button>':''}<button class="btn" id="px_all">⬇ Download all received</button></div>`;
  h+=rx.length?rx.map(f=>{const t=f.blob.type,im=/^image\/(jpeg|png|webp|bmp)$/.test(t),zp=/\.zip$/i.test(f.name);
   return`<div class="px-f" data-fid="${f.id}"><div class="nm" title="${esc(f.name)}">${esc(f.name)}</div><div class="mt">${fk(f.blob.size)} · from ${esc(f.from)}</div><div class="mt">Received: ${fmtT(f.at)}</div>${f.card?`<div class="mt">Settings: ${esc(sum(f.card.s))}</div>`:''}${im?`<img src="${url(f)}" alt="">`:''}
-<div class="acts"><button class="btn sv" data-dl="${f.id}">⬇ Download</button>${f.card?`<button class="btn go1" data-cq="${f.id}"${f.card.orig?'':' disabled'} title="Add this same card, with the same settings, to your own PixelForge">${f.card.orig?'➕ Copy to my PixelForge':'⏳ Original arriving…'}</button><button class="btn" data-cp="${f.id}" title="Copy the converted file to the clipboard">📋 Clipboard</button>`:`<button class="btn" data-cp="${f.id}">📋 Copy</button>`}${t=='application/pdf'?`<button class="btn" data-op="${f.id}">↗ Open</button>`:''}${zp?`<button class="btn" data-zp="${f.id}">📂 Contents</button>`:''}</div><div data-zc="${f.id}"></div></div>`}).join(''):'<p class="note" style="margin:0">Files sent from other devices appear here. You can download or copy them.</p>';
- box.innerHTML=h}
+<div class="acts"><button class="btn sv" data-dl="${f.id}">⬇ Download</button>${f.card?`<button class="btn go1" data-cq="${f.id}"${f.card.orig?'':' disabled'} title="Add this same card, with the same settings, to your own PixelForge">${f.card.orig?'➕ Copy to my PixelForge':'⏳ Original arriving…'}</button><button class="btn" data-cp="${f.id}" title="Copy the converted file to the clipboard">📋 Clipboard</button>`:`<button class="btn" data-cp="${f.id}">📋 Copy</button>`}${t=='application/pdf'?`<button class="btn" data-op="${f.id}">↗ Open</button>`:''}${zp?`<button class="btn" data-zp="${f.id}">📂 Contents</button>`:''}</div><div data-zc="${f.id}"></div></div>`}).join(''):(live?'<div class="rm-empty">Files sent from other devices appear here. You can download or copy them.</div>':'');
+ box.innerHTML=h+'</div>';roll=0}
 box.onclick=e=>{const b=e.target.closest('button');if(!b)return;const g=k=>b.dataset[k],F=id=>rx.find(x=>x.id==id);
  if(b.id=='px_x')hide();
- else if(b.id=='px_g'){draft=rnd(8);msg='Code created. Press Connect, then type this same code on every other device.';draw()}
- else if(b.id=='px_go')connect($('#px_c').value);
- else if(b.id=='px_d'){want='';reset('Disconnected.')}
+ else if(g('tab'))setTab(g('tab'));
+ else if(g('eye')){const i=document.getElementById(g('eye'));if(i){const sh=i.type=='password';i.type=sh?'text':'password';b.innerHTML=ic(sh?IC.eyeoff:IC.eye,18);b.setAttribute('aria-label',sh?'Hide password':'Show password')}}
+ else if(b.id=='px_g'){ncode=rnd(8);roll=1;draw()}
+ else if(b.id=='px_create')doCreate();
+ else if(b.id=='px_join')doJoin();
+ else if(b.id=='px_link')copyText(inviteLink(),'Invite link copied · it opens this room without a password');
+ else if(b.id=='px_share'){const u=inviteLink();if(navigator.share)navigator.share({title:'Join my PixelForge room',text:'Tap to join my PixelForge room and send files between our devices.',url:u}).catch(()=>{});else copyText(u,'Invite link copied')}
+ else if(b.id=='px_cc')copyText(code,'Room code copied');
+ else if(b.id=='px_cp')copyText(rpw,'Password copied');
+ else if(b.id=='px_pv'){const e=document.getElementById('rm_pw');if(e){const sh=e.dataset.s=='1';e.dataset.s=sh?'':'1';e.textContent=sh?'••••••••••':rpw;b.innerHTML=ic(sh?IC.eye:IC.eyeoff,18);b.setAttribute('aria-label',sh?'Show password':'Hide password')}}
+ else if(b.id=='px_retry')connect(code,1);
+ else if(b.id=='px_d'){leaveRoom('');ncode=rnd(8);pw1=pw2='';roll=1;draw();toast('You left the room')}
  else if(b.id=='px_all')rx.slice().reverse().forEach((f,i)=>setTimeout(()=>dl(f.name,f.blob),i*350));
  else if(b.id=='px_cqa'){(async()=>{for(const f of rx.filter(x=>x.card&&x.card.orig).reverse())await toQueue(f)})()}
  else if(g('dl')){const f=F(g('dl'));f&&dl(f.name,f.blob)}
@@ -1507,12 +1717,28 @@ const wake=()=>{if(!want||document.hidden)return;conns.forEach(c=>{if(c.cx)c.cx.
  if(state!='wait'&&!up().length){plog('Back online or visible, reconnecting');connect(want,1)}};
 document.addEventListener('visibilitychange',wake);addEventListener('online',wake);addEventListener('pageshow',wake);
 box.onchange=e=>{if(/^px_t/.test(e.target.id))saveTurn()};
-box.onkeydown=e=>{if(e.key=='Enter'&&e.target.id=='px_c'){e.preventDefault();const v=e.target.value;e.target.blur();connect(v)}};
+function doCreate(){blurNow();const p=(document.getElementById('px_p1')||{}).value||pw1;pw1=p;if(p.length<6){msg='Choose a password with at least 6 characters.';msgBad=1;draw();return}rkey='';rpw=p;rmode='create';pw1='';connect(ncode)}
+function joinInvite(inv){if(role&&code===inv.code&&rkey===inv.key){show();return}rkey=inv.key;rpw='';rmode='auto';tab='join';pw2='';connect(inv.code)}
+function doJoin(){blurNow();const v=(document.getElementById('px_c')||{}).value||draft,p=(document.getElementById('px_p2')||{}).value||pw2;draft=v;pw2=p;const inv=parseInvite(v);if(inv){joinInvite(inv);return}const c=norm(v);
+ if(c.length<6){msg='Enter the full room code.';msgBad=1;draw();return}if(!p){msg='Enter the room password, or open the invite link instead.';msgBad=1;draw();return}rkey='';rpw=p;rmode='join';pw2='';connect(c)}
+box.onkeydown=e=>{if(e.key!='Enter')return;const id=e.target.id;
+ if(id=='px_c'){e.preventDefault();if(parseInvite(e.target.value))doJoin();else{const p=document.getElementById('px_p2');p&&p.focus()}}
+ else if(id=='px_p1'){e.preventDefault();doCreate()}
+ else if(id=='px_p2'){e.preventDefault();doJoin()}};
+box.oninput=e=>{const t=e.target;
+ if(t.id=='px_p1'){const k=strength(t.value),m=document.getElementById('rm_m'),l=document.getElementById('rm_mt');if(m)m.dataset.s=k;if(l)l.textContent=SL[k]||''}
+ else if(t.id=='px_c'&&parseInvite(t.value))doJoin()};
 el.onclick=e=>{if(e.target===el)hide()};
 addEventListener('keydown',e=>{if(e.key=='Escape'&&isOpen())hide()});
 document.addEventListener&&document.addEventListener('visibilitychange',()=>{if(!document.hidden&&peer&&peer.disconnected&&!peer.destroyed){try{peer.reconnect()}catch(e){}}});
 addEventListener('beforeunload',()=>{try{peer&&peer.destroy()}catch(e){}});
 dev.onclick=show;badge();
+/* opening an invite link (…#join=CODE.KEY) lands straight in that room; a reload rejoins the room this tab was in */
+function bootRoom(){const inv=parseInvite(location.hash);
+ if(inv){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}joinInvite(inv);show();return}
+ try{const v=JSON.parse(sessionStorage.getItem('pfroom')||'null');if(v&&v.c&&v.k){rkey=String(v.k);rpw=String(v.p||'');rmode='auto';connect(String(v.c))}}catch(e){}}
+addEventListener('hashchange',()=>{const inv=parseInvite(location.hash);if(inv){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}joinInvite(inv);show()}});
+setTimeout(bootRoom,0);
 return{send,show,ready:()=>state=='on'}})();
 </script>
 <script>
