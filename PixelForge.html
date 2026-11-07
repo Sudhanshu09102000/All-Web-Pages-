@@ -768,18 +768,21 @@ if(f=='png'&&u.length>12){const n=need-12;if(n<4)return b;const d=new Uint8Array
 if(f=='webp'&&u[0]==82&&u[8]==87){const m=(need-8)&~1;if(m<2)return b;const o=new Uint8Array(u.length+8+m);o.set(u);o.set([74,85,78,75],u.length);new DataView(o.buffer).setUint32(u.length+4,m,true);o.fill(32,u.length+8);new DataView(o.buffer).setUint32(4,o.length-8,true);return new Blob([o],{type:'image/webp'})}
 return b}
 async function enc(it,o){const[w,h]=dims(it,o),mime=o.fmt=='png'?'image/png':o.fmt=='webp'?'image/webp':'image/jpeg',T=o.kb*1024,fixed=o.mode=='exact'&&(o.W||o.H);
-const mk=k=>draw(it,Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k)),o);let c=mk(1),b;
+const mk=k=>draw(it,Math.max(1,Math.round(w*k)),Math.max(1,Math.round(h*k)),o);let c,b;if(!T||o.fmt=='png'||fixed)c=mk(1);
 if(!T)b=await blob(c,mime,o.q/100);
 else if(o.fmt=='png'){let k=1;for(let n=0;n<16;n++){if(n)c=mk(k);b=await blob(c,mime);if(b.size<=T)break;k*=.85}}
 else{/* keep quality high: try max quality first, lower it only to a floor, then shrink pixels (exact sizes keep their pixels) */
-const FLOOR=fixed?.02:.6,find=async c=>{const t=await blob(c,mime,1);if(t.size<=T)return t;let lo=FLOOR,hi=1,best=null;for(let i=0;i<8;i++){const m=(lo+hi)/2,u=await blob(c,mime,m);if(u.size<=T){best=u;lo=m;if(u.size>=T*.97)break}else hi=m}return best};
-let k=1;for(let n=0;n<12&&!b;n++){if(n)c=mk(k);b=await find(c);if(!b){if(fixed)break;const u=await blob(c,mime,FLOOR);k*=Math.max(.5,Math.min(.95,Math.sqrt(T/u.size)*.98));if(Math.min(w,h)*k<8)break}}
+const FLOOR=fixed?.02:.6,find=async c=>{const t=await blob(c,mime,.95);if(t.size<=T)return t;let lo=FLOOR,hi=.95,best=null;for(let i=0;i<6;i++){const m=(lo+hi)/2,u=await blob(c,mime,m);if(u.size<=T){best=u;lo=m;if(u.size>=T*.94)break}else hi=m}return best};
+let k=1;if(!fixed){const pk=Math.min(1,480/Math.max(w,h)),pc=draw(it,Math.max(1,Math.round(w*pk)),Math.max(1,Math.round(h*pk)),o),pb=await blob(pc,mime,.6),bpp=pb.size/(pc.width*pc.height);k=Math.max(.05,Math.min(1,Math.sqrt(T/(bpp*.7*w*h))));c=mk(k)}
+for(let n=0;n<12&&!b;n++){if(n)c=mk(k);b=await find(c);if(!b){if(fixed)break;const u=await blob(c,mime,FLOOR);k*=Math.max(.5,Math.min(.95,Math.sqrt(T/u.size)*.98));if(Math.min(w,h)*k<8)break}}
+if(b&&!fixed&&k<1&&b.size<T*.6){const k2=Math.min(1,k*Math.sqrt(T/b.size)*.93),c2=mk(k2),b2=await find(c2);if(b2){b=b2;c=c2;k=k2}}
 if(!b)b=await blob(c,mime,.02)}
 if(o.fmt=='jpeg'||o.fmt=='png')b=await setDpi(b,o.dpi,o.fmt);
 if(T&&o.pad&&o.fmt!='pdf')b=await padTo(b,o.fmt,Math.floor(T*.99));
 return{blob:b,w:c.width,h:c.height}}
 const durl=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
-async function pdf(list){const{jsPDF}=window.jspdf;let doc;for(const it of list){const o=it.s,w=it.out.w/o.dpi,h=it.out.h/o.dpi;let pw=w,ph=h;if(o.page!='img')[pw,ph]=o.page=='a4'?[8.27,11.69]:[8.5,11];const or=pw>ph?'l':'p';if(!doc)doc=new jsPDF({unit:'in',format:[pw,ph],orientation:or,compress:true});else doc.addPage([pw,ph],or);let dw=w,dh=h;if(o.page!='img'){const k=Math.min((pw-.6)/w,(ph-.6)/h);dw=w*k;dh=h*k}doc.addImage(await durl(it.jpg),'JPEG',(pw-dw)/2,(ph-dh)/2,dw,dh)}return doc.output('blob')}
+async function pdf(list){const{jsPDF}=window.jspdf;let doc;const bufs=await Promise.all(list.map(async x=>new Uint8Array(await x.jpg.arrayBuffer())));for(let ix=0;ix<list.length;ix++){const it=list[ix],o=it.s,w=it.out.w/o.dpi,h=it.out.h/o.dpi;let pw=w,ph=h;if(o.page!='img')[pw,ph]=o.page=='a4'?[8.27,11.69]:[8.5,11];const or=pw>ph?'l':'p';if(!doc)doc=new jsPDF({unit:'in',format:[pw,ph],orientation:or,compress:true});else doc.addPage([pw,ph],or);let dw=w,dh=h;if(o.page!='img'){const k=Math.min((pw-.6)/w,(ph-.6)/h);dw=w*k;dh=h*k}doc.addImage(bufs[ix],'JPEG',(pw-dw)/2,(ph-dh)/2,dw,dh,'pg'+ix+'_'+bufs[ix].length)}return doc.output('blob')}
+async function builtOf(it){const P=it.mk=='p',k=(P?'p':'d')+it.ps.length+':'+it.ps.reduce((a,x)=>a+x.jpg.size,0);if(it._bb&&it._bk===k)return it._bb;const b=await(P?pptx:pdf)(it.ps);it._bk=k;it._bb=b;return b}
 
 /* ===== PPTX: build (images/PDF pages -> slides) and read (slides -> canvases/text) ===== */
 async function pptx(list,sz){const z=new JSZip(),n=list.length,a=list[0].out.w/list[0].out.h,CX=sz=='169'?12192000:sz=='43'?9144000:sz=='a4'?7560310:a>=1?12192000:Math.round(6858000*a),CY=sz=='169'||sz=='43'?6858000:sz=='a4'?10692130:a>=1?Math.round(12192000/a):6858000,
@@ -888,10 +891,10 @@ if(!rast(it,f)){const rt=await FW.readText(it.kind=='img'?it.src:it.file,it.kind
 if(f=='pdf'||f=='pptx'){const T=(o.kb||0)*1024,N=npg(it),mk=l=>f=='pptx'?pptx(l):pdf(l);
 let ov=f=='pptx'?14000+2500*N:1500+700*N,P,blob;
 let G=null;const src0=async function*(){if(G){yield*G;return}if(T&&N<=40){G=[];for await(const g of srcs(it)){G.push(g);yield g}}else yield*srcs(it)};
-for(let t=0;t<4;t++){const tpp=T?Math.max(400,(T-ov)/N):0;P=[];for await(const g of src0()){const p={s:o};p.out=await enc(g,{...o,fmt:'jpeg',kb:tpp/1024});p.jpg=p.out.blob;P.push(p)}
+for(let t=0;t<4;t++){const tpp=T?Math.max(400,(T-ov)/N):0;P=[];const pend=new Set();for await(const g of src0()){const p={s:o};P.push(p);const pr=enc(g,{...o,q:T?o.q:Math.min(o.q,92),fmt:'jpeg',kb:tpp/1024}).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}await Promise.all(pend);
 blob=await mk(P);if(!T||blob.size<=T)break;ov+=blob.size-T+Math.ceil(T*.01)}
 if(T&&o.pad&&blob.size<T&&P.length){const d=T-blob.size-64,l=P[P.length-1];if(d>0){const j=await padTo(l.jpg,'jpeg',l.jpg.size+d);if(j!==l.jpg){const old=l.jpg;l.jpg=j;const nb=await mk(P);if(nb.size<=T)blob=nb;else l.jpg=old}}}
-if(o.merge)return{outs,ps:P,merge:1,sz:blob.size,pv:P,mk:f=='pptx'?'p':void 0};
+if(o.merge)return{outs,ps:P,merge:1,sz:blob.size,pv:P,mk:f=='pptx'?'p':void 0,bl:blob};
 outs.push({name:b+'.'+f,blob});return{outs,pv:P}}
 const NP=npg(it),zz=f=='zip'&&new JSZip(),ff=f=='zip'?'png':f=='pptx'?'jpeg':f;
 for await(const g of srcs(it)){const p={s:o};
@@ -905,7 +908,7 @@ return{outs}}
 async function run(L){L=(L||S.items).filter(i=>!i.busy);if(!L.length)return;L.forEach(i=>{i.busy=1;i.err=0});render();
 let nd=0;
 const one=async it=>{if(!S.items.includes(it))return;
-try{const bn=oname(it)+it.s.suf,r=await conv(it);it.bn=bn;it.outs=r.outs;it.ps=r.merge?r.ps:null;it.mk=r.mk;it.psz=r.merge?r.sz:0;it.pv=r.pv;it.tx=r.tx;it.stale=0}catch(e){it.err=e.message||'Failed';console.error(e)}
+try{const bn=oname(it)+it.s.suf,r=await conv(it);it.bn=bn;it.outs=r.outs;it.ps=r.merge?r.ps:null;it.mk=r.mk;it.psz=r.merge?r.sz:0;it.pv=r.pv;if(r.bl&&r.ps){it._bb=r.bl;it._bk=(r.mk=='p'?'p':'d')+r.ps.length+':'+r.ps.reduce((a,x)=>a+x.jpg.size,0)}else it._bb=null;it.tx=r.tx;it.stale=0}catch(e){it.err=e.message||'Failed';console.error(e)}
 it.busy=0;$('#pb').style.width=((++nd)/L.length*100)+'%';renderOne(it)};
 /* plain image conversions run side by side (the browser encodes on other threads); PDF / PPTX / OCR / document jobs stay one at a time to keep memory low */
 const light=L.filter(i=>i.kind=='img'&&rast(i,i.s.fmt)),heavy=L.filter(i=>!light.includes(i)),lane=async q=>{while(q.length)await one(q.shift())};
@@ -987,7 +990,7 @@ addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#pz').classList.contains('
 
 /* ===== saving ===== */
 function dl(name,b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
-async function filesOf0(it){if(it.ps){const P=it.mk=='p';return[{name:oname(it)+it.s.suf+(P?'.pptx':'.pdf'),blob:await(P?pptx:pdf)(it.ps)}]}if(it.outs.length==1)return[{name:it.outs[0].name,blob:it.outs[0].blob}];const z=new JSZip();it.outs.forEach(o=>z.file(o.name,o.blob));return[{name:oname(it)+'.zip',blob:await z.generateAsync({type:'blob'})}]}
+async function filesOf0(it){if(it.ps){const P=it.mk=='p';return[{name:oname(it)+it.s.suf+(P?'.pptx':'.pdf'),blob:await builtOf(it)}]}if(it.outs.length==1)return[{name:it.outs[0].name,blob:it.outs[0].blob}];const z=new JSZip();it.outs.forEach(o=>z.file(o.name,o.blob));return[{name:oname(it)+'.zip',blob:await z.generateAsync({type:'blob'})}]}
 async function saveIt(it){const f=(await filesOf0(it))[0];dl(f.name,f.blob)}
 /* what a receiving device needs to rebuild this exact card: the source file + the card's settings */
 async function origOf(it){if(it.file&&!(it.kind=='img'&&it.scan))return{name:rname(it),blob:it.file};
@@ -1039,7 +1042,7 @@ $('#mod').onclick=()=>$('#mod').classList.remove('on');
 $('#go').onclick=()=>run(scope());$('#mpdf').onclick=()=>openMerge('pdf',!scope().some(i=>i.ps&&i.mk!='p'));$('#mppt').onclick=()=>openMerge('p');
 $('#clr').onclick=()=>{mark();S.items=hasSel()?S.items.filter(i=>!i.pick):[];S.merged=S.mergedP=null;render();ui();if(S.items.some(i=>i.ps))remerge().then(()=>{ui();render()})};
 async function buildZip(){const z=new JSZip(),seen={},u=n=>{const k=seen[n]=(seen[n]||0)+1;return k>1?n.replace(/(\.[^.]+)$/,'_'+k+'$1'):n};toast('Zipping…');
-for(const i of scope()){if(i.ps){const P=i.mk=='p';z.file(u(oname(i)+i.s.suf+(P?'.pptx':'.pdf')),await(P?pptx:pdf)(i.ps))}else i.outs.forEach(o=>z.file(u(o.name),o.blob))}
+for(const i of scope()){if(i.ps){const P=i.mk=='p';z.file(u(oname(i)+i.s.suf+(P?'.pptx':'.pdf')),await builtOf(i))}else i.outs.forEach(o=>z.file(u(o.name),o.blob))}
 return z.generateAsync({type:'blob'})}
 $('#zip').onclick=()=>zipDlg(0);
 $('#zipsend').onclick=()=>zipDlg(1);
@@ -1084,7 +1087,7 @@ async function zipDlg(send){if(S.items.some(i=>i.busy))return toast('Please wait
  $('#zp_d').onclick=()=>go(0);$('#zp_s').onclick=()=>go(1)}
 /* ===== merged output: build in current order, optional size limit + page size ===== */
 function rawItems(){return scope().filter(i=>['img','pdf','pptx'].includes(i.kind))}
-async function buildRaw(){const L=[],A=rawItems();let n=0;for(const it of A){n++;const o={fmt:'jpeg',q:100,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:150,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'};
+async function buildRaw(){const L=[],A=rawItems();let n=0;for(const it of A){n++;const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:150,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'};
 for await(const g of srcs(it)){toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);const out=await enc(g,o);L.push({s:{...o,page:'img'},out,jpg:out.blob})}}return L}
 async function remerge(){S.merged=S.mergedP=null;return;const M=S.items.filter(i=>i.ps&&i.mk!='p'),P=S.items.filter(i=>i.ps&&i.mk=='p');S.merged=M.length>1?await pdf(M.flatMap(i=>i.ps)):null;S.mergedP=P.length>1?await pptx(P.flatMap(i=>i.ps)):null}
 async function padMerged(L,mk,blob,T){/* grow the last page's JPEG with harmless filler so the file lands just under the limit */
@@ -1094,7 +1097,7 @@ if(out.size<=T)return{blob:pad?await padMerged(L,mk,out,T):out,ok:true};
 const bm=await Promise.all(L.map(p=>createImageBitmap(p.jpg))),ov=Math.max(0,out.size-L.reduce((a,p)=>a+p.jpg.size,0)),
 enc=(q,k)=>Promise.all(bm.map(b=>new Promise(r=>{const c=document.createElement('canvas');c.width=Math.max(1,Math.round(b.width*k));c.height=Math.max(1,Math.round(b.height*k));const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',q)}))),
 sum=a=>a.reduce((s,x)=>s+x.size,0),build=a=>mk(L.map((p,i)=>({...p,jpg:a[i]})));let k=1;
-for(let r=0;r<9;r++){let lo=.05,hi=1,best=null;for(let i=0;i<11;i++){const m=(lo+hi)/2,b=await enc(m,k);if(sum(b)+ov<=T){best=b;lo=m}else hi=m}
+for(let r=0;r<9;r++){let lo=.05,hi=1,best=null;for(let i=0;i<7;i++){const m=(lo+hi)/2,b=await enc(m,k),z=sum(b)+ov;if(z<=T){best=b;lo=m;if(z>=T*.94)break}else hi=m}
 if(best){const o=await build(best);if(o.size<=T){const L2=L.map((p,i)=>({...p,jpg:best[i]}));return{blob:pad?await padMerged(L2,mk,o,T):o,ok:true}}}k*=.8}
 return{blob:await build(await enc(.05,k)),ok:false}}
 function openMerge(kind,raw){const P=kind=='p',R=!!raw&&!P,o=$('#mo'),list=()=>scope().filter(i=>i.ps&&(i.mk=='p')==P).flatMap(i=>i.ps),cnt=()=>R?rawItems().reduce((a,i)=>a+npg(i),0):list().length;
@@ -1153,7 +1156,7 @@ const bu=b=>{const u=URL.createObjectURL(b);PV.u.push(u);return u};
 async function preview(it){if(it.busy)return;if(!done(it)||it.stale||it.err){toast('Preparing preview…');await run([it])}
 if(!done(it))return;const o=$('#pvw'),f=it.s.fmt,P=it.pv||[],sz=osz(it);let body='';
 const fig=(b,t)=>`<figure><img src="${bu(b)}" alt=""><figcaption>${t}</figcaption></figure>`;
-try{if(f=='pdf'){const pb=it.ps?await pdf(it.ps):(it.outs.find(x=>/\.pdf$/.test(x.name))||{}).blob;body=pb&&navigator.pdfViewerEnabled?`<iframe src="${bu(pb)}" title="PDF preview"></iframe>`:P.map((p,i)=>fig(p.jpg,'Page '+(i+1))).join('')}
+try{if(f=='pdf'){const pb=it.ps?await builtOf(it):(it.outs.find(x=>/\.pdf$/.test(x.name))||{}).blob;body=pb&&navigator.pdfViewerEnabled?`<iframe src="${bu(pb)}" title="PDF preview"></iframe>`:P.map((p,i)=>fig(p.jpg,'Page '+(i+1))).join('')}
 else if(f=='pptx')body=P.map((p,i)=>fig(p.jpg,'Slide '+(i+1))).join('');
 else if(['jpeg','png','webp','bmp'].includes(f))body=it.outs.map(x=>fig(x.blob,esc(x.name)+' · '+fk(x.blob.size))).join('');
 else if(f=='zip')body=`<p class="note">ZIP archive · ${fk(sz)} · one PNG per page</p>`;
