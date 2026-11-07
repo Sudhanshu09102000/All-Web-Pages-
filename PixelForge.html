@@ -873,7 +873,7 @@ S.items.splice(at++,0,it);n++;render()}
 if(n)toast('Added · tweak options per file, then press Convert')}
 async function split(it){toast('Splitting pages…');const d=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise,k=FW.pick(),at=S.items.indexOf(it),L=[];
 for(const n of RV([...Array(d.numPages)].map((_,i)=>i+1),it)){if(k&&!k.has(n))continue;const c=(it.edits&&it.edits[n])||await pcv(await d.getPage(n),LS.scale);L.push({id:++S.id,name:oname(it)+'_p'+n,size:it.size/d.numPages,kind:'img',src:c,w:c.width,h:c.height,th:thumb(c,c.width,c.height),s:{...it.s,fmt:OUT.img.includes(it.s.fmt)?it.s.fmt:'jpeg'},outs:[],ps:null})}
-S.items.splice(at,1,...L);S.merged=null;render();toast(L.length+' page cards created')}
+mark();S.items.splice(at,1,...L);S.merged=null;render();toast(L.length+' page cards created')}
 const dz=$('#drop');dz.onclick=()=>$('#file').click();dz.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();$('#file').click()}};
 $('#file').onchange=e=>{add(e.target.files);e.target.value=''};
 ['dragover','dragenter'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.add('on')}));['dragleave','drop'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.remove('on')}));
@@ -1134,20 +1134,25 @@ grid.addEventListener('keydown',e=>{const h=e.target.closest&&e.target.closest('
 const id=+h.closest('.it').dataset.id,L=S.items,i=L.findIndex(x=>x.id==id),j=i+(e.key=='ArrowUp'?-1:1);if(j<0||j>=L.length)return;mark();[L[i],L[j]]=[L[j],L[i]];render();const n=grid.querySelector(`.it[data-id="${id}"] .dh`);n&&n.focus();after()})})();
 /* ===== undo / redo ===== */
 const HI={u:[],r:[],t:0,k:''};
-const snap=()=>S.items.map(it=>({it,rev:it.rev,s:{...it.s},outs:it.outs,ps:it.ps,mk:it.mk,psz:it.psz,pv:it.pv,tx:it.tx,stale:it.stale,cn:it.cn,bn:it.bn,src:it.src,w:it.w,h:it.h,th:it.th,th0:it.th0,ed:it.edits&&{...it.edits},sc:it.scan&&{...it.scan,pages:it.scan.pages&&{...it.scan.pages}}}));
+const snap=()=>{const a=snapI();a.def=S.def&&{...S.def};return a};
+const snapI=()=>S.items.map(it=>({it,rev:it.rev,s:{...it.s},outs:it.outs,ps:it.ps,mk:it.mk,psz:it.psz,pv:it.pv,tx:it.tx,stale:it.stale,cn:it.cn,bn:it.bn,src:it.src,w:it.w,h:it.h,th:it.th,th0:it.th0,ed:it.edits&&{...it.edits},sc:it.scan&&{...it.scan,pages:it.scan.pages&&{...it.scan.pages}}}));
 function hb(){const u=$('#undo'),r=$('#redo');if(u)u.disabled=!HI.u.length;if(r)r.disabled=!HI.r.length}
 function mark(k){const n=Date.now();if(k&&k==HI.k&&n-HI.t<900){HI.t=n;return}HI.k=k||'';HI.t=n;HI.u.push(snap());S.items.forEach(pushI);if(HI.u.length>60)HI.u.shift();HI.r=[];hb()}
-function restore(sn){S.items=sn.map(x=>{Object.assign(x.it,{rev:x.rev,s:{...x.s},outs:x.outs,ps:x.ps,mk:x.mk,psz:x.psz,pv:x.pv,tx:x.tx,stale:x.stale,cn:x.cn,bn:x.bn,busy:0,src:x.src,w:x.w,h:x.h,th:x.th,th0:x.th0,edits:x.ed,scan:x.sc});return x.it});render();remerge().then(()=>{ui();render()})}
-function undo(){if(!HI.u.length)return toast('Nothing to undo');HI.r.push(snap());restore(HI.u.pop());HI.k='';toast('Undone')}
-function redo(){if(!HI.r.length)return toast('Nothing to redo');HI.u.push(snap());restore(HI.r.pop());HI.k='';toast('Redone')}
+function setAside(c){if(!c)return;const v=(i,x)=>{const e=$('#'+i);if(e)e.value=x==null?'':x},k=(i,x)=>{const e=$('#'+i);if(e)e.checked=!!x};S.fmt=c.fmt;S.rot=c.rot;v('q',c.q);v('kb',c.kb||'');k('pad',c.pad);v('mode',c.mode);v('sc',c.sc);v('W',c.W||'');v('H',c.H||'');k('stretch',c.stretch);v('fit',c.fit);v('dpi',c.dpi);v('page',c.page);k('flip',c.flip);k('gray',c.gray);v('br',c.br);v('ct',c.ct);v('bg',c.bg);v('suf',c.suf);S.def={...c};ui();chips()}
+const cpSc=x=>x&&{...x,pages:x.pages&&{...x.pages}};
+function restore(sn){setAside(sn.def);S.items=sn.map(x=>{Object.assign(x.it,{rev:x.rev,s:{...x.s},outs:x.outs,ps:x.ps,mk:x.mk,psz:x.psz,pv:x.pv,tx:x.tx,stale:x.stale,cn:x.cn,bn:x.bn,busy:0,src:x.src,w:x.w,h:x.h,th:x.th,th0:x.th0,edits:x.ed&&{...x.ed},scan:cpSc(x.sc)});return x.it});render();hb();remerge().then(()=>{ui();render()})}
+const sameSn=(a,b)=>a.length==b.length&&a.every((x,i)=>x.it===b[i].it&&isame(x,b[i]))&&JSON.stringify(a.def)==JSON.stringify(b.def);
+function undo(){const cur=snap();while(HI.u.length&&sameSn(HI.u[HI.u.length-1],cur))HI.u.pop();if(!HI.u.length){hb();return toast('Nothing to undo')}HI.r.push(cur);restore(HI.u.pop());HI.k='';toast('Undone')}
+function redo(){const cur=snap();while(HI.r.length&&sameSn(HI.r[HI.r.length-1],cur))HI.r.pop();if(!HI.r.length){hb();return toast('Nothing to redo')}HI.u.push(cur);restore(HI.r.pop());HI.k='';toast('Redone')}
 $('#undo').onclick=undo;$('#redo').onclick=redo;
 /* ===== per-card undo / redo ===== */
-const isnap=it=>({rev:it.rev,s:{...it.s},outs:it.outs,ps:it.ps,mk:it.mk,psz:it.psz,pv:it.pv,tx:it.tx,stale:it.stale,cn:it.cn,bn:it.bn,src:it.src,w:it.w,h:it.h,th:it.th,th0:it.th0,ed:it.edits&&{...it.edits},sc:it.scan,scp:it.scan&&it.scan.pages&&Object.keys(it.scan.pages).join()});
+const isnap=it=>({rev:it.rev,s:{...it.s},outs:it.outs,ps:it.ps,mk:it.mk,psz:it.psz,pv:it.pv,tx:it.tx,stale:it.stale,cn:it.cn,bn:it.bn,src:it.src,w:it.w,h:it.h,th:it.th,th0:it.th0,ed:it.edits&&{...it.edits},sc:cpSc(it.scan)});
 const ishal=(p,q)=>p===q||(p&&q&&Object.keys(p).length==Object.keys(q).length&&Object.keys(p).every(k=>p[k]===q[k]));
-const isame=(a,b)=>!!a.rev==!!b.rev&&(a.cn||'')==(b.cn||'')&&a.src===b.src&&a.th===b.th&&a.th0===b.th0&&a.sc===b.sc&&a.scp===b.scp&&JSON.stringify(a.s)==JSON.stringify(b.s)&&ishal(a.ed,b.ed);
+const scEq=(a,b)=>a===b||!!(a&&b&&a.orig===b.orig&&a.pg===b.pg&&a.F===b.F&&a.maxSide===b.maxSide&&ishal(a.pages,b.pages));
+const isame=(a,b)=>!!a.rev==!!b.rev&&(a.cn||'')==(b.cn||'')&&a.src===b.src&&a.th===b.th&&a.th0===b.th0&&scEq(a.sc,b.sc)&&JSON.stringify(a.s)==JSON.stringify(b.s)&&ishal(a.ed,b.ed);
 function pushI(it){const x=isnap(it),h=it.hu||(it.hu=[]),t=h[h.length-1];if(t&&isame(t,x))return;h.push(x);if(h.length>40)h.shift();it.hr=[]}
 const canU=it=>{const c=isnap(it);return(it.hu||[]).some(x=>!isame(x,c))},canR=it=>!!(it.hr&&it.hr.length);
-function iapply(it,x){Object.assign(it,{rev:x.rev,s:{...x.s},outs:x.outs,ps:x.ps,mk:x.mk,psz:x.psz,pv:x.pv,tx:x.tx,stale:x.stale,cn:x.cn,bn:x.bn,busy:0,src:x.src,w:x.w,h:x.h,th:x.th,th0:x.th0,edits:x.ed&&{...x.ed},scan:x.sc})}
+function iapply(it,x){Object.assign(it,{rev:x.rev,s:{...x.s},outs:x.outs,ps:x.ps,mk:x.mk,psz:x.psz,pv:x.pv,tx:x.tx,stale:x.stale,cn:x.cn,bn:x.bn,busy:0,src:x.src,w:x.w,h:x.h,th:x.th,th0:x.th0,edits:x.ed&&{...x.ed},scan:cpSc(x.sc)})}
 function cardStep(it,dir){const st=(dir<0?it.hu:it.hr)||[],cur=isnap(it);if(dir<0)while(st.length&&isame(st[st.length-1],cur))st.pop();
 if(!st.length){toast(dir<0?'Nothing to undo for this file':'Nothing to redo for this file');render();return}
 const x=st.pop();if(dir<0)(it.hr=it.hr||[]).push(cur);else(it.hu=it.hu||[]).push(cur);
