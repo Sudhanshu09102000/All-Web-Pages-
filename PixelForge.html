@@ -1087,8 +1087,20 @@ async function zipDlg(send){if(S.items.some(i=>i.busy))return toast('Please wait
  $('#zp_d').onclick=()=>go(0);$('#zp_s').onclick=()=>go(1)}
 /* ===== merged output: build in current order, optional size limit + page size ===== */
 function rawItems(){return scope().filter(i=>['img','pdf','pptx'].includes(i.kind))}
-async function buildRaw(){const L=[],A=rawItems();let n=0;for(const it of A){n++;const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:150,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'};
-for await(const g of srcs(it)){toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);const out=await enc(g,o);L.push({s:{...o,page:'img'},out,jpg:out.blob})}}return L}
+/* original JPEG photos go into the PDF as-is (no decode/re-encode); EXIF-rotated, CMYK or edited images use the normal path */
+async function jpgRaw(it){try{if(it.kind!='img'||it.scan||!(it.src instanceof HTMLImageElement)||!it.file||it.file.type!='image/jpeg')return false;
+const u=new Uint8Array(await it.file.arrayBuffer());if(u[0]!=255||u[1]!=216)return false;let i=2;
+while(i+4<u.length){if(u[i]!=255){i++;continue}const m=u[i+1];if(m==255){i++;continue}if(m==0xD8||m==1||(m>=0xD0&&m<=0xD7)){i+=2;continue}const L=u[i+2]<<8|u[i+3];
+if(m==0xE1&&u[i+4]==69&&u[i+5]==120&&u[i+6]==105&&u[i+7]==102){const t=i+10,le=u[t]==73,r16=o=>le?u[o]|u[o+1]<<8:u[o]<<8|u[o+1],r32=o=>le?(u[o]|u[o+1]<<8|u[o+2]<<16|u[o+3]<<24)>>>0:(u[o]<<24|u[o+1]<<16|u[o+2]<<8|u[o+3])>>>0;
+const f=t+r32(t+4),n=r16(f);for(let e=0;e<n;e++){const o=f+2+e*12;if(r16(o)==0x112&&r16(o+8)>1)return false}}
+if(m>=0xC0&&m<=0xC2){const nc=u[i+9];return(nc==1||nc==3)&&((u[i+5]<<8|u[i+6])*(u[i+7]<<8|u[i+8])>0)&&(u[i+7]<<8|u[i+8])==it.w&&(u[i+5]<<8|u[i+6])==it.h}
+if(m==0xDA)return false;i+=2+L}}catch(e){}return false}
+async function buildRaw(){const L=[],A=rawItems(),pend=new Set();let n=0;
+for(const it of A){n++;const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:150,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'};
+toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);
+if(await jpgRaw(it)){L.push({s:{...o,page:'img'},out:{blob:it.file,w:it.w,h:it.h},jpg:it.file});continue}
+for await(const g of srcs(it)){toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);const p={s:{...o,page:'img'}};L.push(p);const pr=enc(g,o).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}}
+await Promise.all(pend);toast('Building PDF…',60000);return L}
 async function remerge(){S.merged=S.mergedP=null;return;const M=S.items.filter(i=>i.ps&&i.mk!='p'),P=S.items.filter(i=>i.ps&&i.mk=='p');S.merged=M.length>1?await pdf(M.flatMap(i=>i.ps)):null;S.mergedP=P.length>1?await pptx(P.flatMap(i=>i.ps)):null}
 async function padMerged(L,mk,blob,T){/* grow the last page's JPEG with harmless filler so the file lands just under the limit */
 let best=blob,pages=L;for(let n=0;n<4;n++){const gap=T-best.size;if(gap<=64||gap<T*.002)break;const l=pages[pages.length-1],j=await padTo(l.jpg,'jpeg',l.jpg.size+gap-32);if(j===l.jpg)break;const np=pages.slice(0,-1).concat([{...l,jpg:j}]),nb=await mk(np);if(nb.size<=T){best=nb;pages=np}else{const over=nb.size-T;const j2=await padTo(l.jpg,'jpeg',Math.max(l.jpg.size,l.jpg.size+gap-32-over-32));if(j2===l.jpg)break;const np2=pages.slice(0,-1).concat([{...l,jpg:j2}]),nb2=await mk(np2);if(nb2.size<=T){best=nb2;pages=np2}else break}}return best}
