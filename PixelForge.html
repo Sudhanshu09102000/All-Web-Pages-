@@ -194,6 +194,14 @@ input.px-code{font:800 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spa
 #oc-tx:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--glow)}
 .oc-exp{display:grid;gap:8px;padding:12px;border-radius:16px;border:1px solid var(--bd);background:var(--panel);backdrop-filter:blur(14px)}.oc-exp .r2{align-items:end}
 .oc-exp .row{display:flex;gap:8px}.oc-exp .row .btn{flex:1}
+.oc-rg{display:grid;gap:10px;padding:12px;border-radius:16px;border:1px solid var(--bd);background:linear-gradient(135deg,var(--glow),transparent 75%),var(--in);animation:rgIn .22s ease}.oc-rg[hidden]{display:none}.oc-rg .btn{width:100%}@keyframes rgIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.rg-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}.rg-n{font-size:12px;color:var(--mut);font-weight:600;text-align:right}.oc-rg.bad .rg-n{color:#ef4a56}
+.rg-in{display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:12px;border:1px solid var(--bd);background:var(--in);transition:.15s}.rg-in:focus-within{border-color:var(--a);box-shadow:0 0 0 3px var(--glow)}.oc-rg.bad .rg-in{border-color:#ef4a56}
+.rg-in input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;color:inherit;font:inherit;padding:10px 0;outline:0}.rg-clr{border:0;background:transparent;color:var(--mut);cursor:pointer;font-size:14px;padding:4px 2px}.rg-clr:hover{color:var(--tx)}
+.rg-ft{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:end}.rg-ft label{display:grid;gap:4px;font-size:11px;color:var(--mut);font-weight:600;margin:0}.rg-ft input{width:100%;min-width:0;border-radius:10px;border:1px solid var(--bd);background:var(--in);color:inherit;font:inherit;padding:8px 10px;outline:0}.rg-ft input:focus{border-color:var(--a)}.rg-ft i{font-style:normal;color:var(--mut);padding-bottom:9px}
+.rg-tr{position:relative;height:8px;border-radius:99px;background:var(--bd);overflow:hidden}.rg-tr b{position:absolute;top:0;bottom:0;border-radius:99px;min-width:4px;background:linear-gradient(90deg,var(--a),var(--b));transition:left .2s,width .2s}
+.rg-ch{display:flex;flex-wrap:wrap;gap:6px}.rg-ch button{border:1px solid var(--bd);background:var(--in);color:inherit;font:inherit;font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;cursor:pointer;transition:.15s}.rg-ch button:hover{border-color:var(--a);background:var(--glow)}
+
 @media(max-width:860px){.oc-main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(300px,48vh) auto;overflow:auto}.oc-right{overflow:visible}.oc-brand small{display:none}.oc-stats{grid-template-columns:repeat(2,1fr)}}
 
 /* ===== batch: select + extract ===== */
@@ -1711,7 +1719,7 @@ $('#asa').onclick=()=>{const L=scope().filter(i=>i.kind=='img'||i.kind=='pdf');i
 const OC=(()=>{
 const q=s=>document.querySelector(s),LANGS=[['eng','English'],['eng+ben','English + Bengali'],['ben','Bengali'],['hin','Hindi'],['eng+hin','English + Hindi'],['spa','Spanish'],['fra','French'],['deu','German'],['por','Portuguese'],['ita','Italian'],['rus','Russian'],['ara','Arabic'],['chi_sim','Chinese (Simplified)'],['jpn','Japanese']],
 MODES=[['smart','✨','Smart','Digital text where a PDF page has it, OCR where it doesn’t'],['ocr','👁','OCR only','Read the pixels: photos, scans, screenshots'],['digital','🔤','Digital only','Exact embedded PDF text, instant'],['both','⚖️','Both','Run both, then pick or compare per page']],
-FMT=[['pdft','PDF · extracted text'],['txt','Plain text (.txt)'],['docx','Word document (.docx)'],['json','JSON · word boxes'],['pdfs','Scan PDF · image + hidden text']];
+FMT=[['pdft','PDF · extracted text'],['txt','Plain text (.txt)'],['docx','Word document (.docx)'],['json','JSON · word boxes']];
 let E=null,D=null,W=null,WL='',lib=null;
 const tick=()=>new Promise(r=>setTimeout(r,12)),norm=s=>String(s).replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[\u2013\u2014]/g,'-').replace(/\u2022/g,'*').replace(/\u2026/g,'...').replace(/[\u2000-\u200a\u202f]/g,' ').replace(/[\u200b-\u200d\ufeff]/g,'').replace(/\u20b9/g,'Rs.'),latin=s=>norm(s).replace(/[^\x09\x0a\x20-\x7e\xa0-\xff]/g,''),cl=s=>String(s).replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'');
 const loadLib=()=>lib||(lib=new Promise((res,rej)=>{if(window.Tesseract)return res();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js';s.onload=res;s.onerror=()=>{lib=null;rej(new Error('Could not load the OCR engine. Check your internet connection.'))};document.head.append(s)}));
@@ -1723,11 +1731,13 @@ d.innerHTML=`<div class="oc-top"><div class="oc-brand"><div class="oc-lg">🔎</
 <div class="oc-st" id="oc-st"><div class="oc-img" id="oc-img"><canvas id="oc-cv"></canvas><div id="oc-ov"></div></div></div></div>
 <div class="oc-right"><h3>Extraction mode</h3><div class="oc-modes" id="oc-modes">${MODES.map(m=>`<button class="oc-mode" data-m="${m[0]}"><span>${m[1]}</span><b>${m[2]}</b><small>${m[3]}</small></button>`).join('')}</div>
 <div class="r2"><div><label>OCR language</label><select id="oc-lang">${LANGS.map(l=>`<option value="${l[0]}">${l[1]}</option>`).join('')}</select></div><label class="chk" style="align-self:end;margin:0"><input type="checkbox" id="oc-enh" checked> Enhance for OCR</label></div>
-<div class="oc-run"><button class="btn pri" id="oc-go">⚡ Extract this page</button><button class="btn" id="oc-all">All pages</button><button class="btn" id="oc-stop" hidden>■ Stop</button></div>
+<div class="oc-run"><button class="btn pri" id="oc-go">⚡ Extract this page</button><button class="btn" id="oc-all">All pages</button><button class="btn" id="oc-xrb" title="Extract only some pages">📑 Page range</button><button class="btn" id="oc-stop" hidden>■ Stop</button></div>
+${rgPanel('oc-xr','Pages to extract','<button class="btn pri" id="oc-xrgo" type="button">⚡ Extract these pages</button>')}
 <div class="pg"><i id="oc-pb"></i></div><p class="mt" id="oc-msg" style="margin:0">Pick a mode and press Extract. The OCR engine and language data download once, then everything runs in your browser.</p>
 <div class="oc-stats" id="oc-stats"></div><div class="seg" id="oc-src" hidden><button data-s="dig">🔤 Digital text</button><button data-s="ocr">👁 OCR text</button></div>
 <textarea id="oc-tx" spellcheck="false" placeholder="Extracted text appears here. You can edit it before exporting."></textarea>
-<div class="oc-exp"><div class="r2"><div><label>Export as</label><select id="oc-fmt">${FMT.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></div><div><label>Scope</label><select id="oc-sc"><option value="page">This page</option><option value="all">All pages</option></select></div></div>
+<div class="oc-exp"><div><label>Export as</label><select id="oc-fmt">${FMT.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('')}</select></div>
+
 <label class="chk" style="margin:0"><input type="checkbox" id="oc-mk" checked> Add “Page n” markers (text, Word)</label><p class="mt" id="oc-fn" style="margin:0"></p>
 <div class="row"><button class="btn pri" id="oc-dl">⬇ Download</button><button class="btn" id="oc-snd">📲 Send to device</button><button class="btn" id="oc-cp">📋 Copy</button></div></div></div></div>`;
 document.body.append(d);const g=s=>d.querySelector(s);D={root:d,nm:g('#oc-nm'),pgs:g('#oc-pgs'),cv:g('#oc-cv'),ov:g('#oc-ov'),img:g('#oc-img'),st:g('#oc-st'),tx:g('#oc-tx'),msg:g('#oc-msg'),pb:g('#oc-pb'),stats:g('#oc-stats'),src:g('#oc-src'),g};
@@ -1742,14 +1752,29 @@ D.tx.oninput=()=>{E.pages[E.cur].edit=D.tx.value;stats()};
 g('#oc-pgs').onclick=e=>{const b=e.target.closest('[data-p]');if(b&&!E.busy)go(+b.dataset.p)};
 g('#oc-dl').onclick=()=>out('dl');g('#oc-snd').onclick=()=>out('send');
 g('#oc-cp').onclick=async()=>{const t=D.tx.value;if(!t)return toast('Nothing to copy yet');try{await navigator.clipboard.writeText(t)}catch(e){D.tx.select();document.execCommand('copy')}toast('Text copied')};
-g('#oc-fmt').onchange=g('#oc-sc').onchange=fname;
+g('#oc-fmt').onchange=fname;
+rgWire(g,'oc-xr',()=>rgPaint('oc-xr'));
+g('#oc-xrb').onclick=()=>{if(E.busy)return;const p=g('#oc-xr');p.hidden=!p.hidden;if(!p.hidden){if(!g('#oc-xri').value.trim())g('#oc-xri').value=''+(E.cur+1);rgPaint('oc-xr');g('#oc-xri').focus()}};
+g('#oc-xrgo').onclick=()=>{const r=rgSel('oc-xr');if(!r){toast('Enter a valid page range, e.g. 1-5, 8');g('#oc-xri').focus();return}run(r)};
 addEventListener('keydown',e=>{if(!E)return;if(e.key=='Escape'&&!document.querySelector('#px.on'))close();if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();if(!E.busy)run([E.cur])}});return D}
 const cur=()=>E.pages[E.cur],txt=p=>p.edit!=null?p.edit:(p.res&&p.res[p.src]?p.res[p.src].text:'');
 const zoom=()=>{D.img.style.width=E.z*100+'%';D.g('#oc-zv').textContent=Math.round(E.z*100)+'%'};
 function sync(){const isPdf=E.it.kind=='pdf';D.g('#oc-modes').querySelectorAll('.oc-mode').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.m==E.mode);b.disabled=!isPdf&&(b.dataset.m=='digital'||b.dataset.m=='both')});D.g('#oc-lang').value=E.lang;D.g('#oc-enh').checked=E.enh;
-D.g('#oc-all').hidden=E.pages.length<2;D.g('#oc-sc').disabled=E.pages.length<2;D.g('#oc-go').textContent=E.pages.length>1?'⚡ Extract this page':'⚡ Extract text';
+D.g('#oc-all').hidden=E.pages.length<2;D.g('#oc-xrb').hidden=E.pages.length<2;if(E.pages.length<2)D.g('#oc-xr').hidden=true;D.g('#oc-go').textContent=E.pages.length>1?'⚡ Extract this page':'⚡ Extract text';
 D.pgs.innerHTML=E.pages.length>1?E.pages.map((p,i)=>`<button class="chip${i==E.cur?' on':''}${p.res?' ok':''}" data-p="${i}">${i+1}</button>`).join(''):'';fname()}
-function fname(){if(!E)return;const f=D.g('#oc-fmt').value,s=D.g('#oc-sc').value;D.g('#oc-fn').textContent='→ '+nm(f,s).name}
+function rgPanel(P,title,extra){return `<div class="oc-rg" id="${P}" hidden><div class="rg-h"><b>📑 ${title}</b><span class="rg-n" id="${P}n"></span></div><div class="rg-in"><span>🔢</span><input id="${P}i" type="text" placeholder="e.g. 1-5, 8, 12-15" autocomplete="off" spellcheck="false" aria-label="${title}"><button type="button" class="rg-clr" id="${P}c" aria-label="Clear pages">✕</button></div><div class="rg-ft"><label>From<input type="number" id="${P}f" min="1" inputmode="numeric" placeholder="1"></label><i>→</i><label>To<input type="number" id="${P}t" min="1" inputmode="numeric" placeholder="1"></label></div><div class="rg-tr" id="${P}b" aria-hidden="true"></div><div class="rg-ch" id="${P}q"><button type="button" data-q="cur">This page</button><button type="button" data-q="first">First half</button><button type="button" data-q="second">Second half</button><button type="button" data-q="odd">Odd</button><button type="button" data-q="even">Even</button><button type="button" data-q="all">All</button></div>${extra||''}</div>`}
+function rgWire(g,P,cb){const i=g('#'+P+'i');i.oninput=cb;g('#'+P+'c').onclick=()=>{i.value='';cb();i.focus()};
+const ft=()=>{const a=+g('#'+P+'f').value,b=+g('#'+P+'t').value;i.value=a&&b?(a<=b?a+'-'+b:b+'-'+a):(a||b||'');cb()};g('#'+P+'f').oninput=g('#'+P+'t').oninput=ft;
+g('#'+P+'q').onclick=e=>{const b=e.target.closest('[data-q]');if(!b||!E)return;const n=E.pages.length,h=Math.ceil(n/2),L=(a,z,st)=>{const o=[];for(let k=a;k<=z;k+=st)o.push(k);return o.join(',')};i.value={cur:''+(E.cur+1),first:'1-'+h,second:h+1<=n?(h+1)+'-'+n:''+n,odd:L(1,n,2),even:L(2,n,2),all:'1-'+n}[b.dataset.q];cb()}}
+function rgSel(P){P=P||'oc-rg';if(!E)return null;const v=D.g('#'+P+'i').value.trim();if(!v)return null;const r=rng(v,E.pages.length);return r&&r.length?r:null}
+function rgRuns(ix){const o=[];let a=ix[0],b=a;for(let k=1;k<=ix.length;k++){const x=ix[k];if(x===b+1){b=x;continue}o.push([a,b]);a=b=x}return o}
+function rgFmt(ix){return rgRuns(ix).map(([a,b])=>a==b?''+(a+1):(a+1)+'-'+(b+1)).join(', ')}
+function rgPaint(P){P=P||'oc-rg';const p=D.g('#'+P),v=D.g('#'+P+'i').value.trim(),n=E.pages.length,r=v?rng(v,n):null,ok=!!(r&&r.length),nn=D.g('#'+P+'n'),f=D.g('#'+P+'f'),t=D.g('#'+P+'t');
+p.classList.toggle('bad',!!v&&!ok);f.max=t.max=n;
+nn.textContent=ok?r.length+' of '+n+' page'+(n==1?'':'s')+' selected':(v?'Try a format like 1-5, 8':'Type pages or pick a preset');
+const runs=ok?rgRuns(r):[];D.g('#'+P+'b').innerHTML=runs.map(([a,b])=>`<b style="left:${a/n*100}%;width:${(b-a+1)/n*100}%"></b>`).join('');
+if(document.activeElement!==f)f.value=runs.length==1?runs[0][0]+1:'';if(document.activeElement!==t)t.value=runs.length==1?runs[0][1]+1:''}
+function fname(){if(!E)return;D.g('#oc-fn').textContent='→ '+nm(D.g('#oc-fmt').value).name}
 function view(){const p=cur(),r=p.res;D.tx.value=txt(p);D.src.hidden=!(r&&r.dig&&r.ocr);if(r)for(const b of D.src.children)b.setAttribute('aria-pressed',b.dataset.s==p.src);
 const w=r&&r[p.src]?r[p.src].words:[];D.ov.innerHTML=w.map(x=>`<i class="${x.c<60?'lo':x.c<80?'mid':''}" data-t="${esc(x.t)}" title="${esc(x.t)}${x.c<100?' · '+Math.round(x.c)+'%':''}" style="left:${x.b[0]*100}%;top:${x.b[1]*100}%;width:${(x.b[2]-x.b[0])*100}%;height:${(x.b[3]-x.b[1])*100}%"></i>`).join('');
 D.g('#oc-find').value='';D.ov.classList.remove('dim');stats()}
@@ -1765,14 +1790,15 @@ return{text:s.replace(/[ \t]+\n/g,'\n').trim(),words,conf:null,ms:Math.round(per
 async function ocr(i){const t0=performance.now(),c=prep(await cvOf(i)),w=await worker(E.lang);E.lg=m=>{if(m.status=='recognizing text'){const v=(E.done+m.progress)/E.total;E.prog?E.prog(v):D.pb.style.width=v*100+'%'}};
 const r=(await w.recognize(c)).data,words=(r.words||[]).filter(x=>x.text.trim()).map(x=>({t:x.text,c:x.confidence,b:[x.bbox.x0/c.width,x.bbox.y0/c.height,x.bbox.x1/c.width,x.bbox.y1/c.height]}));
 return{text:(r.text||'').trim(),words,conf:r.confidence!=null?r.confidence:words.length?words.reduce((a,x)=>a+x.c,0)/words.length:0,ms:Math.round(performance.now()-t0)}}
-async function run(list){if(E.busy||!list.length)return;E.busy=1;E.stop=0;E.total=list.length;E.done=0;const bz=D.g('#oc-go'),all=D.g('#oc-all'),stop=D.g('#oc-stop');[bz,all].forEach(b=>b.disabled=true);stop.hidden=false;D.img.classList.add('busy');D.pb.style.width='0';
-let fail=0;try{for(const i of list){if(E.stop)break;const p=E.pages[i],isPdf=E.it.kind=='pdf',m=E.mode;D.msg.textContent=(list.length>1?'Page '+(i+1)+' · '+(E.done+1)+' of '+list.length+' · ':'')+'working…';const res={dig:null,ocr:null};
+async function run(list){if(E.busy||!list.length)return;E.busy=1;E.stop=0;E.total=list.length;E.done=0;const bz=D.g('#oc-go'),all=D.g('#oc-all'),stop=D.g('#oc-stop');const xb=[D.g('#oc-xrb'),D.g('#oc-xrgo')];[bz,all,...xb].forEach(b=>b.disabled=true);stop.hidden=false;D.img.classList.add('busy');D.pb.style.width='0';
+let fail=0;try{for(const i of list){if(E.stop)break;if(i!=E.cur)await go(i);const p=E.pages[i],isPdf=E.it.kind=='pdf',m=E.mode;D.msg.textContent=(list.length>1?'Page '+(i+1)+' · '+(E.done+1)+' of '+list.length+' · ':'')+'working…';const res={dig:null,ocr:null};
 try{let needO=m=='ocr'||m=='both'||!isPdf,needD=isPdf&&m!='ocr';if(needD){res.dig=await digital(i);if(m=='smart'&&res.dig.text.replace(/\s/g,'').length<25)needO=true;if(m=='digital'&&!res.dig.text)needO=true}
 if(needO){D.msg.textContent='Loading OCR engine & '+E.lang+' language data…';await loadLib();await worker(E.lang);D.msg.textContent='Reading text'+(list.length>1?' · page '+(i+1):'')+'…';res.ocr=await ocr(i)}
 p.res=res;p.edit=null;p.src=res.dig&&(!res.ocr||res.dig.text.replace(/\s/g,'').length>=25)?'dig':'ocr';if(!res[p.src])p.src=res.dig?'dig':'ocr'}catch(e){console.error(e);fail++;D.msg.textContent='Page '+(i+1)+': '+(e.message||e)}
-E.done++;D.pb.style.width=E.done/E.total*100+'%';sync();if(i==E.cur)view()}}finally{E.busy=0;E.lg=null;[bz,all].forEach(b=>b.disabled=false);stop.hidden=true;D.img.classList.remove('busy');E.it.oc=E.pages.map(p=>({res:p.res,src:p.src,edit:p.edit}))}
+E.done++;D.pb.style.width=E.done/E.total*100+'%';sync();if(i==E.cur)view()}}finally{E.busy=0;E.lg=null;[bz,all,...xb].forEach(b=>b.disabled=false);stop.hidden=true;D.img.classList.remove('busy');E.it.oc=E.pages.map(p=>({res:p.res,src:p.src,edit:p.edit}))}
 const n=E.pages.filter(p=>p.res).length;if(!fail)D.msg.textContent=E.stop?'Stopped · '+n+' page'+(n==1?'':'s')+' ready.':'Done · '+n+' page'+(n==1?'':'s')+' ready. Edit the text if needed, then export or send.';else toast('Some pages could not be read')}
-const nm=(f,s)=>{const b=(E.it.cn||base(E.it.name))+'_text'+(s=='page'&&E.pages.length>1?'_p'+(E.cur+1):'');return{name:b+{txt:'.txt',docx:'.docx',pdfs:'.pdf',pdft:'.pdf',json:'.json'}[f],type:{txt:'text/plain',docx:'application/octet-stream',pdfs:'application/pdf',pdft:'application/pdf',json:'application/octet-stream'}[f]}};
+const xs=()=>{const a=E.pages.map((p,i)=>p.res?i:-1).filter(i=>i>=0);return a.length?a:[E.cur]};
+const nm=(f)=>{const ix=xs(),lb=rgFmt(ix).replace(/, /g,'_'),b=(E.it.cn||base(E.it.name))+'_text'+(E.pages.length>1?'_p'+(lb.length>40?(ix[0]+1)+'-'+(ix[ix.length-1]+1)+'_sel':lb):'');return{name:b+{txt:'.txt',docx:'.docx',pdfs:'.pdf',pdft:'.pdf',json:'.json'}[f],type:{txt:'text/plain',docx:'application/octet-stream',pdfs:'application/pdf',pdft:'application/pdf',json:'application/octet-stream'}[f]}};
 async function docx(P){const z=new JSZip(),e=s=>cl(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])),H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 const body=P.map((t,i)=>(i?'<w:p><w:r><w:br w:type="page"/></w:r></w:p>':'')+t.split('\n').map(l=>`<w:p><w:r><w:t xml:space="preserve">${e(l)}</w:t></w:r></w:p>`).join('')).join('');
 z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
@@ -1800,17 +1826,17 @@ else if(f=='pdft'){if(/[^\x09\x0a\x20-\x7e\xa0-\xff]/.test(norm(U.map(u=>u.text)
 else{let d;for(let k=0;k<U.length;k++){const u=U[k],c=await u.cv(),w=c.width*.75,h=c.height*.75,o=w>h?'l':'p';if(D&&D.msg)D.msg.textContent='Building PDF · page '+(k+1)+' of '+U.length+'…';await tick();if(!d)d=new jspdf.jsPDF({unit:'pt',format:[w,h],orientation:o});else d.addPage([w,h],o);
 d.addImage(c.toDataURL('image/jpeg',.85),'JPEG',0,0,w,h);for(const x of u.words){const t=latin(x.t);if(!t.trim())continue;const hh=(x.b[3]-x.b[1])*h;d.setFontSize(Math.max(4,hh*.78));d.text(t,x.b[0]*w,x.b[3]*h-hh*.22,{renderingMode:'invisible'})}}blob=d.output('blob')}
 return blob}
-async function build(f,s){const idx=s=='all'?E.pages.map((_,i)=>i):[E.cur],miss=idx.filter(i=>!E.pages[i].res);if(miss.length){await run(miss);if(E.stop)return null}
-const U=idx.map(i=>{const p=E.pages[i],a=p.res[p.src]||{};return{pn:i+1,text:txt(p),words:a.words||[],src:p.src=='dig'?'digital':'ocr',conf:a.conf,cv:()=>cvOf(i)}}),N=nm(f,s);
+async function build(f){const idx=xs(),miss=idx.filter(i=>!E.pages[i].res);if(miss.length){await run(miss);if(E.stop)return null}
+const U=idx.map(i=>{const p=E.pages[i],a=p.res[p.src]||{};return{pn:i+1,text:txt(p),words:a.words||[],src:p.src=='dig'?'digital':'ocr',conf:a.conf,cv:()=>cvOf(i)}}),N=nm(f);
 return{name:N.name,blob:new Blob([await mkOut(f,U,D.g('#oc-mk').checked&&idx.length>1)],{type:N.type}),type:N.type}}
-async function out(how){if(E.busy)return;const f=D.g('#oc-fmt').value,s=D.g('#oc-sc').value;if(!E.pages.some(p=>p.res)&&!D.tx.value){toast('Extract some text first');return}
-E.busy=1;const bs=[D.g('#oc-dl'),D.g('#oc-snd')];bs.forEach(b=>b.disabled=true);E.busy=0;try{const r=await build(f,s);if(!r)return;E.busy=0;
+async function out(how){if(E.busy)return;const f=D.g('#oc-fmt').value;if(!E.pages.some(p=>p.res)&&!D.tx.value){toast('Extract some text first');return}
+E.busy=1;const bs=[D.g('#oc-dl'),D.g('#oc-snd')];bs.forEach(b=>b.disabled=true);E.busy=0;try{const r=await build(f);if(!r)return;E.busy=0;
 if(how=='dl'){dl(r.name,r.blob);toast('Saved '+r.name)}else{const it=E.it;PX.send([{name:r.name,blob:r.blob,card:{s:{...it.s},orig:{name:r.name,blob:r.blob},raw:1}}])}D.msg.textContent=(how=='dl'?'Downloaded ':'Queued for your connected device: ')+r.name+' · '+fk(r.blob.size)}
 catch(e){console.error(e);toast('Export failed: '+(e.message||e))}finally{bs.forEach(b=>b.disabled=false)}}
 async function open(it){if(E||(it.kind!='img'&&it.kind!='pdf'))return;dom();E={it,pages:[],cur:0,mode:it.ocMode||(it.kind=='pdf'?'smart':'ocr'),lang:it.ocLang||'eng',enh:true,z:1,busy:0,doc:null};
 if(it.kind=='pdf'){try{E.doc=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise}catch(e){E=null;return toast('Could not open this PDF')}}
 const n=it.kind=='pdf'?E.doc.numPages:1;for(let i=0;i<n;i++){const o=it.oc&&it.oc[i];E.pages.push({res:o?o.res:null,src:o?o.src:'ocr',edit:o?o.edit:null,cv:null})}
-D.nm.textContent=it.name+(n>1?' · '+n+' pages':'');D.root.classList.add('on');document.body.style.overflow='hidden';D.g('#oc-msg').textContent='Pick a mode and press Extract. The OCR engine and language data download once, then everything runs in your browser.';D.pb.style.width='0';await go(0)}
+D.nm.textContent=it.name+(n>1?' · '+n+' pages':'');D.root.classList.add('on');document.body.style.overflow='hidden';D.g('#oc-msg').textContent='Pick a mode and press Extract. The OCR engine and language data download once, then everything runs in your browser.';D.pb.style.width='0';D.g('#oc-xri').value='';D.g('#oc-xr').hidden=true;await go(0)}
 function close(){if(!E||E.busy)return;E.it.ocMode=E.mode;D.root.classList.remove('on');document.body.style.overflow='';E=null;kill()}
 let LAST=null;
 const EXT={txt:'.txt',docx:'.docx',pdfs:'.pdf',pdft:'.pdf',json:'.json'},TYP={txt:'text/plain',docx:'application/octet-stream',pdfs:'application/pdf',pdft:'application/pdf',json:'application/octet-stream'};
