@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  PixelForge · © 2026 Sudhanshu Sharma. All rights reserved.
+  This software and its source code are proprietary. Copying, modifying, reverse engineering,
+  republishing or redistributing any part of it without written permission is prohibited.
+-->
+<meta name="description" content="PixelForge: convert, compress and resize images, PDFs and documents, scan and extract text (OCR) privately in your browser. Nothing is uploaded.">
+<meta name="author" content="Sudhanshu Sharma"><meta name="copyright" content="© Sudhanshu Sharma. All rights reserved.">
+<meta name="application-name" content="PixelForge"><meta name="apple-mobile-web-app-title" content="PixelForge"><meta name="mobile-web-app-capable" content="yes"><meta name="referrer" content="no-referrer">
+<meta property="og:type" content="website"><meta property="og:title" content="PixelForge · Image, PDF & Document Converter"><meta property="og:description" content="Private, in-browser converter, compressor, scanner and OCR tool. Developed by Sudhanshu Sharma.">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="PixelForge"><meta name="twitter:description" content="Private, in-browser image, PDF and document toolkit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236d5efc'/%3E%3Cstop offset='1' stop-color='%2318c6e8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M36 8 18 36h12l-4 20 20-30H34z' fill='%23fff'/%3E%3C/svg%3E">
+<script>try{if(top!==self){document.documentElement.style.display='none';top.location=self.location}}catch(e){document.documentElement.style.display='none'}</script>
 <title>Pixelforge · Image, PDF &amp; Document Converter</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -620,6 +632,56 @@ select{text-overflow:ellipsis}
 #xp .xzq button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:700 12px Inter,system-ui,sans-serif;padding:6px 12px;border-radius:99px;cursor:pointer}
 #xp .xzq button.on{border-color:var(--a);background:var(--glow);color:var(--a)}
 #xp .xzp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);margin:0;cursor:pointer}#xp .xzp input{width:18px;height:18px;margin:0;accent-color:var(--a)}
+
+/* ===== About card, guide modal, footer, protection ===== */
+.abt{position:relative;margin:26px 0 8px;padding:20px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(135deg,var(--a),var(--b)) border-box;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px -20px var(--glow);display:grid;gap:14px;overflow:hidden}
+.abt:before{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(24,198,232,.28),transparent 70%);pointer-events:none}
+.abt>*{position:relative}
+.abt-h{display:flex;align-items:center;gap:14px}
+.abt-ic{width:48px;height:48px;border-radius:15px;flex:none;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 26px var(--glow),inset 0 1px 0 rgba(255,255,255,.4)}
+.abt-t h2{margin:0;font:800 18px/1.2 Manrope,Inter,sans-serif;letter-spacing:-.03em}
+.abt-t p{margin:3px 0 0;color:var(--mut);font-size:12.5px;line-height:1.45}
+.abt-chips{display:flex;flex-wrap:wrap;gap:8px}
+.abt-chips span{padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--in);font:700 11.5px Inter,sans-serif}
+.abt-b{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:50px;border:0;border-radius:16px;color:#fff;cursor:pointer;font:800 15px Manrope,Inter,sans-serif;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 14px 32px -10px var(--glow),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .15s,filter .2s}
+.abt-b:hover{transform:translateY(-1px);filter:saturate(1.12)}.abt-b:active{transform:scale(.985)}.abt-b i{font-style:normal;transition:transform .2s}.abt-b:hover i{transform:translateX(4px)}
+.ftr{margin:30px 0 8px;text-align:center;display:grid;gap:7px;justify-items:center}
+.ftr-l{width:min(280px,60%);height:2px;border-radius:9px;background:linear-gradient(90deg,transparent,var(--a),var(--b),transparent);opacity:.7;margin-bottom:6px}
+.ftr p{margin:0}.ftr-c{font:600 13px Manrope,Inter,sans-serif;color:var(--tx)}
+.ftr-d{font:500 13px Manrope,Inter,sans-serif;color:var(--mut)}
+.ftr-n{font:800 15px Manrope,Inter,sans-serif;letter-spacing:-.01em;background:linear-gradient(135deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ftr-h{color:#e5484d;display:inline-block;animation:hb 1.6s ease-in-out infinite}@keyframes hb{50%{transform:scale(1.25)}}
+.ftr-s{font:500 11px Inter,sans-serif;color:var(--mut);opacity:.75;max-width:46ch;line-height:1.5}
+#ab{position:fixed;inset:0;z-index:85;display:none;place-items:center;background:radial-gradient(70% 55% at 50% 0%,rgba(109,94,252,.3),transparent 70%),rgba(3,4,10,.74);padding:14px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+#ab.on{display:grid}
+#ab .abx{width:min(760px,100%);max-height:94vh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;border-radius:28px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);box-shadow:0 60px 140px -30px rgba(0,0,0,.75);overflow:hidden;animation:rmIn .4s cubic-bezier(.2,.9,.25,1)}
+#ab .abh{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--bd);background:linear-gradient(135deg,var(--glow),transparent 70%)}
+#ab .abh .abt-ic{width:42px;height:42px;font-size:21px;border-radius:13px}
+#ab .abh b{display:block;font:800 17px Manrope,Inter,sans-serif;letter-spacing:-.03em}#ab .abh small{color:var(--mut);font-size:12px}
+#ab .abh>div:nth-child(2){flex:1;min-width:0}
+#ab .abc{width:38px;height:38px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--mut);cursor:pointer;font-size:16px}#ab .abc:hover{color:var(--tx)}
+#ab .abb{overflow:auto;overscroll-behavior:contain;padding:16px 18px;display:grid;gap:14px;align-content:start}
+#ab .abs{border:1px solid var(--bd);border-radius:18px;background:var(--in);padding:14px 16px}
+#ab .abs h4{margin:0 0 8px;font:800 14px Manrope,Inter,sans-serif;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+#ab .abs ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+#ab .abs li{position:relative;padding-left:22px;font-size:13px;line-height:1.5;color:var(--tx)}
+#ab .abs li:before{content:"✓";position:absolute;left:0;top:0;color:var(--ok);font-weight:800}
+#ab .abs.no li:before{content:"✕";color:#e5484d}
+#ab .abs.tip li:before{content:"★";color:var(--warn)}
+#ab .abs li em{font-style:normal;color:var(--mut)}
+#ab .abs p{margin:0;font-size:13px;line-height:1.6;color:var(--mut)}
+#ab .abg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+#ab .abg div{padding:10px 12px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);font-size:12px;color:var(--mut);line-height:1.45}
+#ab .abg b{display:block;color:var(--tx);font:800 13px Manrope,Inter,sans-serif;margin-bottom:2px}
+#ab .abf{padding:12px 18px;border-top:1px solid var(--bd);text-align:center;font-size:12px;color:var(--mut);line-height:1.5}
+#ab .abf b{color:var(--tx)}
+/* deterrents: no text selection outside inputs, no image dragging */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable],#oc-tx,#pvw pre,.px-code,.rm-ci{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none;user-drag:none}
+#dtx{position:fixed;inset:0;z-index:2147483647;display:none;place-items:center;text-align:center;padding:24px;background:#06070b;color:#f3f2ee;font:700 16px/1.6 Manrope,Inter,sans-serif}
+html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
+@media print{body{display:none!important}}
 </style></head><body><div id="app">
 <header><div class="logo">⚡</div><div><h1>PixelForge</h1><small>Convert, compress &amp; resize images, PDFs and documents. 100% in your browser, nothing is uploaded.</small></div><div class="sp"></div>
 <button class="btn" id="dev" title="Connect to another device with a code and send or receive files">📲 Device</button><div class="seg" id="tm"><button data-m="auto">Auto</button><button data-m="light">Light</button><button data-m="dark">Dark</button></div></header>
@@ -661,9 +723,56 @@ select{text-overflow:ellipsis}
 
 <div class="bar"><button class="btn" id="undo" disabled title="Undo (Ctrl+Z)">↶ Undo</button><button class="btn" id="redo" disabled title="Redo (Ctrl+Y)">↷ Redo</button><span class="vr"></span><button class="btn" id="cam" title="Photograph a document and scan it">📷 Scan with camera</button><button class="btn" id="asa" disabled title="Detect the page, straighten it and apply a scan filter to every image and PDF">✨ Auto-scan all</button><input id="camf" type="file" accept="image/*" capture="environment" hidden><span class="vr"></span><button class="btn pri" id="go" disabled>⚡ Convert all</button><button class="btn svall" id="saveall" disabled title="Download every file exactly as it is now: converted files as converted, files not converted yet as the original. Downloads only the selected files when some are selected.">⬇ Save all</button><button class="btn" id="mpdf" hidden title="Merge all images and PDF pages into one PDF. Before converting, the pages are added exactly as they are.">📄 Download merged PDF</button><span class="vr"></span><button class="btn" id="zip" disabled>📦 Download ZIP</button><button class="btn" id="zipsend" disabled title="Send the same ZIP to the connected device">📲 Send ZIP to connected device</button><button class="btn" id="sendall" disabled title="Send every file in the list, one by one, to the connected device. Converted files are sent as converted; files not converted yet are sent as originals.">📲 Send all to connected device</button><button class="btn" id="mppt" hidden>📊 Download merged PPTX</button><span class="vr"></span><label class="csz" title="Make every card smaller or bigger. You can also drag the grip in the corner of any single card."><span>Card size</span><input type="range" id="csz" min="60" max="220" step="5" value="100" aria-label="Card size"><b id="cszv">100%</b></label><span class="vr"></span><button class="btn danger" id="clr" disabled>🗑 Clear all</button></div>
 <div class="grid" id="grid"></div>
-<p class="note">Scan &amp; Crop: every image and PDF card has a “📐 Scan / Crop” button. It finds the four corners of the page automatically, straightens the perspective and offers 12 scan modes; PDFs are edited page by page. Text-based conversions (PDF to DOCX, ODT, EPUB and so on) keep text, not layout. PDFs and images become PPTX with one slide per page or image, and PPTX files are redrawn in the browser, so complex designs may look simplified. Images converted to text formats use OCR (English), which needs an internet connection. TIFF, GIF output and PDF/A need a server-side engine, so they are not offered. Non-Latin text may not render in generated PDFs.</p>
+<section class="abt" aria-label="About PixelForge">
+<div class="abt-h"><div class="abt-ic">⚡</div><div class="abt-t"><h2>About PixelForge</h2><p>Everything this tool can do, what it cannot do, and how your files stay private.</p></div></div>
+<div class="abt-chips"><span>🔒 100% in your browser</span><span>📤 Nothing is uploaded</span><span>🖼 Images · 📄 PDF · 📝 Docs</span><span>🔎 OCR text extraction</span></div>
+<button type="button" class="abt-b" id="abOpen"><span>ℹ️</span> Open the full guide <i>→</i></button>
+</section>
+<footer class="ftr"><div class="ftr-l"></div><p class="ftr-c">© <span id="ftYr">2026</span> <b>PixelForge</b>. All rights reserved.</p><p class="ftr-d">Designed &amp; developed with <span class="ftr-h">♥</span> by <b class="ftr-n">Sudhanshu Sharma</b></p><p class="ftr-s">Unauthorized copying, reproduction or redistribution of this software or its code is prohibited.</p></footer>
 </main></div></div>
 <div class="mod" id="mod"><div class="cmp"><div><b>Original</b><br><img id="c1" alt=""></div><div><b>Converted</b><br><img id="c2" alt=""></div></div></div>
+<noscript><div style="padding:40px;text-align:center;font:600 16px system-ui">PixelForge needs JavaScript to run. Please enable JavaScript and reload the page.</div></noscript>
+<div id="dtx" role="alert"><div>🛡️<br>Developer tools detected.<br><span style="font-weight:500;font-size:13px;opacity:.75">Please close them to continue using PixelForge.</span></div></div>
+<div id="ab" role="dialog" aria-modal="true" aria-label="About PixelForge"><div class="abx">
+<div class="abh"><div class="abt-ic">⚡</div><div><b>PixelForge · Complete Guide</b><small>What it does, what it doesn’t, and how it protects your files</small></div><button class="abc" id="abX" aria-label="Close">✕</button></div>
+<div class="abb">
+<div class="abs"><h4>✨ What is PixelForge?</h4><p>PixelForge is an all-in-one toolkit that converts, compresses, resizes, scans and reads text from your images, PDFs and documents. Everything runs inside your own browser, so your files are never uploaded to any server.</p></div>
+<div class="abs"><h4>🔒 Privacy &amp; security</h4><ul><li>Files are processed on your device. <em>Nothing is uploaded.</em></li><li>Device Rooms send files directly between your devices, encrypted with a room password.</li><li>No account, no sign-up, no tracking of your files.</li><li>OCR language data and a few libraries are downloaded once from public CDNs, so an internet connection is needed the first time.</li></ul></div>
+<div class="abs"><h4>📂 Files you can add</h4><div class="abg"><div><b>Images</b>JPG, PNG, WebP, BMP, GIF</div><div><b>PDF</b>Any number of pages</div><div><b>Slides</b>PPTX</div><div><b>Documents</b>DOCX, TXT, HTML, RTF</div><div><b>Sheets</b>XLSX, XLS, ODS, CSV</div></div><p style="margin-top:8px">Drop, browse, or paste (Ctrl+V). One file or hundreds at once.</p></div>
+<div class="abs"><h4>🔁 Convert to</h4><div class="abg"><div><b>Images</b>JPG, PNG, WebP, BMP</div><div><b>PDF &amp; PPTX</b>One page or slide per image</div><div><b>Documents</b>DOCX, ODT, EPUB, RTF, HTML, TXT</div><div><b>Sheets</b>XLSX, ODS, CSV</div><div><b>ZIP</b>One PNG per PDF page</div></div></div>
+<div class="abs"><h4>🛠 What you can do</h4><ul>
+<li><b>Compress to an exact size:</b> set a target in KB or MB; optionally pad up to the limit.</li>
+<li><b>Resize:</b> scale %, exact width × height, or longest side; set DPI.</li>
+<li><b>Adjust:</b> rotate, mirror, black &amp; white, brightness, contrast, background colour.</li>
+<li><b>Scan &amp; Crop:</b> auto-detects the page edges, straightens perspective and offers 12 scan modes. PDFs are edited page by page.</li>
+<li><b>Extract text (OCR):</b> read text from photos and scans, or the digital text inside PDFs. Export as PDF, TXT, Word or JSON. Many languages supported.</li>
+<li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit.</li>
+<li><b>Merge &amp; split:</b> combine files into one PDF or PPTX, or split a PDF into one card per page.</li>
+<li><b>Organise:</b> drag to reorder, reverse order, rename, per-file Undo / Redo, copy settings to many files.</li>
+<li><b>Save &amp; share:</b> download one file, Save all, or one ZIP (with an optional size limit).</li>
+<li><b>Device Rooms:</b> send files between phone and computer with a code and password. No cable, no app.</li>
+<li><b>Look &amp; feel:</b> light, dark or auto theme, accent colours, adjustable card size.</li>
+</ul></div>
+<div class="abs no"><h4>⚠️ Good to know (limits)</h4><ul>
+<li>Text conversions (PDF to DOCX, ODT, EPUB…) keep the <em>text</em>, not the original layout.</li>
+<li>PPTX files are redrawn in the browser, so complex designs may look simplified.</li>
+<li>TIFF and GIF output, and PDF/A, are not available (they need a server engine).</li>
+<li>OCR accuracy depends on image quality. Clear, well-lit, straight photos work best.</li>
+<li>Non-Latin text in generated PDFs may need an internet connection for fonts.</li>
+<li>Password-protected PDFs and very large files may not open, depending on your device’s memory.</li>
+<li>Device Rooms need both devices online; some networks block direct links (a relay can be added).</li>
+</ul></div>
+<div class="abs tip"><h4>💡 Quick tips</h4><ul>
+<li>Tick the round checkbox on cards to apply a button or setting to <em>only those files</em>.</li>
+<li><b>Ctrl+Z / Ctrl+Y</b> undo and redo. <b>Ctrl+A</b> selects all cards.</li>
+<li>Drag the corner grip on a card, or use the Card size slider, to resize previews.</li>
+<li>Photographing a document? Use <b>Scan with camera</b> for the best result.</li>
+</ul></div>
+<div class="abs"><h4>🧩 Open-source credits</h4><p>PixelForge is built with these open-source libraries: PDF.js, jsPDF, JSZip, SheetJS, Mammoth, Tesseract.js and PeerJS. Their licenses remain with their respective authors.</p></div>
+<div class="abs"><h4>©️ Copyright &amp; license</h4><p>PixelForge · version 1.0 · © <span class="abyr">2026</span> <b style="color:var(--tx)">Sudhanshu Sharma</b>. All rights reserved. This software and its source code are proprietary. Copying, modifying, reverse engineering, republishing or redistributing any part of it without written permission is prohibited. The software is provided “as is”, without warranty of any kind. Always keep a copy of your original files.</p></div>
+</div>
+<div class="abf">Designed &amp; developed by <b>Sudhanshu Sharma</b> · © <span class="abyr">2026</span> PixelForge</div>
+</div></div>
 <div id="toast"></div>
 <div id="mo"></div>
 <div id="pvw"></div><div id="pz"></div>
@@ -2405,4 +2514,22 @@ grid.addEventListener('keydown',e=>{const h=e.target.closest&&e.target.closest('
 })();
 </script>
 
+<script>
+/* ===== About modal + footer year ===== */
+(()=>{const y=new Date().getFullYear();document.querySelectorAll('#ftYr,.abyr').forEach(e=>e.textContent=y);
+const m=document.getElementById('ab'),o=document.getElementById('abOpen'),x=document.getElementById('abX');
+const open=()=>{m.classList.add('on');document.body.style.overflow='hidden';const b=m.querySelector('.abb');if(b)b.scrollTop=0},close=()=>{m.classList.remove('on');document.body.style.overflow=''};
+if(o)o.onclick=open;if(x)x.onclick=close;m.addEventListener('click',e=>{if(e.target===m)close()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('on'))close()})})();
+/* ===== Protection layer (deterrent: discourages casual copying; browser code can never be made 100% secret) ===== */
+(()=>{const GUARD=true;if(!GUARD)return;
+const okT=t=>t&&t.closest&&t.closest('input,textarea,select,[contenteditable="true"],#pvw pre');
+addEventListener('contextmenu',e=>{if(!okT(e.target))e.preventDefault()},true);
+['copy','cut','dragstart'].forEach(n=>addEventListener(n,e=>{if(!okT(e.target))e.preventDefault()},true));
+addEventListener('keydown',e=>{const k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.metaKey;
+ if(e.key==='F12'||(c&&e.shiftKey&&['i','j','c','k'].includes(k))||(c&&['u','s','p'].includes(k))||(e.metaKey&&e.altKey&&['i','j','u'].includes(k))){e.preventDefault();e.stopPropagation()}},true);
+/* desktop only: hide the page while developer tools are docked open */
+try{if(!matchMedia('(pointer:coarse)').matches){setInterval(()=>{const d=outerWidth-innerWidth>220||outerHeight-innerHeight>300;document.documentElement.classList.toggle('dtx',d)},1200)}}catch(e){}
+try{console.log('%cPixelForge','font:800 28px sans-serif;color:#6d5efc');console.log('%c© Sudhanshu Sharma. All rights reserved. Copying or reusing this code is prohibited.','font:600 13px sans-serif;color:#e5484d')}catch(e){}})();
+</script>
 </body></html>
