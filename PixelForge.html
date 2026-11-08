@@ -682,6 +682,18 @@ img{-webkit-user-drag:none;user-drag:none}
 #dtx{position:fixed;inset:0;z-index:2147483647;display:none;place-items:center;text-align:center;padding:24px;background:#06070b;color:#f3f2ee;font:700 16px/1.6 Manrope,Inter,sans-serif}
 html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 @media print{body{display:none!important}}
+
+/* ===== Full-width About + footer ===== */
+.fw{width:100%;max-width:none;box-sizing:border-box;padding:0 24px 28px}
+.fw .abt{margin:6px 0 8px;width:100%;box-sizing:border-box;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) minmax(220px,300px);align-items:center;gap:20px 28px;padding:22px 26px}
+.fw .abt-chips{justify-content:center}
+.fw .abt-b{width:100%}
+.fw .ftr{margin:26px 0 0;width:100%}
+.fw .ftr-l{width:100%}
+.fw .ftr-s{max-width:none}
+@media(max-width:1100px){.fw .abt{grid-template-columns:1fr auto}.fw .abt-chips{grid-column:1/-1;order:3;justify-content:flex-start}}
+@media(max-width:900px){.fw{padding:0 14px 24px}}
+@media(max-width:640px){.fw .abt{grid-template-columns:1fr}.fw .abt-chips{order:0}}
 </style></head><body><div id="app">
 <header><div class="logo">⚡</div><div><h1>PixelForge</h1><small>Convert, compress &amp; resize images, PDFs and documents. 100% in your browser, nothing is uploaded.</small></div><div class="sp"></div>
 <button class="btn" id="dev" title="Connect to another device with a code and send or receive files">📲 Device</button><div class="seg" id="tm"><button data-m="auto">Auto</button><button data-m="light">Light</button><button data-m="dark">Dark</button></div></header>
@@ -723,13 +735,15 @@ html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 
 <div class="bar"><button class="btn" id="undo" disabled title="Undo (Ctrl+Z)">↶ Undo</button><button class="btn" id="redo" disabled title="Redo (Ctrl+Y)">↷ Redo</button><span class="vr"></span><button class="btn" id="cam" title="Photograph a document and scan it">📷 Scan with camera</button><button class="btn" id="asa" disabled title="Detect the page, straighten it and apply a scan filter to every image and PDF">✨ Auto-scan all</button><input id="camf" type="file" accept="image/*" capture="environment" hidden><span class="vr"></span><button class="btn pri" id="go" disabled>⚡ Convert all</button><button class="btn svall" id="saveall" disabled title="Download every file exactly as it is now: converted files as converted, files not converted yet as the original. Downloads only the selected files when some are selected.">⬇ Save all</button><button class="btn" id="mpdf" hidden title="Merge all images and PDF pages into one PDF. Before converting, the pages are added exactly as they are.">📄 Download merged PDF</button><span class="vr"></span><button class="btn" id="zip" disabled>📦 Download ZIP</button><button class="btn" id="zipsend" disabled title="Send the same ZIP to the connected device">📲 Send ZIP to connected device</button><button class="btn" id="sendall" disabled title="Send every file in the list, one by one, to the connected device. Converted files are sent as converted; files not converted yet are sent as originals.">📲 Send all to connected device</button><button class="btn" id="mppt" hidden>📊 Download merged PPTX</button><span class="vr"></span><label class="csz" title="Make every card smaller or bigger. You can also drag the grip in the corner of any single card."><span>Card size</span><input type="range" id="csz" min="60" max="220" step="5" value="100" aria-label="Card size"><b id="cszv">100%</b></label><span class="vr"></span><button class="btn danger" id="clr" disabled>🗑 Clear all</button></div>
 <div class="grid" id="grid"></div>
-<section class="abt" aria-label="About PixelForge">
+
+</main></div>
+<div class="fw"><section class="abt" aria-label="About PixelForge">
 <div class="abt-h"><div class="abt-ic">⚡</div><div class="abt-t"><h2>About PixelForge</h2><p>Everything this tool can do, what it cannot do, and how your files stay private.</p></div></div>
 <div class="abt-chips"><span>🔒 100% in your browser</span><span>📤 Nothing is uploaded</span><span>🖼 Images · 📄 PDF · 📝 Docs</span><span>🔎 OCR text extraction</span></div>
 <button type="button" class="abt-b" id="abOpen"><span>ℹ️</span> Open the full guide <i>→</i></button>
 </section>
-<footer class="ftr"><div class="ftr-l"></div><p class="ftr-c">© <span id="ftYr">2026</span> <b>PixelForge</b>. All rights reserved.</p><p class="ftr-d">Designed &amp; developed with <span class="ftr-h">♥</span> by <b class="ftr-n">Sudhanshu Sharma</b></p><p class="ftr-s">Unauthorized copying, reproduction or redistribution of this software or its code is prohibited.</p></footer>
-</main></div></div>
+<footer class="ftr"><div class="ftr-l"></div><p class="ftr-c">© <span id="ftYr">2026</span> <b>PixelForge</b>. All rights reserved.</p><p class="ftr-d">Designed &amp; developed with <span class="ftr-h">♥</span> by <b class="ftr-n">Sudhanshu Sharma</b></p><p class="ftr-s">Unauthorized copying, reproduction or redistribution of this software or its code is prohibited.</p></footer></div>
+</div>
 <div class="mod" id="mod"><div class="cmp"><div><b>Original</b><br><img id="c1" alt=""></div><div><b>Converted</b><br><img id="c2" alt=""></div></div></div>
 <noscript><div style="padding:40px;text-align:center;font:600 16px system-ui">PixelForge needs JavaScript to run. Please enable JavaScript and reload the page.</div></noscript>
 <div id="dtx" role="alert"><div>🛡️<br>Developer tools detected.<br><span style="font-weight:500;font-size:13px;opacity:.75">Please close them to continue using PixelForge.</span></div></div>
