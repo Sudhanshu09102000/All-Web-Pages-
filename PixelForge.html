@@ -512,6 +512,114 @@ select{text-overflow:ellipsis}
 .csz b{min-width:40px;text-align:right;color:var(--tx);font-variant-numeric:tabular-nums}
 @media(max-width:700px){.bar .csz{grid-column:1/-1;justify-content:center}.csz input[type=range]{flex:1}}
 .px-clrrow{display:flex;justify-content:flex-end;margin:4px 0 -2px}.px-clrrow .btn,#px .px-f .btn.danger{padding:7px 14px;font-size:12px}.btn.danger{color:var(--mut)}.btn.danger:hover{color:#e5484d;border-color:#e5484d;box-shadow:0 6px 18px -8px rgba(229,72,77,.5)}
+
+/* ===== Text Studio: nothing may be wider than the screen ===== */
+.oc-main{overflow-x:hidden;box-sizing:border-box;max-width:100%}
+.oc-left,.oc-right{max-width:100%;box-sizing:border-box}
+.oc-right>*{min-width:0;max-width:100%;box-sizing:border-box}
+.oc-exp,.oc-exp>*,.oc-run>*,.oc-modes>*,.oc-stats>*{min-width:0;max-width:100%;box-sizing:border-box}
+.oc-exp select,.oc-right select{width:100%;max-width:100%;min-width:0;text-overflow:ellipsis}
+.oc-exp .row{flex-wrap:wrap}.oc-exp .row .btn{flex:1 1 120px;min-width:0}
+.oc-run .btn{flex:1 1 110px;min-width:0}.oc-run .pri{flex:2 1 100%}
+#oc-fn,.oc-right .mt,.oc-right p{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+#oc-tx{box-sizing:border-box;max-width:100%;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.oc-exp .chk{align-items:flex-start;line-height:1.35}
+.oc-pgs{min-width:0}
+
+/* ===== job overlay (light on the GPU: no blur, no filters, only transform/opacity animations) ===== */
+#job{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:20px;background:rgba(8,9,22,.82);opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s;contain:strict}
+#job.on{opacity:1;visibility:visible;transition:opacity .2s,visibility 0s}
+#job .jc{position:relative;width:min(340px,100%);box-sizing:border-box;padding:26px 22px 22px;border-radius:28px;text-align:center;color:var(--tx);background:var(--bg);border:1.5px solid var(--a);box-shadow:0 20px 60px rgba(0,0,0,.45);transform:translateY(18px) scale(.96);transition:transform .3s cubic-bezier(.2,1.1,.3,1);overflow:hidden}
+#job.on .jc{transform:none}
+#job .jr{position:relative;width:160px;height:160px;margin:0 auto 14px;display:grid;place-items:center}
+#job .jr svg.m{width:100%;height:100%;transform:rotate(-90deg)}
+#job .jr .tk{fill:none;stroke:var(--bd);stroke-width:8}
+#job .jr .fl{fill:none;stroke:url(#jg);stroke-width:8;stroke-linecap:round;stroke-dasharray:402.12;stroke-dashoffset:402.12;transition:stroke-dashoffset .3s linear}
+#job .jr svg.sw{position:absolute;inset:0;width:100%;height:100%;will-change:transform;animation:jsp 1.4s linear infinite}
+#job .jr svg.sw circle{fill:none;stroke:var(--b);stroke-width:3;stroke-linecap:round;stroke-dasharray:28 374;opacity:.55}
+@keyframes jsp{to{transform:rotate(1turn)}}
+#job.fin .sw,#job.bad .sw{display:none}
+#job.fin .jr .fl{stroke:var(--ok)}#job.bad .jr .fl{stroke:#ef4a56}
+#job .jp{position:absolute;font:800 38px/1 Inter,system-ui,sans-serif;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;color:var(--a)}
+#job .jp small{font-size:17px;letter-spacing:0;margin-left:1px}
+#job .jk{position:absolute;width:72px;height:72px;opacity:0;transform:scale(.5);transition:opacity .2s,transform .4s cubic-bezier(.2,1.4,.4,1)}
+#job .jk path{fill:none;stroke:var(--ok);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60}
+#job.fin .jp,#job.bad .jp{opacity:0}
+#job.fin .jk,#job.bad .jk{opacity:1;transform:none}#job.fin .jk path{animation:jdr .45s .1s ease forwards}#job.bad .jk path{stroke:#ef4a56;animation:jdr .4s .05s ease forwards}
+@keyframes jdr{to{stroke-dashoffset:0}}
+#job .jt{font:800 17px/1.3 Inter,system-ui,sans-serif;letter-spacing:-.02em;min-height:22px}
+#job .js{margin-top:4px;color:var(--mut);font-size:12.5px;line-height:1.4;min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+#job .jb{position:relative;height:5px;border-radius:9px;background:var(--bd);overflow:hidden;margin:16px 4px 14px}
+#job .jb i{position:absolute;left:0;top:0;bottom:0;width:100%;border-radius:9px;background:linear-gradient(90deg,var(--a),var(--b));transform-origin:left;transform:scaleX(0);transition:transform .3s linear}
+#job .jst{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+#job .jst span{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:99px;font:700 11px Inter,sans-serif;color:var(--mut);background:var(--in);border:1px solid var(--bd)}
+#job .jst span:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bd)}
+#job .jst span.on{color:var(--tx);border-color:var(--a)}#job .jst span.on:before{background:var(--a)}
+#job .jst span.ok{color:var(--ok);border-color:transparent}#job .jst span.ok:before{background:var(--ok)}
+#job.fin .jb,#job.fin .jst,#job.bad .jb,#job.bad .jst{display:none}
+#job .jac{display:none;gap:9px;margin-top:18px}
+#job.fin .jac,#job.bad .jac{display:grid;animation:jup .3s both}
+@keyframes jup{from{opacity:0;transform:translateY(8px)}}
+#job .jac button{height:48px;border-radius:15px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font:700 14px Inter,system-ui,sans-serif;cursor:pointer;padding:0 14px}
+#job .jac button.pri{border:0;color:#fff;background:linear-gradient(135deg,var(--a),var(--b))}
+#job .jac button.dn{background:var(--ok);color:#fff;border:0}
+#job .jac button:active{transform:scale(.98)}
+@media(prefers-reduced-motion:reduce){#job *{animation-duration:.01s!important;transition-duration:.01s!important}}
+
+/* ===== page picker (select pages / range → new PDF) ===== */
+#xp{position:fixed;inset:0;z-index:80;display:none;grid-template-rows:auto auto minmax(0,1fr) auto;background:var(--bg);color:var(--tx);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);max-width:100vw;overflow:hidden}
+#xp.on{display:grid;animation:xpin .22s both}@keyframes xpin{from{opacity:0;transform:translateY(14px)}}
+#xp>*{min-width:0}
+#xp .xh{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--bd)}
+#xp .xl{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;font-size:19px;flex:none;box-shadow:0 6px 16px var(--glow)}
+#xp .xt0{flex:1;min-width:0}#xp .xt0 b{display:block;font-size:16px;letter-spacing:-.02em}#xp .xt0 small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#xp .xr{padding:12px 16px 10px;display:grid;gap:10px;border-bottom:1px solid var(--bd)}
+#xp .xin{display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:14px;border:1.5px solid var(--bd);background:var(--in)}
+#xp .xin:focus-within{border-color:var(--a);box-shadow:0 0 0 4px var(--glow)}#xp .xin.bad{border-color:#ef4a56}
+#xp .xin input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;color:inherit;font:600 15px Inter,system-ui,sans-serif;padding:12px 0;outline:0}
+#xp .xcl2{border:0;background:transparent;color:var(--mut);font-size:15px;cursor:pointer;padding:4px}
+#xp .xnote{font-size:12px;color:var(--mut);min-height:16px}#xp .xnote.bad{color:#ef4a56}
+#xp .xch{display:flex;gap:6px;flex-wrap:wrap}
+#xp .xch button{border:1px solid var(--bd);background:var(--in);color:var(--tx);font:700 12px Inter,system-ui,sans-serif;padding:7px 13px;border-radius:99px;cursor:pointer}
+#xp .xch button:active{transform:scale(.96)}
+#xp .xb{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#xp .xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;padding:14px 16px 24px}
+#xp .xp-t{position:relative;display:block;padding:0;width:100%;aspect-ratio:var(--ar,.72);border-radius:14px;border:2px solid var(--bd);background:var(--in);overflow:hidden;cursor:pointer;content-visibility:auto;contain-intrinsic-size:104px 144px;transition:transform .12s,border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+#xp .xp-t:active{transform:scale(.96)}
+#xp .xp-t .n0{position:absolute;inset:0;display:grid;place-items:center;font:800 26px Inter,system-ui,sans-serif;color:var(--bd)}
+#xp .xp-t img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+#xp .xp-t .pn{position:absolute;left:6px;bottom:6px;padding:2px 8px;border-radius:99px;background:rgba(10,12,26,.72);color:#fff;font:700 11px Inter,system-ui,sans-serif}
+#xp .xp-t .ck{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(10,12,26,.35);display:grid;place-items:center;color:#fff;font-size:12px;line-height:1}
+#xp .xp-t.on{border-color:var(--a);box-shadow:0 0 0 3px var(--glow)}
+#xp .xp-t.on .ck{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}#xp .xp-t.on .ck:after{content:"✓";font-weight:800}
+#xp .xf{display:grid;gap:10px;padding:10px 16px 12px;border-top:1px solid var(--bd);background:var(--bg)}#xp .xfr{display:flex;align-items:center;gap:12px}
+#xp .xcn{flex:1;min-width:0;font-size:13px;color:var(--mut)}#xp .xcn b{color:var(--tx);font-size:18px;font-variant-numeric:tabular-nums}
+#xp .xgo{flex:none;height:50px;padding:0 22px;border-radius:16px;border:0;color:#fff;font:800 15px Inter,system-ui,sans-serif;cursor:pointer;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 8px 20px var(--glow)}
+#xp .xgo:disabled{opacity:.45;box-shadow:none;cursor:default}#xp .xgo:active:not(:disabled){transform:scale(.98)}
+
+#xp .xz{border-radius:18px;border:1.5px solid var(--bd);background:var(--in);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+#xp .xz.on{border-color:var(--a);box-shadow:0 0 0 3px var(--glow)}
+#xp .xzh{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;margin:0;-webkit-tap-highlight-color:transparent}
+#xp .xzi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex:none;background:var(--bd);transition:background .2s}
+#xp .xz.on .xzi{background:linear-gradient(135deg,var(--a),var(--b))}
+#xp .xzt{flex:1;min-width:0}#xp .xzt b{display:block;font-size:14px;letter-spacing:-.01em}#xp .xzt small{display:block;color:var(--mut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#xp .xz.on .xzt small{color:var(--a);font-weight:700}
+#xp .xsw{position:relative;width:48px;height:28px;flex:none}
+#xp .xsw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
+#xp .xsw i{position:absolute;inset:0;border-radius:99px;background:var(--bd);transition:background .2s}
+#xp .xsw i:after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .22s cubic-bezier(.3,1.4,.5,1)}
+#xp .xsw input:checked+i{background:linear-gradient(135deg,var(--a),var(--b))}#xp .xsw input:checked+i:after{transform:translateX(20px)}
+#xp .xzb{display:grid;gap:10px;padding:2px 12px 12px;animation:xpin .2s both}#xp .xzb[hidden]{display:none}
+#xp .xzr{display:flex;gap:8px;align-items:stretch}
+#xp .xzv{flex:1;min-width:0;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx);font:700 16px Inter,system-ui,sans-serif;padding:10px 12px;outline:0}
+#xp .xzv:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--glow)}#xp .xzv.bad{border-color:#ef4a56;box-shadow:0 0 0 3px rgba(239,74,86,.2)}
+#xp .xzu{display:flex;border-radius:12px;border:1.5px solid var(--bd);overflow:hidden;flex:none}
+#xp .xzu button{border:0;background:var(--bg);color:var(--mut);font:800 13px Inter,system-ui,sans-serif;padding:0 16px;cursor:pointer}
+#xp .xzu button.on{background:linear-gradient(135deg,var(--a),var(--b));color:#fff}
+#xp .xzq{display:flex;gap:6px;flex-wrap:wrap}
+#xp .xzq button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:700 12px Inter,system-ui,sans-serif;padding:6px 12px;border-radius:99px;cursor:pointer}
+#xp .xzq button.on{border-color:var(--a);background:var(--glow);color:var(--a)}
+#xp .xzp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);margin:0;cursor:pointer}#xp .xzp input{width:18px;height:18px;margin:0;accent-color:var(--a)}
 </style></head><body><div id="app">
 <header><div class="logo">⚡</div><div><h1>PixelForge</h1><small>Convert, compress &amp; resize images, PDFs and documents. 100% in your browser, nothing is uploaded.</small></div><div class="sp"></div>
 <button class="btn" id="dev" title="Connect to another device with a code and send or receive files">📲 Device</button><div class="seg" id="tm"><button data-m="auto">Auto</button><button data-m="light">Light</button><button data-m="dark">Dark</button></div></header>
@@ -830,6 +938,22 @@ const hasSel=()=>S.items.some(i=>i.pick),scope=()=>hasSel()?S.items.filter(i=>i.
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fk=b=>b<1024?Math.round(b)+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
 const toast=(t,ms)=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),ms||2600)};
+
+/* ===== job overlay ===== */
+const JOB=(()=>{let el,iv=0,tg=0,cur=0,steps=[],base=[],act=0,open=false,fin=false,shown=-1;const C=402.12;
+const mk=()=>{if(el)return;el=document.createElement('div');el.id='job';el.setAttribute('role','status');el.setAttribute('aria-live','polite');
+el.innerHTML='<div class="jc"><div class="jr"><svg class="m" viewBox="0 0 160 160" aria-hidden="true"><defs><linearGradient id="jg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d5efc"/><stop offset="1" stop-color="#18c6e8"/></linearGradient></defs><circle class="tk" cx="80" cy="80" r="64"/><circle class="fl" cx="80" cy="80" r="64"/></svg><svg class="sw" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="64" style="transform:rotate(-90deg);transform-origin:80px 80px"/></svg><b class="jp">0<small>%</small></b><svg class="jk" viewBox="0 0 74 74" aria-hidden="true"><path d="M20 38l12 12 23-26"/></svg></div><div class="jt"></div><div class="js"></div><div class="jb"><i></i></div><div class="jst"></div><div class="jac"></div></div>';document.body.append(el)};
+const q=s=>el.querySelector(s);
+const paint=()=>{const v=Math.round(Math.max(0,Math.min(100,cur)));if(v===shown)return;shown=v;q('.fl').style.strokeDashoffset=C*(1-v/100);q('.jb i').style.transform='scaleX('+v/100+')';q('.jp').firstChild.nodeValue=v};
+const pills=()=>{q('.jst').innerHTML=steps.map((t,i)=>'<span class="'+(fin||i<act?'ok':i==act?'on':'')+'">'+t.n+'</span>').join('')};
+const tickf=()=>{if(!open)return;if(!fin){const lim=(base[act]+steps[act].w)*100-2.5;if(tg<lim)tg+=(lim-tg)*.02}const d=tg-cur;cur=Math.abs(d)<.4?tg:cur+d*.4;paint()};
+const acts=list=>{const c=q('.jac');c.innerHTML='';list.forEach(x=>{const b=document.createElement('button');b.type='button';b.textContent=x.t;if(x.pri)b.className='pri';b.onclick=async()=>{if(b.disabled)return;try{await x.f(b)}catch(e){console.error(e)}if(x.keep){b.classList.add('dn');b.classList.remove('pri');b.textContent=x.keep}else if(x.close)JOB.close()};c.append(b)})};
+return{
+start(list,title){mk();clearInterval(iv);steps=list;let a=0;base=list.map(t=>{const b=a;a+=t.w;return b});const tot=a||1;base=base.map(b=>b/tot);steps.forEach(t=>t.w=t.w/tot);act=0;tg=cur=0;shown=-1;fin=false;open=true;el.className='';q('.jt').textContent=title||steps[0].n;q('.js').textContent='';q('.jac').innerHTML='';pills();paint();void el.offsetWidth;el.classList.add('on');iv=setInterval(tickf,140)},
+step(i,f,title,sub){if(!open||fin)return;if(i!=act){act=i;pills()}tg=Math.max(tg,(base[i]+steps[i].w*Math.max(0,Math.min(1,f||0)))*100);if(title!=null&&q('.jt').textContent!==title)q('.jt').textContent=title;if(sub!=null&&q('.js').textContent!==sub)q('.js').textContent=sub},
+async finish(title,sub,buttons){if(!open)return;fin=true;tg=100;pills();q('.jt').textContent=title;q('.js').textContent=sub||'';await new Promise(r=>{let n=0;const w=()=>cur>=99.5||++n>8?r():setTimeout(w,100);w()});cur=100;shown=-1;paint();clearInterval(iv);acts((buttons||[]).concat([{t:'Done',close:1}]));el.classList.add('fin');if(navigator.vibrate)try{navigator.vibrate(18)}catch(e){}},
+fail(msg){if(!open)return;fin=true;clearInterval(iv);el.classList.add('bad');q('.jt').textContent='Something went wrong';q('.js').textContent=msg||'';acts([{t:'Close',pri:1,close:1}])},
+close(){open=false;clearInterval(iv);el&&el.classList.remove('on')}}})();
 const thumb=(src,w,h)=>{const k=Math.min(1,900/Math.max(w,h)),tw=Math.max(1,w*k|0),th=Math.max(1,h*k|0),s=k<1?scaleTo(src,tw,th):src,c=document.createElement('canvas');c.width=tw;c.height=th;const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(s,0,0,tw,th);return c.toDataURL('image/webp',.88)};
 const pv=s=>`transform:rotate(${s.rot||0}deg)${s.flip?' scaleX(-1)':''};filter:brightness(${s.br}%) contrast(${s.ct}%)${s.gray?' grayscale(1)':''}`;
 try{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'}catch(e){}
@@ -1025,9 +1149,86 @@ const it={id:++S.id,file:f,name:f.name,size:f.size,kind:k,s:{...S.def},outs:[],p
 try{if(k=='img')await readImg(it);else if(k=='pdf')await readPdf(it);else if(k=='pptx')await readPptx(it)}catch(e){toast('Could not read '+f.name);continue}
 S.items.splice(at++,0,it);n++;render()}
 if(n)toast('Added · tweak options per file, then press Convert')}
-async function split(it){toast('Splitting pages…');const d=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise,k=FW.pick(),at=S.items.indexOf(it),L=[];
-for(const n of RV([...Array(d.numPages)].map((_,i)=>i+1),it)){if(k&&!k.has(n))continue;const c=(it.edits&&it.edits[n])||await pcv(await d.getPage(n),LS.scale);L.push({id:++S.id,name:oname(it)+'_p'+n,size:it.size/d.numPages,kind:'img',src:c,w:c.width,h:c.height,th:thumb(c,c.width,c.height),s:{...it.s,fmt:OUT.img.includes(it.s.fmt)?it.s.fmt:'jpeg'},outs:[],ps:null})}
-mark();S.items.splice(at,1,...L);S.merged=null;render();toast(L.length+' page cards created')}
+const fthumb=(c,m)=>{const k=Math.min(1,(m||640)/Math.max(c.width,c.height)),t=document.createElement('canvas');t.width=Math.max(1,c.width*k|0);t.height=Math.max(1,c.height*k|0);const g=t.getContext('2d');g.imageSmoothingQuality='medium';g.drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.82)};
+async function split(it){if(it.busy)return;
+it.busy=1;it.err=0;it._pp=0;it._t0=performance.now();it._real=1;it._lbl='Splitting…';renderOne(it);if(!PRG.t)PRG.t=setInterval(prgTick,100);
+const nf=()=>new Promise(r=>requestAnimationFrame(()=>r()));
+try{await nf();const d=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise,k=FW.pick(),at=S.items.indexOf(it);
+const pn=RV([...Array(d.numPages)].map((_,i)=>i+1),it).filter(n=>!k||k.has(n)),tot=Math.max(1,pn.length),R=new Array(pn.length);let nx=0,dn=0,lp=0;
+it._pp=.03;prgPaint(it);
+const wk=async()=>{while(nx<pn.length){const j=nx++,n=pn[j],c=(it.edits&&it.edits[n])||await pcv(await d.getPage(n),LS.scale);R[j]={n,c,th:fthumb(c)};dn++;const t=performance.now();if(t-lp>120||dn==tot){lp=t;it._pp=Math.max(it._pp,.03+.95*dn/tot);prgPaint(it)}}};
+await Promise.all([wk(),wk(),wk()]);
+const L=R.map(r=>({id:++S.id,name:oname(it)+'_p'+r.n,size:it.size/d.numPages,kind:'img',src:r.c,w:r.c.width,h:r.c.height,th:r.th,s:{...it.s,fmt:OUT.img.includes(it.s.fmt)?it.s.fmt:'jpeg'},outs:[],ps:null}));
+it._pp=1;prgPaint(it);await new Promise(r=>setTimeout(r,250));
+it.busy=0;it._real=0;it._lbl='';
+const idx=S.items.indexOf(it);mark();S.items.splice(idx<0?at:idx,1,...L);S.merged=null;render();toast(L.length+' page cards created')}
+catch(e){console.error(e);it.busy=0;it._real=0;it._lbl='';it.err=e.message||'Split failed';renderOne(it);toast(it.err)}}
+/* ===== page picker ===== */
+const XP=(()=>{let el,it,n=0,sel=new Set,doc=null,io=null,q=[],vis=new Set,ld=new Set,run=0,gen=0,tiles=[];
+const f=s=>el.querySelector(s);
+const parse=t=>{t=(t||'').trim();if(!t)return new Set;if(/^all$/i.test(t))return new Set([...Array(n).keys()].map(i=>i+1));const o=new Set;for(const p of t.split(/[,;\s]+/)){if(!p)continue;const m=p.match(/^(\d+)\s*(?:[-–]\s*(\d+))?$/);if(!m)return null;let a=+m[1],b=+(m[2]||m[1]);if(a>b)[a,b]=[b,a];if(a<1||a>n)return null;for(let i=a;i<=Math.min(n,b);i++)o.add(i)}return o};
+const pack=set=>{const a=[...set].sort((x,y)=>x-y),o=[];for(let i=0;i<a.length;){let j=i;while(j+1<a.length&&a[j+1]==a[j]+1)j++;o.push(j>i?a[i]+'-'+a[j]:''+a[i]);i=j+1}return o.join(', ')};
+const upd=()=>{const c=sel.size;f('.xcn').innerHTML='<b>'+c+'</b> of '+n+' page'+(n>1?'s':'')+' selected';const g=f('.xgo');g.disabled=!c;g.textContent=c?'⚡ Create PDF · '+c+' page'+(c>1?'s':''):'⚡ Create PDF';f('.xcl2').hidden=!f('.xi0').value;it._xsel=[...sel]};
+const apply=(set,fromInput)=>{for(let i=1;i<=n;i++){const on=set.has(i);if(on!==sel.has(i))tiles[i-1].classList.toggle('on',on)}sel=new Set(set);if(!fromInput)f('.xi0').value=pack(sel);f('.xin').classList.remove('bad');const nt=f('.xnote');nt.className='xnote';nt.textContent='Tap pages, or type a range like 1-5, 8, 11-13';upd()};
+let zu=1024;
+const zget=()=>{const on=f('.xzc').checked,v=+f('.xzv').value||0;return{on,v,u:zu,pad:f('.xzpad').checked}};
+const zsave=()=>{it._xz=zget()};
+const zui=()=>{const z=zget();f('.xz').classList.toggle('on',z.on);f('.xzb').hidden=!z.on;f('.xzs').textContent=z.on?(z.v?'Under '+z.v+' '+(z.u==1024?'KB':'MB'):'Choose a maximum size'):'Off · keeps original quality';f('.xzv').classList.remove('bad');f('.xzu').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.u==z.u));f('.xzq').querySelectorAll('button').forEach(b=>b.classList.toggle('on',z.v==+b.dataset.v&&z.u==+b.dataset.u));zsave()};
+const zset=z=>{z=z||{};f('.xzc').checked=!!z.on;f('.xzv').value=z.v||'';zu=z.u||1024;f('.xzpad').checked=z.pad!==false;zui()};
+const small=(c,m)=>{const k=Math.min(1,m/Math.max(c.width,c.height)),t=document.createElement('canvas');t.width=Math.max(1,c.width*k|0);t.height=Math.max(1,c.height*k|0);const g=t.getContext('2d');g.imageSmoothingQuality='medium';g.drawImage(c,0,0,t.width,t.height);return t};
+async function thumbOf(i){let c;if(it.kind=='pdf'){const e=it.edits&&it.edits[i];if(e)c=small(e,300);else{const pg=await doc.getPage(i),v=pg.getViewport({scale:1});c=await pcv(pg,Math.min(2,300/Math.max(v.width,v.height)));pg.cleanup()}}else c=await drawSlide(it,i-1,360);return c.toDataURL('image/jpeg',.72)}
+async function pump(){if(run)return;run=1;const g=gen;try{while(q.length&&g==gen){const i=q.shift();if(ld.has(i)||!vis.has(i))continue;if(!doc&&it.kind=='pdf'){q.unshift(i);await new Promise(r=>setTimeout(r,60));continue}try{const u=await thumbOf(i);if(g!=gen)break;ld.add(i);const t=tiles[i-1];t.insertAdjacentHTML('afterbegin','<img alt="" decoding="async" src="'+u+'">');const z=t.querySelector('.n0');if(z)z.remove();if(io)io.unobserve(t)}catch(e){console.error(e);ld.add(i)}await new Promise(r=>setTimeout(r,0))}}finally{run=0;if(q.length&&g==gen)setTimeout(pump,0)}}
+const build=()=>{if(el)return;el=document.createElement('div');el.id='xp';el.setAttribute('role','dialog');el.setAttribute('aria-label','Select pages');
+el.innerHTML='<div class="xh"><div class="xl">📑</div><div class="xt0"><b>Select pages</b><small class="xnm"></small></div><button class="btn xcl" type="button">✕ Close</button></div><div class="xr"><div class="xin"><span aria-hidden="true">🔢</span><input class="xi0" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="e.g. 1-5, 8, 11-13" aria-label="Page range"><button class="xcl2" type="button" hidden aria-label="Clear">✕</button></div><div class="xnote"></div><div class="xch"><button type="button" data-q="all">All</button><button type="button" data-q="odd">Odd</button><button type="button" data-q="even">Even</button><button type="button" data-q="inv">Invert</button><button type="button" data-q="none">Clear</button></div></div><div class="xb"><div class="xg"></div></div><div class="xf"><div class="xz"><label class="xzh"><span class="xzi">📦</span><span class="xzt"><b>Resize file size</b><small class="xzs">Off · keeps original quality</small></span><span class="xsw"><input type="checkbox" class="xzc" aria-label="Resize the output file"><i></i></span></label><div class="xzb" hidden><div class="xzr"><input class="xzv" type="number" min="1" inputmode="numeric" placeholder="Max size, e.g. 500" aria-label="Maximum file size"><div class="xzu"><button type="button" data-u="1024" class="on">KB</button><button type="button" data-u="1048576">MB</button></div></div><div class="xzq"><button type="button" data-v="100" data-u="1024">100 KB</button><button type="button" data-v="250" data-u="1024">250 KB</button><button type="button" data-v="500" data-u="1024">500 KB</button><button type="button" data-v="1" data-u="1048576">1 MB</button><button type="button" data-v="2" data-u="1048576">2 MB</button><button type="button" data-v="5" data-u="1048576">5 MB</button></div><label class="xzp"><input type="checkbox" class="xzpad" checked> Fill up to the limit (lands just under it)</label></div></div><div class="xfr"><div class="xcn"></div><button class="xgo" type="button" disabled>⚡ Create PDF</button></div></div>';
+document.body.append(el);
+f('.xcl').onclick=()=>XP.close();
+f('.xi0').oninput=e=>{const set=parse(e.target.value),bad=set===null;f('.xin').classList.toggle('bad',bad);const nt=f('.xnote');nt.className='xnote'+(bad?' bad':'');nt.textContent=bad?'Check the range · pages go from 1 to '+n:'Tap pages, or type a range like 1-5, 8, 11-13';if(!bad)apply(set,true);f('.xcl2').hidden=!e.target.value};
+f('.xcl2').onclick=()=>{f('.xi0').value='';apply(new Set,true);f('.xi0').focus()};
+f('.xch').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;const k=b.dataset.q,o=new Set;for(let i=1;i<=n;i++){if(k=='all'||(k=='odd'&&i%2)||(k=='even'&&!(i%2))||(k=='inv'&&!sel.has(i)))o.add(i)}apply(o)};
+f('.xg').onclick=e=>{const t=e.target.closest('.xp-t');if(!t)return;const i=+t.dataset.n,o=new Set(sel);if(o.has(i))o.delete(i);else o.add(i);apply(o)};
+f('.xzc').onchange=()=>{zui();if(f('.xzc').checked&&!f('.xzv').value)setTimeout(()=>f('.xzv').focus(),60)};
+f('.xzv').oninput=zui;f('.xzpad').onchange=zui;
+f('.xzu').onclick=e=>{const b=e.target.closest('[data-u]');if(!b)return;zu=+b.dataset.u;zui()};
+f('.xzq').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;zu=+b.dataset.u;f('.xzv').value=b.dataset.v;zui()};
+f('.xgo').onclick=()=>XP.make();
+addEventListener('keydown',e=>{if(e.key=='Escape'&&el&&el.classList.contains('on'))XP.close()})};
+const dispose=()=>{gen++;q=[];vis.clear();ld.clear();if(io){io.disconnect();io=null}if(doc){try{doc.destroy()}catch(e){}doc=null}};
+return{
+async open(item){build();dispose();it=item;n=item.np||1;sel=new Set((item._xsel||[]).filter(i=>i>=1&&i<=n));
+const ar=item.kind=='pdf'?(item.w&&item.h?item.w/item.h:.72):(item.cx&&item.cy?item.cx/item.cy:1.78);
+f('.xnm').textContent=item.name+' · '+n+' page'+(n>1?'s':'');
+f('.xg').innerHTML=Array.from({length:n},(_,i)=>'<button type="button" class="xp-t" data-n="'+(i+1)+'" style="--ar:'+ar.toFixed(3)+'" aria-label="Page '+(i+1)+'"><span class="n0">'+(i+1)+'</span><span class="pn">'+(i+1)+'</span><i class="ck"></i></button>').join('');
+tiles=[...f('.xg').children];f('.xb').scrollTop=0;
+const s0=sel;sel=new Set;apply(s0);zset(item._xz);
+el.classList.add('on');document.body.style.overflow='hidden';
+const g=gen;
+io=new IntersectionObserver(es=>{let add=false;for(const e of es){const i=+e.target.dataset.n;if(e.isIntersecting){vis.add(i);if(!ld.has(i)&&!q.includes(i)){q.push(i);add=true}}else vis.delete(i)}if(add)pump()},{root:f('.xb'),rootMargin:'300px 0px'});
+tiles.forEach(t=>io.observe(t));
+if(item.kind=='pdf'){try{const d=await pdfjsLib.getDocument({data:item.ab.slice(0)}).promise;if(g!=gen){try{d.destroy()}catch(e){}return}doc=d}catch(e){console.error(e);toast('Could not open this PDF')}}},
+show(){if(!el)return;el.classList.add('on');document.body.style.overflow='hidden'},
+hide(){if(!el)return;el.classList.remove('on')},
+close(){if(!el)return;el.classList.remove('on');document.body.style.overflow='';dispose()},
+async make(){if(!sel.size)return;const Z=zget();if(Z.on&&Z.v<=0){const v=f('.xzv');v.classList.add('bad');v.focus();toast('Enter a maximum size, or switch Resize off');return}const T=Z.on?Math.round(Z.v*Z.u):0;const pages=[...sel].sort((a,b)=>a-b),N=pages.length,pdfSrc=it.kind=='pdf',scl=LS.scale||2;
+const lab=pack(sel).replace(/,\s*/g,'_'),nm=(cleanName(oname(it))||'document')+'_pages_'+(lab.length<=40?lab:N+'pages')+'.pdf';
+XP.hide();
+JOB.start(T?[{n:'Reading',w:.45},{n:'Resizing',w:.45},{n:'Saving',w:.1}]:[{n:'Reading',w:.6},{n:'Building',w:.3},{n:'Saving',w:.1}],'Reading pages');
+const fr=()=>new Promise(r=>requestAnimationFrame(()=>r()));await fr();
+let d2=null;
+try{if(pdfSrc)d2=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise;
+const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:(pdfSrc?72:96)*scl,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'},L=[],pend=new Set;
+for(let j=0;j<N;j++){const p0=pages[j];JOB.step(0,j/N,'Reading pages','Page '+p0+' · '+(j+1)+' of '+N);
+const c=pdfSrc?((it.edits&&it.edits[p0])||await pcv(await d2.getPage(p0),scl)):await drawSlide(it,p0-1,Math.round(960*scl));
+const p={s:{...o,page:'img'}};L.push(p);const pr=enc({src:c,w:c.width,h:c.height},o).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}
+await Promise.all(pend);JOB.step(1,0,'Building PDF',N+' page'+(N>1?'s':''));await fr();
+let blob,ok=true;
+if(T){let calls=0;const r=await fitMerged(L,l=>{calls++;JOB.step(1,1-1/(1+calls*.7),calls>1?'Resizing to fit your limit':'Building PDF',calls>1?'Pass '+calls+' · getting under '+fk(T):N+' page'+(N>1?'s':''));return pdf(l)},T,Z.pad);blob=r.blob;ok=r.ok}else blob=await pdf(L);
+JOB.step(2,.5,'Finishing',nm);
+await JOB.finish('Your PDF is ready',nm+' · '+N+' page'+(N>1?'s':'')+' · '+fk(blob.size)+(ok?'':' · above your limit'),[
+{t:'⬇ Save to device',pri:1,keep:'Saved ✓',f:()=>dl(nm,blob)},
+{t:'📲 Send to connected device',f:b=>{PX.send([{name:nm,blob}]);b.textContent='📲 Sent · tap to send again'}},
+{t:'✎ Change pages',f:()=>{JOB.close();XP.show()}}]);if(!ok)toast('Smallest possible is '+fk(blob.size)+', above your limit')}
+catch(e){console.error(e);JOB.fail('Could not create the PDF');XP.show()}
+finally{if(d2)try{d2.destroy()}catch(e){}}}}})();
 const dz=$('#drop');dz.onclick=()=>$('#file').click();dz.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();$('#file').click()}};
 $('#file').onchange=e=>{add(e.target.files);e.target.value=''};
 ['dragover','dragenter'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.add('on')}));['dragleave','drop'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.remove('on')}));
@@ -1073,9 +1274,9 @@ $('#pb').style.width='0';ui();pfTop();toast(L.length==1?'Converted · '+L[0].nam
 
 /* ===== conversion progress ring (0 to 100%) ===== */
 const PRG={t:null};
-function prgHtml(i){const p=i._pp||0;return`<div class="spin" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}" style="--p:${p}"><div class="pr"><div class="prw"><svg viewBox="0 0 80 80" aria-hidden="true"><defs><linearGradient id="prg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d5efc"/><stop offset="1" stop-color="#18c6e8"/></linearGradient></defs><circle class="tk" cx="40" cy="40" r="34"/><circle class="fl" cx="40" cy="40" r="34"/></svg><b class="pn">${Math.round(p*100)}%</b></div><small class="pl">${i._t0?'Converting…':'Waiting…'}</small></div></div>`}
-function prgPaint(it){const el=document.querySelector('#grid .it[data-id="'+it.id+'"] .spin');if(!el)return;const p=it._pp||0;el.style.setProperty('--p',p);el.setAttribute('aria-valuenow',Math.round(p*100));const n=el.querySelector('.pn'),l=el.querySelector('.pl');if(n)n.textContent=Math.round(p*100)+'%';if(l)l.textContent=p>=1?'Done ✓':(it._t0?'Converting…':'Waiting…');if(p>=1)el.setAttribute('data-done','')}
-function prgTick(){const now=performance.now();let any=false;for(const it of S.items){if(!it.busy)continue;any=true;if(!it._t0||it._pp>=1)continue;const t=(now-it._t0)/1000,tau=1.4+Math.min(8,(it.size||0)/1048576*.5)+Math.min(10,(it.np||0)*.15),v=.94*(1-Math.exp(-t/tau));if(v>(it._pp||0)){it._pp=v;prgPaint(it)}}if(!any){clearInterval(PRG.t);PRG.t=null}}
+function prgHtml(i){const p=i._pp||0;return`<div class="spin" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}" style="--p:${p}"><div class="pr"><div class="prw"><svg viewBox="0 0 80 80" aria-hidden="true"><defs><linearGradient id="prg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d5efc"/><stop offset="1" stop-color="#18c6e8"/></linearGradient></defs><circle class="tk" cx="40" cy="40" r="34"/><circle class="fl" cx="40" cy="40" r="34"/></svg><b class="pn">${Math.round(p*100)}%</b></div><small class="pl">${i._t0?(i._lbl||'Converting…'):'Waiting…'}</small></div></div>`}
+function prgPaint(it){const el=document.querySelector('#grid .it[data-id="'+it.id+'"] .spin');if(!el)return;const p=it._pp||0;el.style.setProperty('--p',p);el.setAttribute('aria-valuenow',Math.round(p*100));const n=el.querySelector('.pn'),l=el.querySelector('.pl');if(n)n.textContent=Math.round(p*100)+'%';if(l)l.textContent=p>=1?'Done ✓':(it._t0?(it._lbl||'Converting…'):'Waiting…');if(p>=1)el.setAttribute('data-done','')}
+function prgTick(){const now=performance.now();let any=false;for(const it of S.items){if(!it.busy)continue;any=true;if(!it._t0||it._pp>=1||it._real)continue;const t=(now-it._t0)/1000,tau=1.4+Math.min(8,(it.size||0)/1048576*.5)+Math.min(10,(it.np||0)*.15),v=.94*(1-Math.exp(-t/tau));if(v>(it._pp||0)){it._pp=v;prgPaint(it)}}if(!any){clearInterval(PRG.t);PRG.t=null}}
 /* ===== cards ===== */
 function form(i){const s=i.s,R='m-r',f=(k,l,t,c='',x='')=>`<label class="${c}">${l}<input data-k="${k}" type="${t}" value="${s[k]||''}" ${x}></label>`,
 sl=(k,l,o,c='')=>`<label class="${c}">${l}<select data-k="${k}">${o.map(([v,t])=>`<option value="${v}"${s[k]==v?' selected':''}>${t}</option>`).join('')}</select></label>`,
@@ -1093,7 +1294,7 @@ return`<div class="it${i.stale?' stale':''}${i.pick?' sel':''}${!dn&&!i.busy?' f
 ${dn?`<div class="res">→ ${fk(o)} <span class="tag ${pc<0?'w':''}">${pc>=0?'−':'+'}${Math.abs(pc)}%</span></div><div class="ol">${i.ps?esc(oname(i)+i.s.suf)+(i.mk=='p'?'.pptx':'.pdf')+' · '+i.ps.length+' page(s)':i.outs.length>1?i.outs.length+' files':esc(i.outs[0].name)}</div>`:i.err?`<div class="res" style="color:#e5484d">${esc(String(i.err))}</div>`:''}
 <div class="sn">Settings changed · press Convert this file</div>
 <div class="acts main"><button class="btn go1" data-r>${dn?'↻ Convert again':'⚡ Convert this file'}</button><button class="btn sv" data-d title="${dn?'Download the converted file':'Not converted yet: this downloads the original file'}">⬇ Save</button><button class="btn snd" data-snd title="${dn?'Send exactly the file that Save downloads to the connected device':'Not converted yet: this sends the original file to the connected device'}">📲 Send to connected device</button></div>
-<div class="acts"><button class="btn" data-iu${canU(i)?'':' disabled'} title="Undo the last change made to this file">↶ Undo</button><button class="btn" data-ir${canR(i)?'':' disabled'} title="Redo the change you just undid on this file">↷ Redo</button>${r?'<button class="btn ic" data-rot="270" title="Rotate left">↺</button><button class="btn ic" data-rot="90" title="Rotate right">↻</button><button class="btn ic" data-mir title="Mirror">⇆</button>':''}${(i.kind=='img'||i.kind=='pdf')?'<button class="btn scb" data-sc title="Find the page corners, straighten it and apply scan filters">📐 Scan / Crop</button>':''}${(i.kind=='img'||i.kind=='pdf')?'<button class="btn ocb" data-ocr title="Extract text: OCR for images and scans, or the digital text inside PDFs">🔎 Extract text</button>':''}<button class="btn" data-pv title="Preview the file as it will be downloaded">👁 Preview</button><button class="btn" data-rs title="Reset to the original file: removes scan/crop edits and restores the default settings, name and page order">↩ Reset</button><button class="btn" data-c title="Copy these settings to the selected files, or to every file when none are selected">⧉ Copy to ${hasSel()?'selected':'all'}</button>${i.kind=='pdf'&&r?'<button class="btn" data-sp title="One card per page">✂ Pages</button>':''}<button class="btn ic" data-x title="Remove">✕</button></div></div><div class="rzh" tabindex="0" role="button" aria-label="Resize this card: drag, or use the arrow keys. Double-click to reset" title="Drag to resize · double-click to reset"><span class="rzt"></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13 5L5 13M13 9l-4 4"/></svg></div></div>${form(i)}</div>`}
+<div class="acts"><button class="btn" data-iu${canU(i)?'':' disabled'} title="Undo the last change made to this file">↶ Undo</button><button class="btn" data-ir${canR(i)?'':' disabled'} title="Redo the change you just undid on this file">↷ Redo</button>${r?'<button class="btn ic" data-rot="270" title="Rotate left">↺</button><button class="btn ic" data-rot="90" title="Rotate right">↻</button><button class="btn ic" data-mir title="Mirror">⇆</button>':''}${(i.kind=='img'||i.kind=='pdf')?'<button class="btn scb" data-sc title="Find the page corners, straighten it and apply scan filters">📐 Scan / Crop</button>':''}${(i.kind=='img'||i.kind=='pdf')?'<button class="btn ocb" data-ocr title="Extract text: OCR for images and scans, or the digital text inside PDFs">🔎 Extract text</button>':''}<button class="btn" data-pv title="Preview the file as it will be downloaded">👁 Preview</button><button class="btn" data-rs title="Reset to the original file: removes scan/crop edits and restores the default settings, name and page order">↩ Reset</button><button class="btn" data-c title="Copy these settings to the selected files, or to every file when none are selected">⧉ Copy to ${hasSel()?'selected':'all'}</button>${i.kind=='pdf'&&r?'<button class="btn" data-sp title="One card per page">✂ Pages</button>':''}${(i.kind=='pdf'||i.kind=='pptx')&&i.np>1?'<button class="btn" data-xp title="Pick pages or a range, then make a PDF of just those">📑 Select pages</button>':''}<button class="btn ic" data-x title="Remove">✕</button></div></div><div class="rzh" tabindex="0" role="button" aria-label="Resize this card: drag, or use the arrow keys. Double-click to reset" title="Drag to resize · double-click to reset"><span class="rzt"></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13 5L5 13M13 9l-4 4"/></svg></div></div>${form(i)}</div>`}
 function pfTop(){const L=S.items,ok=L.filter(done),so=L.reduce((a,i)=>a+i.size,0),sn=ok.reduce((a,i)=>a+osz(i),0),so2=ok.reduce((a,i)=>a+i.size,0);
 $('#s1').textContent=L.length;$('#s2').textContent=fk(so);$('#s3').textContent=ok.length?fk(sn):'—';$('#s4').textContent=ok.length&&so2>sn?Math.round((1-sn/so2)*100)+'%':'—';
 $('#go').disabled=$('#clr').disabled=!L.length;$('#asa').disabled=!L.some(i=>i.kind=='img'||i.kind=='pdf');$('#zip').disabled=$('#zipsend').disabled=!L.length;$('#sendall').disabled=!L.length;$('#saveall').disabled=!L.length;$('#mpdf').hidden=!(S.merged||rawItems().length);$('#mppt').hidden=!S.mergedP;chips();hb()}
@@ -1164,6 +1365,7 @@ else if(A('[data-mir]')){it.s.flip=!it.s.flip;st()}
 else if(A('[data-kc]')){it.s.kb=+A('[data-kc]').dataset.kc;st()}
 else if(A('[data-x]')){S.items=S.items.filter(i=>i!=it);S.merged=null;render()}
 else if(A('[data-sp]'))split(it);
+else if(A('[data-xp]'))XP.open(it);
 else if(A('[data-c]')){scope().forEach(x=>{x.s={...it.s,fmt:OUT[x.kind].includes(it.s.fmt)?it.s.fmt:x.s.fmt};if(done(x))x.stale=1});render();toast(hasSel()?'Settings copied to the selected files':'Settings copied to all files')}
 else if(A('[data-pv]'))preview(it);
 else if(A('[data-rs]')){const c=S.def||cfg();it.s={...c,fmt:OUT[it.kind].includes(c.fmt)?c.fmt:OUT[it.kind][0]};
@@ -1257,10 +1459,10 @@ if(m>=0xC0&&m<=0xC2){const nc=u[i+9];return(nc==1||nc==3)&&((u[i+5]<<8|u[i+6])*(
 if(m==0xDA)return false;i+=2+L}}catch(e){}return false}
 async function buildRaw(){const L=[],A=rawItems(),pend=new Set();let n=0;
 for(const it of A){n++;const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:150,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'};
-toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);
+JOB.step(0,(n-1)/A.length,'Reading pages',it.name+' · file '+n+' of '+A.length);
 if(await jpgRaw(it)){L.push({s:{...o,page:'img'},out:{blob:it.file,w:it.w,h:it.h},jpg:it.file});continue}
-for await(const g of srcs(it)){toast('Reading '+it.name+' ('+n+'/'+A.length+')…',60000);const p={s:{...o,page:'img'}};L.push(p);const pr=enc(g,o).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}}
-await Promise.all(pend);toast('Building PDF…',60000);return L}
+let pi=0;const np_=npg(it);for await(const g of srcs(it)){JOB.step(0,(n-1+Math.min(1,pi++/np_))/A.length,'Reading pages',it.name+' · page '+pi+' of '+np_);const p={s:{...o,page:'img'}};L.push(p);const pr=enc(g,o).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}}
+await Promise.all(pend);JOB.step(1,0,'Building PDF','Putting '+L.length+' pages together');return L}
 async function remerge(){S.merged=S.mergedP=null;return;const M=S.items.filter(i=>i.ps&&i.mk!='p'),P=S.items.filter(i=>i.ps&&i.mk=='p');S.merged=M.length>1?await pdf(M.flatMap(i=>i.ps)):null;S.mergedP=P.length>1?await pptx(P.flatMap(i=>i.ps)):null}
 async function padMerged(L,mk,blob,T){/* grow the last page's JPEG with harmless filler so the file lands just under the limit */
 let best=blob,pages=L;for(let n=0;n<4;n++){const gap=T-best.size;if(gap<=64||gap<T*.002)break;const l=pages[pages.length-1],j=await padTo(l.jpg,'jpeg',l.jpg.size+gap-32);if(j===l.jpg)break;const np=pages.slice(0,-1).concat([{...l,jpg:j}]),nb=await mk(np);if(nb.size<=T){best=nb;pages=np}else{const over=nb.size-T;const j2=await padTo(l.jpg,'jpeg',Math.max(l.jpg.size,l.jpg.size+gap-32-over-32));if(j2===l.jpg)break;const np2=pages.slice(0,-1).concat([{...l,jpg:j2}]),nb2=await mk(np2);if(nb2.size<=T){best=nb2;pages=np2}else break}}return best}
@@ -1273,11 +1475,16 @@ for(let r=0;r<9;r++){let lo=.05,hi=1,best=null;for(let i=0;i<7;i++){const m=(lo+
 if(best){const o=await build(best);if(o.size<=T){const L2=L.map((p,i)=>({...p,jpg:best[i]}));return{blob:pad?await padMerged(L2,mk,o,T):o,ok:true}}}k*=.8}
 return{blob:await build(await enc(.05,k)),ok:false}}
 function openMerge(kind,raw){const P=kind=='p',R=!!raw&&!P,o=$('#mo'),list=()=>scope().filter(i=>i.ps&&(i.mk=='p')==P).flatMap(i=>i.ps),cnt=()=>R?rawItems().reduce((a,i)=>a+npg(i),0):list().length;
-o.innerHTML=`<div class="box"><h3>Merged ${P?'PPTX':'PDF'} · ${cnt()} ${P?'slides':'pages'}</h3>${R?'<div class="note" style="margin:0">Original pages, exactly as added (no resize, rotate or filters). Press Convert first if you want your per-file settings applied.</div>':''}<label>File name</label><div class="r2" style="grid-template-columns:1fr auto;align-items:center"><input id="mo_nm" type="text" value="merged" maxlength="120" autocomplete="off" spellcheck="false" placeholder="merged"><b>.${P?'pptx':'pdf'}</b></div><label>Limit file size to <small>(leave empty for full quality)</small></label><div class="r2"><input id="mo_n" type="number" min="1" placeholder="e.g. 500"><select id="mo_u"><option value="1024">KB</option><option value="1048576">MB</option></select></div><label class="chk"><input type="checkbox" id="mo_pad" checked> Fill up to the limit (file lands just under it, not far below)</label><label>${P?'Slide size':'Page size'}</label><select id="mo_p">${(P?[['auto','Match first page'],['169','16:9 widescreen'],['43','4:3'],['a4','A4 portrait']]:[['img','Keep each page size'],['a4','A4'],['letter','US Letter']]).map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select><div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" id="mo_x">Cancel</button><button class="btn" id="mo_send" title="Build the file with these settings and send it to the connected device">📲 Send to connected device</button><button class="btn pri" id="mo_go">⬇ Download</button></div></div>`;o.classList.add('on');
+o.innerHTML=`<div class="box"><h3>Merged ${P?'PPTX':'PDF'} · ${cnt()} ${P?'slides':'pages'}</h3>${R?'<div class="note" style="margin:0">Original pages, exactly as added (no resize, rotate or filters). Press Convert first if you want your per-file settings applied.</div>':''}<label>File name</label><div class="r2" style="grid-template-columns:1fr auto;align-items:center"><input id="mo_nm" type="text" value="merged" maxlength="120" autocomplete="off" spellcheck="false" placeholder="merged"><b>.${P?'pptx':'pdf'}</b></div><label>Limit file size to <small>(leave empty for full quality)</small></label><div class="r2"><input id="mo_n" type="number" min="1" placeholder="e.g. 500"><select id="mo_u"><option value="1024">KB</option><option value="1048576">MB</option></select></div><label class="chk"><input type="checkbox" id="mo_pad" checked> Fill up to the limit (file lands just under it, not far below)</label><label>${P?'Slide size':'Page size'}</label><select id="mo_p">${(P?[['auto','Match first page'],['169','16:9 widescreen'],['43','4:3'],['a4','A4 portrait']]:[['img','Keep each page size'],['a4','A4'],['letter','US Letter']]).map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select><div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button class="btn" id="mo_x">Cancel</button><button class="btn pri" id="mo_go">⚡ Create ${P?'PPTX':'PDF'}</button></div></div>`;o.classList.add('on');
 $('#mo_x').onclick=()=>o.classList.remove('on');
-const mgo=async send=>{const n=+$('#mo_n').value,T=n?n*(+$('#mo_u').value):0,v=$('#mo_p').value,pd=$('#mo_pad').checked,nm=cleanName($('#mo_nm').value).trim().replace(/\.(pdf|pptx)$/i,'')||'merged';o.classList.remove('on');toast(T?'Compressing to fit your limit…':'Building…');
-try{let L=R?await buildRaw():list();if(!P&&v!='img')L=L.map(p=>({...p,s:{...p.s,page:v}}));const r=await fitMerged(L,l=>P?pptx(l,v):pdf(l),T,pd);const mn=nm+(P?'.pptx':'.pdf');if(T&&!r.ok)toast('Smallest possible is '+fk(r.blob.size)+', above your limit');else if(!send)toast('Downloaded · '+mn+' · '+fk(r.blob.size));if(send)PX.send([{name:mn,blob:r.blob}]);else dl(mn,r.blob)}catch(e){console.error(e);toast('Could not build the merged file')}};
-$('#mo_go').onclick=()=>mgo(0);$('#mo_send').onclick=()=>mgo(1)}
+const mgo=async()=>{const n=+$('#mo_n').value,T=n?n*(+$('#mo_u').value):0,v=$('#mo_p').value,pd=$('#mo_pad').checked,nm=cleanName($('#mo_nm').value).trim().replace(/\.(pdf|pptx)$/i,'')||'merged';o.classList.remove('on');const X=P?'PPTX':'PDF';
+JOB.start(R?[{n:'Reading',w:.45},{n:'Building',w:.4},{n:'Saving',w:.15}]:[{n:'Preparing',w:.08},{n:'Building',w:.77},{n:'Saving',w:.15}],R?'Reading your pages':'Preparing '+X);
+try{let L=R?await buildRaw():(JOB.step(1,0,'Building '+X,cnt()+(P?' slides':' pages')),list());if(!P&&v!='img')L=L.map(p=>({...p,s:{...p.s,page:v}}));let calls=0;
+const r=await fitMerged(L,l=>{calls++;JOB.step(1,1-1/(1+calls*.7),T?(calls>1?'Compressing to fit your limit':'Building '+X):'Building '+X,T&&calls>1?'Pass '+calls+' · getting under '+fk(T):L.length+(P?' slides':' pages'));return P?pptx(l,v):pdf(l)},T,pd);
+const mn=nm+(P?'.pptx':'.pdf');JOB.step(2,.5,'Finishing',mn);
+const warn=T&&!r.ok;await JOB.finish('Your '+X+' is ready',mn+' · '+fk(r.blob.size)+(warn?' · above your limit':''),[{t:'⬇ Save to device',pri:1,keep:'Saved ✓',f:()=>dl(mn,r.blob)},{t:'📲 Send to connected device',f:b=>{PX.send([{name:mn,blob:r.blob}]);b.textContent='📲 Sent · tap to send again'}}]);
+if(warn)toast('Smallest possible is '+fk(r.blob.size)+', above your limit')}catch(e){console.error(e);JOB.fail('Could not build the merged file')}};
+$('#mo_go').onclick=()=>mgo()}
 $('#mo').onclick=e=>{if(e.target.id=='mo')e.target.classList.remove('on')};addEventListener('keydown',e=>{if(e.key=='Escape'){$('#mo').classList.remove('on');closePv()}});
 /* ===== drag to reorder (mouse, touch, or keyboard arrows on the handle) ===== */
 (()=>{const grid=$('#grid');let d=null;
