@@ -3208,11 +3208,6 @@ body:not(.dark-mode) .sqc-badge-wrong {
 
   <style id="good-board-and-perf">
 /* ═══ GOOD BOARD theme — black smart-board look: neon-blue frame, yellow-green text, green options ═══ */
-html[data-gp-theme="Good Board"] body::after{
-  content:""; position:fixed; inset:0; z-index:2147482000; pointer-events:none;
-  border:3px solid #1fa2ff; border-radius:6px;
-  box-shadow: inset 0 0 14px rgba(31,162,255,.55);
-}
 html[data-gp-theme="Good Board"] body{ background:#000 !important; font-weight:600; }
 html[data-gp-theme="Good Board"] .option .kbd{ color:#7dff6a !important; }
 html[data-gp-theme="Good Board"] .option{ border-color:rgba(125,255,106,.55) !important; }
@@ -16144,9 +16139,9 @@ body.qa-only-mode #qaToolbarRow {
   ];
 
   var PRESETS = [
-    { name:'Good Board',  bg:'#000000', box:'#03060c', text:'#d9ff3f', accent:'#1fa2ff',
-      tx:{ q:{ b:true }, t:{ color:'#ffffff', b:true, i:false }, o:{ color:'#b9ffa9', b:true } } },
     { name:'Midnight',    bg:'#060d1c', box:'#060d1c', text:'#f1f5f9' },
+    { name:'Good Board',  bg:'#000000', box:'#03060c', text:'#d9ff3f', accent:'#1fa2ff',
+      tx:{ q:{ b:true }, t:{ color:'#ffffff', b:true, i:false }, o:{ color:'#34e65c', b:true } } },
     { name:'Testbook',    bg:'#f4f7fb', box:'#1b4f9c', text:'#1a2233' },
     { name:'Royal',       bg:'#1a1025', box:'#a855f7', text:'#f3e8ff' },
     { name:'Forest',      bg:'#0a1f17', box:'#10b981', text:'#ecfdf5' },
@@ -16232,7 +16227,10 @@ body.qa-only-mode #qaToolbarRow {
   function loadSaved(){
     try{
       var raw = localStorage.getItem('gpAppearanceSettings');
-      if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ for(var k in DEFAULTS){ if(s[k]!==undefined) state[k]=s[k]; } state.tx = normTx(state.tx); } }
+      if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ for(var k in DEFAULTS){ if(s[k]!==undefined) state[k]=s[k]; } state.tx = normTx(state.tx); }
+      /* every launch starts on the default Midnight theme (font, size and images are still remembered) */
+      state.bg = DEFAULTS.bg; state.box = DEFAULTS.box; state.text = DEFAULTS.text; state.accent = ''; state.preset = ''; state.tx = newTx();
+    }
     }catch(e){ /* localStorage unavailable (e.g. some file:// contexts) — fall back to defaults */ }
   }
   function persist(){
@@ -16269,7 +16267,9 @@ body.qa-only-mode #qaToolbarRow {
     syncStudio();
     syncPresetMarks();
 
-    root.style.setProperty('--gp-text', state.text);
+    var _rTxt = (state.tx && state.tx.r && state.tx.r.color) ? state.tx.r.color : state.text;
+    root.style.setProperty('--gp-text', _rTxt);
+    (function(){ var pn = document.getElementById('gcp-panel'); if(pn) pn.style.setProperty('--gp-text', state.text); })();
 
     // translucent tints of the text colour + readable foreground for accent-filled buttons
     root.style.setProperty('--gp-tx-06', withAlpha(state.text, 0.07));
@@ -16350,7 +16350,7 @@ body.qa-only-mode #qaToolbarRow {
     { k:'o', name:'Option text',     sub:'A · B · C · D answers',        def:{} },
     { k:'r', name:'Everything else', sub:'Menus, notes, concepts, labels', def:{} }
   ];
-  var TX_NOT_R = ':not(#questionText,#questionText *,.option .opt-text,.option .opt-text *,.dual-lang-wrap,.dual-lang-wrap *,.dual-lang-opt-wrap,.dual-lang-opt-wrap *,#gcp-panel,#gcp-panel *,.badge)';
+  var TX_NOT_R = ':not(#questionText,#questionText *,.option .opt-text,.option .opt-text *,.dual-lang-wrap,.dual-lang-wrap *,.dual-lang-opt-wrap,.dual-lang-opt-wrap *,.cp-tl,.cp-tl *,.bm-rc-tr,.bm-rc-tr *,.modal-tl-block,.modal-tl-block *,.help-tl-block,.help-tl-block *,#bmExpTranslation,#bmExpTranslation *,#gcp-panel,#gcp-panel *,.badge,:has(#questionText,.opt-text,.dual-lang-wrap,.dual-lang-opt-wrap,.cp-tl,.bm-rc-tr,.modal-tl-block,.help-tl-block,#bmExpTranslation,#gcp-panel))';
   function txDecl(t, isR){
     var a = [];
     if(t.color && !isR) a.push('color:'+t.color+' !important','-webkit-text-fill-color:'+t.color+' !important');
@@ -16362,11 +16362,13 @@ body.qa-only-mode #qaToolbarRow {
   }
   function applyTextStyles(){
     var tx = state.tx || newTx(), H = 'html:not(.lite-mode) ', out = [], d;
-    d = txDecl(tx.q); if(d) out.push(H+'#questionText,'+H+'#questionText :not(.dual-lang-wrap):not(.dual-lang-wrap *):not(.badge){'+d+'}');
-    d = txDecl(tx.t); if(d) out.push(H+'.dual-lang-wrap,'+H+'.dual-lang-wrap *,'+H+'.dual-lang-opt-wrap,'+H+'.dual-lang-opt-wrap *{'+d+'}');
+    function pin(t){ var c = {}; for(var k in t) c[k] = t[k]; if(!c.color && tx.r.color) c.color = state.text; return c; }
+    var qx = pin(tx.q), tt = pin(tx.t), ox = pin(tx.o);
+    d = txDecl(qx); if(d) out.push(H+'#questionText,'+H+'#questionText :not(.dual-lang-wrap):not(.dual-lang-wrap *):not(.badge){'+d+'}');
+    d = txDecl(tt); if(d){ var TS = ['.dual-lang-wrap','.dual-lang-opt-wrap','#conceptBox .cp-tl','.bm-rc-tr','.modal-tl-block','.help-tl-block','#bmExpTranslation']; out.push(TS.map(function(x){ return H+x+','+H+x+' *'; }).join(',')+'{'+d+'}'); }
     if(tx.q.b!==null && tx.t.b===null) out.push(H+'#questionText .dual-lang-wrap{font-weight:600 !important}');
     if(tx.q.u===true && tx.t.u===null) out.push(H+'#questionText .dual-lang-wrap{display:inline-block;width:100%;box-sizing:border-box}');
-    d = txDecl(tx.o); if(d){ var O = H+'.option:not(.correct):not(.wrong) .opt-text'; out.push(O+','+O+' *{'+d+'}'); }
+    d = txDecl(ox); if(d){ var O = H+'.option:not(.correct):not(.wrong) .opt-text'; out.push(O+','+O+' *{'+d+'}'); }
     d = txDecl(tx.r, true); if(d) out.push(':where(html:not(.lite-mode) body '+TX_NOT_R+'){'+d.replace(/;?$/,'')+'}');
     if(tx.r.u===true) out.push(':where(html:not(.lite-mode) body :is(p,span,li,a,label,h1,h2,h3,h4,h5,h6,td,th,small,strong,b,em,legend,summary)'+TX_NOT_R+'){text-decoration:underline !important;text-underline-offset:.18em}');
     var el = document.getElementById('gpTextDyn');
@@ -16383,13 +16385,13 @@ body.qa-only-mode #qaToolbarRow {
     TX_GROUPS.forEach(function(g){
       var card = wrap.querySelector('[data-k="'+g.k+'"]'); if(!card) return;
       var t = state.tx[g.k];
-      var col = (g.k==='r') ? state.text : (t.color || state.text);
+      var col = t.color || state.text;
       var ci = card.querySelector('.ts-color'); if(ci && ci.value !== col && /^#/.test(col)) ci.value = col;
       var sel = card.querySelector('.ts-font'); if(sel && sel.value !== t.font) sel.value = t.font;
       ['b','i','u'].forEach(function(f){ var b = card.querySelector('[data-fx="'+f+'"]'); if(b) b.classList.toggle('on', fxOn(g.k,f)); });
       var sm = card.querySelector('.ts-badge');
       if(sm){
-        sm.style.color = col; sm.style.fontFamily = t.font || '';
+        sm.style.setProperty('color', col, 'important'); sm.style.setProperty('-webkit-text-fill-color', col, 'important'); sm.style.setProperty('font-family', t.font || 'inherit', 'important');
         sm.style.fontWeight = fxOn(g.k,'b') ? '800' : '500';
         sm.style.fontStyle = fxOn(g.k,'i') ? 'italic' : 'normal';
         sm.style.textDecoration = fxOn(g.k,'u') ? 'underline' : 'none';
@@ -16413,7 +16415,7 @@ body.qa-only-mode #qaToolbarRow {
         '<button type="button" data-fx="u" title="Underline"><u>U</u></button></div></div>';
       wrap.appendChild(card);
       card.querySelector('.ts-color').addEventListener('input', function(e){
-        if(g.k==='r') state.text = e.target.value; else state.tx[g.k].color = e.target.value;
+        state.tx[g.k].color = e.target.value;
         applyAll(); persist();
       });
       card.querySelector('.ts-font').addEventListener('change', function(e){ state.tx[g.k].font = e.target.value; applyAll(); persist(); });
@@ -16463,7 +16465,8 @@ body.qa-only-mode #qaToolbarRow {
     sw.dataset.name = p.name;
     sw.style.background = 'linear-gradient(135deg,'+p.bg+' 45%,'+p.box+' 150%)';
     sw.title = p.name; sw._p = p;
-    if(p.accent){ sw.style.background = 'linear-gradient(135deg,'+p.bg+' 40%,'+p.accent+' 160%)'; sw.classList.add('gp-star'); }
+    if(p.accent){ sw.style.background = 'linear-gradient(135deg,'+p.bg+' 40%,'+p.accent+' 160%)'; }
+    if(p.name==='Midnight') sw.classList.add('gp-star');
     sw.addEventListener('mouseenter', function(){ var c=document.getElementById('gpPresetName'); if(c) c.textContent = p.name; });
     sw.addEventListener('mouseleave', function(){ syncPresetMarks(); });
     sw.addEventListener('click', function(){
