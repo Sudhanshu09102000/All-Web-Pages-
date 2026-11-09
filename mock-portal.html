@@ -30,6 +30,7 @@
   </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0d1117" />
+  <script>try{if(localStorage.getItem("gpPerfBoost")!=="0")document.documentElement.classList.add("perf-boost");}catch(e){document.documentElement.classList.add("perf-boost");}</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -3205,6 +3206,32 @@ body:not(.dark-mode) .sqc-badge-wrong {
 }
 </style>
 
+  <style id="good-board-and-perf">
+/* ═══ GOOD BOARD theme — black smart-board look: neon-blue frame, yellow-green text, green options ═══ */
+html[data-gp-theme="Good Board"] body::after{
+  content:""; position:fixed; inset:0; z-index:2147482000; pointer-events:none;
+  border:3px solid #1fa2ff; border-radius:6px;
+  box-shadow: inset 0 0 14px rgba(31,162,255,.55);
+}
+html[data-gp-theme="Good Board"] body{ background:#000 !important; font-weight:600; }
+html[data-gp-theme="Good Board"] .option .kbd{ color:#7dff6a !important; }
+html[data-gp-theme="Good Board"] .option{ border-color:rgba(125,255,106,.55) !important; }
+
+/* ═══ PERFORMANCE BOOST — works on desktop AND phone; toggle in the control panel ═══ */
+html.perf-boost *, html.perf-boost *::before, html.perf-boost *::after{
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+html.perf-boost #particleCanvas{ display:none !important; }
+html.perf-boost .subject-hero-orb-1, html.perf-boost .subject-hero-orb-2,
+html.perf-boost .bm-rb-orb, html.perf-boost .bm-rb-star, html.perf-boost #bmResultBg::after,
+html.perf-boost [style*="orb1"], html.perf-boost [style*="orb2"]{ display:none !important; }
+html.perf-boost .brand-title, html.perf-boost .progress-bar, html.perf-boost .subject-hero-ring,
+html.perf-boost .swipe-hint .sh-arrow, html.perf-boost .cp-icon.cp-icon-click,
+html.perf-boost .yk-panel::before{ animation:none !important; }
+html.perf-boost .subject-card, html.perf-boost .btn-glass, html.perf-boost .topic-btn, html.perf-boost .subtopic-btn{ will-change:auto !important; }
+html.perf-boost .glass, html.perf-boost .engine-topbar{ box-shadow:none !important; }
+</style>
+
   <style id="god-perf-overrides">
 /* ============================================================
    GOD-LEVEL PERFORMANCE + UI OVERRIDES (mobile-first)
@@ -5047,6 +5074,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
   function loop(ts) {
     if (!running) return;
+    if (document.documentElement.classList.contains('perf-boost')) { setTimeout(function(){ requestAnimationFrame(loop); }, 800); return; }
     if (ts - lastTs >= FRAME_MS) { if (!document.documentElement.classList.contains('lite-mode')) draw(); lastTs = ts; }
     requestAnimationFrame(loop);
   }
@@ -15168,11 +15196,23 @@ body.qa-only-mode #qaToolbarRow {
 
     <div class="gcp-appear-label">One-Tap Themes</div>
     <div id="gpPresets" class="gcp-presets-grid"></div>
+    <div class="gcp-preset-caption"><span>Theme</span><b id="gpPresetName">Custom colours</b></div>
 
+    <button class="gcp-btn" id="gpPerfBtn" style="margin-top:10px;">
+      <span class="gcp-icon">⚡</span>
+      <span id="gpPerfLbl">Performance Boost: ON</span>
+    </button>
     <button class="gcp-btn" id="gpResetBtn" style="margin-top:10px;">
       <span class="gcp-icon">↺</span>
-      <span>Reset to Georgia Default</span>
+      <span>Reset to Midnight (Default)</span>
     </button>
+  </div>
+
+  <!-- TEXT STUDIO -->
+  <div class="gcp-section" id="gpTextStudioSec">
+    <div class="gcp-section-title">✍️ Text Studio</div>
+    <div class="ts-intro">Style each kind of text on its own — colour, font, bold, italic, underline.</div>
+    <div id="gpTextStudio"></div>
   </div>
 
   <!-- FOOTER -->
@@ -15233,7 +15273,7 @@ body.qa-only-mode #qaToolbarRow {
     }
   }
   enforceTriggerVisibility();
-  setInterval(enforceTriggerVisibility, 2000); // slower cadence — no DOM thrash
+  setInterval(function(){ if(!document.hidden) enforceTriggerVisibility(); }, 4000); // slower cadence — no DOM thrash
 
   // ── Session Deck: live copy of what the old top bar showed ──
   let deckTimer = null;
@@ -16104,6 +16144,8 @@ body.qa-only-mode #qaToolbarRow {
   ];
 
   var PRESETS = [
+    { name:'Good Board',  bg:'#000000', box:'#03060c', text:'#d9ff3f', accent:'#1fa2ff',
+      tx:{ q:{ b:true }, t:{ color:'#ffffff', b:true, i:false }, o:{ color:'#b9ffa9', b:true } } },
     { name:'Midnight',    bg:'#060d1c', box:'#060d1c', text:'#f1f5f9' },
     { name:'Testbook',    bg:'#f4f7fb', box:'#1b4f9c', text:'#1a2233' },
     { name:'Royal',       bg:'#1a1025', box:'#a855f7', text:'#f3e8ff' },
@@ -16136,13 +16178,28 @@ body.qa-only-mode #qaToolbarRow {
     { name:'Onyx',        bg:'#000000', box:'#525252', text:'#e5e5e5' }
   ];
 
+  function newTx(){
+    var o = {};
+    ['q','t','o','r'].forEach(function(k){ o[k] = { color:'', font:'', b:null, i:null, u:null }; });
+    return o;
+  }
+  function normTx(t){
+    var o = newTx();
+    if(t && typeof t==='object') ['q','t','o','r'].forEach(function(k){
+      var v = t[k]; if(!v || typeof v!=='object') return;
+      if(typeof v.color==='string') o[k].color = v.color;
+      if(typeof v.font==='string') o[k].font = v.font;
+      ['b','i','u'].forEach(function(f){ if(v[f]===true||v[f]===false) o[k][f] = v[f]; });
+    });
+    return o;
+  }
   var DEFAULTS = {
     font: FONTS[0].stack, fs: 16, bg:'#060d1c', box:'#060d1c', text:'#f1f5f9',
-    bgImg:'', bgImgOp:70, boxImg:'', boxImgOp:70
+    bgImg:'', bgImgOp:70, boxImg:'', boxImgOp:70, accent:'', preset:'', tx:newTx()
   };
   var state = {
     font: DEFAULTS.font, fs: DEFAULTS.fs, bg: DEFAULTS.bg, box: DEFAULTS.box, text: DEFAULTS.text,
-    bgImg: DEFAULTS.bgImg, bgImgOp: DEFAULTS.bgImgOp, boxImg: DEFAULTS.boxImg, boxImgOp: DEFAULTS.boxImgOp
+    bgImg: DEFAULTS.bgImg, bgImgOp: DEFAULTS.bgImgOp, boxImg: DEFAULTS.boxImg, boxImgOp: DEFAULTS.boxImgOp, accent: '', preset: '', tx: newTx()
   };
 
   /* ---------- turn an uploaded photo into a screen-friendly data URL ----------
@@ -16175,7 +16232,7 @@ body.qa-only-mode #qaToolbarRow {
   function loadSaved(){
     try{
       var raw = localStorage.getItem('gpAppearanceSettings');
-      if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ for(var k in DEFAULTS){ if(s[k]!==undefined) state[k]=s[k]; } } }
+      if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ for(var k in DEFAULTS){ if(s[k]!==undefined) state[k]=s[k]; } state.tx = normTx(state.tx); } }
     }catch(e){ /* localStorage unavailable (e.g. some file:// contexts) — fall back to defaults */ }
   }
   function persist(){
@@ -16192,9 +16249,25 @@ body.qa-only-mode #qaToolbarRow {
 
     root.style.setProperty('--gp-box1', state.box);
     root.style.setProperty('--gp-box2', shade(state.box, -0.18));
-    root.style.setProperty('--gp-boxb', shade(state.box, 0.22));
-    root.style.setProperty('--gp-accent', state.box);
-    root.style.setProperty('--gp-accent2', shade(state.box, 0.25));
+    var _acc = state.accent || state.box;
+    root.style.setProperty('--gp-boxb', state.accent ? state.accent : shade(state.box, 0.22));
+    root.style.setProperty('--gp-accent', _acc);
+    root.style.setProperty('--gp-accent2', shade(_acc, 0.25));
+    if (state.preset) root.setAttribute('data-gp-theme', state.preset); else root.removeAttribute('data-gp-theme');
+    (function(){            // premium-panel glow colour (never too dark to see)
+      var c = hexToRgb(/^#/.test(_acc) ? _acc : '#3b82f6');
+      var lum = (0.299*c.r + 0.587*c.g + 0.114*c.b)/255, g;
+      if(lum < 0.3){ var t = hexToRgb(/^#/.test(state.text) ? state.text : '#f1f5f9'); var k=0.55;
+        g = 'rgb('+Math.round(c.r+(t.r-c.r)*k)+','+Math.round(c.g+(t.g-c.g)*k)+','+Math.round(c.b+(t.b-c.b)*k)+')'; }
+      else g = 'rgb('+c.r+','+c.g+','+c.b+')';
+      root.style.setProperty('--gp-glow', g);
+      root.style.setProperty('--gp-glow-10', withAlpha(g, 0.12));
+      root.style.setProperty('--gp-glow-22', withAlpha(g, 0.24));
+      root.style.setProperty('--gp-glow-40', withAlpha(g, 0.5));
+    })();
+    applyTextStyles();
+    syncStudio();
+    syncPresetMarks();
 
     root.style.setProperty('--gp-text', state.text);
 
@@ -16203,7 +16276,7 @@ body.qa-only-mode #qaToolbarRow {
     root.style.setProperty('--gp-tx-12', withAlpha(state.text, 0.14));
     root.style.setProperty('--gp-tx-25', withAlpha(state.text, 0.28));
     (function(){
-      var m = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(shade(state.box, 0.25));
+      var m = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(shade(state.accent || state.box, 0.25));
       var lum = m ? (0.299*(+m[1]) + 0.587*(+m[2]) + 0.114*(+m[3])) / 255 : 0;
       root.style.setProperty('--gp-accent-fg', lum > 0.6 ? '#0b1020' : '#ffffff');
     })();
@@ -16269,6 +16342,105 @@ body.qa-only-mode #qaToolbarRow {
   }
   function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
+
+  /* ═════════ TEXT STUDIO — separate colour / font / bold / italic / underline for each kind of text ═════════ */
+  var TX_GROUPS = [
+    { k:'q', name:'Question text',   sub:'The main question',           def:{} },
+    { k:'t', name:'Translated text', sub:'Hindi / other-language lines', def:{ i:true } },
+    { k:'o', name:'Option text',     sub:'A · B · C · D answers',        def:{} },
+    { k:'r', name:'Everything else', sub:'Menus, notes, concepts, labels', def:{} }
+  ];
+  var TX_NOT_R = ':not(#questionText,#questionText *,.option .opt-text,.option .opt-text *,.dual-lang-wrap,.dual-lang-wrap *,.dual-lang-opt-wrap,.dual-lang-opt-wrap *,#gcp-panel,#gcp-panel *,.badge)';
+  function txDecl(t, isR){
+    var a = [];
+    if(t.color && !isR) a.push('color:'+t.color+' !important','-webkit-text-fill-color:'+t.color+' !important');
+    if(t.font) a.push('font-family:'+t.font+' !important');
+    if(t.b===true) a.push('font-weight:800 !important'); else if(t.b===false && !isR) a.push('font-weight:400 !important');
+    if(t.i===true) a.push('font-style:italic !important'); else if(t.i===false && !isR) a.push('font-style:normal !important');
+    if(t.u===true) a.push('text-decoration:underline !important','text-underline-offset:.18em'); else if(t.u===false && !isR) a.push('text-decoration:none !important');
+    return a.join(';');
+  }
+  function applyTextStyles(){
+    var tx = state.tx || newTx(), H = 'html:not(.lite-mode) ', out = [], d;
+    d = txDecl(tx.q); if(d) out.push(H+'#questionText,'+H+'#questionText :not(.dual-lang-wrap):not(.dual-lang-wrap *):not(.badge){'+d+'}');
+    d = txDecl(tx.t); if(d) out.push(H+'.dual-lang-wrap,'+H+'.dual-lang-wrap *,'+H+'.dual-lang-opt-wrap,'+H+'.dual-lang-opt-wrap *{'+d+'}');
+    if(tx.q.b!==null && tx.t.b===null) out.push(H+'#questionText .dual-lang-wrap{font-weight:600 !important}');
+    if(tx.q.u===true && tx.t.u===null) out.push(H+'#questionText .dual-lang-wrap{display:inline-block;width:100%;box-sizing:border-box}');
+    d = txDecl(tx.o); if(d){ var O = H+'.option:not(.correct):not(.wrong) .opt-text'; out.push(O+','+O+' *{'+d+'}'); }
+    d = txDecl(tx.r, true); if(d) out.push(':where(html:not(.lite-mode) body '+TX_NOT_R+'){'+d.replace(/;?$/,'')+'}');
+    if(tx.r.u===true) out.push(':where(html:not(.lite-mode) body :is(p,span,li,a,label,h1,h2,h3,h4,h5,h6,td,th,small,strong,b,em,legend,summary)'+TX_NOT_R+'){text-decoration:underline !important;text-underline-offset:.18em}');
+    var el = document.getElementById('gpTextDyn');
+    if(!el){ el = document.createElement('style'); el.id = 'gpTextDyn'; document.head.appendChild(el); }
+    var css = out.join('\n'); if(el.textContent !== css) el.textContent = css;
+  }
+  function fxOn(k, f){
+    var v = state.tx[k][f], g = TX_GROUPS.filter(function(x){return x.k===k;})[0];
+    if(v===true || v===false) return v;
+    return !!(g && g.def[f]);
+  }
+  function syncStudio(){
+    var wrap = document.getElementById('gpTextStudio'); if(!wrap) return;
+    TX_GROUPS.forEach(function(g){
+      var card = wrap.querySelector('[data-k="'+g.k+'"]'); if(!card) return;
+      var t = state.tx[g.k];
+      var col = (g.k==='r') ? state.text : (t.color || state.text);
+      var ci = card.querySelector('.ts-color'); if(ci && ci.value !== col && /^#/.test(col)) ci.value = col;
+      var sel = card.querySelector('.ts-font'); if(sel && sel.value !== t.font) sel.value = t.font;
+      ['b','i','u'].forEach(function(f){ var b = card.querySelector('[data-fx="'+f+'"]'); if(b) b.classList.toggle('on', fxOn(g.k,f)); });
+      var sm = card.querySelector('.ts-badge');
+      if(sm){
+        sm.style.color = col; sm.style.fontFamily = t.font || '';
+        sm.style.fontWeight = fxOn(g.k,'b') ? '800' : '500';
+        sm.style.fontStyle = fxOn(g.k,'i') ? 'italic' : 'normal';
+        sm.style.textDecoration = fxOn(g.k,'u') ? 'underline' : 'none';
+      }
+    });
+  }
+  function buildStudio(){
+    var wrap = document.getElementById('gpTextStudio'); if(!wrap) return;
+    wrap.innerHTML = '';
+    TX_GROUPS.forEach(function(g){
+      var card = document.createElement('div'); card.className = 'ts-card'; card.dataset.k = g.k;
+      var opts = '<option value="">Default font</option>' + FONTS.map(function(f){ return '<option value="'+f.stack.replace(/"/g,'&quot;')+'">'+f.name+'</option>'; }).join('');
+      card.innerHTML =
+        '<div class="ts-head"><div class="ts-badge">Aa</div>' +
+        '<div class="ts-meta"><div class="ts-name">'+g.name+'</div><div class="ts-sub">'+g.sub+'</div></div>' +
+        '<button type="button" class="ts-reset" title="Reset this text style">↺</button></div>' +
+        '<div class="ts-row"><input type="color" class="ts-color" title="Text colour" value="#ffffff" />' +
+        '<select class="ts-font" title="Font style">'+opts+'</select>' +
+        '<div class="ts-fx"><button type="button" data-fx="b" title="Bold"><b>B</b></button>' +
+        '<button type="button" data-fx="i" title="Italic"><i>I</i></button>' +
+        '<button type="button" data-fx="u" title="Underline"><u>U</u></button></div></div>';
+      wrap.appendChild(card);
+      card.querySelector('.ts-color').addEventListener('input', function(e){
+        if(g.k==='r') state.text = e.target.value; else state.tx[g.k].color = e.target.value;
+        applyAll(); persist();
+      });
+      card.querySelector('.ts-font').addEventListener('change', function(e){ state.tx[g.k].font = e.target.value; applyAll(); persist(); });
+      card.querySelectorAll('[data-fx]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var f = b.dataset.fx, now = !fxOn(g.k, f);
+          state.tx[g.k][f] = (g.k==='r') ? (now ? true : null) : now;
+          applyAll(); persist();
+        });
+      });
+      card.querySelector('.ts-reset').addEventListener('click', function(){
+        state.tx[g.k] = { color:'', font:'', b:null, i:null, u:null };
+        applyAll(); persist();
+      });
+    });
+  }
+  function syncPresetMarks(){
+    var wrapP = document.getElementById('gpPresets'); if(!wrapP) return;
+    var active = '';
+    wrapP.querySelectorAll('.gcp-preset').forEach(function(sw){
+      var p = sw._p; if(!p) return;
+      var on = p.bg===state.bg && p.box===state.box && p.text===state.text && (p.accent||'')===(state.accent||'');
+      sw.classList.toggle('gp-active', on); if(on) active = p.name;
+    });
+    var cap = document.getElementById('gpPresetName'); if(cap) cap.textContent = active || 'Custom colours';
+  }
+
   /* ---------- build font grid ---------- */
   var grid = document.getElementById('gpFontGrid');
   FONTS.forEach(function(f){
@@ -16290,17 +16462,20 @@ body.qa-only-mode #qaToolbarRow {
     sw.className = 'gcp-preset';
     sw.dataset.name = p.name;
     sw.style.background = 'linear-gradient(135deg,'+p.bg+' 45%,'+p.box+' 150%)';
-    sw.title = p.name;
+    sw.title = p.name; sw._p = p;
+    if(p.accent){ sw.style.background = 'linear-gradient(135deg,'+p.bg+' 40%,'+p.accent+' 160%)'; sw.classList.add('gp-star'); }
+    sw.addEventListener('mouseenter', function(){ var c=document.getElementById('gpPresetName'); if(c) c.textContent = p.name; });
+    sw.addEventListener('mouseleave', function(){ syncPresetMarks(); });
     sw.addEventListener('click', function(){
-      state.bg = p.bg; state.box = p.box; state.text = p.text;
+      state.bg = p.bg; state.box = p.box; state.text = p.text; state.accent = p.accent || ''; state.preset = p.accent ? p.name : ''; state.tx = normTx(p.tx);
       applyAll(); persist();
     });
     presetsWrap.appendChild(sw);
   });
 
   /* ---------- wire up controls ---------- */
-  document.getElementById('gpBgColor').addEventListener('input', function(e){ state.bg = e.target.value; applyAll(); persist(); });
-  document.getElementById('gpBoxColor').addEventListener('input', function(e){ state.box = e.target.value; applyAll(); persist(); });
+  document.getElementById('gpBgColor').addEventListener('input', function(e){ state.bg = e.target.value; state.preset=''; state.accent=''; applyAll(); persist(); });
+  document.getElementById('gpBoxColor').addEventListener('input', function(e){ state.box = e.target.value; state.preset=''; state.accent=''; applyAll(); persist(); });
   document.getElementById('gpTextColor').addEventListener('input', function(e){ state.text = e.target.value; applyAll(); persist(); });
 
   document.getElementById('gpSizeSlider').addEventListener('input', function(e){ state.fs = parseInt(e.target.value,10); applyAll(); persist(); });
@@ -16310,7 +16485,7 @@ body.qa-only-mode #qaToolbarRow {
   document.getElementById('gpResetBtn').addEventListener('click', function(){
     state = {
       font: DEFAULTS.font, fs: DEFAULTS.fs, bg: DEFAULTS.bg, box: DEFAULTS.box, text: DEFAULTS.text,
-      bgImg: '', bgImgOp: DEFAULTS.bgImgOp, boxImg: '', boxImgOp: DEFAULTS.boxImgOp
+      bgImg: '', bgImgOp: DEFAULTS.bgImgOp, boxImg: '', boxImgOp: DEFAULTS.boxImgOp, accent: '', preset: '', tx: newTx()
     };
     applyAll(); persist();
   });
@@ -16354,6 +16529,20 @@ body.qa-only-mode #qaToolbarRow {
   document.getElementById('gpBoxImgOpacity').addEventListener('input', function(e){
     state.boxImgOp = parseInt(e.target.value,10); applyAll(); persist();
   });
+
+  buildStudio();
+
+  /* ---------- Performance Boost toggle ---------- */
+  (function(){
+    var btn = document.getElementById('gpPerfBtn'), lbl = document.getElementById('gpPerfLbl');
+    function paint(){ if(lbl) lbl.textContent = 'Performance Boost: ' + (root.classList.contains('perf-boost') ? 'ON' : 'OFF'); }
+    if(btn) btn.addEventListener('click', function(){
+      var on = root.classList.toggle('perf-boost');
+      try{ localStorage.setItem('gpPerfBoost', on ? '1' : '0'); }catch(e){}
+      paint();
+    });
+    paint();
+  })();
 
   /* ---------- init ---------- */
   loadSaved();
@@ -20000,7 +20189,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     var w = function () { var r = f.apply(this, arguments); try { syncView(); } catch (err) { console.error(err); } return r; };
     w.__sp = true; window[n] = w;
   });
-  setInterval(function () { try { syncView(); checkShift(); } catch (_) {} }, 250);
+  setInterval(function () { if (document.hidden) return; try { syncView(); checkShift(); } catch (_) {} }, 400);
 
   /* ───────── go ───────── */
   setup(); sizeTrail(); applyCursor(); refreshBar();
@@ -20098,7 +20287,7 @@ html.lite-mode #questionText .badge { background: #fff !important; background-im
     var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, characterData: true, subtree: true });
   });
   document.addEventListener('click', soon, true); document.addEventListener('input', soon, true); document.addEventListener('change', soon, true);
-  window.addEventListener('load', soon); setInterval(fix, 2000); soon();
+  window.addEventListener('load', soon); setInterval(function () { if (!document.hidden) fix(); }, 4000); soon();
   window.fixBadgeContrast = fix;
 })();
 </script>
@@ -20131,6 +20320,163 @@ body.hide-top-bar #pdfTutorPanel.resizable-question-box { height: calc(100dvh - 
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-x pan-y pinch-zoom;
+}
+</style>
+<style id="gcp-premium">
+/* ═══════════════ PREMIUM CONTROL PANEL ═══════════════ */
+html #gcp-panel{
+  width:min(344px,92vw);
+  background-color:var(--gp-box1) !important;
+  background-image:
+    radial-gradient(130% 46% at 0% 0%, var(--gp-glow-22), transparent 64%),
+    radial-gradient(110% 38% at 100% 100%, var(--gp-glow-10), transparent 66%),
+    linear-gradient(135deg, var(--gp-box1-tint), var(--gp-box2-tint)),
+    var(--gp-box-img) !important;
+  background-size:auto,auto,cover,cover !important;
+  background-position:0 0,100% 100%,center,center !important;
+  background-repeat:no-repeat !important;
+  background-attachment:scroll,scroll,fixed,fixed !important;
+  border-right:1px solid var(--gp-glow-40) !important;
+  box-shadow:24px 0 90px rgba(0,0,0,.55), inset -1px 0 0 var(--gp-glow-22) !important;
+  scrollbar-color:var(--gp-glow-40) transparent;
+  padding-bottom:30px;
+}
+html #gcp-panel::-webkit-scrollbar{ width:5px; }
+html #gcp-panel::-webkit-scrollbar-thumb{ background:var(--gp-glow-40); border-radius:99px; }
+
+html #gcp-panel .gcp-header{
+  padding:24px 22px 18px;
+  background-color:var(--gp-box1) !important;
+  background-image:linear-gradient(180deg, var(--gp-glow-22), transparent) !important;
+  border-bottom:0 !important;
+  box-shadow:0 12px 28px -12px rgba(0,0,0,.55);
+}
+html #gcp-panel .gcp-header::after{
+  content:""; position:absolute; left:18px; right:18px; bottom:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gp-glow),transparent); opacity:.65;
+}
+html #gcp-panel .gcp-header-title{
+  font-size:13px; letter-spacing:4px; font-weight:800; margin-bottom:5px;
+  background:linear-gradient(90deg,var(--gp-text),var(--gp-glow)) !important;
+  -webkit-background-clip:text !important; background-clip:text !important;
+  -webkit-text-fill-color:transparent !important; color:transparent !important;
+}
+html #gcp-panel .gcp-header-sub{ font-size:10.5px; letter-spacing:.8px; opacity:.6; }
+html #gcp-panel .gcp-close{
+  top:20px; right:16px; width:32px; height:32px; border-radius:50%;
+  background:var(--gp-tx-06) !important; border:1px solid var(--gp-tx-25) !important;
+  transition:transform .25s ease, background .2s ease, border-color .2s ease;
+}
+html #gcp-panel .gcp-close:hover{ transform:rotate(90deg) scale(1.06); background:rgba(239,68,68,.25) !important; border-color:rgba(239,68,68,.7) !important; }
+
+html #gcp-panel .gcp-section{
+  position:relative; overflow:hidden; margin:14px 14px 0; padding:18px 15px 15px;
+  border:1px solid var(--gp-tx-12) !important; border-radius:22px;
+  background:linear-gradient(160deg, var(--gp-tx-06), rgba(0,0,0,.14));
+  box-shadow:0 14px 34px rgba(0,0,0,.2), inset 0 1px 0 var(--gp-tx-12);
+}
+html #gcp-panel .gcp-section::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--gp-glow),transparent); opacity:.7;
+}
+html #gcp-panel .gcp-section-title{
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  font-size:10.5px; letter-spacing:2.4px; opacity:.88;
+}
+html #gcp-panel .gcp-section-title::after{
+  content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--gp-tx-25),transparent);
+}
+
+html #gcp-panel .gcp-btn{ border-radius:15px; transition:transform .18s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease; }
+html #gcp-panel .gcp-btn:not([class*="accent-"]){
+  background:var(--gp-tx-06) !important; border:1px solid var(--gp-tx-12) !important;
+}
+html #gcp-panel .gcp-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.3), 0 0 0 1px var(--gp-glow-40); }
+html #gcp-panel .gcp-btn:active{ transform:scale(.98); }
+html #gcp-panel .gcp-btn .gcp-icon{ border-radius:11px; box-shadow:inset 0 0 0 1px var(--gp-tx-12); }
+
+html #gcp-panel .gcp-appear-label{
+  display:flex; align-items:center; gap:8px; margin:16px 0 9px; font-size:10px; letter-spacing:1.6px; text-transform:uppercase; font-weight:700; opacity:.75;
+}
+html #gcp-panel .gcp-appear-label::before{
+  content:""; width:7px; height:7px; border-radius:50%; background:var(--gp-glow); box-shadow:0 0 10px var(--gp-glow);
+}
+html #gcp-panel .gcp-font-item{
+  border-radius:13px; background:var(--gp-tx-06) !important; border:1px solid var(--gp-tx-12) !important; transition:transform .15s ease, box-shadow .2s ease;
+}
+html #gcp-panel .gcp-font-item:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,.3); }
+html #gcp-panel .gcp-font-item.gp-active{
+  background:var(--gp-glow-22) !important; border-color:var(--gp-glow) !important; box-shadow:0 0 0 1px var(--gp-glow), 0 8px 20px var(--gp-glow-22);
+}
+html #gcp-panel .gcp-size-btn{ border-radius:12px; background:var(--gp-tx-06) !important; border:1px solid var(--gp-tx-12) !important; }
+html #gcp-panel .gcp-color-row{
+  padding:7px 10px; border-radius:13px; background:var(--gp-tx-06); border:1px solid var(--gp-tx-12); margin-bottom:7px;
+}
+html #gcp-panel .gcp-color-input, html #gcp-panel .ts-color{
+  -webkit-appearance:none; appearance:none; width:38px; height:28px; padding:0; border-radius:10px;
+  border:2px solid var(--gp-tx-25) !important; background:none; cursor:pointer; overflow:hidden;
+}
+html #gcp-panel .gcp-color-input::-webkit-color-swatch-wrapper, html #gcp-panel .ts-color::-webkit-color-swatch-wrapper{ padding:0; }
+html #gcp-panel .gcp-color-input::-webkit-color-swatch, html #gcp-panel .ts-color::-webkit-color-swatch{ border:0; border-radius:8px; }
+html #gcp-panel .gcp-color-input::-moz-color-swatch, html #gcp-panel .ts-color::-moz-color-swatch{ border:0; border-radius:8px; }
+
+html #gcp-panel .gcp-presets-grid{ gap:8px; }
+html #gcp-panel .gcp-preset{
+  height:auto; aspect-ratio:1.25/1; border-radius:13px; border:2px solid var(--gp-tx-12); position:relative;
+  box-shadow:0 4px 12px rgba(0,0,0,.35); transition:transform .18s ease, box-shadow .2s ease, border-color .2s ease;
+}
+html #gcp-panel .gcp-preset:hover{ transform:translateY(-3px) scale(1.06); }
+html #gcp-panel .gcp-preset.gp-star::after{ content:"★"; position:absolute; top:2px; right:5px; font-size:9px; color:#fff; text-shadow:0 0 6px rgba(0,0,0,.8); }
+html #gcp-panel .gcp-preset.gp-active{
+  border-color:var(--gp-text); transform:scale(1.08);
+  box-shadow:0 0 0 2px var(--gp-glow), 0 8px 20px rgba(0,0,0,.5), 0 0 18px var(--gp-glow-40);
+}
+html #gcp-panel .gcp-preset-caption{
+  display:flex; align-items:center; justify-content:space-between; margin-top:11px; padding:8px 12px; border-radius:12px;
+  background:var(--gp-tx-06); border:1px solid var(--gp-tx-12); font-size:10.5px; letter-spacing:.6px;
+}
+html #gcp-panel .gcp-preset-caption span{ opacity:.6; text-transform:uppercase; letter-spacing:1.6px; font-size:9px; }
+html #gcp-panel .gcp-preset-caption b{ font-weight:700; }
+html #gcp-panel .lite-toggle-row{ border-radius:16px; background:var(--gp-tx-06); border:1px solid var(--gp-tx-12); }
+
+/* ── Text Studio ── */
+html #gcp-panel .ts-intro{ font-size:10.5px; line-height:1.5; opacity:.62; margin:-4px 2px 13px; }
+html #gcp-panel .ts-card{
+  position:relative; margin-bottom:10px; padding:11px 11px 12px; border-radius:18px;
+  background:linear-gradient(160deg,var(--gp-tx-06),rgba(0,0,0,.12)); border:1px solid var(--gp-tx-12);
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+html #gcp-panel .ts-card:hover{ border-color:var(--gp-glow-40); box-shadow:0 8px 22px rgba(0,0,0,.25); }
+html #gcp-panel .ts-head{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+html #gcp-panel .ts-badge{
+  flex:0 0 auto; width:38px; height:38px; border-radius:13px; display:grid; place-items:center; font-size:16px;
+  background:linear-gradient(135deg,var(--gp-glow-40),var(--gp-glow-10)); border:1px solid var(--gp-glow-40);
+  box-shadow:inset 0 1px 0 var(--gp-tx-25), 0 4px 12px rgba(0,0,0,.3);
+  color:var(--gp-text) !important;
+}
+html #gcp-panel .ts-meta{ flex:1; min-width:0; }
+html #gcp-panel .ts-name{ font-size:12.5px; font-weight:700; letter-spacing:.2px; }
+html #gcp-panel .ts-sub{ font-size:9.5px; opacity:.55; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+html #gcp-panel .ts-reset{
+  flex:0 0 auto; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:14px; line-height:1;
+  background:var(--gp-tx-06); border:1px solid var(--gp-tx-12); transition:transform .25s ease, border-color .2s ease;
+}
+html #gcp-panel .ts-reset:hover{ transform:rotate(-180deg); border-color:var(--gp-glow); }
+html #gcp-panel .ts-row{ display:flex; align-items:center; gap:7px; }
+html #gcp-panel .ts-font{
+  flex:1; min-width:0; height:30px; padding:0 8px; border-radius:11px; font-size:11px; cursor:pointer; outline:none;
+  background:var(--gp-tx-06); border:1px solid var(--gp-tx-12);
+}
+html #gcp-panel .ts-font:focus{ border-color:var(--gp-glow); }
+html #gcp-panel .ts-font option{ background:#fff; color:#111 !important; -webkit-text-fill-color:#111; }
+html #gcp-panel .ts-fx{ display:flex; gap:4px; }
+html #gcp-panel .ts-fx button{
+  width:30px; height:30px; border-radius:10px; cursor:pointer; font-size:13px; padding:0; line-height:1;
+  background:var(--gp-tx-06); border:1px solid var(--gp-tx-12); transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
+}
+html #gcp-panel .ts-fx button:hover{ transform:translateY(-2px); }
+html #gcp-panel .ts-fx button.on{
+  background:var(--gp-glow-40); border-color:var(--gp-glow); box-shadow:0 0 0 1px var(--gp-glow), 0 4px 14px var(--gp-glow-40);
 }
 </style>
 </body>
