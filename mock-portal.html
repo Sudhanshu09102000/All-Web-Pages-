@@ -1277,6 +1277,76 @@
       border-color: rgba(239,68,68,.70);
     }
 
+    /* ── Terminal "create this file" command box ── */
+    #jsErrorBox .err-cmd {
+      display: none;
+      margin-top: 1.15rem;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,.22);
+      background: linear-gradient(180deg, rgba(2,6,14,.92), rgba(8,12,22,.96));
+      box-shadow: 0 10px 28px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+    #jsErrorBox .err-cmd.show { display: block; animation: errCmdIn .45s .12s cubic-bezier(.22,.68,0,1.1) both; }
+    @keyframes errCmdIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+    #jsErrorBox .err-cmd-head {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .5rem .5rem .5rem .85rem;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-bottom: 1px solid rgba(148,163,184,.16);
+    }
+    #jsErrorBox .err-cmd-dots { display: flex; gap: 5px; flex-shrink: 0; }
+    #jsErrorBox .err-cmd-dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+    #jsErrorBox .err-cmd-dots i:nth-child(1){ background:#ff5f57; }
+    #jsErrorBox .err-cmd-dots i:nth-child(2){ background:#febc2e; }
+    #jsErrorBox .err-cmd-dots i:nth-child(3){ background:#28c840; }
+    #jsErrorBox .err-cmd-title {
+      flex: 1; min-width: 0;
+      font-size: .66rem; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase;
+      opacity: .6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    #jsErrorBox .err-copy-btn {
+      display: inline-flex; align-items: center; gap: .38rem;
+      border: 1px solid rgba(148,163,184,.30);
+      background: rgba(255,255,255,.07);
+      border-radius: 9px;
+      padding: .32rem .7rem;
+      font-size: .74rem; font-weight: 700; letter-spacing: .2px;
+      cursor: pointer; flex-shrink: 0;
+      transition: background .15s ease, border-color .15s ease, transform .1s ease, box-shadow .15s ease;
+    }
+    #jsErrorBox .err-copy-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    #jsErrorBox .err-copy-btn:hover { background: rgba(255,255,255,.14); border-color: rgba(148,163,184,.55); }
+    #jsErrorBox .err-copy-btn:active { transform: scale(.95); }
+    #jsErrorBox .err-copy-btn.copied {
+      background: rgba(34,197,94,.18) !important;
+      border-color: rgba(34,197,94,.6) !important;
+      color: #86efac !important;
+      box-shadow: 0 0 14px rgba(34,197,94,.25);
+    }
+    #jsErrorBox .err-copy-btn.copied * { color: #86efac !important; }
+    #jsErrorBox .err-copy-btn.copied .ic-copy { display: none; }
+    #jsErrorBox .err-copy-btn:not(.copied) .ic-check { display: none; }
+    #jsErrorBox .err-cmd-body {
+      display: flex; gap: .6rem; align-items: flex-start;
+      padding: .85rem .95rem .9rem;
+    }
+    #jsErrorBox .err-cmd-prompt { color: #4ade80 !important; font-family: 'Courier New', ui-monospace, monospace; font-weight: 800; font-size: .86rem; line-height: 1.6; user-select: none; }
+    #jsErrorBox .err-cmd-code {
+      margin: 0; flex: 1; min-width: 0;
+      font-family: 'JetBrains Mono','Fira Code','Courier New', ui-monospace, monospace;
+      font-size: .8rem; line-height: 1.6; font-weight: 600;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    #jsErrorBox .err-cmd-code .c-cmd  { color: #67e8f9 !important; }
+    #jsErrorBox .err-cmd-code .c-flag { color: #fbbf24 !important; }
+    #jsErrorBox .err-cmd-code .c-op   { color: #f472b6 !important; }
+    #jsErrorBox .err-cmd-code .c-path { color: #e2e8f0 !important; }
+    #jsErrorBox .err-cmd-hint {
+      padding: 0 .95rem .75rem 2.05rem;
+      font-size: .72rem; opacity: .5; line-height: 1.45;
+    }
+
     /* ✅ RESIZABLE QUESTION CONTAINER */
     /* ✅ RESIZABLE QUESTION CONTAINER (HEIGHT + WIDTH) */
     /* ✅ FIX: resizable box + image question never hides bottom buttons */
@@ -4821,11 +4891,87 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         <code style="background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:6px;font-size:.92em;">scripts/</code>
         folder and the filename exactly matches the test key (case-sensitive).
       </div>
+
+      <!-- ✅ Terminal command to create the missing file -->
+      <div class="err-cmd" id="jsErrorCmdBox">
+        <div class="err-cmd-head">
+          <span class="err-cmd-dots"><i></i><i></i><i></i></span>
+          <span class="err-cmd-title">Terminal &bull; create this file</span>
+          <button type="button" class="err-copy-btn" id="jsErrorCopyBtn" onclick="copyJsErrorCmd()" title="Copy command">
+            <svg class="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+            <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            <span id="jsErrorCopyLabel">Copy</span>
+          </button>
+        </div>
+        <div class="err-cmd-body">
+          <span class="err-cmd-prompt">$</span>
+          <pre class="err-cmd-code" id="jsErrorCmd"></pre>
+        </div>
+        <div class="err-cmd-hint">Run this in your project root, then add your <code>window.TEST_DATA</code> to the new file.</div>
+      </div>
+
       <button class="err-close-btn" onclick="document.getElementById('jsErrorBox').classList.remove('show')">
         ✕ &nbsp; Close
       </button>
     </div>
   </div>
+
+
+  <script>
+    /* ✅ Script-not-found: build + copy the terminal command that creates the missing file */
+    (function () {
+      var currentCmd = '';
+      var esc = function (t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+      // quote only when the path has characters a shell would choke on
+      var q = function (pth) { return /^[A-Za-z0-9_.\/-]+$/.test(pth) ? pth : "'" + pth.replace(/'/g, "'\\''") + "'"; };
+
+      window.setJsErrorCmd = function (filePath) {
+        var box  = document.getElementById('jsErrorCmdBox');
+        var code = document.getElementById('jsErrorCmd');
+        var btn  = document.getElementById('jsErrorCopyBtn');
+        var lbl  = document.getElementById('jsErrorCopyLabel');
+        if (!box || !code) return;
+        if (btn) btn.classList.remove('copied');
+        if (lbl) lbl.textContent = 'Copy';
+        if (!filePath) { box.classList.remove('show'); currentCmd = ''; return; }
+
+        var i   = filePath.lastIndexOf('/');
+        var dir = i > -1 ? filePath.slice(0, i) : '.';
+        currentCmd = 'mkdir -p ' + q(dir) + ' && touch ' + q(filePath);
+
+        code.innerHTML =
+          '<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> <span class="c-path">' + esc(q(dir)) + '</span> ' +
+          '<span class="c-op">&amp;&amp;</span> <span class="c-cmd">touch</span> <span class="c-path">' + esc(q(filePath)) + '</span>';
+        box.classList.add('show');
+      };
+
+      window.copyJsErrorCmd = function () {
+        if (!currentCmd) return;
+        var btn = document.getElementById('jsErrorCopyBtn');
+        var lbl = document.getElementById('jsErrorCopyLabel');
+        var done = function () {
+          if (btn) btn.classList.add('copied');
+          if (lbl) lbl.textContent = 'Copied!';
+          clearTimeout(window.__jsErrCopyT);
+          window.__jsErrCopyT = setTimeout(function () {
+            if (btn) btn.classList.remove('copied');
+            if (lbl) lbl.textContent = 'Copy';
+          }, 1900);
+        };
+        var fallback = function () {
+          var ta = document.createElement('textarea');
+          ta.value = currentCmd; ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:-999px;opacity:0;';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) {}
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(currentCmd).then(done, fallback);
+        } else { fallback(); }
+      };
+    })();
+  </script>
 
   <!-- ✅ Dual-Language Dropdown — direct body child, position:fixed, never clipped -->
   <div id="dualLangDropdown">
@@ -5808,6 +5954,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             if (tEl) tEl.textContent = 'Script File Not Found';
             if (sEl) sEl.textContent = 'The following file could not be loaded:';
             if (fnEl) fnEl.textContent = qFile;
+            if (window.setJsErrorCmd) window.setJsErrorCmd(qFile);
             if (tipEl) tipEl.innerHTML = 'Make sure the <strong style="color:rgba(251,191,36,.85);">.js</strong> file exists in the <code style="background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:6px;font-size:.92em;">scripts/</code> folder and the filename exactly matches the test key (case-sensitive).';
           } else {
             if (tEl) tEl.textContent = kind === 'nodata' ? 'TEST_DATA Missing' : 'Script Loaded, But Failed To Start';
@@ -5815,6 +5962,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
               ? 'The file loaded, but it did not define window.TEST_DATA:'
               : 'The file loaded fine, but the portal hit an error while starting it:';
             if (fnEl) fnEl.textContent = qFile;
+            if (window.setJsErrorCmd) window.setJsErrorCmd(null);
             if (tipEl) tipEl.textContent = detail || '';
           }
           if (box) box.classList.add('show');
@@ -15962,6 +16110,11 @@ body.qa-only-mode #qaToolbarRow {
   }
   #jsErrorBox .err-tip code{ background: var(--gp-tx-12) !important; }
   #jsErrorBox .err-subtitle, #jsErrorBox .err-tip{ opacity: .72; }
+  #jsErrorBox .err-cmd{ border-color: var(--gp-boxb) !important; }
+  #jsErrorBox .err-cmd-head{ background: var(--gp-tx-06) !important; border-bottom-color: var(--gp-boxb) !important; }
+  #jsErrorBox .err-copy-btn:not(.copied){ background: var(--gp-tx-06) !important; border-color: var(--gp-boxb) !important; color: var(--gp-text) !important; }
+  #jsErrorBox .err-copy-btn:not(.copied):hover{ background: var(--gp-tx-12) !important; border-color: var(--gp-tx-25) !important; }
+  #jsErrorBox .err-cmd-hint code{ background: var(--gp-tx-12) !important; padding: .05rem .3rem; border-radius: 5px; }
 
   /* ═══════════════ Compact widgets embedded in the left Control Panel ═══════════════ */
   .gcp-appear-label{
