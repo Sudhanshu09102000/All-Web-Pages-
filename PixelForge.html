@@ -150,8 +150,8 @@ input[type=range]{padding:0;accent-color:var(--a);height:22px}input[type=color]{
 
 /* ===== Send to connected device ===== */
 .acts .snd{flex:1 1 100%;background:var(--in);border:1px solid var(--a);color:var(--tx)}.acts .snd:disabled{border-color:var(--bd);color:var(--mut)}
-#toast{z-index:90}#dev{white-space:nowrap}#dev .bdg{background:var(--a);color:#fff;border-radius:99px;padding:0 7px;font-size:11px}
-#px{position:fixed;inset:0;z-index:75;display:none;place-items:center;background:rgba(0,0,0,.55);padding:14px}#px.on{display:grid}
+#toast{z-index:98}#dev{white-space:nowrap}#dev .bdg{background:var(--a);color:#fff;border-radius:99px;padding:0 7px;font-size:11px}
+#px{position:fixed;inset:0;z-index:96;display:none;place-items:center;background:rgba(0,0,0,.55);padding:14px}#px.on{display:grid}
 #px .box{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:20px;padding:20px;width:min(560px,100%);max-height:92vh;overflow:auto;display:grid;gap:12px;align-content:start;box-shadow:0 30px 80px rgba(0,0,0,.4)}
 #px h3{margin:0}.px-adv summary{cursor:pointer;color:var(--mut);font-size:12px}#px .box>h3{margin-top:6px}
 .px-st{display:flex;align-items:center;gap:8px;font-weight:700}.px-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e5484d;vertical-align:middle}.px-dot.ok{background:var(--ok)}.px-dot.wait{background:var(--warn);animation:pxb 1s ease-in-out infinite}@keyframes pxb{50%{opacity:.25}}
@@ -272,6 +272,45 @@ input.px-code{font:800 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spa
 @media(max-width:480px){#px{padding:10px}.rm{padding:18px 16px 20px;gap:16px}.rm-ticket{--s:78px}.rm-tk{padding:16px 12px 16px 16px}.rm-code{gap:4px}.rm-sp{width:6px;margin:0 1px}.rm-ttl b{font-size:18px}.rm-invb{flex-direction:column}.rm-invb .rm-sec{width:100%}}
 @media(prefers-reduced-motion:reduce){#px *,#px *:before,#px *:after{animation:none!important;transition:none!important}}
 
+
+/* ===== Device room: documents & transfers (premium cards) ===== */
+#px .rm-grp{display:grid;gap:12px}
+#px .rm-shr{display:flex;align-items:center;gap:8px}
+#px .rm-lead{margin:-4px 0 2px;color:var(--mut);font-size:12.5px;line-height:1.55;max-width:56ch}
+#px .fc{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;padding:14px;border-radius:22px;border:1px solid var(--bd);background:linear-gradient(160deg,var(--glow),transparent 58%),var(--in);box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 18px 34px -26px rgba(0,0,0,.9);transition:border-color .2s,box-shadow .25s}
+#px .fc:hover{border-color:var(--a);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 22px 40px -24px var(--glow)}
+#px .fc-t{--t1:#8b93a7;--t2:#5d667d;position:relative;width:46px;height:56px;display:grid;place-items:end center;padding-bottom:10px;border-radius:13px;color:#fff;background:linear-gradient(150deg,var(--t1),var(--t2));box-shadow:0 12px 22px -10px var(--t2),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -10px 16px rgba(0,0,0,.14)}
+#px .fc-t:before{content:"";position:absolute;top:0;right:0;width:16px;height:16px;border-radius:0 13px 0 9px;background:rgba(255,255,255,.3)}
+#px .fc-t b{font:800 10.5px Manrope,Inter,sans-serif;letter-spacing:.04em}
+#px .t-pdf{--t1:#ff7a7a;--t2:#d6336c}#px .t-zip{--t1:#f7b733;--t2:#e07b00}#px .t-img{--t1:#18c6e8;--t2:#4f7cff}#px .t-ppt{--t1:#ff9a5a;--t2:#e8590c}#px .t-xls{--t1:#3ddc97;--t2:#0e9f77}#px .t-doc{--t1:#8b7cff;--t2:#5b4be0}
+#px .fc-b{min-width:0;display:grid;gap:3px}
+#px .fc-n{font:800 14.5px/1.3 Manrope,Inter,sans-serif;letter-spacing:-.015em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#px .fc-m{color:var(--mut);font:500 12px/1.45 Inter,sans-serif;overflow-wrap:anywhere}
+#px .chip{justify-self:start;display:inline-flex;align-items:center;gap:7px;margin-top:5px;padding:4px 11px 4px 9px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--mut);font:700 11.5px Inter,sans-serif}
+#px .chip:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+#px .chip.ok{color:var(--ok)}#px .chip.wait{color:var(--warn)}#px .chip.bad{color:#e5484d}
+#px .chip.wait:before{animation:pxb 1s ease-in-out infinite}
+#px .fc-a{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+#px .fc-w{grid-column:1/-1}
+#px .fc-i{grid-column:1/-1;justify-self:start;max-width:100%;max-height:190px;object-fit:contain;border-radius:14px;border:1px solid var(--bd);background:var(--bg)}
+#px .fc-z{grid-column:1/-1;display:grid}#px .fc-z:empty{display:none}
+#px .rm-bulk{display:flex;flex-wrap:wrap;gap:8px}
+#px .pb{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 15px;border-radius:13px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:700 12.5px Manrope,Inter,sans-serif;letter-spacing:-.005em;white-space:nowrap;cursor:pointer;transition:transform .15s,box-shadow .25s,border-color .2s,background .2s,filter .2s,color .2s}
+#px .pb:hover{border-color:var(--a);background:var(--glow)}#px .pb:active{transform:scale(.97)}
+#px .pb.pri{border:0;color:#fff;background:linear-gradient(135deg,#1ccf97,#0d9a72);box-shadow:0 14px 26px -12px rgba(18,167,122,.95),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -8px 14px rgba(0,0,0,.12)}
+#px .pb.pri:hover{filter:saturate(1.15) brightness(1.06);background:linear-gradient(135deg,#1ccf97,#0d9a72)}
+#px .pb.add{border:0;color:#fff;background:linear-gradient(135deg,var(--a),#8b5cf6 55%,var(--b) 150%);box-shadow:0 14px 26px -12px var(--glow),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -8px 14px rgba(0,0,0,.12)}
+#px .pb.add:hover{filter:saturate(1.15) brightness(1.06);background:linear-gradient(135deg,var(--a),#8b5cf6 55%,var(--b) 150%)}
+#px .pb.add.done{background:var(--in);color:var(--ok);border:1px solid var(--ok);box-shadow:none;filter:none}
+#px .pb.dng{color:var(--mut)}#px .pb.dng:hover{color:#e5484d;border-color:#e5484d;background:rgba(229,72,77,.09)}
+#px .pb.sm{height:32px;padding:0 12px;border-radius:11px;font-size:12px}
+#px .pb:disabled{opacity:.55;cursor:not-allowed;transform:none;filter:none}
+#px .pk-wait{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:15px 16px;border-radius:20px;border:1px solid rgba(224,138,0,.55);background:linear-gradient(135deg,rgba(224,138,0,.16),transparent 70%),var(--in)}
+#px .pk-wait>svg{grid-row:span 3;margin-top:1px;color:var(--warn)}
+#px .pk-wait b{font:800 14px Manrope,Inter,sans-serif;letter-spacing:-.01em}
+#px .pk-wait span{color:var(--tx);font-size:12.5px;overflow-wrap:anywhere}
+#px .pk-wait i{font-style:normal;color:var(--mut);font-size:12.5px;line-height:1.5}
+@media(max-width:480px){#px .fc{padding:12px}#px .fc-a .pb.pri,#px .fc-a .pb.add{flex:1 1 100%}}
 /* ===== overflow fixes: dialogs and scanner must never grow wider than the screen ===== */
 #pvw .box,#mo .box,#px .box{grid-template-columns:minmax(0,1fr);max-width:100%;box-sizing:border-box}
 #pvw .box>*,#mo .box>*,#px .box>*{min-width:0;max-width:100%}
@@ -1346,9 +1385,9 @@ await Promise.all(pend);JOB.step(1,0,'Building PDF',N+' page'+(N>1?'s':''));awai
 let blob,ok=true;
 if(T){let calls=0;const r=await fitMerged(L,l=>{calls++;JOB.step(1,1-1/(1+calls*.7),calls>1?'Resizing to fit your limit':'Building PDF',calls>1?'Pass '+calls+' · getting under '+fk(T):N+' page'+(N>1?'s':''));return pdf(l)},T,Z.pad);blob=r.blob;ok=r.ok}else blob=await pdf(L);
 JOB.step(2,.5,'Finishing',nm);
-await JOB.finish('Your PDF is ready',nm+' · '+N+' page'+(N>1?'s':'')+' · '+fk(blob.size)+(ok?'':' · above your limit'),[
+LIB.keep(nm,blob);await JOB.finish('Your PDF is ready',nm+' · '+N+' page'+(N>1?'s':'')+' · '+fk(blob.size)+(ok?'':' · above your limit'),[
 {t:'⬇ Save to device',pri:1,keep:'Saved ✓',f:()=>dl(nm,blob)},
-{t:'📲 Send to connected device',f:b=>{PX.send([{name:nm,blob}]);b.textContent='📲 Sent · tap to send again'}},
+{t:'📲 Send to connected device',f:b=>{PX.send([{name:nm,blob}]);b.textContent=PX.ready()?'📲 Sent · tap to send again':'📲 Saved · join a room to send'}},
 {t:'✎ Change pages',f:()=>{JOB.close();XP.show()}}]);if(!ok)toast('Smallest possible is '+fk(blob.size)+', above your limit')}
 catch(e){console.error(e);JOB.fail('Could not create the PDF');XP.show()}
 finally{if(d2)try{d2.destroy()}catch(e){}}}}})();
@@ -1472,8 +1511,18 @@ catch(e){if(tk!==ZT)return;const zv=$('#zv');if(zv)zv.innerHTML='<span class="zm
 $('#pz').onclick=e=>{if(e.target.id=='pz')closeZ()};
 addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#pz').classList.contains('on'))closeZ()});
 
+/* ===== Documents made on this device: kept in memory until the page is refreshed or the person deletes them ===== */
+const LIB=(()=>{let L=[],id=0;
+const ping=()=>{try{PX.refresh()}catch(e){}};
+return{
+ keep(name,blob){if(!blob||typeof blob.size!='number')return null;name=String(name||'file');
+  let x=L.find(o=>o.blob===blob)||L.find(o=>o.name===name&&o.size===blob.size&&o.type===(blob.type||''));if(x)return x;
+  x={id:++id,name,blob,size:blob.size,type:blob.type||'',at:Date.now()};L.unshift(x);ping();return x},
+ all:()=>L,get:i=>L.find(o=>String(o.id)===String(i)),
+ remove(i){const x=this.get(i);if(!x)return null;if(x.url)try{URL.revokeObjectURL(x.url)}catch(e){}L=L.filter(o=>o!==x);ping();return x},
+ clear(){const o=L;L.forEach(x=>{if(x.url)try{URL.revokeObjectURL(x.url)}catch(e){}});L=[];ping();return o}}})();
 /* ===== saving ===== */
-function dl(name,b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
+function dl(name,b,k){if(k!==0)LIB.keep(name,b);const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click()}
 async function filesOf0(it){if(it.ps){const P=it.mk=='p';return[{name:oname(it)+it.s.suf+(P?'.pptx':'.pdf'),blob:await builtOf(it)}]}if(it.outs.length==1)return[{name:it.outs[0].name,blob:it.outs[0].blob}];const z=new JSZip();it.outs.forEach(o=>z.file(o.name,o.blob));return[{name:oname(it)+'.zip',blob:await z.generateAsync({type:'blob'})}]}
 async function saveIt(it){const f=(await filesOf0(it))[0];dl(f.name,f.blob)}
 /* what a receiving device needs to rebuild this exact card: the source file + the card's settings */
@@ -1567,7 +1616,7 @@ async function zipDlg(send){if(S.items.some(i=>i.busy))return toast('Please wait
  $('#zp_i').textContent=P.reduce((a,p)=>a+p.fs.length,0)+' file(s) · about '+fk(P.reduce((a,p)=>a+zsz(p),0))+(n0?' · '+n0+' original'+(n0>1?'s':'')+' not converted yet':'');
  const go=async s=>{const n=+$('#zp_n').value,T=n?n*(+$('#zp_u').value):0;o.classList.remove('on');toast(T?'Fitting to your size…':'Zipping…',60000);
   try{const ok=await zipFit(P,T,m=>toast(m,60000)),z=new JSZip(),seen={};P.forEach(p=>p.fs.forEach(f=>{const k=seen[f.name]=(seen[f.name]||0)+1;z.file(k>1?f.name.replace(/(\.[^.]+)$/,'_'+k+'$1'):f.name,f.blob)}));
-   const b=await z.generateAsync({type:'blob',compression:'DEFLATE'});if(T&&(!ok||b.size>T))toast('Smallest possible is '+fk(b.size)+', above your limit',4500);else if(!s)toast('Downloaded · PixelEdited.zip · '+fk(b.size));
+   const b=await z.generateAsync({type:'blob',compression:'DEFLATE'});LIB.keep('PixelEdited.zip',b);if(T&&(!ok||b.size>T))toast('Smallest possible is '+fk(b.size)+', above your limit',4500);else if(!s)toast('Downloaded · PixelEdited.zip · '+fk(b.size));
    if(s)PX.send([{name:'PixelEdited.zip',blob:b}]);else dl('PixelEdited.zip',b)}catch(e){console.error(e);toast('Could not build the ZIP')}};
  $('#zp_d').onclick=()=>go(0);$('#zp_s').onclick=()=>go(1)}
 /* ===== merged output: build in current order, optional size limit + page size ===== */
@@ -1605,7 +1654,7 @@ JOB.start(R?[{n:'Reading',w:.45},{n:'Building',w:.4},{n:'Saving',w:.15}]:[{n:'Pr
 try{let L=R?await buildRaw():(JOB.step(1,0,'Building '+X,cnt()+(P?' slides':' pages')),list());if(!P&&v!='img')L=L.map(p=>({...p,s:{...p.s,page:v}}));let calls=0;
 const r=await fitMerged(L,l=>{calls++;JOB.step(1,1-1/(1+calls*.7),T?(calls>1?'Compressing to fit your limit':'Building '+X):'Building '+X,T&&calls>1?'Pass '+calls+' · getting under '+fk(T):L.length+(P?' slides':' pages'));return P?pptx(l,v):pdf(l)},T,pd);
 const mn=nm+(P?'.pptx':'.pdf');JOB.step(2,.5,'Finishing',mn);
-const warn=T&&!r.ok;await JOB.finish('Your '+X+' is ready',mn+' · '+fk(r.blob.size)+(warn?' · above your limit':''),[{t:'⬇ Save to device',pri:1,keep:'Saved ✓',f:()=>dl(mn,r.blob)},{t:'📲 Send to connected device',f:b=>{PX.send([{name:mn,blob:r.blob}]);b.textContent='📲 Sent · tap to send again'}}]);
+const warn=T&&!r.ok;LIB.keep(mn,r.blob);await JOB.finish('Your '+X+' is ready',mn+' · '+fk(r.blob.size)+(warn?' · above your limit':''),[{t:'⬇ Save to device',pri:1,keep:'Saved ✓',f:()=>dl(mn,r.blob)},{t:'📲 Send to connected device',f:b=>{PX.send([{name:mn,blob:r.blob}]);b.textContent=PX.ready()?'📲 Sent · tap to send again':'📲 Saved · join a room to send'}}]);
 if(warn)toast('Smallest possible is '+fk(r.blob.size)+', above your limit')}catch(e){console.error(e);JOB.fail('Could not build the merged file')}};
 $('#mo_go').onclick=()=>mgo()}
 $('#mo').onclick=e=>{if(e.target.id=='mo')e.target.classList.remove('on')};addEventListener('keydown',e=>{if(e.key=='Escape'){$('#mo').classList.remove('on');closePv()}});
@@ -1934,10 +1983,10 @@ function onData(cn,d){const x=cn.cx;x.last=Date.now();
  const c=x.cur;if(!c)return;const u=d instanceof ArrayBuffer?d:(d&&d.buffer?d.buffer.slice(d.byteOffset,d.byteOffset+d.byteLength):null);if(!u)return;
  c.parts.push(u);c.got+=u.byteLength;const b=box.querySelector('[data-pb="in'+conns.indexOf(cn)+'"]');if(b)b.style.width=Math.min(100,Math.round(c.got/(c.size||1)*100))+'%'}
 /* ---- sending: every transfer goes through one queue so chunks of different files never mix ---- */
-function send(files){if(!files||!files.length)return;
- if(state!='on'){pending=(pending||[]).concat(files);msg='Open or join a room first. '+pending.length+' file'+(pending.length>1?'s':'')+' will be sent automatically once another device is in the room.';msgBad=0;show();toast('Join or create a room first');return}
+function send(files){if(!files||!files.length)return;files.forEach(f=>LIB.keep(f.name,f.blob));
+ if(state!='on'){pending=(pending||[]).concat(files.filter(f=>!(pending||[]).some(p=>p.blob===f.blob)));msg='Create a room or join one. '+(pending.length>1?'Your '+pending.length+' documents are':'Your document is')+' saved below and will be sent the moment another device is in the room.';msgBad=0;show();toast('Saved · create or join a room to send it',3200);return}
  toast('Sending '+(files.length>1?files.length+' files':files[0].name)+' to '+up().length+' device'+(up().length>1?'s':'')+'…');
- files.forEach(f=>{const o={id:me.u+'-'+(++n),name:f.name,size:f.blob.size,st:'queue',at:Date.now(),acks:0};tx.unshift(o);chain=chain.then(()=>sendOne(o,f)).catch(()=>{})});draw()}
+ files.forEach(f=>{const o={id:me.u+'-'+(++n),name:f.name,size:f.blob.size,blob:f.blob,st:'queue',at:Date.now(),acks:0};tx.unshift(o);chain=chain.then(()=>sendOne(o,f)).catch(()=>{})});draw()}
 function flush(){if(pending){const p=pending;pending=null;send(p)}}
 async function xfer(c,id,name,blob,extra,o){c.send(JSON.stringify({t:'file',id,name,type:blob.type,size:blob.size,...extra}));
  const ch=c.fb?32768:CH,SEG=ch*64;for(let off=0,k=0;off<blob.size;off+=SEG){
@@ -1958,24 +2007,21 @@ function relay(targets,f,id){if(targets.length)chain=chain.then(()=>fanout(targe
 async function sendOne(o,f){try{o.st='send';draw();const k=await fanout(up(),{...f,from:{u:me.u,n:me.n}},o.id,o);if(!k)o.st='fail';else if(o.st=='send')o.st='wait';draw()}catch(e){o.st='fail';draw()}}
 /* ---- receiving side: download / copy ---- */
 const toPng=async b=>{const m=await createImageBitmap(b),c=document.createElement('canvas');c.width=m.width;c.height=m.height;c.getContext('2d').drawImage(m,0,0);return new Promise(r=>c.toBlob(r,'image/png'))};
-async function copyFile(f){const t=f.blob.type;
- try{if(t.startsWith('image/')){await navigator.clipboard.write([new ClipboardItem({'image/png':t=='image/png'?f.blob:await toPng(f.blob)})]);toast('Image copied · paste it anywhere')}
-  else if(t.startsWith('text/')&&t!='text/rtf'){await navigator.clipboard.writeText(await f.blob.text());toast('Text copied')}
-  else{await navigator.clipboard.write([new ClipboardItem({[t]:f.blob})]);toast('File copied')}}
- catch(e){toast('This browser cannot copy that file type. Use Download instead')}}
 async function openZip(f){const z=await JSZip.loadAsync(f.blob),L=[];z.forEach((p,e)=>{if(!e.dir)L.push({name:p,e})});zmap[f.id]=L;
  const c=box.querySelector('[data-zc="'+f.id+'"]');if(c)c.innerHTML=L.length?L.map((x,i)=>`<div class="px-z"><span>${esc(x.name)}</span><button class="btn" data-ze="${f.id}:${i}">⬇</button></div>`).join(''):'<span class="mt">Empty archive</span>'}
 const OKS={mode:['orig','scale','exact','fit'],page:['img','a4','letter']};
 const sum=s=>[LBL(String(s.fmt)),s.kb?'target '+s.kb+' KB':'',s.mode=='scale'?'scale '+s.sc+'%':s.mode=='exact'?s.W+'×'+s.H+' px':s.mode=='fit'?'longest side '+s.fit+' px':'',s.rot?'rotate '+s.rot+'°':'',s.flip?'mirrored':'',s.gray?'black & white':'','quality '+s.q+'%'].filter(Boolean).join(' · ');
 /* Copy = add the same card (same source file, same settings) to this device's own queue, below the existing ones, and convert it */
-async function toQueue(f){const c=f&&f.card;if(!c)return;if(!c.orig){toast('The original file is still arriving. Try again in a moment.');return}
+async function addBlob(name,blob){if(!kindOf(name)){toast('PixelForge cannot open '+(name.split('.').pop()||'this').toUpperCase()+' files. Use Download instead.',3600);return false}
+ const file=new File([blob],name,{type:blob.type||''});const n0=S.items.length;await add([file]);if(S.items.length<=n0)return false;toast('Added to your PixelForge · '+name+' · same name, type and size',3200);return true}
+async function toQueue(f){if(!f)return false;const c=f.card;if(!c)return addBlob(f.name,f.blob);if(!c.orig){toast('The original file is still arriving. Try again in a moment.');return false}
  const file=new File([c.orig.blob],c.orig.name,{type:c.orig.blob.type});const n0=S.items.length;await add([file]);const it=S.items[0];
- if(S.items.length!=n0+1||!it||it.file!==file){toast('Could not add '+c.orig.name);return}
- if(c.raw){render();toast('Added to your PixelForge · not converted yet');return}
+ if(S.items.length!=n0+1||!it||it.file!==file){toast('Could not add '+c.orig.name);return false}
+ if(c.raw){render();toast('Added to your PixelForge · not converted yet');return true}
  const d=S.def||{},s=c.s;
  for(const k of Object.keys(d)){if(k=='fmt'||!(k in s)||typeof s[k]!=typeof d[k])continue;const v=s[k];if(OKS[k]&&!OKS[k].includes(v))continue;if(k=='bg'&&!/^#[0-9a-f]{6}$/i.test(v))continue;it.s[k]=k=='suf'?v.slice(0,40):v}
  if(typeof s.fmt=='string'&&OUT[it.kind].includes(s.fmt))it.s.fmt=s.fmt;
- render();await run([it]);toast('Copied to your PixelForge · same settings, added at the top of your list')}
+ render();await run([it]);toast('Added to your PixelForge · same settings, at the top of your list');return true}
 const url=f=>f.url||(f.url=URL.createObjectURL(f.blob));
 /* ---- panel ---- */
 function show(){el.classList.add('on');seen=0;badge();draw()}
@@ -2003,6 +2049,12 @@ const IC={
  shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/>',
  alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>',
  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+ down:'<path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/>',
+ send:'<path d="M21 3 10 14"/><path d="M21 3l-7 18-4-8-8-4 19-6Z"/>',
+ trash:'<path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="M6.5 7l1 13h9l1-13"/>',
+ open:'<path d="M14 4h6v6"/><path d="M20 4 10.5 13.5"/><path d="M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+ box:'<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5v-9Z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  pair:'<rect x="2.5" y="5" width="13" height="9" rx="1.8"/><path d="M1.5 17.5h15"/><rect x="17.5" y="9" width="5" height="10" rx="1.6"/>'};
 const ic=(p,s)=>`<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const tiles=(c,r)=>{const a=String(c||'').split('');return a.map((ch,i)=>(a.length==8&&i==4?'<span class="rm-sp"></span>':'')+`<span class="rm-ch${r?' r':''}"${r?' style="animation-delay:'+i*45+'ms"':''}>${esc(ch)}</span>`).join('')};
@@ -2010,6 +2062,18 @@ const strength=p=>{if(!p)return 0;if(p.length<6)return 1;let k=2;if(p.length>=10
 const SL=['','Too short · use at least 6 characters','Okay','Good','Strong'];
 const isPh=n=>/Android|iPhone|iPad/i.test(n||'');
 const person=(n,you)=>`<div class="rm-pers"><div class="rm-av${you?' you':''}">${ic(isPh(n)?IC.phone:IC.laptop,19)}</div><div class="rm-pn"><b>${esc(n)}</b><span>${you?'This device':'In the room'}</span></div>${you?'<em>You</em>':'<i class="rm-on" title="Connected"></i>'}</div>`;
+const EXT=n=>{const m=/\.([a-z0-9]+)$/i.exec(n||'');return m?m[1].toUpperCase().slice(0,4):'FILE'};
+const TONE=n=>{const e=EXT(n);return e=='PDF'?'pdf':e=='ZIP'?'zip':/^(JPG|JPEG|PNG|WEBP|BMP|GIF)$/.test(e)?'img':/^PPT/.test(e)?'ppt':/^(XLS|XLSX|CSV|ODS)$/.test(e)?'xls':/^(DOC|DOCX|TXT|RTF|HTML|HTM)$/.test(e)?'doc':'oth'};
+const ftile=n=>`<div class="fc-t t-${TONE(n)}" aria-hidden="true"><b>${esc(EXT(n))}</b></div>`;
+const pbtn=(cls,icon,label,attr,extra)=>`<button type="button" class="pb ${cls}" ${attr||''}${extra||''}>${ic(IC[icon],16)}<span>${label}</span></button>`;
+const libSt=x=>{if(pending&&pending.some(p=>p.blob===x.blob))return{c:'wait',t:'Waiting for a device'};const o=tx.find(t=>t.blob===x.blob);return o?{c:o.st=='done'?'ok':o.st=='fail'?'bad':'wait',t:ST(o)}:null};
+const libCard=x=>{const s=libSt(x),can=!!kindOf(x.name);
+ return`<div class="fc" data-lid="${x.id}">${ftile(x.name)}<div class="fc-b"><div class="fc-n" title="${esc(x.name)}">${esc(x.name)}</div><div class="fc-m">${fk(x.size)} · Made ${fmtT(x.at)}</div>${s?`<span class="chip ${s.c}">${esc(s.t)}</span>`:''}</div>
+<div class="fc-a">${pbtn('pri','down','Download',`data-ld="${x.id}"`)}${can?pbtn(x.added?'add done':'add','plus',x.added?'Added ✓ · add again':'Add to my PixelForge',`data-la="${x.id}"`):''}${pbtn('','send','Send to device',`data-ls="${x.id}"`)}${x.type=='application/pdf'?pbtn('','open','Open',`data-lo="${x.id}"`):''}${pbtn('dng','trash','Delete',`data-lx="${x.id}"`)}</div></div>`};
+const sentCard=o=>`<div class="fc">${ftile(o.name)}<div class="fc-b"><div class="fc-n" title="${esc(o.name)}">${esc(o.name)}</div><div class="fc-m">${fk(o.size)} · Sent ${fmtT(o.at)}</div>${o.dAt?`<div class="fc-m">Delivered ${fmtT(o.dAt)}</div>`:''}<span class="chip ${o.st=='done'?'ok':o.st=='fail'?'bad':'wait'}">${esc(ST(o))}</span></div>${o.st=='send'?`<div class="px-bar fc-w"><i data-pb="${o.id}"></i></div>`:''}${o.st=='send'||o.st=='queue'?'':`<div class="fc-a">${pbtn('dng sm','x','Clear this',`data-xt="${esc(o.id)}"`)}</div>`}</div>`;
+const rcvCard=f=>{const t=f.blob.type,im=/^image\/(jpeg|png|webp|bmp)$/.test(t),zp=/\.zip$/i.test(f.name),wt=!!(f.card&&!f.card.orig),can=f.card?true:!!kindOf(f.name);
+ return`<div class="fc" data-fid="${f.id}">${ftile(f.name)}<div class="fc-b"><div class="fc-n" title="${esc(f.name)}">${esc(f.name)}</div><div class="fc-m">${fk(f.blob.size)} · from ${esc(f.from)}</div><div class="fc-m">Received ${fmtT(f.at)}</div>${f.card?`<div class="fc-m">Settings: ${esc(sum(f.card.s))}</div>`:''}</div>${im?`<img class="fc-i" src="${url(f)}" alt="">`:''}
+<div class="fc-a">${pbtn('pri','down','Download',`data-dl="${f.id}"`)}${can?pbtn(f.added&&!wt?'add done':'add','plus',wt?'Original arriving…':f.added?'Added ✓ · add again':'Add to my PixelForge',`data-cq="${f.id}"`,wt?' disabled':''):''}${t=='application/pdf'?pbtn('','open','Open',`data-op="${f.id}"`):''}${zp?pbtn('','box','Contents',`data-zp="${f.id}"`):''}${pbtn('dng','x','Clear this',`data-xr="${f.id}"`)}</div><div class="fc-z" data-zc="${f.id}"></div></div>`};
 function setTab(t){tab=t=='join'?'join':'create';box.querySelectorAll('.rm-forms,.rm-tabs').forEach(e=>e.dataset.t=tab);box.querySelectorAll('.rm-tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab==tab));const p=box.querySelector('.rm-pan.'+(tab=='join'?'j':'c'));if(p){p.classList.remove('fx');void p.offsetWidth;p.classList.add('fx')}msg='';box.querySelectorAll(':scope .rm-msg').forEach(e=>e.remove())}
 function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.tagName=='INPUT'&&box.contains(ae)){saveTurn();return}
  const gv=i=>{const e=document.getElementById(i);return e?e.value:null};let t;
@@ -2018,8 +2082,9 @@ function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.ta
  const on=state=='on',oth=role=='host'?up().map(c=>c.cx.p).filter(Boolean):others,live=!!(role||want||state=='wait');
  const note=msg?`<div class="rm-msg${msgBad?' bad':''}" role="${msgBad?'alert':'status'}">${ic(msgBad?IC.alert:IC.info,17)}<span>${esc(msg)}</span></div>`:'';
  const adv=`<details class="px-adv"${getTurn().app||getTurn().url||/failed|disconnected/.test(diag)?' open':''}><summary>Phone will not connect? Add a free relay</summary><div class="note" style="margin:6px 0"><b>Easy first test:</b> put both devices on the same Wi-Fi (or turn on the phone's hotspot and join the PC to it). Some Wi-Fi networks block device-to-device links.<br><br><b>Fix for most failures:</b> sign up free at <b>metered.ca</b> (2 minutes) → Dashboard → TURN Server → create an app → copy the <b>app name</b> (the part before .metered.live) and the <b>API key</b>. Paste both below on <b>every</b> device (PC and phone), then join the room again. The log will then say “Metered relay ready” and relay will be above 0.</div><div class="r2"><div><label>Metered app name</label><input id="px_ta" placeholder="e.g. myapp" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().app||'')}"></div><div><label>API key</label><input id="px_tk" placeholder="paste key" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().key||'')}"></div></div><label>Or your own TURN server URL(s)</label><input id="px_tu" placeholder="turn:your-server:3478" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(getTurn().url||'')}"><div class="r2"><div><label>Username</label><input id="px_tn" autocapitalize="none" value="${esc(getTurn().user||'')}"></div><div><label>Password</label><input id="px_tp" autocapitalize="none" value="${esc(getTurn().pass||'')}"></div></div></details>`;
- const wait=pending?`<div class="mb"><b>${pending.length} file${pending.length>1?'s':''} waiting to be sent</b><span class="mt">${pending.map(f=>esc(f.name)).join(', ')}</span></div>`:'';
+ const wait=pending?`<div class="pk-wait" role="status">${ic(IC.clock,22)}<b>${pending.length} document${pending.length>1?'s':''} ready to send</b><span>${pending.map(f=>esc(f.name)).join(', ')}</span><i>They go out automatically the moment another device joins this room.</i></div>`:'';
  let h=`<div class="rm"><div class="rm-top"><div class="rm-badge">${ic(IC.pair,25)}</div><div class="rm-ttl"><b>Device rooms</b><span>${live?'Files go straight between the devices in this room':'Private, direct file transfer between your devices'}</span></div><button class="rm-x" id="px_x" aria-label="Close">${ic(IC.x,18)}</button></div>`;
+ h+=wait;
  if(!live){
   h+=`${note}<div class="rm-forms" data-t="${tab}"><div class="rm-tabs" data-t="${tab}" role="tablist"><i></i><button type="button" role="tab" data-tab="create" aria-selected="${tab=='create'}">${ic(IC.plus,16)}Create a room</button><button type="button" role="tab" data-tab="join" aria-selected="${tab=='join'}">${ic(IC.enter,16)}Join a room</button></div>
 <div class="rm-pan c"><div class="rm-ticket"><div class="rm-tk"><span class="rm-lab">Your room code · made for you</span><div class="rm-code">${tiles(ncode,roll)}</div></div><div class="rm-stub"><button type="button" class="rm-sb" id="px_g" title="Get a different room code"><b>${ic(IC.refresh,19)}</b>New code</button></div></div>
@@ -2030,7 +2095,7 @@ function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.ta
 <div><label class="rm-fl" for="px_p2">Room password</label><div class="rm-inp">${ic(IC.lock,19)}<input id="px_p2" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ask the person who made the room" value="${esc(pw2)}"><button type="button" class="rm-eye" data-eye="px_p2" aria-label="Show password">${ic(IC.eye,18)}</button></div></div>
 <button type="button" class="rm-cta" id="px_join">${ic(IC.enter,19)}Join room</button>
 <p class="rm-hint">Got an invite link? Just open it, or paste it into the room code box. You will not need the password.</p></div></div>
-${wait}${adv}<div class="rm-foot">${ic(IC.shield,16)}Encrypted from device to device. Nothing is stored on a server.</div>`}
+${adv}<div class="rm-foot">${ic(IC.shield,16)}Encrypted from device to device. Nothing is stored on a server.</div>`}
  else{
   const lab=on?(oth.length?'Connected · '+(oth.length+1)+' devices':'Connected'):role=='host'?'Room is open · waiting for others':state=='wait'?(role=='guest'?'Joining room…':'Connecting…'):'Not connected',cls=on||role=='host'?'ok':state=='wait'?'wait':'';
   h+=`<div class="rm-bar"><div class="rm-pill ${cls}" role="status"><span class="d"></span><span>${esc(lab)}</span></div><button type="button" class="rm-leave" id="px_d">${ic(IC.out,15)}Leave room</button></div>${note}
@@ -2040,16 +2105,18 @@ ${rpw?`<div class="rm-row">${ic(IC.lock,19)}<div class="rm-rt"><span>Room passwo
 <div class="rm-ppl"><div class="rm-sh"><b>In this room</b><span>${1+oth.length}</span></div>${person(me.n,1)}${oth.map(p=>person(p.n,0)).join('')}${on||role!='host'?'':'<div class="rm-empty">Nobody else is here yet. Send the invite link, or share the room code and password.</div>'}</div>
 ${on&&up().some(c=>c.fb)?'<div class="rm-note">🔁 Connected through the encrypted fallback server. A direct link was not possible on this network, so files are slower but still end-to-end encrypted with your room key.<br><b id="px_spd"></b></div>':''}
 ${!on&&role!='host'&&(diag||relayInfo)?`<div class="mt">${relayInfo?esc(relayInfo)+'<br>':''}${esc(diag)}</div>`:''}
-${!on&&role!='host'?`<button type="button" class="rm-sec" id="px_retry" style="width:100%">${ic(IC.refresh,18)}Try again</button>`:''}${!on?adv:''}${wait}`}
- if(tx.length||rx.length)h+=`<div class="px-clrrow"><button type="button" class="btn danger" id="px_clr" title="Remove every sent and received file from this list">🗑 Clear all</button></div>`;
- if(tx.length)h+=`<div class="rm-sh"><b>Sent</b><span>${tx.length}</span></div>`+tx.map(o=>`<div class="px-f"><div class="nm" title="${esc(o.name)}">${esc(o.name)}</div><div class="mt">${fk(o.size)} · ${ST(o)}</div><div class="mt">Sent: ${fmtT(o.at)}</div>${o.dAt?`<div class="mt">Delivered: ${fmtT(o.dAt)}</div>`:''}${o.st=='send'?`<div class="px-bar"><i data-pb="${o.id}"></i></div>`:''}${o.st=='send'||o.st=='queue'?'':`<div class="acts"><button type="button" class="btn danger" data-xt="${esc(o.id)}" title="Remove this file from the Sent list">✕ Clear this</button></div>`}</div>`).join('');
- if(live||rx.length)h+=`<div class="rm-sh"><b>Received</b><span>${rx.length}</span></div>`;
- conns.forEach((c,i)=>{const q=c.cx.cur;if(q&&q.role!='orig')h+=`<div class="px-f"><div class="nm">${esc(q.name)}</div><div class="mt">Receiving · ${fk(q.size)}</div><div class="px-bar"><i data-pb="in${i}" style="width:${Math.min(100,Math.round(q.got/(q.size||1)*100))}%"></i></div></div>`});
- if(rx.length>1)h+=`<div style="display:flex;gap:8px;flex-wrap:wrap">${rx.filter(x=>x.card&&x.card.orig).length>1?'<button class="btn go1 pri" id="px_cqa">➕ Copy all to my PixelForge</button>':''}<button class="btn" id="px_all">⬇ Download all received</button></div>`;
- h+=rx.length?rx.map(f=>{const t=f.blob.type,im=/^image\/(jpeg|png|webp|bmp)$/.test(t),zp=/\.zip$/i.test(f.name);
-  return`<div class="px-f" data-fid="${f.id}"><div class="nm" title="${esc(f.name)}">${esc(f.name)}</div><div class="mt">${fk(f.blob.size)} · from ${esc(f.from)}</div><div class="mt">Received: ${fmtT(f.at)}</div>${f.card?`<div class="mt">Settings: ${esc(sum(f.card.s))}</div>`:''}${im?`<img src="${url(f)}" alt="">`:''}
-<div class="acts"><button class="btn sv" data-dl="${f.id}">⬇ Download</button>${f.card?`<button class="btn go1" data-cq="${f.id}"${f.card.orig?'':' disabled'} title="Add this same card, with the same settings, to your own PixelForge">${f.card.orig?'➕ Copy to my PixelForge':'⏳ Original arriving…'}</button><button class="btn" data-cp="${f.id}" title="Copy the converted file to the clipboard">📋 Clipboard</button>`:`<button class="btn" data-cp="${f.id}">📋 Copy</button>`}${t=='application/pdf'?`<button class="btn" data-op="${f.id}">↗ Open</button>`:''}${zp?`<button class="btn" data-zp="${f.id}">📂 Contents</button>`:''}<button type="button" class="btn danger" data-xr="${f.id}" title="Remove this file from the Received list">✕ Clear this</button></div><div data-zc="${f.id}"></div></div>`}).join(''):(live?'<div class="rm-empty">Files sent from other devices appear here. You can download or copy them.</div>':'');
- box.innerHTML=h+'</div>';roll=0}
+${!on&&role!='host'?`<button type="button" class="rm-sec" id="px_retry" style="width:100%">${ic(IC.refresh,18)}Try again</button>`:''}${!on?adv:''}`}
+ const libs=LIB.all();
+ if(libs.length)h+=`<div class="rm-grp"><div class="rm-sh"><b>Made on this device</b><div class="rm-shr"><button type="button" class="pb dng sm" id="px_lclr" title="Delete every document made on this device">${ic(IC.trash,14)}<span>Delete all</span></button><span>${libs.length}</span></div></div><p class="rm-lead">Kept here until you refresh this page or delete them. Download, send or add them to PixelForge any time.</p>${libs.map(libCard).join('')}</div>`;
+ if(tx.length||rx.length)h+=`<div class="px-clrrow"><button type="button" class="pb dng sm" id="px_clr" title="Remove every sent and received file from these lists. Documents made on this device stay.">${ic(IC.x,14)}<span>Clear transfers</span></button></div>`;
+ if(tx.length)h+=`<div class="rm-grp"><div class="rm-sh"><b>Sent</b><span>${tx.length}</span></div>${tx.map(sentCard).join('')}</div>`;
+ let rr='';
+ conns.forEach((c,i)=>{const q=c.cx.cur;if(q&&q.role!='orig')rr+=`<div class="fc">${ftile(q.name)}<div class="fc-b"><div class="fc-n" title="${esc(q.name)}">${esc(q.name)}</div><div class="fc-m">${fk(q.size)}</div><span class="chip wait">Receiving…</span></div><div class="px-bar fc-w"><i data-pb="in${i}" style="width:${Math.min(100,Math.round(q.got/(q.size||1)*100))}%"></i></div></div>`});
+ const addable=rx.filter(x=>x.card?!!x.card.orig:!!kindOf(x.name));
+ if(rx.length>1)rr+=`<div class="rm-bulk">${addable.length>1?pbtn('add','plus','Add all to my PixelForge','id="px_cqa"'):''}${pbtn('','down','Download all received','id="px_all"')}</div>`;
+ rr+=rx.length?rx.map(rcvCard).join(''):(live?'<div class="rm-empty">Files sent from other devices appear here. You can download them or add them to your PixelForge.</div>':'');
+ if(live||rx.length)h+=`<div class="rm-grp"><div class="rm-sh"><b>Received</b><span>${rx.length}</span></div>${rr}</div>`;
+ const st0=box.scrollTop;box.innerHTML=h+'</div>';box.scrollTop=st0;roll=0}
 box.onclick=e=>{const b=e.target.closest('button');if(!b)return;const g=k=>b.dataset[k],F=id=>rx.find(x=>x.id==id);
  if(b.id=='px_x')hide();
  else if(g('tab'))setTab(g('tab'));
@@ -2064,17 +2131,22 @@ box.onclick=e=>{const b=e.target.closest('button');if(!b)return;const g=k=>b.dat
  else if(b.id=='px_pv'){const e=document.getElementById('rm_pw');if(e){const sh=e.dataset.s=='1';e.dataset.s=sh?'':'1';e.textContent=sh?'••••••••••':rpw;b.innerHTML=ic(sh?IC.eye:IC.eyeoff,18);b.setAttribute('aria-label',sh?'Show password':'Hide password')}}
  else if(b.id=='px_retry')connect(code,1);
  else if(b.id=='px_d'){leaveRoom('');ncode=rnd(8);pw1=pw2='';roll=1;draw();toast('You left the room')}
- else if(b.id=='px_all')rx.slice().reverse().forEach((f,i)=>setTimeout(()=>dl(f.name,f.blob),i*350));
- else if(b.id=='px_cqa'){(async()=>{for(const f of rx.filter(x=>x.card&&x.card.orig).reverse())await toQueue(f)})()}
- else if(b.id=='px_clr'){if(!confirm('Clear all sent and received files from this list?'))return;rx.forEach(f=>{if(f.url)try{URL.revokeObjectURL(f.url)}catch(_){}});rx=[];tx=tx.filter(o=>o.st=='send'||o.st=='queue');draw();toast('Cleared')}
+ else if(b.id=='px_all')rx.slice().reverse().forEach((f,i)=>setTimeout(()=>dl(f.name,f.blob,0),i*350));
+ else if(b.id=='px_cqa'){(async()=>{for(const f of rx.filter(x=>x.card?!!x.card.orig:!!kindOf(x.name)).reverse()){if(await toQueue(f))f.added=1}draw()})()}
+ else if(b.id=='px_clr'){if(!confirm('Clear all sent and received files from these lists? Documents made on this device are kept.'))return;rx.forEach(f=>{if(f.url)try{URL.revokeObjectURL(f.url)}catch(_){}});rx=[];tx=tx.filter(o=>o.st=='send'||o.st=='queue');draw();toast('Cleared')}
  else if(g('xt')){tx=tx.filter(o=>String(o.id)!==g('xt'));draw()}
  else if(g('xr')){const f=F(g('xr'));if(f&&f.url)try{URL.revokeObjectURL(f.url)}catch(_){}rx=rx.filter(x=>x.id!=g('xr'));draw()}
- else if(g('dl')){const f=F(g('dl'));f&&dl(f.name,f.blob)}
- else if(g('cq'))toQueue(F(g('cq')));
- else if(g('cp')){const f=F(g('cp'));f&&copyFile(f)}
+ else if(g('dl')){const f=F(g('dl'));f&&dl(f.name,f.blob,0)}
+ else if(g('cq')){const f=F(g('cq'));toQueue(f).then(ok=>{if(ok&&f){f.added=1;draw()}})}
+ else if(g('ld')){const x=LIB.get(g('ld'));x&&dl(x.name,x.blob,0)}
+ else if(g('la')){const x=LIB.get(g('la'));x&&addBlob(x.name,x.blob).then(ok=>{if(ok){x.added=1;draw()}})}
+ else if(g('ls')){const x=LIB.get(g('ls'));x&&send([{name:x.name,blob:x.blob}])}
+ else if(g('lo')){const x=LIB.get(g('lo'));x&&window.open(x.url||(x.url=URL.createObjectURL(x.blob)),'_blank')}
+ else if(g('lx')){const x=LIB.remove(g('lx'));if(x&&pending){pending=pending.filter(p=>p.blob!==x.blob);if(!pending.length)pending=null}draw()}
+ else if(b.id=='px_lclr'){const c=LIB.all().length;if(!c)return;if(!confirm('Delete all '+c+' document'+(c>1?'s':'')+' made on this device? Files you already downloaded are not affected.'))return;const gone=LIB.clear();if(pending){pending=pending.filter(p=>!gone.some(x=>x.blob===p.blob));if(!pending.length)pending=null}draw();toast('Deleted')}
  else if(g('op')){const f=F(g('op'));f&&window.open(url(f),'_blank')}
  else if(g('zp')){const f=F(g('zp'));f&&openZip(f).catch(()=>toast('Could not open the archive'))}
- else if(g('ze')){const[id,i]=g('ze').split(':'),x=(zmap[id]||[])[+i];x&&x.e.async('blob').then(bl=>dl(x.name.split('/').pop(),bl))}};
+ else if(g('ze')){const[id,i]=g('ze').split(':'),x=(zmap[id]||[])[+i];x&&x.e.async('blob').then(bl=>dl(x.name.split('/').pop(),bl,0))}};
 const wake=()=>{if(!want||document.hidden)return;conns.forEach(c=>{if(c.cx)c.cx.last=Date.now()});try{if(peer&&peer.disconnected)peer.reconnect()}catch(e){}
  if(state!='wait'&&!up().length){plog('Back online or visible, reconnecting');connect(want,1)}};
 document.addEventListener('visibilitychange',wake);addEventListener('online',wake);addEventListener('pageshow',wake);
@@ -2101,7 +2173,7 @@ function bootRoom(){const inv=parseInvite(location.hash);
  try{const v=JSON.parse(sessionStorage.getItem('pfroom')||'null');if(v&&v.c&&v.k){rkey=String(v.k);rpw=String(v.p||'');rmode='auto';connect(String(v.c))}}catch(e){}}
 addEventListener('hashchange',()=>{const inv=parseInvite(location.hash);if(inv){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}joinInvite(inv);show()}});
 setTimeout(bootRoom,0);
-return{send,show,ready:()=>state=='on'}})();
+return{send,show,ready:()=>state=='on',refresh:()=>draw()}})();
 </script>
 <script>
 /* ===== Scan & Crop studio (UI) ===== */
