@@ -6,3 +6,7 @@ git push origin main
 
 
 git pull origin main
+
+
+mkdir -p scripts/General_Awareness/Geography && touch scripts/General_Awareness/Geography/Solar_System.js
+
