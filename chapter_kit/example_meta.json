@@ -1,0 +1,25 @@
+{
+  "icon": "🎯", "accent": "#6366f1",
+  "title": "Class Overview — What We Will Learn Today",
+  "lead": "A <u>fast-track on Percentage and Profit & Loss</u> — two chapters that decide your Quant score.",
+  "roadmap": [["Percentage — Successive Change", "Net % = a + b + ab/100."], ["Practice", "2 questions."]],
+  "exam": "<b>Why it matters:</b> these formulas return in Data Interpretation and Interest.",
+  "thumb": {"banner": "COMPETITIVE EXAMS 2026", "line1": "FAST TRICKS", "line2": "PERCENTAGE", "line3": "PROFIT & LOSS", "badge": "FULL CLASS", "ribbon": "FORMULAS • TRICKS • PRACTICE"},
+  "yt": {
+    "title": "Percentage & Profit-Loss Fast Tricks | Competitive exams Quant",
+    "altTitles": ["Percentage Successive Change Trick in 1 Line", "Single Equivalent Discount Formula"],
+    "description": "Percentage and Profit & Loss decide your Quant score. In this fast-track class you stop calculating and start recognising patterns.\n\n📌 IN THIS CLASS\n✅ Successive change: Net % = a + b + ab/100\n✅ Practice questions\n\n⏱️ CHAPTERS\n00:00 Class overview\n00:00 Percentage\n\n👍 Like, share, subscribe.\n\n#SSCCGL #Percentage #Quant",
+    "tags": ["percentage tricks", "percentage for all exams", "profit and loss tricks", "quantitative aptitude", "maths shortcut"],
+    "hashtags": ["SSCCGL", "Percentage", "Quant"],
+    "thumbText": "PERCENTAGE + PROFIT & LOSS",
+    "pinnedComment": "📌 Solve the questions and write your answers below 👇",
+    "communityPost": "📊 New class is live: Percentage + Profit & Loss. Try the questions and tell me your score! 🎯",
+    "chapters": "00:00 Class overview\n00:00 Percentage",
+    "playlist": "Competitive exams Quant — Fast Track Classes"
+  },
+  "images": {
+    "thumbnail.png": {"t": "thumb", "objects": "a thin gold-lined percent sign (%), a few real-looking gold coins and a subtle rising chart line"},
+    "1.png": {"t": "fig", "about": "Three bars: 100 (blue), 120 (green), 108 (amber), arrows labelled +20% and −10%, label Net = +8%."}
+  },
+  "changelog": []
+}

@@ -1,0 +1,15 @@
+@@C 📊 | #22c55e | Percentage — Successive Change
+L: A percentage is just a fraction out of <b>100</b>. <u>Stop calculating and start recognising.</u>
+H: <div class="cp-formula" translate="no"><small>Successive change</small>Net % = a + b + <span class="cp-frac"><i>a × b</i><i>100</i></span></div>
+H: <div class="cp-fig"><img src="images/Maths/Percentage_and_Profit_Loss/1.png" alt="Bar diagram: 100 to 120 to 108" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+T: Step | Value | Change ;; Start | 100 | — ;; After +20% | 120 | +20 ;; After −10% | 108 | −12
+N trap: Percentages of <i>different bases</i> can never be added directly.
+M: a + b + ab⁄100 — “<b>A</b>dd <b>B</b>oth, then <b>A</b>dd <b>B</b>y hundred”
+@@Q A number is increased by 20% and then decreased by 10%. What is the net change?
+1) 6% increase  2) 8% increase  3) 10% increase  4) 12% increase
+ANS: 2
+EXP: ✅ 8%: 20 − 10 + (20 × −10)/100. 📌 Check: 100 → 120 → 108. ❌ 10% forgets the ab/100 term.
+@@Q Sugar price rises by 25%. By what percent must consumption fall to keep expenditure the same?
+1) 20%  2) 25%  3) 15%  4) 30%
+ANS: 1
+EXP: ✅ 20%: 25/125 × 100. 📌 Price ↑ 1/4 → use ↓ 1/5. ❌ 25% ignores the new base.
