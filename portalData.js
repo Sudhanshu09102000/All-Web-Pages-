@@ -176,5 +176,17 @@ const PORTAL_DATA = [
         ]
       }
     ]
+  },
+  {
+    title: "English Comprehension",
+    colorClass: "English_Comprehension",
+    topics: [
+      {
+        name: "Vocabulary",
+        subtopics: [
+          { name: "Set 1", file: "English_Comprehension/Vocabulary/Set_1" }
+        ]
+      }
+    ]
   }
 ];
