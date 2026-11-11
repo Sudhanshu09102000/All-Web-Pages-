@@ -33,19 +33,54 @@
     if (!p) return "";
     return typeof p === "string" ? p : (p.t === "thumb" ? T(p.accent, p.objects) : F(p.about));
   }
-  function copy(text, done) {
-    function fallback() {
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand("copy"); } catch (e) {}
-      document.body.removeChild(ta);
-      done();
+  /* Copy strategy (most reliable first):
+     1) synchronous execCommand inside the click gesture, with our own "copy" listener so pages that
+        block copy events / user-select:none cannot interfere;
+     2) async Clipboard API; 3) caller shows a visible, pre-selected text box for manual copy. */
+  function copy(text, done, fail, host) {
+    function onCopy(ev) {
+      try {
+        if (ev.clipboardData) ev.clipboardData.setData("text/plain", text);
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+      } catch (e) {}
     }
-    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
-    else fallback();
+    function legacy() {
+      var ok = false, prev = document.activeElement, ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;width:2em;height:2em;opacity:0;pointer-events:none;font-size:16px;-webkit-user-select:text!important;user-select:text!important";
+      (host || document.body).appendChild(ta);
+      try { window.addEventListener("copy", onCopy, true); } catch (e) {}
+      try { ta.focus(); ta.select(); ta.setSelectionRange(0, text.length); } catch (e) {}
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      try { window.removeEventListener("copy", onCopy, true); } catch (e) {}
+      if (ta.parentNode) ta.parentNode.removeChild(ta);
+      try { if (prev && prev.focus) prev.focus(); } catch (e) {}
+      return ok;
+    }
+    if (legacy()) { done(); return; }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fail);
+        return;
+      }
+    } catch (e) {}
+    fail();
+  }
+  function manual(box, text) {
+    var ta = box.querySelector("textarea");
+    if (!ta) {
+      ta = document.createElement("textarea");
+      ta.readOnly = true;
+      ta.rows = 5;
+      ta.style.cssText = "width:100%;box-sizing:border-box;font:12px/1.4 system-ui,sans-serif;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,.6);background:rgba(0,0,0,.35);color:inherit;-webkit-user-select:text!important;user-select:text!important";
+      ta.addEventListener("focus", function () { ta.select(); });
+      ta.addEventListener("click", function () { ta.select(); });
+      box.appendChild(ta);
+    }
+    ta.value = text;
+    try { ta.focus(); ta.select(); ta.setSelectionRange(0, text.length); } catch (e) {}
   }
   function swap(img) {
     if (img.getAttribute("data-ph")) return;
@@ -83,12 +118,21 @@
     if (!b) return;
     e.preventDefault();
     e.stopPropagation();
-    var label = "📋 Copy prompt";
-    copy(getPrompt(b.getAttribute("data-ph-src")), function () {
+    var label = "📋 Copy prompt", text = getPrompt(b.getAttribute("data-ph-src"));
+    if (!text) {
+      b.textContent = "⚠️ No prompt found";
+      setTimeout(function () { b.textContent = label; }, 2500);
+      return;
+    }
+    copy(text, function () {
       b.textContent = "✅ Copied!";
       setTimeout(function () { b.textContent = label; }, 1600);
-    });
-  });
+    }, function () {
+      b.textContent = "⚠️ Select all & copy below";
+      manual(b.parentNode, text);
+      setTimeout(function () { b.textContent = label; }, 4000);
+    }, b.parentNode);
+  }, true);
   try { new MutationObserver(sweep).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
   sweep();
 })();
