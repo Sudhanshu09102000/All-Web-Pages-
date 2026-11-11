@@ -41,7 +41,7 @@ PATH RULES
 Image URLs: images/<Field>/<Subject>/<Chapter_Name>/<file>.png (e.g. images/General_Awareness/Ancient_History/Vedic_Age/thumbnail.png) (thumbnail.png, 1.png, 2.png ...). In H: lines write the full path; it must match the "images" keys in meta.json. Shared files (images/person.png, images/logo.png) are not registered.
 Figure markup (max-width:320px;max-height:200px for simple diagrams):
 <div class="cp-fig"><img src="images/<Field>/<Subject>/<Chapter_Name>/1.png" alt="short description" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-Images: only when a figure truly helps, max 1 per page, ideally max 3 per chapter. Never draw images. For geography write "schematic, not a map" in about.
+Images: add images that would help to memorize topic, max 1 per page, ideally max 10 per chapter. Never draw images. For geography write "schematic, not a map" in about.
 
 SCOPE
 Cover ONLY my named topic and ALL its subtopics, in the book's order. Skip anything outside it. If the first content has no heading, give it a short sensible title.
