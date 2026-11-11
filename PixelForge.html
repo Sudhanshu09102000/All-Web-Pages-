@@ -344,6 +344,24 @@ input.px-code{font:800 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spa
 .oc-main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,1fr);gap:14px;padding:14px;min-height:0}
 .oc-left,.oc-right{min-height:0;min-width:0;display:flex;flex-direction:column;gap:10px}.oc-right{overflow:auto;padding-right:2px}.oc-right>*{flex:none}
 .oc-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.oc-tools input[type=search],.oc-tools input:not([type]){flex:1;min-width:120px;width:auto}.oc-tools .btn{padding:5px 11px}#oc-zv{font-weight:700;min-width:44px;text-align:center}
+
+/* Text Studio: premium page-select tick */
+.oc-pick{--pk:var(--a,#6d5efc);display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 6px!important;border-radius:999px!important;border:1px solid var(--bd);background:var(--in);color:var(--tx);font:700 12.5px Inter,sans-serif;cursor:pointer;white-space:nowrap;position:relative;overflow:hidden;transition:.25s cubic-bezier(.2,.8,.2,1)}
+.oc-pick:hover{border-color:var(--pk);box-shadow:0 8px 22px -10px var(--glow)}
+.oc-pick:focus-visible{outline:2px solid var(--pk);outline-offset:2px}
+.oc-pick .pk-box{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--mut);background:transparent;transition:.3s cubic-bezier(.2,.8,.2,1);flex:none}
+.oc-pick .pk-box svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s .08s ease}
+.oc-pick .pk-n{display:none;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:rgba(255,255,255,.22);font-size:11px;align-items:center;justify-content:center}
+.oc-pick[aria-checked=true]{background:linear-gradient(135deg,#7c6cff,#5a49f0 55%,#8b5cf6);color:#fff;border-color:transparent;box-shadow:0 10px 26px -10px var(--glow),inset 0 1px 0 rgba(255,255,255,.28)}
+.oc-pick[aria-checked=true] .pk-box{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.85);transform:scale(1.06);animation:pkPop .4s cubic-bezier(.3,1.6,.5,1)}
+.oc-pick[aria-checked=true] .pk-box svg{stroke-dashoffset:0}
+.oc-pick.has .pk-n{display:inline-flex}
+.oc-pick:not([aria-checked=true]).has .pk-n{background:var(--pk);color:#fff}
+@keyframes pkPop{0%{transform:scale(.7)}100%{transform:scale(1.06)}}
+.oc-pgs .chip.sel{border-color:var(--a,#6d5efc);box-shadow:0 0 0 1px var(--a,#6d5efc) inset,0 6px 16px -8px var(--glow);padding-right:20px}
+.oc-pgs .chip.sel:before{content:"";position:absolute;right:4px;top:50%;margin-top:-6px;width:12px;height:12px;border-radius:50%;background:var(--a,#6d5efc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/9px no-repeat}
+.oc-pgs .chip.on.sel:before{background-color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236d5efc' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")}
+@media(prefers-reduced-motion:reduce){.oc-pick,.oc-pick *{transition:none!important;animation:none!important}}
 .oc-st{flex:1;min-height:0;overflow:auto;border-radius:18px;border:1px solid var(--bd);background:repeating-conic-gradient(#8883 0 25%,transparent 0 50%) 0/16px 16px;padding:12px;position:relative}
 .oc-img{position:relative;margin:auto;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.28);border-radius:6px;overflow:hidden;background:#fff;line-height:0}
 .oc-img canvas{width:100%;height:auto;display:block}
@@ -2400,7 +2418,7 @@ async function worker(lang){if(W&&WL==lang)return W;await kill();W=await Tessera
 async function kill(){if(W){try{await W.terminate()}catch(e){}}W=null;WL=''}
 function dom(){if(D)return D;const d=document.createElement('div');d.className='oc';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
 d.innerHTML=`<div class="oc-top"><div class="oc-brand"><div class="oc-lg">🔎</div><div><b>Text Studio</b><small id="oc-nm"></small></div></div><div class="oc-pgs" id="oc-pgs"></div><button class="btn" id="oc-x">✕ Close</button></div>
-<div class="oc-main"><div class="oc-left"><div class="oc-tools"><button class="btn" data-z="-1" aria-label="Zoom out">−</button><span id="oc-zv">100%</span><button class="btn" data-z="1" aria-label="Zoom in">+</button><label class="chk" style="margin:0"><input type="checkbox" id="oc-bx" checked> Word boxes</label><input id="oc-find" placeholder="Find in page…" autocomplete="off"></div>
+<div class="oc-main"><div class="oc-left"><div class="oc-tools"><button class="btn" data-z="-1" aria-label="Zoom out">−</button><span id="oc-zv">100%</span><button class="btn" data-z="1" aria-label="Zoom in">+</button><label class="chk" style="margin:0"><input type="checkbox" id="oc-bx" checked> Word boxes</label><input id="oc-find" placeholder="Find in page…" autocomplete="off"><button type="button" class="oc-pick" id="oc-pick" role="checkbox" aria-checked="false" title="Tick to include this page in the extraction (Shift+Space)"><span class="pk-box"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="pk-t">Select page</span><span class="pk-n" id="oc-pkn">0</span></button></div>
 <div class="oc-st" id="oc-st"><div class="oc-img" id="oc-img"><canvas id="oc-cv"></canvas><div id="oc-ov"></div></div></div></div>
 <div class="oc-right"><h3>Extraction mode</h3><div class="oc-modes" id="oc-modes">${MODES.map(m=>`<button class="oc-mode" data-m="${m[0]}"><span>${m[1]}</span><b>${m[2]}</b><small>${m[3]}</small></button>`).join('')}</div>
 <div class="r2"><div><label>OCR language</label><select id="oc-lang">${LANGS.map(l=>`<option value="${l[0]}">${l[1]}</option>`).join('')}</select></div><label class="chk" style="align-self:end;margin:0"><input type="checkbox" id="oc-enh" checked> Enhance for OCR</label></div>
@@ -2428,17 +2446,21 @@ g('#oc-cp').onclick=async()=>{const t=D.tx.value;if(!t)return toast('Nothing to 
 g('#oc-fmt').onchange=fname;
 rgWire(g,'oc-xr',()=>rgPaint('oc-xr'));
 g('#oc-xrb').onclick=()=>{if(E.busy)return;const p=g('#oc-xr');p.hidden=!p.hidden;if(!p.hidden){if(!g('#oc-xri').value.trim())g('#oc-xri').value=''+(E.cur+1);rgPaint('oc-xr');g('#oc-xri').focus()}};
+g('#oc-pick').onclick=togglePick;
 g('#oc-xrgo').onclick=()=>{const r=rgSel('oc-xr');if(!r){toast('Enter a valid page range, e.g. 1-5, 8');g('#oc-xri').focus();return}run(r)};
-addEventListener('keydown',e=>{if(!E)return;if(e.key=='Escape'&&!document.querySelector('#px.on'))close();if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();if(!E.busy)run([E.cur])}});return D}
+addEventListener('keydown',e=>{if(!E)return;if(e.key=='Escape'&&!document.querySelector('#px.on'))close();if(e.shiftKey&&e.code=='Space'&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||'')){e.preventDefault();togglePick()}if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();if(!E.busy)run([E.cur])}});return D}
 const cur=()=>E.pages[E.cur],txt=p=>p.edit!=null?p.edit:(p.res&&p.res[p.src]?p.res[p.src].text:'');
 const zoom=()=>{D.img.style.width=E.z*100+'%';D.g('#oc-zv').textContent=Math.round(E.z*100)+'%'};
-function sync(){const isPdf=E.it.kind=='pdf';D.g('#oc-modes').querySelectorAll('.oc-mode').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.m==E.mode);b.disabled=!isPdf&&(b.dataset.m=='digital'||b.dataset.m=='both')});D.g('#oc-lang').value=E.lang;D.g('#oc-enh').checked=E.enh;
+function sync(){const SS=selSet(),isPdf=E.it.kind=='pdf';D.g('#oc-modes').querySelectorAll('.oc-mode').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.m==E.mode);b.disabled=!isPdf&&(b.dataset.m=='digital'||b.dataset.m=='both')});D.g('#oc-lang').value=E.lang;D.g('#oc-enh').checked=E.enh;
 D.g('#oc-all').hidden=E.pages.length<2;D.g('#oc-xrb').hidden=E.pages.length<2;if(E.pages.length<2)D.g('#oc-xr').hidden=true;D.g('#oc-go').textContent=E.pages.length>1?'⚡ Extract this page':'⚡ Extract text';
-D.pgs.innerHTML=E.pages.length>1?E.pages.map((p,i)=>`<button class="chip${i==E.cur?' on':''}${p.res?' ok':''}" data-p="${i}">${i+1}</button>`).join(''):'';fname()}
+D.pgs.innerHTML=E.pages.length>1?E.pages.map((p,i)=>`<button class="chip${i==E.cur?' on':''}${p.res?' ok':''}${SS.has(i)?' sel':''}" data-p="${i}">${i+1}</button>`).join(''):'';fname();paintSel()}
 function rgPanel(P,title,extra){return `<div class="oc-rg" id="${P}" hidden><div class="rg-h"><b>📑 ${title}</b><span class="rg-n" id="${P}n"></span></div><div class="rg-in"><span>🔢</span><input id="${P}i" type="text" placeholder="e.g. 1-5, 8, 12-15" autocomplete="off" spellcheck="false" aria-label="${title}"><button type="button" class="rg-clr" id="${P}c" aria-label="Clear pages">✕</button></div><div class="rg-ft"><label>From<input type="number" id="${P}f" min="1" inputmode="numeric" placeholder="1"></label><i>→</i><label>To<input type="number" id="${P}t" min="1" inputmode="numeric" placeholder="1"></label></div><div class="rg-tr" id="${P}b" aria-hidden="true"></div><div class="rg-ch" id="${P}q"><button type="button" data-q="cur">This page</button><button type="button" data-q="first">First half</button><button type="button" data-q="second">Second half</button><button type="button" data-q="odd">Odd</button><button type="button" data-q="even">Even</button><button type="button" data-q="all">All</button></div>${extra||''}</div>`}
 function rgWire(g,P,cb){const i=g('#'+P+'i');i.oninput=cb;g('#'+P+'c').onclick=()=>{i.value='';cb();i.focus()};
 const ft=()=>{const a=+g('#'+P+'f').value,b=+g('#'+P+'t').value;i.value=a&&b?(a<=b?a+'-'+b:b+'-'+a):(a||b||'');cb()};g('#'+P+'f').oninput=g('#'+P+'t').oninput=ft;
 g('#'+P+'q').onclick=e=>{const b=e.target.closest('[data-q]');if(!b||!E)return;const n=E.pages.length,h=Math.ceil(n/2),L=(a,z,st)=>{const o=[];for(let k=a;k<=z;k+=st)o.push(k);return o.join(',')};i.value={cur:''+(E.cur+1),first:'1-'+h,second:h+1<=n?(h+1)+'-'+n:''+n,odd:L(1,n,2),even:L(2,n,2),all:'1-'+n}[b.dataset.q];cb()}}
+function selSet(){if(!E||!D)return new Set();const el=D.g('#oc-xri');const v=el?el.value.trim():'';const r=v?rng(v,E.pages.length):null;return new Set(r&&r.length?r:[])}
+function paintSel(){if(!E||!D)return;const S=selSet(),on=S.has(E.cur),b=D.g('#oc-pick');if(!b)return;b.setAttribute('aria-checked',on);b.classList.toggle('has',S.size>0);D.g('#oc-pkn').textContent=S.size;b.querySelector('.pk-t').textContent=on?'Selected':'Select page';D.pgs.querySelectorAll('[data-p]').forEach(c=>c.classList.toggle('sel',S.has(+c.dataset.p)))}
+function togglePick(){if(!E||E.busy)return;const S=selSet();S.has(E.cur)?S.delete(E.cur):S.add(E.cur);const ix=[...S].sort((a,c)=>a-c),inp=D.g('#oc-xri');inp.value=ix.length?rgFmt(ix):'';D.g('#oc-xr').hidden=!ix.length&&D.g('#oc-xr').hidden;if(ix.length)D.g('#oc-xr').hidden=false;rgPaint('oc-xr')}
 function rgSel(P){P=P||'oc-rg';if(!E)return null;const v=D.g('#'+P+'i').value.trim();if(!v)return null;const r=rng(v,E.pages.length);return r&&r.length?r:null}
 function rgRuns(ix){const o=[];let a=ix[0],b=a;for(let k=1;k<=ix.length;k++){const x=ix[k];if(x===b+1){b=x;continue}o.push([a,b]);a=b=x}return o}
 function rgFmt(ix){return rgRuns(ix).map(([a,b])=>a==b?''+(a+1):(a+1)+'-'+(b+1)).join(', ')}
@@ -2446,7 +2468,7 @@ function rgPaint(P){P=P||'oc-rg';const p=D.g('#'+P),v=D.g('#'+P+'i').value.trim(
 p.classList.toggle('bad',!!v&&!ok);f.max=t.max=n;
 nn.textContent=ok?r.length+' of '+n+' page'+(n==1?'':'s')+' selected':(v?'Try a format like 1-5, 8':'Type pages or pick a preset');
 const runs=ok?rgRuns(r):[];D.g('#'+P+'b').innerHTML=runs.map(([a,b])=>`<b style="left:${a/n*100}%;width:${(b-a+1)/n*100}%"></b>`).join('');
-if(document.activeElement!==f)f.value=runs.length==1?runs[0][0]+1:'';if(document.activeElement!==t)t.value=runs.length==1?runs[0][1]+1:''}
+if(document.activeElement!==f)f.value=runs.length==1?runs[0][0]+1:'';if(document.activeElement!==t)t.value=runs.length==1?runs[0][1]+1:'';if(P=='oc-xr')paintSel()}
 function fname(){if(!E)return;D.g('#oc-fn').textContent='→ '+nm(D.g('#oc-fmt').value).name}
 function view(){const p=cur(),r=p.res;D.tx.value=txt(p);D.src.hidden=!(r&&r.dig&&r.ocr);if(r)for(const b of D.src.children)b.setAttribute('aria-pressed',b.dataset.s==p.src);
 const w=r&&r[p.src]?r[p.src].words:[];D.ov.innerHTML=w.map(x=>`<i class="${x.c<60?'lo':x.c<80?'mid':''}" data-t="${esc(x.t)}" title="${esc(x.t)}${x.c<100?' · '+Math.round(x.c)+'%':''}" style="left:${x.b[0]*100}%;top:${x.b[1]*100}%;width:${(x.b[2]-x.b[0])*100}%;height:${(x.b[3]-x.b[1])*100}%"></i>`).join('');
