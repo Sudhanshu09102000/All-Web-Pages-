@@ -31,6 +31,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0d1117" />
   <script>try{if(localStorage.getItem("gpPerfBoost")!=="0")document.documentElement.classList.add("perf-boost");}catch(e){document.documentElement.classList.add("perf-boost");}</script>
+  <script>document.documentElement.classList.add("lite-mode");</script><!-- launch in Light theme (no dark flash) -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -4450,6 +4451,20 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
   #qaOneLine #googleSearchBtnTop { width: 2.4em !important; padding: 0 !important; border-radius: .65em !important; }
   #qaOneLine #googleSearchBtnTop svg { width: 1.2em; height: 1.2em; }
 }
+</style>
+
+<style id="scrollableCentreBoxes">
+/* Centre pop-up boxes: never taller than the screen, always scrollable, so the Close button is reachable */
+#jsErrorBox, #backConfirmOverlay, #submitConfirmOverlay{
+  overflow-y:auto !important; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+  padding:12px !important; box-sizing:border-box;
+}
+#jsErrorBoxInner, #backConfirmBox, #submitConfirmBox{
+  max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px);
+  overflow-y:auto !important; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+  margin:auto; box-sizing:border-box;
+}
+#jsErrorBoxInner .err-close-btn{ position:sticky; bottom:0; }
 </style>
 </head>
 
@@ -16886,7 +16901,7 @@ html.lite-mode .lite-switch,html.lite-mode .lite-knob{transition:none!important}
   }
   function save(on){try{localStorage.setItem(KEY,on?'1':'0');}catch(e){}}
   function toggle(){var on=!root.classList.contains('lite-mode');apply(on);save(on);}
-  var saved=true;try{var _v=localStorage.getItem(KEY);if(_v!==null)saved=(_v==='1');}catch(e){}
+  var saved=true; /* every launch starts in Light theme (can still be switched during the session) */
   apply(saved);
   row.addEventListener('click',toggle);
   row.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
@@ -20636,6 +20651,20 @@ html #gcp-panel .ts-fx button.on{
   background:var(--gp-glow-40); border-color:var(--gp-glow); box-shadow:0 0 0 1px var(--gp-glow), 0 4px 14px var(--gp-glow-40);
 }
 </style>
+
+<script>
+(function(){
+  var ids=['jsErrorBox','backConfirmOverlay','submitConfirmOverlay'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    el.addEventListener('click',function(e){ if(e.target===el && id==='jsErrorBox') el.classList.remove('show'); });
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    var el=document.getElementById('jsErrorBox'); if(el && el.classList.contains('show')) el.classList.remove('show');
+  });
+})();
+</script>
 </body>
 
 
