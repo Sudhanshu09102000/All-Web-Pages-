@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""build.py <Subject> <Chapter_Name> [parts_dir=parts] [out_root=.]
+"""build.py <Field> <Subject> <Chapter_Name> [parts_dir=parts] [out_root=.]
 Reads  parts/meta.json (entry 1) + parts/p*.txt (shorthand), writes
 scripts/<Chapter_Name>/<Chapter_Name>.js and runs validate.js."""
 import sys, os, re, json, glob, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
-subject, chap = sys.argv[1], sys.argv[2]
-pdir = sys.argv[3] if len(sys.argv) > 3 else "parts"
-root = sys.argv[4] if len(sys.argv) > 4 else "."
+if len(sys.argv) < 4: raise SystemExit("Usage: build.py <Field> <Subject> <Chapter_Name> [parts_dir] [out_root]")
+field, subject, chap = sys.argv[1], sys.argv[2], sys.argv[3]
+pdir = sys.argv[4] if len(sys.argv) > 4 else "parts"
+root = sys.argv[5] if len(sys.argv) > 5 else "."
 PAL = ["#22c55e","#f59e0b","#ef4444","#8b5cf6","#14b8a6","#ec4899","#3b82f6","#f97316","#84cc16","#06b6d4",
        "#a855f7","#e11d48","#10b981","#eab308","#0ea5e9","#d946ef","#64748b","#fb7185","#2dd4bf","#c026d3"]
 ENT = re.compile(r"&(?!#?\w+;)")
@@ -73,7 +74,7 @@ nc, nq = sum(i["kind"] == "c" for i in items), sum(i["kind"] == "q" for i in ite
 
 # ---- entry 1 (overview) ----
 M = json.load(open(os.path.join(pdir, "meta.json"), encoding="utf-8"))
-img = "images/%s/%s/" % (subject, chap)
+img = "images/%s/%s/%s/" % (field, subject, chap)
 tags, seen = [], set()
 for t in M["yt"]["tags"]:
     if len(t) <= 30 and t.lower() not in seen: seen.add(t.lower()); tags.append(t)
@@ -115,7 +116,7 @@ ov = f'''      <p class="cp-lead">{esc(M["lead"])}</p>
       <div class="cp-note exam">{esc(M["exam"])}</div>'''
 
 # ---- write file ----
-L = ["/* Subject: %s · Chapter: %s · %d concept pages (+ overview) · %d questions */\n" % (subject, chap, nc, nq), "window.TEST_DATA = {"]
+L = ["/* Field: %s · Subject: %s · Chapter: %s · %d concept pages (+ overview) · %d questions */\n" % (field, subject, chap, nc, nq), "window.TEST_DATA = {"]
 L.append('  1: {\n    type: "concept", icon: %s, accent: %s, pauseTimer: true,\n    title: %s,\n    thumb: %s,\n    yt: %s,\n    html: `\n%s\n    `\n  },'
          % (J(M["icon"]), J(M["accent"]), J(M["title"]), OBJ(th),
             OBJ(M["yt"]), ov))

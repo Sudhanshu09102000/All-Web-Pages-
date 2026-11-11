@@ -38,7 +38,7 @@ else {
   if (t && t.some((x) => x.length > 30)) E("a tag is over 30 chars");
   ["title", "altTitles", "description", "hashtags", "thumbText", "pinnedComment", "communityPost", "chapters", "playlist"].forEach((f) => !(e1.yt || {})[f] && E("yt." + f + " missing"));
 }
-const ch = [...used].filter((p) => p.split("/").length >= 4);
+const ch = [...used].filter((p) => p.split("/").length >= 5);
 ch.forEach((p) => !P[p] && E("no IMG_PROMPTS for " + p));
 Object.keys(P).forEach((p) => !used.has(p) && E("IMG_PROMPTS not used: " + p));
 if (ch.length > 4) E("more than 3 chapter images + thumbnail");

@@ -109,7 +109,7 @@ window.TEST_DATA = {
     type: "concept", icon: "🏛️", accent: "#6366f1", pauseTimer: true,
     title: "Class Overview — State Executive and State Legislature",
     thumb: {
-      image: "images/Polity/State_Executive_and_State_Legislature/thumbnail.png",
+      image: "images/General_Awareness/Polity/State_Executive_and_State_Legislature/thumbnail.png",
       banner: "COMPETITIVE EXAMS 2026",
       line1: "GOVERNOR + CM",
       line2: "STATE EXECUTIVE",
@@ -312,7 +312,7 @@ window.TEST_DATA = {
     title: "Governor and Bills — Four Options",
     html: `
       <p class="cp-lead">Every bill passed by the legislature goes to the Governor, who has <b>four options</b>.</p>
-      <div class="cp-fig"><img src="images/Polity/State_Executive_and_State_Legislature/1.png" alt="Flow: a bill and the four options of the Governor" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-fig"><img src="images/General_Awareness/Polity/State_Executive_and_State_Legislature/1.png" alt="Flow: a bill and the four options of the Governor" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Option</th><th>Result</th></tr></thead><tbody><tr><td>Assent</td><td>Bill becomes an <b>Act</b></td></tr><tr><td>Withhold</td><td>Bill is not enacted</td></tr><tr><td>Return</td><td>If passed again, he <b>must assent</b> (suspensive veto)</td></tr><tr><td>Reserve</td><td>Sent for the <b>President's</b> consideration</td></tr></tbody></table>
       <div class="cp-note trap">Reservation is <b>obligatory</b> when the bill endangers the position of the <b>State High Court</b>.</div>
       <div class="cp-note tip"><b>He may also reserve a bill that is:</b> ultra vires, against the Directive Principles, against the larger interest of the country, of grave national importance, or about compulsory acquisition of property (Art. 31A).</div>
@@ -497,7 +497,7 @@ window.TEST_DATA = {
     title: "Council — Manner of Election (Art. 171(3))",
     html: `
       <p class="cp-lead">Five groups fill the Council: <u>1/3 + 1/12 + 1/12 + 1/3 + 1/6 = 1</u>.</p>
-      <div class="cp-fig"><img src="images/Polity/State_Executive_and_State_Legislature/2.png" alt="Ring chart: shares of the Legislative Council" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-fig"><img src="images/General_Awareness/Polity/State_Executive_and_State_Legislature/2.png" alt="Ring chart: shares of the Legislative Council" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Share</th><th>Elected / Nominated by</th></tr></thead><tbody><tr><td>1/3</td><td>Members of <b>local bodies</b> (municipalities, district boards etc.)</td></tr><tr><td>1/12</td><td><b>Graduates</b> of 3 years' standing residing in the state</td></tr><tr><td>1/12</td><td><b>Teachers</b> of 3 years' standing (not below secondary school)</td></tr><tr><td>1/3</td><td>Members of the <b>Legislative Assembly</b> (from non-members)</td></tr><tr><td>1/6</td><td>Nominated by the <b>Governor</b> (literature, science, art, social service, cooperation)</td></tr></tbody></table>
       <div class="cp-mnemonic"><b>Thirds</b> for local bodies and MLAs, <b>twelfths</b> for graduates and teachers, a <b>sixth</b> for the Governor.</div>
     `
@@ -674,9 +674,9 @@ window.TEST_DATA = {
 };
 
 window.IMG_PROMPTS = Object.assign(window.IMG_PROMPTS || {}, {
-  "images/Polity/State_Executive_and_State_Legislature/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a refined miniature government house with a dome, a brass gavel on a stand and a rolled blank parchment scroll" },
-  "images/Polity/State_Executive_and_State_Legislature/1.png": { t: "fig", about: "A box BILL on the left with four arrows to four boxes: ASSENT = ACT, WITHHOLD = NO ACT, RETURN = PASSED AGAIN: MUST ASSENT, RESERVE = PRESIDENT DECIDES." },
-  "images/Polity/State_Executive_and_State_Legislature/2.png": { t: "fig", about: "A ring chart split into five labelled slices: 1/3 LOCAL BODIES, 1/12 GRADUATES, 1/12 TEACHERS, 1/3 MLAs, 1/6 GOVERNOR." }
+  "images/General_Awareness/Polity/State_Executive_and_State_Legislature/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a refined miniature government house with a dome, a brass gavel on a stand and a rolled blank parchment scroll" },
+  "images/General_Awareness/Polity/State_Executive_and_State_Legislature/1.png": { t: "fig", about: "A box BILL on the left with four arrows to four boxes: ASSENT = ACT, WITHHOLD = NO ACT, RETURN = PASSED AGAIN: MUST ASSENT, RESERVE = PRESIDENT DECIDES." },
+  "images/General_Awareness/Polity/State_Executive_and_State_Legislature/2.png": { t: "fig", about: "A ring chart split into five labelled slices: 1/3 LOCAL BODIES, 1/12 GRADUATES, 1/12 TEACHERS, 1/3 MLAs, 1/6 GOVERNOR." }
 });
 
 /* CHANGE LOG

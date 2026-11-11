@@ -100,7 +100,7 @@ window.TEST_DATA = {
     type: "concept", icon: "📜", accent: "#6366f1", pauseTimer: true,
     title: "Class Overview — Preamble & Schedules",
     thumb: {
-      image: "images/Polity/Preamble_and_Schedules/thumbnail.png",
+      image: "images/General_Awareness/Polity/Preamble_and_Schedules/thumbnail.png",
       banner: "COMPETITIVE EXAMS 2026",
       line1: "POLITY",
       line2: "PREAMBLE",
@@ -781,7 +781,7 @@ window.TEST_DATA = {
 };
 
 window.IMG_PROMPTS = Object.assign(window.IMG_PROMPTS || {}, {
-  "images/Polity/Preamble_and_Schedules/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a leather-bound book resembling a constitution, a brass scales of justice and a wooden gavel" }
+  "images/General_Awareness/Polity/Preamble_and_Schedules/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a leather-bound book resembling a constitution, a brass scales of justice and a wooden gavel" }
 });
 
 /* CHANGE LOG

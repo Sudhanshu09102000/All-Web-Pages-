@@ -45,7 +45,7 @@
                        playlist … each with a one-tap COPY button + "Copy everything".
      The thumbnail box and the "Open Thumbnail & YouTube Kit" link are hidden on the page (see the first snippet); the chapter icon opens the studio.
 
-     thumb : "images/<Subject>/<Chapter_Name>/thumbnail.png"   (image link, relative to index.html)
+     thumb : "images/<Field>/<Subject>/<Chapter_Name>/thumbnail.png"   (image link, relative to index.html)
              or { image, banner, line1, line2, line3, person, logo, badge, ribbon, burst:"", mode:"creator"|"pro"|"image" }
              mode "creator" = teacher-style thumbnail: red top banner (banner), white line1, big gold line2,
              cyan line3, teacher cut-out photo on the right, round channel logo top-right.
@@ -88,7 +88,7 @@ window.TEST_DATA = {
 
     /* 🎬 tap the 🎯 icon on this page → thumbnail studio + YouTube kit */
     thumb: {
-      "image": "images/Polity/Historical_Background/thumbnail.png",
+      "image": "images/General_Awareness/Polity/Historical_Background/thumbnail.png",
       "banner": "COMPETITIVE EXAMS 2026",
       "line1": "INDIAN POLITY",
       "line2": "ALL ACTS",
@@ -187,7 +187,7 @@ window.TEST_DATA = {
         <div class="cp-card amber"><div class="cp-card-title">Company Rule (1773–1858)</div>The <b>Company</b> governs India, but <u>Parliament tightens its control</u> Act by Act.</div>
         <div class="cp-card violet"><div class="cp-card-title">Crown Rule (1858–1947)</div>After the Revolt of 1857 the <b>Crown</b> takes <u>direct control</u>; the period ends with independence.</div>
       </div>
-      <div class="cp-fig"><img src="images/Polity/Historical_Background/1.png" alt="Timeline of Company Rule and Crown Rule" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-fig"><img src="images/General_Awareness/Polity/Historical_Background/1.png" alt="Timeline of Company Rule and Crown Rule" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table>
       <thead><tr><th>Phase</th><th>Acts (in order)</th></tr></thead>
       <tbody>
@@ -322,7 +322,7 @@ window.TEST_DATA = {
       <tr><td><b>Court of Directors</b></td><td><u>Commercial</u> functions (Company's body)</td></tr>
       </tbody>
       </table>
-      <div class="cp-fig"><img src="images/Polity/Historical_Background/2.png" alt="Double Government: Board of Control and Court of Directors" style="display:block;width:100%;max-width:320px;max-height:200px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-fig"><img src="images/General_Awareness/Polity/Historical_Background/2.png" alt="Double Government: Board of Control and Court of Directors" style="display:block;width:100%;max-width:320px;max-height:200px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <div class="cp-grid c2">
         <div class="cp-card blue"><div class="cp-card-title">“British Possessions”</div><b>First time</b> the EIC territories in India were called British possessions.</div>
         <div class="cp-card green"><div class="cp-card-title">Supreme control</div>The <b>British Government</b> got supreme control over the Company's administration in India.</div>
@@ -849,7 +849,7 @@ window.TEST_DATA = {
       <tr><td><b>Reserved</b></td><td><u>Governor</u> and his council</td><td>No</td></tr>
       </tbody>
       </table>
-      <div class="cp-fig"><img src="images/Polity/Historical_Background/3.png" alt="Dyarchy: transferred and reserved subjects" style="display:block;width:100%;max-width:320px;max-height:200px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-fig"><img src="images/General_Awareness/Polity/Historical_Background/3.png" alt="Dyarchy: transferred and reserved subjects" style="display:block;width:100%;max-width:320px;max-height:200px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <div class="cp-divider">First time features</div>
       <div class="cp-grid c2">
         <div class="cp-card blue"><div class="cp-card-title">Bicameralism</div><b>First time</b> at the Centre: <b>Council of State</b> (upper) + <b>Legislative Assembly</b> (lower).</div>
@@ -1056,16 +1056,16 @@ window.TEST_DATA = {
 
 /* ════════════════════════════════════════════════════════════════
    IMAGE LIST (which image belongs to which entry)
-     images/Polity/Historical_Background/thumbnail.png → ENTRY 1 (class overview, "thumb" field)  — not numbered
-     images/Polity/Historical_Background/1.png → ENTRY 2 (Historical Background)
-     images/Polity/Historical_Background/2.png → ENTRY 12 (Pitt's India Act, 1784)
-     images/Polity/Historical_Background/3.png → ENTRY 58 (Government of India Act, 1919 (Montagu-Chelmsford Reforms))
+     images/General_Awareness/Polity/Historical_Background/thumbnail.png → ENTRY 1 (class overview, "thumb" field)  — not numbered
+     images/General_Awareness/Polity/Historical_Background/1.png → ENTRY 2 (Historical Background)
+     images/General_Awareness/Polity/Historical_Background/2.png → ENTRY 12 (Pitt's India Act, 1784)
+     images/General_Awareness/Polity/Historical_Background/3.png → ENTRY 58 (Government of India Act, 1919 (Montagu-Chelmsford Reforms))
 
-   FIGURE PROMPTS  (copy each line into ChatGPT, save the result under the given name inside the images/Polity/Historical_Background/ folder)
-   images/Polity/Historical_Background/thumbnail.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle amber gradient (accent #d97706) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: an antique brass compass, a rolled aged parchment scroll tied with a ribbon and sealed with plain wax (completely blank, no writing), and a vintage quill pen in an inkwell, rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark-navy centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre of the frame (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.
-   images/Polity/Historical_Background/1.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Horizontal timeline arrow. Left bar in amber labelled exactly “Company Rule” with “1773 – 1858” under it; right bar in violet labelled exactly “Crown Rule” with “1858 – 1947” under it; a small marker at the junction labelled “1858”. Only these labels.
-   images/Polity/Historical_Background/2.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Diagram of Double Government. A top box in violet labelled exactly “British Government”; an arrow down to a left box labelled exactly “Board of Control” with the word “Politics” below it, and an arrow down to a right box labelled exactly “Court of Directors” with the word “Commerce” below it. Title at the top: “Double Government 1784”. Only these labels.
-   images/Polity/Historical_Background/3.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Diagram of Dyarchy 1919. A top box labelled exactly “Governor”; an arrow down-left to a green box labelled “Transferred” with “Ministers” below it, and an arrow down-right to a red box labelled “Reserved” with “Governor” below it. Title at the top: “Dyarchy in Provinces”. Only these labels.
+   FIGURE PROMPTS  (copy each line into ChatGPT, save the result under the given name inside the images/General_Awareness/Polity/Historical_Background/ folder)
+   images/General_Awareness/Polity/Historical_Background/thumbnail.png: Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle amber gradient (accent #d97706) and restrained champagne-gold highlights; soft cinematic lighting with a gentle warm glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette on the edges, very subtle fine grain texture, realistic shallow depth of field. Place only 3 elegant, realistic, softly blurred objects mostly on the right and in the back: an antique brass compass, a rolled aged parchment scroll tied with a ribbon and sealed with plain wax (completely blank, no writing), and a vintage quill pen in an inkwell, rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark-navy centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre of the frame (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because the red banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere in the image (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.
+   images/General_Awareness/Polity/Historical_Background/1.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Horizontal timeline arrow. Left bar in amber labelled exactly “Company Rule” with “1773 – 1858” under it; right bar in violet labelled exactly “Crown Rule” with “1858 – 1947” under it; a small marker at the junction labelled “1858”. Only these labels.
+   images/General_Awareness/Polity/Historical_Background/2.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Diagram of Double Government. A top box in violet labelled exactly “British Government”; an arrow down to a left box labelled exactly “Board of Control” with the word “Politics” below it, and an arrow down to a right box labelled exactly “Court of Directors” with the word “Commerce” below it. Title at the top: “Double Government 1784”. Only these labels.
+   images/General_Awareness/Polity/Historical_Background/3.png: Clean flat vector diagram, 16:9, 1200x675 px, dark navy background (#0f172a), very few labels, VERY LARGE bold white English text, thick lines, simple rounded shapes, high contrast, readable when small, no people, no logos, no watermarks, no extra text beyond the labels listed. Diagram of Dyarchy 1919. A top box labelled exactly “Governor”; an arrow down-left to a green box labelled “Transferred” with “Ministers” below it, and an arrow down-right to a red box labelled “Reserved” with “Governor” below it. Title at the top: “Dyarchy in Provinces”. Only these labels.
    ════════════════════════════════════════════════════════════════ */
 
 /* ════════════════════════════════════════════════════════════════
@@ -1077,5 +1077,5 @@ window.TEST_DATA = {
      5. Historical Background / Crown Rule: added the context line “after the Revolt of 1857 the Crown took India directly”.
      6. Indian Independence Act 1947: added that independence was actually on 15 August 1947 (the notes give Attlee's 30 June 1948 date first); the notes' “Emperor of India” title drop kept as written.
      7. Indian Councils Act 1861: the notes say “NW Provinces (1886)”; written in full as North-Western Provinces.
-     8. Subject folder: the notes did not name one, so “Polity” was used (images/Polity/Historical_Background/ and scripts/Historical_Background/). Change it with find & replace if your folder is different.
+     8. Subject folder: the notes did not name one, so “Polity” was used (images/General_Awareness/Polity/Historical_Background/ and scripts/Historical_Background/). Change it with find & replace if your folder is different.
    ════════════════════════════════════════════════════════════════ */

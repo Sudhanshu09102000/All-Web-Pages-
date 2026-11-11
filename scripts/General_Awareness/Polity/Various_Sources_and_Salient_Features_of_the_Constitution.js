@@ -105,7 +105,7 @@ window.TEST_DATA = {
     pauseTimer: true,
     title: "Class Overview — Various Sources & Salient Features of the Constitution",
     thumb: {
-      image: "images/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/thumbnail.png",
+      image: "images/General_Awareness/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/thumbnail.png",
       banner: "ALL COMPETITIVE EXAMS",
       line1: "SALIENT FEATURES",
       line2: "OF THE CONSTITUTION",
@@ -221,7 +221,7 @@ window.TEST_DATA = {
 <div class="cp-card amber"><div class="cp-card-title">🏛️ Political</div>Mostly from <b>Britain</b>.</div>
 </div>
 <div class="cp-note info"><b>Most profound source:</b> the <b>Government of India Act, 1935</b> — federal scheme, judiciary, governors, emergency powers, Public Service Commissions. More than half of our Constitution resembles it.</div>
-<div class="cp-fig"><img src="images/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/1.png" alt="Sources of the Constitution" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+<div class="cp-fig"><img src="images/General_Awareness/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/1.png" alt="Sources of the Constitution" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
 <table><tr><th>Source</th><th>Features borrowed</th></tr>
 <tr><td><b>GoI Act, 1935</b></td><td>Federal scheme, office of governor, judiciary, Public Service Commissions, emergency provisions, administrative details</td></tr>
 <tr><td><b>British</b></td><td>Parliamentary government, rule of law, legislative procedure, single citizenship, cabinet system, prerogative writs, parliamentary privileges, bicameralism</td></tr>
@@ -849,8 +849,8 @@ window.TEST_DATA = {
 };
 
 window.IMG_PROMPTS = Object.assign(window.IMG_PROMPTS || {}, {
-  "images/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a closed leather-bound law book with gold edges, a brushed-brass balance scale and a rolled parchment scroll" },
-  "images/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/1.png": { t: "fig", about: "Schematic, not a map: a centre box GoI Act 1935 (blue) with arrows from five boxes: UK = Parliament, USA = Rights, Ireland = DPSP, Canada = Strong Centre, Australia = Concurrent List." }
+  "images/General_Awareness/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "a closed leather-bound law book with gold edges, a brushed-brass balance scale and a rolled parchment scroll" },
+  "images/General_Awareness/Polity/Various_Sources_and_Salient_Features_of_the_Constitution/1.png": { t: "fig", about: "Schematic, not a map: a centre box GoI Act 1935 (blue) with arrows from five boxes: UK = Parliament, USA = Rights, Ireland = DPSP, Canada = Strong Centre, Australia = Concurrent List." }
 });
 
 /* CHANGE LOG
