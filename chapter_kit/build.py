@@ -41,7 +41,7 @@ def concept(head, body, n):
             k, txt = ln[1:].split(":", 1)
             out.append('<div class="cp-note %s">%s</div>' % (k.strip(), esc(txt)))
         elif ln.startswith("<"): out.append(ln)
-        else: raise SystemExit("Unknown line in concept '%s': %s" % (title, ln[:60]))
+        else: raise SystemExit("Unknown line in concept '%s': %s" % (head.strip(), ln[:60]))
     html = "\n".join("      " + x for x in out)
     if "`" in html or "${" in html: raise SystemExit("backtick or ${ in html of '%s'" % title)
     return dict(kind="c", icon=icon, accent=acc, title=title.strip(), html=html)

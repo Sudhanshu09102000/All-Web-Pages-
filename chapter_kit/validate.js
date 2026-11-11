@@ -2,7 +2,7 @@
 const fs = require("fs"), vm = require("vm");
 const file = process.argv[2], errs = [], E = (m) => errs.push(m);
 const el = () => new Proxy(function () {}, { get: (t, k) => (k === "style" ? { setProperty() {} } : k === "textContent" ? "" : el()), apply: () => el() });
-const sb = { console, setTimeout, document: { querySelectorAll: () => [], addEventListener() {}, createElement: el, documentElement: {}, body: el() }, navigator: {}, MutationObserver: undefined };
+const sb = { console, setTimeout, addEventListener() {}, removeEventListener() {}, getComputedStyle: () => ({ position: "static" }), document: { querySelectorAll: () => [], addEventListener() {}, getElementById: () => null, createElement: el, createTextNode: el, documentElement: {}, head: el(), body: el() }, navigator: {}, MutationObserver: undefined };
 sb.window = sb; vm.createContext(sb);
 try { vm.runInContext(fs.readFileSync(file, "utf8"), sb, { filename: file }); } catch (e) { console.log("LOAD ERROR: " + e.message); process.exit(1); }
 const D = sb.TEST_DATA, P = sb.IMG_PROMPTS || {};
