@@ -3,6 +3,99 @@
 
 <head>
   <meta charset="utf-8" />
+  <!--
+    ============================================================
+     © 2026 Sudhanshu Sharma. All Rights Reserved.
+     Original work. Unauthorized copying, reproduction, scraping
+     or distribution of this platform, its design, code or
+     content is strictly prohibited.
+    ============================================================
+  -->
+  <meta name="author" content="Sudhanshu Sharma" />
+  <meta name="copyright" content="© 2026 Sudhanshu Sharma. All Rights Reserved." />
+  <meta name="robots" content="noarchive" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+  <noscript><style>#ssSplashHost{display:none!important}</style></noscript>
+
+  <!-- ===== Content protection: styles ===== -->
+  <style id="ssProtectCss">
+    html, body { -webkit-touch-callout: none; }
+    body *:not(input):not(textarea):not(select):not([contenteditable="true"]) {
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+    input, textarea, [contenteditable="true"] {
+      -webkit-user-select: text !important;
+      user-select: text !important;
+    }
+    img, svg, canvas, video { -webkit-user-drag: none; user-drag: none; }
+    @media print {
+      html, body { display: none !important; }
+      html::before {
+        content: "© 2026 Sudhanshu Sharma — Printing of this content is not permitted.";
+        display: block; padding: 48px; font: 600 20px Georgia, serif; color: #000;
+      }
+    }
+  </style>
+
+  <!-- ===== Content protection: behaviour ===== -->
+  <script>
+  (function () {
+    var PROTECT = true;            // set to false while developing locally
+    if (!PROTECT) return;
+
+    var NOTICE = '© 2026 Sudhanshu Sharma. All rights reserved. Copying this content is prohibited.';
+    var EDITABLE = 'input,textarea,select,[contenteditable=""],[contenteditable="true"]';
+    var coarse = false;
+    try { coarse = window.matchMedia('(pointer: coarse)').matches; } catch (e) {}
+
+    function el(t) { return t && t.nodeType === 3 ? t.parentElement : t; }
+    function editable(t) { t = el(t); return !!(t && t.closest && t.closest(EDITABLE)); }
+    function stop(e) { e.preventDefault(); e.stopPropagation(); return false; }
+
+    // 1) Right-click / long-press menu
+    document.addEventListener('contextmenu', function (e) {
+      if (coarse && editable(e.target)) return;   // keep paste menu in text boxes on phones
+      return stop(e);
+    }, true);
+
+    // 2) Copy / cut (typing boxes stay usable; page content is blocked)
+    ['copy', 'cut'].forEach(function (type) {
+      document.addEventListener(type, function (e) {
+        if (editable(e.target) || editable(document.activeElement)) return;
+        e.preventDefault();
+        try { e.clipboardData.setData('text/plain', NOTICE); } catch (err) {}
+      }, true);
+    });
+
+    // 3) Text selection and dragging
+    document.addEventListener('selectstart', function (e) { if (!editable(e.target)) e.preventDefault(); }, true);
+    document.addEventListener('dragstart', function (e) { if (!editable(e.target)) e.preventDefault(); }, true);
+
+    // 4) Keyboard shortcuts: DevTools, view-source, save, print, select-all/copy
+    document.addEventListener('keydown', function (e) {
+      var c = e.ctrlKey || e.metaKey, code = e.code || '';
+      if (e.key === 'F12') return stop(e);
+      if (c && e.shiftKey && (code === 'KeyI' || code === 'KeyJ' || code === 'KeyC' || code === 'KeyK')) return stop(e);
+      if (e.metaKey && e.altKey && (code === 'KeyI' || code === 'KeyJ' || code === 'KeyU' || code === 'KeyC')) return stop(e);
+      if (c && (code === 'KeyU' || code === 'KeyS' || code === 'KeyP')) return stop(e);
+      if (c && (code === 'KeyA' || code === 'KeyC' || code === 'KeyX') && !editable(e.target)) return stop(e);
+    }, true);
+
+    // 5) Print Screen: overwrite the clipboard with the copyright notice
+    document.addEventListener('keyup', function (e) {
+      if (e.key === 'PrintScreen') { try { navigator.clipboard.writeText(NOTICE); } catch (err) {} }
+    }, true);
+
+    // 6) Console signature
+    try {
+      console.log('%c© 2026 Sudhanshu Sharma', 'font:700 22px Georgia,serif;color:#d4af37;text-shadow:0 1px 0 #6b5314;');
+      console.log('%cThis platform is protected by copyright. Unauthorized copying or distribution is prohibited.', 'font:500 12px Georgia,serif;color:#9aa4b2;');
+    } catch (e) {}
+  })();
+  </script>
+
   <!-- CRITICAL: capture ?battle= and ?launch= into sessionStorage BEFORE any pushState strips it -->
   <script>
   (function(){
@@ -4469,6 +4562,142 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 </head>
 
 <body>
+
+  <!-- ===== Premium loading screen (isolated in Shadow DOM so the app's global styles can't affect it) ===== -->
+  <div id="ssSplashHost" aria-hidden="true" style="position:fixed;inset:0;z-index:2147483647;background:#04060c;"></div>
+  <script>
+  (function () {
+    var host = document.getElementById('ssSplashHost');
+    if (!host) return;
+    var root;
+    try { root = host.attachShadow({ mode: 'closed' }); } catch (e) { host.remove(); return; }
+
+    root.innerHTML =
+    '<style>' +
+    ':host{all:initial}' +
+    '*{box-sizing:border-box;margin:0;padding:0}' +
+    '.stage{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;text-align:center;overflow:hidden;' +
+      'background:radial-gradient(ellipse at 50% 32%,#111c38 0%,#09101f 46%,#04060c 100%);color:#e8dcc0;' +
+      'font-family:"Cormorant Garamond",Georgia,serif;transition:opacity .8s ease,transform .8s ease,filter .8s ease}' +
+    '.stage.out{opacity:0;transform:scale(1.035);filter:blur(6px);pointer-events:none}' +
+    '.aura{position:absolute;left:50%;top:50%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;' +
+      'background:conic-gradient(from 0deg,transparent 0 62%,rgba(59,130,246,.07) 75%,rgba(212,175,55,.06) 85%,transparent 95%);animation:spin 22s linear infinite}' +
+    '.glow{position:absolute;left:50%;top:38%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;' +
+      'background:radial-gradient(circle,rgba(212,175,55,.10),rgba(59,130,246,.06) 45%,transparent 70%);animation:breathe 5s ease-in-out infinite}' +
+    '.frame{position:absolute;inset:14px;border:1px solid rgba(212,175,55,.16);border-radius:16px;pointer-events:none}' +
+    '.corner{position:absolute;width:26px;height:26px;border:2px solid #d4af37;opacity:.75}' +
+    '.c1{top:10px;left:10px;border-right:0;border-bottom:0;border-top-left-radius:14px}' +
+    '.c2{top:10px;right:10px;border-left:0;border-bottom:0;border-top-right-radius:14px}' +
+    '.c3{bottom:10px;left:10px;border-right:0;border-top:0;border-bottom-left-radius:14px}' +
+    '.c4{bottom:10px;right:10px;border-left:0;border-top:0;border-bottom-right-radius:14px}' +
+    '.dots span{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:#e9c95a;opacity:0;animation:floatUp linear infinite}' +
+    '.content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:640px;width:100%}' +
+    '.rise{opacity:0;transform:translateY(14px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}' +
+    '.emb{width:clamp(92px,22vw,124px);height:auto;filter:drop-shadow(0 6px 22px rgba(212,175,55,.28))}' +
+    '.ring-draw{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.9s .15s cubic-bezier(.6,0,.2,1) forwards}' +
+    '.ring-spin{transform-box:fill-box;transform-origin:center;animation:spin 40s linear infinite}' +
+    '.mono{font-family:Cinzel,"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:34px;letter-spacing:2px}' +
+    '.eyebrow{margin-top:22px;font:600 11px/1 Cinzel,Georgia,serif;letter-spacing:.42em;color:#6ea8ff;margin-right:-.42em}' +
+    '.by{margin-top:26px;font:500 11px/1 Cinzel,Georgia,serif;letter-spacing:.38em;color:rgba(212,175,55,.65);margin-right:-.38em}' +
+    '.name{margin-top:12px;font-family:Cinzel,"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:clamp(22px,6.4vw,38px);line-height:1.15;letter-spacing:.2em;margin-right:-.2em;text-transform:uppercase;' +
+      'background:linear-gradient(100deg,#8a6a1c 0%,#f7e7a8 22%,#d4af37 42%,#fff6cf 52%,#d4af37 66%,#8a6a1c 100%);background-size:260% 100%;' +
+      '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards,foil 4.5s linear infinite;' +
+      'filter:drop-shadow(0 2px 10px rgba(212,175,55,.18))}' +
+    '.orn{display:flex;align-items:center;gap:12px;margin-top:16px;width:min(300px,72vw)}' +
+    '.orn i{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.7))}' +
+    '.orn i:last-child{background:linear-gradient(270deg,transparent,rgba(212,175,55,.7))}' +
+    '.orn b{width:7px;height:7px;background:#d4af37;transform:rotate(45deg);box-shadow:0 0 10px rgba(212,175,55,.8)}' +
+    '.copy{margin-top:16px;font-style:italic;font-weight:500;font-size:clamp(15px,3.8vw,19px);letter-spacing:.04em;color:#e8dcc0}' +
+    '.copy em{font-style:normal;color:#d4af37}' +
+    '.prog{margin-top:34px;width:min(340px,76vw)}' +
+    '.track{height:3px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}' +
+    '.bar{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#8a6a1c,#d4af37,#fff1b8);box-shadow:0 0 12px rgba(212,175,55,.7);position:relative;overflow:hidden}' +
+    '.bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:translateX(-100%);animation:sheen 1.4s ease-in-out infinite}' +
+    '.meta{display:flex;justify-content:space-between;margin-top:10px;font:500 10.5px/1 Cinzel,Georgia,serif;letter-spacing:.18em;color:rgba(232,220,192,.6);text-transform:uppercase}' +
+    '.legal{position:absolute;left:0;right:0;bottom:30px;z-index:2;padding:0 34px;font:500 11px/1.6 "Cormorant Garamond",Georgia,serif;letter-spacing:.06em;color:rgba(232,220,192,.45);max-width:600px;margin:0 auto}' +
+    '@keyframes spin{to{transform:rotate(360deg)}}' +
+    '@keyframes draw{to{stroke-dashoffset:0}}' +
+    '@keyframes rise{to{opacity:1;transform:none}}' +
+    '@keyframes foil{from{background-position:130% 0}to{background-position:-130% 0}}' +
+    '@keyframes sheen{to{transform:translateX(100%)}}' +
+    '@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}' +
+    '@keyframes floatUp{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-105vh);opacity:0}}' +
+    '@media (max-height:560px){.legal{display:none}.by{margin-top:14px}.prog{margin-top:20px}}' +
+    '@media (prefers-reduced-motion:reduce){.aura,.glow,.ring-spin,.dots,.bar::after{animation:none!important}.name{animation:none!important}}' +
+    '</style>' +
+    '<div class="stage" role="status" aria-label="Loading">' +
+      '<div class="aura"></div><div class="glow"></div>' +
+      '<div class="frame"></div><div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>' +
+      '<div class="dots"></div>' +
+      '<div class="content">' +
+        '<svg class="emb rise" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbeeb5"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#7d5f18"/></linearGradient></defs>' +
+          '<circle class="ring-spin" cx="60" cy="60" r="57" fill="none" stroke="url(#g)" stroke-opacity=".45" stroke-width="1" stroke-dasharray="1.5 6"/>' +
+          '<circle class="ring-draw" cx="60" cy="60" r="49" fill="none" stroke="url(#g)" stroke-width="2.2" stroke-linecap="round" pathLength="100" transform="rotate(-90 60 60)"/>' +
+          '<circle cx="60" cy="60" r="42" fill="rgba(212,175,55,.05)" stroke="url(#g)" stroke-opacity=".55" stroke-width=".8"/>' +
+          '<path d="M60 1.5l3 4.5-3 4.5-3-4.5z" fill="url(#g)"/><path d="M60 118.5l3-4.5-3-4.5-3 4.5z" fill="url(#g)"/>' +
+          '<path d="M1.5 60l4.5-3 4.5 3-4.5 3z" fill="url(#g)"/><path d="M118.5 60l-4.5-3-4.5 3 4.5 3z" fill="url(#g)"/>' +
+          '<text class="mono" x="60" y="71.5" text-anchor="middle" fill="url(#g)">SS</text>' +
+        '</svg>' +
+        '<div class="eyebrow rise" style="animation-delay:.35s">MOCK TEST PORTAL</div>' +
+        '<div class="by rise" style="animation-delay:.6s">DESIGNED &amp; DEVELOPED BY</div>' +
+        '<div class="name rise" style="animation-delay:.8s">Sudhanshu Sharma</div>' +
+        '<div class="orn rise" style="animation-delay:1s"><i></i><b></b><i></i></div>' +
+        '<div class="copy rise" style="animation-delay:1.15s"><em>&copy; 2026</em> Sudhanshu Sharma &middot; All Rights Reserved</div>' +
+        '<div class="prog rise" style="animation-delay:1.3s">' +
+          '<div class="track"><div class="bar"></div></div>' +
+          '<div class="meta"><span class="status">Initialising secure environment</span><span class="pct">0%</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="legal">Original work protected by copyright law. Unauthorized copying, reproduction, scraping or distribution of this platform, its design, code or content is strictly prohibited.</div>' +
+    '</div>';
+
+    // floating gold specks
+    var dots = root.querySelector('.dots');
+    for (var i = 0; i < 18; i++) {
+      var s = document.createElement('span');
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.animationDuration = (7 + Math.random() * 8) + 's';
+      s.style.animationDelay = (Math.random() * 8) + 's';
+      s.style.width = s.style.height = (2 + Math.random() * 2.5) + 'px';
+      dots.appendChild(s);
+    }
+
+    var stage = root.querySelector('.stage'),
+        bar = root.querySelector('.bar'),
+        pct = root.querySelector('.pct'),
+        status = root.querySelector('.status');
+    var steps = [[0, 'Initialising secure environment'], [30, 'Loading question banks'], [62, 'Preparing your workspace'], [90, 'Almost ready']];
+    var start = Date.now(), MIN = 2800, MAX = 8000, p = 0, loaded = (document.readyState === 'complete'), closing = false;
+    window.addEventListener('load', function () { loaded = true; });
+
+    var timer = setInterval(function () {
+      var elapsed = Date.now() - start;
+      var ready = (loaded && elapsed >= MIN) || elapsed >= MAX;
+      var target = ready ? 100 : 90;
+      p += (target - p) * (ready ? 0.22 : 0.045) + 0.12;
+      if (p > target) p = target;
+      bar.style.width = p.toFixed(1) + '%';
+      pct.textContent = Math.floor(p) + '%';
+      for (var i = steps.length - 1; i >= 0; i--) { if (p >= steps[i][0]) { status.textContent = steps[i][1]; break; } }
+      if (ready && p >= 99.5 && !closing) {
+        closing = true;
+        clearInterval(timer);
+        pct.textContent = '100%';
+        setTimeout(function () {
+          stage.classList.add('out');
+          setTimeout(function () {
+            host.remove();
+            try { document.dispatchEvent(new Event('ss:splash-done')); } catch (e) {}
+          }, 850);
+        }, 350);
+      }
+    }, 30);
+
+    // hard failsafe: never let the loading screen block the app
+    setTimeout(function () { try { clearInterval(timer); host.remove(); } catch (e) {} }, MAX + 4000);
+  })();
+  </script>
   <canvas id="particleCanvas"></canvas>
 
   <div class="page-wrap">
