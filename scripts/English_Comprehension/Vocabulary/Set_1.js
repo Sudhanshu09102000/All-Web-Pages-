@@ -826,7 +826,7 @@ window.TEST_DATA = {
     `
   },
   33: {
-    questext: "कीटों के अध्ययन को क्या कहते हैं?",
+    questext: "What is the study of insects called?",
     options: ["etymology", "ecology", "entomology", "philology"],
     correct: "3",
     exptext: "✅ Entomology is the study of insects. 📌 Entomo = insect. ❌ Etymology is the study of word origins."
@@ -926,7 +926,7 @@ window.TEST_DATA = {
     `
   },
   43: {
-    questext: "कुशल वक्ता को क्या कहते हैं?",
+    questext: "What do you call a skilled speaker?",
     options: ["pedagogue", "demagogue", "archivist", "orator"],
     correct: "4",
     exptext: "✅ Orator is a skilled public speaker. 📌 Oral = spoken. ❌ A demagogue rouses crowds for power, not just speaks well."
@@ -1206,7 +1206,7 @@ window.TEST_DATA = {
     `
   },
   71: {
-    questext: "जो निष्कर्ष पिछली बात से तर्कसंगत रूप से न निकले, उसे क्या कहते हैं?",
+    questext: "What do you call a conclusion that does not follow logically from what preceded it?",
     options: ["tautology", "epitome", "equivocation", "non sequitur"],
     correct: "4",
     exptext: "✅ Non sequitur means \"it does not follow\". 📌 Non = not, sequitur = follows. ❌ Tautology repeats the same idea."
@@ -1346,7 +1346,7 @@ window.TEST_DATA = {
     `
   },
   85: {
-    questext: "समाधि पर लिखे शब्दों को क्या कहते हैं?",
+    questext: "What are the words written on a tomb or memorial called?",
     options: ["epilogue", "epitaph", "epitome", "chronicle"],
     correct: "2",
     exptext: "✅ Epitaph is the inscription on a tomb. 📌 Epi-taph = on the tomb. ❌ Epilogue is the end section of a book."
@@ -1866,7 +1866,7 @@ window.TEST_DATA = {
     `
   },
   137: {
-    questext: "जो स्वयं कष्ट सहकर आनंद पाता है, उसे क्या कहते हैं?",
+    questext: "What do you call someone who finds joy in enduring hardship?",
     options: ["sadist", "savant", "pedant", "masochist"],
     correct: "4",
     exptext: "✅ A masochist enjoys his own suffering. 📌 Masochist = hurts himself. ❌ A sadist enjoys hurting others."
