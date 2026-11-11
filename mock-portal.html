@@ -4896,7 +4896,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       <div class="err-cmd" id="jsErrorCmdBox">
         <div class="err-cmd-head">
           <span class="err-cmd-dots"><i></i><i></i><i></i></span>
-          <span class="err-cmd-title">Terminal &bull; create this file</span>
+          <span class="err-cmd-title">Terminal &bull; create file + images folder</span>
           <button type="button" class="err-copy-btn" id="jsErrorCopyBtn" onclick="copyJsErrorCmd()" title="Copy command">
             <svg class="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
             <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
@@ -4907,7 +4907,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           <span class="err-cmd-prompt">$</span>
           <pre class="err-cmd-code" id="jsErrorCmd"></pre>
         </div>
-        <div class="err-cmd-hint">Run this in your project root, then add your <code>window.TEST_DATA</code> to the new file.</div>
+        <div class="err-cmd-hint">Run this in your project root, then add your <code>window.TEST_DATA</code> to the new file and put your images in the new <code>images/</code> folder.</div>
       </div>
 
       <button class="err-close-btn" onclick="document.getElementById('jsErrorBox').classList.remove('show')">
@@ -4937,10 +4937,11 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         var i   = filePath.lastIndexOf('/');
         var dir = i > -1 ? filePath.slice(0, i) : '.';
-        currentCmd = 'mkdir -p ' + q(dir) + ' && touch ' + q(filePath);
+        var imgDir = 'images/' + filePath.replace(/^scripts\//, '').replace(/\.js$/i, '');
+        currentCmd = 'mkdir -p ' + q(dir) + ' ' + q(imgDir) + ' && touch ' + q(filePath);
 
         code.innerHTML =
-          '<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> <span class="c-path">' + esc(q(dir)) + '</span> ' +
+          '<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> <span class="c-path">' + esc(q(dir)) + '</span> <span class="c-path">' + esc(q(imgDir)) + '</span> ' +
           '<span class="c-op">&amp;&amp;</span> <span class="c-cmd">touch</span> <span class="c-path">' + esc(q(filePath)) + '</span>';
         box.classList.add('show');
       };
@@ -16885,7 +16886,7 @@ html.lite-mode .lite-switch,html.lite-mode .lite-knob{transition:none!important}
   }
   function save(on){try{localStorage.setItem(KEY,on?'1':'0');}catch(e){}}
   function toggle(){var on=!root.classList.contains('lite-mode');apply(on);save(on);}
-  var saved=false;try{saved=localStorage.getItem(KEY)==='1';}catch(e){}
+  var saved=true;try{var _v=localStorage.getItem(KEY);if(_v!==null)saved=(_v==='1');}catch(e){}
   apply(saved);
   row.addEventListener('click',toggle);
   row.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
