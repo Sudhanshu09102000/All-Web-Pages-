@@ -304,6 +304,11 @@ input.px-code{font:800 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spa
 .nb-dev:hover .nb-go{filter:brightness(1.1)}
 @keyframes nbIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes nbDot{0%{box-shadow:0 0 0 0 rgba(18,167,122,.55)}70%,100%{box-shadow:0 0 0 7px rgba(18,167,122,0)}}
+.nb-diag{font-variant-numeric:tabular-nums;margin:0}
+.nb-nm{display:grid;gap:6px;margin:0;font-size:12.5px;color:var(--mut)}
+.nb-nm input{width:100%;min-height:42px;padding:0 13px;border-radius:13px;border:1px solid var(--bd);background:var(--in);color:inherit;font:600 14px Inter,system-ui,sans-serif}
+.nb-nm input:focus{outline:2px solid var(--a);outline-offset:1px}
+.nb-nm em{font-style:normal;font-size:11.5px;opacity:.75}
 .nb-auto{display:flex;align-items:center;gap:11px;cursor:pointer;margin:0;font-size:12.5px;line-height:1.4;color:var(--mut)}
 .nb-auto input{position:absolute;opacity:0;width:1px;height:1px}
 .nb-sw{flex:none;width:38px;height:22px;border-radius:99px;background:var(--bd);position:relative;transition:background .2s}
@@ -905,7 +910,7 @@ html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 <li><b>Organise:</b> drag to reorder, reverse order, rename, per-file Undo / Redo, copy settings to many files.</li>
 <li><b>Save &amp; share:</b> download one file, Save all, or one ZIP (with an optional size limit).</li>
 <li><b>Device Rooms:</b> send files between phone and computer with a code and password. No cable, no app.</li>
-<li><b>Nearby devices:</b> open Device on two devices on the same Wi-Fi or hotspot, tap the other one, and they join a private room together.</li>
+<li><b>Discoverable devices:</b> open Device on two devices on the same Wi-Fi or hotspot. Each one appears in the other’s list; tap it and they join a private room together. You can rename your device in that card.</li>
 <li><b>Look &amp; feel:</b> light, dark or auto theme, accent colours, adjustable card size.</li>
 </ul></div>
 <div class="abs no"><h4>⚠️ Good to know (limits)</h4><ul>
@@ -1881,7 +1886,7 @@ const PX=(()=>{
 const CH=16384,MAXG=8,AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',SAFE=/^(image\/(jpeg|png|webp|bmp)|application\/(pdf|zip|rtf|epub\+zip|octet-stream|vnd\.[\w.+-]+)|text\/(plain|csv|rtf))$/;
 const rnd=k=>{const a=new Uint32Array(k);crypto.getRandomValues(a);return[...a].map(v=>AL[v%AL.length]).join('')};
 const plat=(()=>{const u=navigator.userAgent||'';return/Android/i.test(u)?'Android':/iPhone|iPad|iPod/i.test(u)?'iPhone/iPad':/Windows/i.test(u)?'Windows':/Mac/i.test(u)?'Mac':/Linux/i.test(u)?'Linux':'Device'})();
-const me={u:rnd(6),n:plat+' · '+rnd(3)};
+const nm3=rnd(3),myName=v=>v?v+' · '+plat:plat+' · '+nm3,savedName=(()=>{try{return localStorage.getItem('pfname')||''}catch(e){return''}})(),me={u:rnd(6),n:myName(savedName)};
 let peer=null,role='',conns=[],others=[],code='',draft='',state='off',pending=null,msg='',rx=[],tx=[],chain=Promise.resolve(),seen=0,libP=null,timer=null,gen=0,n=0,rn=0,diag='',tries=0,LOG=[],att=0,want='',net=null,fbL=null,fbHello=0,fbTimer=0,fbSpd=0,fbT=0,fbR=0,fbX=0,lastCnt=null,lt=null,t0=Date.now();
 let rkey='',rpw='',rmode='',tab='create',pw1='',pw2='',ncode='',roll=0,msgBad=0,fails=[];
 const plog=m=>{LOG.push(((Date.now()-t0)/1000).toFixed(1)+'s '+String(m).slice(0,160));if(LOG.length>40)LOG.shift();clearTimeout(lt);lt=setTimeout(()=>{try{draw()}catch(e){}},200)};
@@ -1895,7 +1900,7 @@ async function loadIce(){const L=[{urls:['stun:stun.l.google.com:19302','stun:st
  const app=(t.app||'').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\.metered\.live.*$/,'').replace(/[^a-z0-9-]/g,''),key=(t.key||'').trim();
  if(app&&key){try{const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000);const r=await fetch('https://'+app+'.metered.live/api/v1/turn/credentials?apiKey='+encodeURIComponent(key),{signal:ctl.signal});clearTimeout(to);if(!r.ok)throw 0;const j=await r.json();if(!Array.isArray(j)||!j.length)throw 0;L.push(...j);relayInfo='Relay: Metered relay ready ('+j.length+' servers)'}
   catch(e){relayInfo='Relay: could not load the Metered relay. Check the app name and API key.'}}
- else if(!t.url){L.push({urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'});L.push({urls:['turn:freestun.net:3478','turn:freestun.net:5349','turns:freestun.net:5349'],username:'free',credential:'free'},{urls:['turn:freeturn.net:3478','turn:freeturn.net:5349','turns:freeturn.net:5349'],username:'free',credential:'free'},{urls:['turn:numb.viagenie.ca:3478','turn:numb.viagenie.ca:3478?transport=tcp'],username:'webrtc@live.com',credential:'muazkh'});relayInfo='Relay: built-in public relays (best effort, shared)'}
+ else if(!t.url){L.push({urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'});L.push({urls:['turn:freestun.net:3478','turn:freestun.net:5349','turns:freestun.net:5349'],username:'free',credential:'free'},{urls:['turn:freeturn.net:3478','turn:freeturn.net:5349','turns:freeturn.net:5349'],username:'free',credential:'free'});relayInfo='Relay: built-in public relays (best effort, shared)'}
  plog(relayInfo);plog('ICE servers loaded: '+L.length+' groups');
  iceCache=L}
 const el=$('#px'),box=$('#pxb'),dev=$('#dev'),zmap={},origs={},origin={},pendRelay={};
@@ -2009,55 +2014,65 @@ async function copyText(t,ok){try{await navigator.clipboard.writeText(t)}catch(e
 const blurNow=()=>{const a=document.activeElement;if(a&&a.blur)a.blur()};
 function lib(){if(window.Peer)return Promise.resolve();if(libP)return libP;
  const U=['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
- libP=(async()=>{for(const u of U){try{await new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s)});if(window.Peer)return}catch(e){}}libP=null;throw new Error('lib')})();return libP}
+ libP=(async()=>{for(const u of U){try{await new Promise((ok,no)=>{const s=document.createElement('script'),to=setTimeout(()=>{s.remove();no()},6000);s.src=u;s.onload=()=>{clearTimeout(to);ok()};s.onerror=()=>{clearTimeout(to);s.remove();no()};document.head.appendChild(s)});if(window.Peer)return}catch(e){}}libP=null;throw new Error('lib')})();return libP}
 function fbStop(){clearInterval(fbSpd);fbSpd=0;clearInterval(fbHello);clearTimeout(fbTimer);fbHello=fbTimer=0;fbL=null;if(net){try{net.close()}catch(e){}net=null}}
 function reset(m){clearTimeout(timer);gen++;const cs=conns,p=peer;conns=[];peer=null;role='';others=[];state='off';msg=m||'';msgBad=m?1:0;
  cs.forEach(c=>{try{c.close()}catch(e){}});fbStop();try{p&&p.destroy()}catch(e){}tx.forEach(o=>{if(o.st=='queue'||o.st=='send'||o.st=='wait')o.st=o.acks?'done':'fail'});badge();draw()}
-const mk=id=>new Promise(res=>{let ok=0;const o={config:{iceServers:iceCache||[{urls:'stun:stun.l.google.com:19302'}],sdpSemantics:'unified-plan',iceCandidatePoolSize:4},debug:0},p=id?new Peer(id,o):new Peer(o);p.on('open',i=>{ok=1;plog('Signalling server OK, id '+String(i).slice(-8));res(p)});p.on('error',e=>{plog('Peer error: '+((e&&e.type)||e)+' '+((e&&e.message)||'').slice(0,80));if(!ok){ok=1;try{p.destroy()}catch(_){}res(e.type==='unavailable-id'?null:{err:e})}})});
+const mk=id=>new Promise(res=>{let ok=0;const o={config:{iceServers:iceCache||[{urls:'stun:stun.l.google.com:19302'}],sdpSemantics:'unified-plan',iceCandidatePoolSize:4},debug:0},p=id?new Peer(id,o):new Peer(o);
+ const to=setTimeout(()=>{if(ok)return;ok=1;plog('Signalling server did not answer in time');try{p.destroy()}catch(_){}res({err:{type:'timeout'}})},6000);
+ p.on('open',i=>{if(ok){try{p.destroy()}catch(_){}return}ok=1;clearTimeout(to);plog('Signalling server OK, id '+String(i).slice(-8));res(p)});
+ p.on('error',e=>{plog('Peer error: '+((e&&e.type)||e)+' '+((e&&e.message)||'').slice(0,80));if(!ok){ok=1;clearTimeout(to);try{p.destroy()}catch(_){}res(e.type==='unavailable-id'?null:{err:e})}})});
 async function connect(raw,keep){
  if(!keep)tries=0;saveTurn();let c=norm(raw);
  if(c.length<6){msg='Enter the full room code.';msgBad=1;draw();return}
  if(!rkey&&!rpw){msg='Enter the room password.';msgBad=1;draw();return}
  reset();const my=gen;code=c;want=c;draft=c;diag='';LOG=[];lastCnt=null;t0=Date.now();plog('Start · '+plat+' · '+(navigator.onLine?'online':'OFFLINE')+' · '+location.protocol);state='wait';msg=rkey?'Connecting to the network…':'Securing the room…';msgBad=0;draw();
  if(!rkey){await tick();try{rkey=await derive(rpw,c)}catch(e){if(my==gen)leaveRoom('This browser could not secure the room. Try again.');return}if(my!=gen)return;msg='Connecting to the network…';draw()}
- try{await lib()}catch(e){if(my==gen)reset('Could not load the connection library. Check your internet connection and try again.');return}
+ let libOk=true;try{await lib()}catch(e){libOk=false;plog('Connection library not reachable, using the encrypted relay only')}
  await loadIce();if(my!=gen)return;
- let r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}
- if(!r&&rmode=='create'){for(let i=0;i<4&&!r;i++){c=rnd(8);code=want=ncode=c;rkey=await derive(rpw,c);if(my!=gen)return;r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}}
-  if(!r)return leaveRoom('Could not open a room right now. Please try again.')}
- if(r&&r.err)return reset('Could not reach the connection service ('+(r.err.type||'error')+'). Check your internet connection and try again.');
- if(r&&rmode=='join'){try{r.destroy()}catch(e){}return leaveRoom('No open room matches that code. Check the code, and make sure the host still has the room open.')}
- rmode='auto';
+ let r=null,viaRelay=!libOk,relayJoin=false;
+ if(libOk){r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}
+  if(!r&&rmode=='create'){for(let i=0;i<4&&!r;i++){c=rnd(8);code=want=ncode=c;rkey=await derive(rpw,c);if(my!=gen)return;r=await mk(pid(c));if(my!=gen){r&&r.destroy&&r.destroy();return}}
+   if(!r)return leaveRoom('Could not open a room right now. Please try again.')}
+  if(r&&r.err){plog('Signalling service unreachable ('+(r.err.type||'error')+'), using the encrypted relay only');r=null;viaRelay=true}
+  /* a free id while joining means no host answered on the direct service; the host may still be reachable through the relay */
+  else if(r&&rmode=='join'){try{r.destroy()}catch(e){}r=null;relayJoin=true}}
+ const mode0=rmode;rmode='auto';
  if(r){peer=r;role='host';persist();refresh();
   peer.on('connection',cn=>{if(conns.length>=MAXG){cn.on('open',()=>{try{cn.close()}catch(e){}});return}attach(cn)});
   peer.on('disconnected',()=>{plog('Signalling server disconnected, retrying');try{peer&&peer.reconnect()}catch(e){}});
-  peer.on('error',e=>sigErr(e,my))}
+  peer.on('error',e=>sigErr(e,my));
+  fbStart(my)}                                   /* the relay listens from the start, so a guest whose direct service is blocked can still get in */
+ else if(viaRelay||relayJoin){
+  if(mode0=='create'){role='host';peer=null;persist();refresh();fbStart(my);return}
+  plog('Joining through the encrypted relay');role='guest';peer=null;persist();msg='Joining the room…';msgBad=0;draw();
+  fbStart(my,relayJoin?20000:45000,relayJoin?'No open room matches that code. Check the code, and make sure the host still has the room open.':'');return}
  else{plog('Room is open, joining as a guest');const g=await mk();if(my!=gen){g&&g.destroy&&g.destroy();return}
-  if(g&&g.err)return reset('Could not reach the connection service ('+(g.err.type||'error')+'). Check your internet connection and try again.');
+  if(g&&g.err){plog('Signalling service unreachable, joining through the encrypted relay');role='guest';peer=null;persist();msg='Joining the room…';msgBad=0;draw();fbStart(my);return}
   peer=g;role='guest';persist();msg='Joining the room…';msgBad=0;draw();
   peer.on('error',e=>sigErr(e,my));
   peer.on('disconnected',()=>{plog('Signalling lost, reconnecting');try{peer&&peer.reconnect()}catch(e){}});
   att=0;dial(my,c)}}
 /* ---- fallback: when no direct link can be made, talk through encrypted public relay servers ---- */
-function fbStart(my){if(net||my!=gen||!code)return;plog('Direct link not working, starting the encrypted fallback server link');
+function fbStart(my,tmo,failMsg){if(net||my!=gen||!code)return;plog('Direct link not working, starting the encrypted fallback server link');
  if(code.length<8)plog('Tip: use “Make a code” (8+ random characters) for better privacy on the fallback server');
  try{net=new FB.Net(code,me.u,(k,from,body,bk)=>fbMsg(my,k,from,body,bk),plog,null,rkey)}catch(e){plog('Fallback failed to start: '+e);net=null;return}
  fbT=Date.now();fbR=fbX=0;fbSpd=setInterval(()=>{if(!net)return;const e=document.getElementById('px_spd'),now=Date.now(),dt=(now-fbT)/1000||1,rx=(net.rxB-fbR)/dt,tx=(net.txB-fbX)/dt;fbT=now;fbR=net.rxB;fbX=net.txB;if(e)e.textContent='Speed: down '+(rx/1024).toFixed(0)+' KB/s · up '+(tx/1024).toFixed(0)+' KB/s · '+net.okCount()+' of '+net.bs.length+' server links up'},1000);
  if(role=='host')net.want(net.th);
  else{net.want(net.tg(me.u));
   fbHello=setInterval(()=>{if(my!=gen||fbL||up().length){clearInterval(fbHello);return}const k=net&&net.pubAll(net.th,1,new Uint8Array(1));plog('Fallback hello sent to '+k+' server(s)')},1500);
-  fbTimer=setTimeout(()=>{if(my==gen&&!up().length)reset('Could not connect directly or through the fallback servers. Check that both devices have working internet, that the room code and password are right, and that the host still has PixelForge open.')},45000)}}
+  fbTimer=setTimeout(()=>{if(my==gen&&!up().length)reset(failMsg||'Could not connect directly or through the fallback servers. Check that both devices have working internet, that the room code and password are right, and that the host still has PixelForge open.')},tmo||45000)}}
 function fbMsg(my,k,from,body,bk){if(my!=gen||!net)return;
  if(role=='host'){let l=null;for(const c of conns)if(c.fb&&c.peer===from)l=c;
   if(k==1){if(l){if(!l.bks.includes(bk))l.bks.push(bk);net.pub(bk,l.dest,4,new Uint8Array(1));return}
    if(conns.length>=MAXG)return;l=new FB.Lnk(net,from,bk,net.tg(from));attach(l);plog('Device linked through fallback server '+bk);net.pub(bk,l.dest,4,new Uint8Array(1));setTimeout(()=>l.emit('open'),0)}
   else if(l&&l.bks.includes(bk)){if(k==2)l.recv(body);else if(k==5)l.onAck(body);else if(k==3){l.closed=1;l.emit('close')}}}
  else{if(k==4&&fbL){if(!fbL.bks.includes(bk)){fbL.bks.push(bk);plog('Added fallback server '+bk+' for more speed')}}
-  else if(k==4&&!fbL){const l=new FB.Lnk(net,'host',bk,net.th);fbL=l;clearInterval(fbHello);att=99;conns.filter(c=>c.cx&&c.cx.dial&&!c.cx.up&&!c.fb).forEach(drop);plog('Linked through fallback server '+bk);attach(l);setTimeout(()=>l.emit('open'),0)}
+  else if(k==4&&!fbL){const l=new FB.Lnk(net,'host',bk,net.th);fbL=l;clearInterval(fbHello);att=99;plog('Linked through fallback server '+bk);attach(l);setTimeout(()=>l.emit('open'),0)}
   else if(fbL&&fbL.bks.includes(bk)){if(k==2)fbL.recv(body);else if(k==5)fbL.onAck(body);else if(k==3){fbL.closed=1;fbL.emit('close')}}}}
 /* guest: every attempt has its own timeout; a failed or silent attempt is dropped and retried with a fresh link (up to 6 times) */
 function drop(cn){const i=conns.indexOf(cn);if(i>=0)conns.splice(i,1);if(cn.cx){clearTimeout(cn.cx.at);clearInterval(cn.cx.ka)}try{cn.close()}catch(e){}}
-function dial(my,c){if(my!=gen||!peer||up().length||fbL)return;if(att>=1)fbStart(my);
+function dial(my,c){if(my!=gen||!peer||up().length||fbL)return;if(att==0)setTimeout(()=>{if(my==gen&&!up().length)fbStart(my)},3500);if(att>=1)fbStart(my);
  if(att>=6){if(net)return;reset('Could not connect after 6 tries. Make sure the room code is right and the host still has PixelForge open. If the devices are on different networks, add a free relay under “Phone will not connect?” below on every device.');return}
  att++;plog('Dial attempt '+att+'/6');let cn;
  try{cn=peer.connect(pid(c),{reliable:true,serialization:'raw'})}catch(e){plog('connect() threw: '+e);setTimeout(()=>dial(my,c),1500);return}
@@ -2309,26 +2324,35 @@ box.onclick=e=>{const b=e.target.closest('button');if(!b)return;const g=k=>b.dat
    the room code + password, end-to-end encrypted to the other device (ECDH P-256 + AES-GCM), so nobody else on the lobby can read it. */
 const NB=(()=>{
  const ecp={name:'ECDH',namedCurve:'P-256'},b64=u=>btoa(String.fromCharCode(...u)),ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),rid=()=>rnd(10),sleep=ms=>new Promise(r=>setTimeout(r,ms)),dec=b=>new TextDecoder().decode(b);
- let st='idle',err='',nets=[],list=new Map(),timer=0,stopT=0,g=0,live=false,out=null,inc=null,kp=null,myPub=null,t0=0,auto=false;
+ let st='idle',err='',nets=[],has4=false,has6=false,list=new Map(),timer=0,stopT=0,g=0,live=false,out=null,inc=null,kp=null,myPub=null,t0=0,auto=false;
  try{auto=localStorage.getItem('pfnbauto')=='1'}catch(e){}
  async function keys(){if(kp)return;kp=await crypto.subtle.generateKey(ecp,false,['deriveKey']);myPub=new Uint8Array(await crypto.subtle.exportKey('raw',kp.publicKey))}
  const aes=async(priv,raw)=>crypto.subtle.deriveKey({name:'ECDH',public:await crypto.subtle.importKey('raw',raw,ecp,false,[])},priv,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
- async function ipOf(urls){for(const u of urls){const c=new AbortController(),to=setTimeout(()=>c.abort(),5000);try{const r=await fetch(u,{signal:c.signal,cache:'no-store'});if(!r.ok)continue;let x=(await r.text()).trim();try{x=JSON.parse(x).ip||x}catch(e){}if(/^[0-9a-f:.]{3,45}$/i.test(x))return x}catch(e){}finally{clearTimeout(to)}}return''}
- const v6=a=>a.split(':').slice(0,4).join(':');
+ const V4=['https://api.ipify.org?format=json','https://ipv4.icanhazip.com','https://v4.ident.me','https://ipv4.wtfismyip.com/text','https://www.cloudflare.com/cdn-cgi/trace'],
+  V6=['https://api6.ipify.org?format=json','https://ipv6.icanhazip.com','https://v6.ident.me','https://ipv6.wtfismyip.com/text','https://www.cloudflare.com/cdn-cgi/trace'],
+  is4=x=>/^\d{1,3}(\.\d{1,3}){3}$/.test(x),is6=x=>x.includes(':')&&/^[0-9a-f:]{3,45}$/i.test(x);
+ /* asks every provider at once and takes the first valid answer, so one blocked or slow provider cannot stall discovery */
+ function ipOf(urls,okf){return new Promise(res=>{let left=urls.length;urls.forEach(async u=>{const c=new AbortController(),to=setTimeout(()=>c.abort(),4500);
+  try{const r=await fetch(u,{signal:c.signal,cache:'no-store'});if(!r.ok)throw 0;let x=(await r.text()).trim();const m=/(?:^|\n)ip=(\S+)/.exec(x);if(m)x=m[1];else{try{x=String(JSON.parse(x).ip||x)}catch(e){}}x=x.trim();if(okf(x))res(x)}
+  catch(e){}finally{clearTimeout(to);if(--left===0)res('')}})})}
+ /* first 64 bits of an IPv6 address, with '::' expanded (the same Wi-Fi gives every device the same /64) */
+ const v6=a=>{a=a.split('%')[0].toLowerCase();const p=a.split('::'),H=p[0]?p[0].split(':'):[],T=p.length>1&&p[1]?p[1].split(':'):[],g=p.length>1?[...H,...Array(Math.max(0,8-H.length-T.length)).fill('0'),...T]:H;return g.slice(0,4).map(x=>x.replace(/^0+(?=.)/,'')).join(':')};
  const mine=()=>enc(JSON.stringify({i:rid(),u:me.u,n:me.n,k:b64(myPub)}));
  function announce(x,to){if(live||!x.n||!myPub)return;try{x.n.pubAll(to?x.n.tg(to):x.n.th,20,mine())}catch(e){}}
  function bye(){nets.forEach(x=>{try{x.n.pubAll(x.n.th,23,enc(JSON.stringify({i:rid(),u:me.u})))}catch(e){}})}
  async function start(){if(st=='find'||st=='scan')return;
   if(!(window.crypto&&crypto.subtle)){st='fail';err='secure';paint();return}
-  const my=++g;st='find';err='';t0=Date.now();paint();
-  let a='',b='';try{await keys();[a,b]=await Promise.all([ipOf(['https://api.ipify.org?format=json','https://ipv4.icanhazip.com']),ipOf(['https://api6.ipify.org?format=json','https://ipv6.icanhazip.com'])])}catch(e){}
+  const my=++g;st='find';err='';t0=Date.now();has4=has6=false;paint();
+  try{await keys()}catch(e){if(my==g){st='fail';err='secure';paint()}return}
   if(my!=g)return;
-  const ks=[];if(a)ks.push('4|'+a);if(b)ks.push('6|'+v6(b));
-  for(const k of ks){const code='nb'+hex(FB.sha256(enc('pfnb1|'+k))).slice(0,20),x={k,seen:new Set(),n:null};
-   try{x.n=new FB.Net(code,me.u,(kind,from,body)=>onMsg(x,kind,body),()=>{},()=>announce(x))}catch(e){continue}
-   x.n.bs.slice(4).forEach(bk=>bk.close());x.n.bs.length=4;x.n.want(x.n.th);x.n.want(x.n.tg(me.u));nets.push(x)}
-  if(!nets.length){st='fail';err='net';paint();return}
-  st='scan';timer=setInterval(tick,4000);paint()}
+  const add=k=>{if(my!=g||nets.some(x=>x.k===k))return;
+   const code='nb'+hex(FB.sha256(enc('pfnb1|'+k))).slice(0,20),x={k,seen:new Set(),n:null};
+   try{x.n=new FB.Net(code,me.u,(kind,from,body)=>onMsg(x,kind,body),()=>{},()=>announce(x))}catch(e){return}
+   x.n.bs.slice(4).forEach(bk=>bk.close());x.n.bs.length=4;x.n.want(x.n.th);x.n.want(x.n.tg(me.u));nets.push(x);
+   if(st!='scan'){st='scan';t0=Date.now()}if(!timer)timer=setInterval(tick,4000);paint()};
+  await Promise.all([ipOf(V4,is4).then(a=>{if(my!=g)return;has4=!!a;if(a)add('4|'+a);paint()}),ipOf(V6,is6).then(b=>{if(my!=g)return;has6=!!b;if(b)add('6|'+v6(b));paint()})]);
+  if(my!=g)return;
+  if(!nets.length){st='fail';err='net'}paint()}
  function tick(){const now=Date.now();for(const[u,d]of list)if(now-d.t>14000)list.delete(u);
   nets.forEach(x=>announce(x));
   if(st=='scan'){if(!nets.some(x=>x.n.okCount())&&now-t0>12000)err='broker';else if(err=='broker')err=''}
@@ -2372,14 +2396,19 @@ const NB=(()=>{
   if(out&&state=='on'){clearTimeout(out.to);out=null}
   if(l){if(!was)bye();if(!out&&!inc){clearTimeout(stopT);stopT=setTimeout(()=>{if(live&&!out&&!inc)stopNet()},1500)}}
   else{clearTimeout(stopT);if(st=='idle'&&isOpen())start();else if(was&&st=='scan')nets.forEach(x=>announce(x))}}
- function stopNet(){clearInterval(timer);clearTimeout(stopT);g++;if(nets.length)bye();const ns=nets;nets=[];setTimeout(()=>ns.forEach(x=>{try{x.n.close()}catch(e){}}),500);list.clear();st='idle';err=''}
+ function stopNet(){clearInterval(timer);timer=0;clearTimeout(stopT);g++;if(nets.length)bye();const ns=nets;nets=[];setTimeout(()=>ns.forEach(x=>{try{x.n.close()}catch(e){}}),500);list.clear();st='idle';err=''}
  function close(){if(inc){clearTimeout(inc.to);inc=null;reqUI()}if(!out)stopNet()}
  function rescan(){if(out||live)return;stopNet();start()}
+ function rename(v){v=String(v||'').replace(/[<>&"']/g,'').trim().slice(0,20);try{localStorage.setItem('pfname',v)}catch(e){}me.n=myName(v);if(!live)nets.forEach(x=>announce(x));paint()}
  function setAuto(v){auto=!!v;try{localStorage.setItem('pfnbauto',auto?'1':'0')}catch(e){}}
- const sig=()=>st+'|'+err+'|'+[...list.values()].map(d=>d.u+d.n).join(',')+'|'+(out?1:0);
- function paint(){const s=document.getElementById('nb_slot');if(!s)return;const sg=sig();if(s.dataset.sg===sg)return;s.dataset.sg=sg;s.innerHTML=html()}
+ const srv=()=>nets.length?Math.max(...nets.map(x=>x.n.okCount())):0,sig=()=>st+'|'+err+'|'+[...list.values()].map(d=>d.u+d.n).join(',')+'|'+(out?1:0)+'|'+has4+has6+'|'+srv()+'|'+(t0&&Date.now()-t0>15000?1:0)+'|'+me.n;
+ function paint(){const s=document.getElementById('nb_slot');if(!s)return;const a=document.activeElement;if(a&&a.id=='nb_name')return;const sg=sig();if(s.dataset.sg===sg)return;s.dataset.sg=sg;s.innerHTML=html()}
  function html(){
   const L=[...list.values()].sort((a,b)=>a.n.localeCompare(b.n));let s='scan',sub;
+  const savedNm=()=>{try{return localStorage.getItem('pfname')||''}catch(e){return''}};
+  const diagHtml=(n,s0)=>{if(n||s0=='scan'&&st!='scan'&&st!='find')return'';if(st=='find'&&!has4&&!has6&&Date.now()-t0<2500)return'';
+   const slow=t0&&Date.now()-t0>15000,line='Network: '+(has4?'IPv4 ✓':'IPv4 –')+' · '+(has6?'IPv6 ✓':'IPv6 –')+' · Discovery servers: '+srv()+'/4';
+   return`<p class="rm-hint nb-diag">${esc(line)}</p>`+(slow||s0=='bad'?'<p class="rm-hint">Not showing up? Both devices need PixelForge open with this Device panel visible, on the <b>same Wi-Fi</b> (not guest Wi-Fi, not mobile data), with VPN and Private DNS turned off. If it still stays empty, use <b>Create a room</b> on one device and <b>Join a room</b> on the other with the code. That works on any network.</p>':'')};
   if(err=='secure'){s='bad';sub='Nearby needs a secure page (https or localhost). You can still use a room code.'}
   else if(err=='net'){s='bad';sub='Could not check your network. Make sure you are online, then scan again.'}
   else if(err=='broker'){s='bad';sub='The discovery service is not reachable right now. Scan again in a moment.'}
@@ -2387,18 +2416,18 @@ const NB=(()=>{
   else if(L.length){s='found';sub=L.length+(L.length>1?' devices':' device')+' on your network · tap one to connect'}
   else sub='Scanning your Wi-Fi or hotspot…';
   const cards=L.map((d,i)=>`<button type="button" class="nb-dev" data-nb="${esc(d.u)}" style="animation-delay:${i*60}ms" aria-label="Connect to ${esc(d.n)}"${out?' disabled':''}><span class="nb-av">${ic(isPh(d.n)?IC.phone:IC.laptop,22)}</span><span class="nb-dn"><b>${esc(d.n)}</b><span>Same network · ready</span></span><span class="nb-go">Connect</span></button>`).join('');
-  return`<section class="nb" data-s="${s}" aria-label="Nearby devices"><div class="nb-hd"><div class="nb-radar" aria-hidden="true"><i></i><i></i><i></i><b>${ic(IC.wifi,22)}</b></div><div class="nb-t"><b>Nearby devices</b><span>${esc(sub)}</span></div><button type="button" class="rm-x" id="nb_rf" aria-label="Scan again" title="Scan again">${ic(IC.refresh,18)}</button></div>${L.length?`<div class="nb-list">${cards}</div>`:s=='scan'&&st=='scan'?'<p class="rm-hint">Open PixelForge and tap Device on the other phone or computer, on the same Wi-Fi or hotspot. It appears here within a few seconds.</p>':''}<label class="nb-auto"><input type="checkbox" id="nb_auto"${auto?' checked':''}><span class="nb-sw"></span><span>Auto-accept requests from nearby devices</span></label></section>`}
+  return`<section class="nb" data-s="${s}" aria-label="Discoverable devices"><div class="nb-hd"><div class="nb-radar" aria-hidden="true"><i></i><i></i><i></i><b>${ic(IC.wifi,22)}</b></div><div class="nb-t"><b>Discoverable devices</b><span>${esc(sub)}</span></div><button type="button" class="rm-x" id="nb_rf" aria-label="Scan again" title="Scan again">${ic(IC.refresh,18)}</button></div>${L.length?`<div class="nb-list">${cards}</div>`:s=='scan'&&st=='scan'?'<p class="rm-hint">Open PixelForge and tap Device on the other phone or computer, on the same Wi-Fi or hotspot. It appears here within a few seconds.</p>':''}${diagHtml(L.length,s)}<label class="nb-nm"><span>This device shows up as</span><input id="nb_name" maxlength="20" placeholder="e.g. Ert’s laptop" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(savedNm())}"><em>${esc(me.n)}</em></label><label class="nb-auto"><input type="checkbox" id="nb_auto"${auto?' checked':''}><span class="nb-sw"></span><span>Auto-accept requests from nearby devices</span></label></section>`}
  const banner=()=>out&&state!='on'?`<div class="nb-wait" role="status"><span class="nb-spin"></span><div><b>${out.acc?'Connecting to ':'Waiting for '}${esc(out.n)}…</b><span>${out.acc?'Accepted. Linking the two devices now.':'Request sent. They only need to tap Connect.'}</span></div></div>`:'';
  function reqUI(){let r=document.getElementById('nb_req');if(!inc){r&&r.remove();return}
   if(!r){r=document.createElement('div');r.id='nb_req';r.setAttribute('role','alertdialog');r.setAttribute('aria-label','Connection request');r.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.a=='y')accept();else if(b.dataset.a=='n')decline()};el.appendChild(r)}
   r.innerHTML=`<div class="nb-rq"><span class="nb-av">${ic(isPh(inc.n)?IC.phone:IC.laptop,24)}</span><div class="nb-rt"><b>${esc(inc.n)}</b><span>wants to connect and share files with you</span></div></div><div class="nb-ra"><button type="button" data-a="n" class="nb-no">Decline</button><button type="button" data-a="y" class="nb-yes">Connect</button></div>`}
  addEventListener('pagehide',()=>{try{bye()}catch(e){}});
- return{html,sig,sync,pick,rescan,close,setAuto,banner}})();
+ return{html,sig,sync,pick,rescan,close,setAuto,rename,banner}})();
 
 const wake=()=>{if(!want||document.hidden)return;conns.forEach(c=>{if(c.cx)c.cx.last=Date.now()});try{if(peer&&peer.disconnected)peer.reconnect()}catch(e){}
  if(state!='wait'&&!up().length){plog('Back online or visible, reconnecting');connect(want,1)}};
 document.addEventListener('visibilitychange',wake);addEventListener('online',wake);addEventListener('pageshow',wake);
-box.onchange=e=>{if(/^px_t/.test(e.target.id))saveTurn();else if(e.target.id=='nb_auto')NB.setAuto(e.target.checked)};
+box.onchange=e=>{if(/^px_t/.test(e.target.id))saveTurn();else if(e.target.id=='nb_auto')NB.setAuto(e.target.checked);else if(e.target.id=='nb_name')NB.rename(e.target.value)};
 function doCreate(){blurNow();const p=(document.getElementById('px_p1')||{}).value||pw1;pw1=p;if(p.length<6){msg='Choose a password with at least 6 characters.';msgBad=1;draw();return}rkey='';rpw=p;rmode='create';pw1='';connect(ncode)}
 function joinInvite(inv){if(role&&code===inv.code&&rkey===inv.key){show();return}rkey=inv.key;rpw='';rmode='auto';tab='join';pw2='';connect(inv.code)}
 function doJoin(){blurNow();const v=(document.getElementById('px_c')||{}).value||draft,p=(document.getElementById('px_p2')||{}).value||pw2;draft=v;pw2=p;const inv=parseInvite(v);if(inv){joinInvite(inv);return}const c=norm(v);
