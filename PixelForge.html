@@ -885,7 +885,7 @@ html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 <li><b>Compress to an exact size:</b> set a target in KB or MB; optionally pad up to the limit.</li>
 <li><b>Resize:</b> scale %, exact width × height, or longest side; set DPI.</li>
 <li><b>Adjust:</b> rotate, mirror, black &amp; white, brightness, contrast, background colour.</li>
-<li><b>Scan &amp; Crop:</b> auto-detects the page edges, straightens perspective and offers 12 scan modes. PDFs are edited page by page.</li>
+<li><b>Scan &amp; Crop:</b> auto-detects the page edges, straightens perspective and offers 13 scan modes, including Ink only (pen ink on a pure white page). PDFs are edited page by page.</li>
 <li><b>Extract text (OCR):</b> read text from photos and scans, or the digital text inside PDFs. Export as PDF, TXT, Word or JSON. Many languages supported.</li>
 <li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit. Tap the 🔍 on any page (or long-press it) to read it full size and zoom in before you choose.</li>
 <li><b>Merge &amp; split:</b> combine files into one PDF or PPTX, or split a PDF into one card per page.</li>
@@ -1130,7 +1130,7 @@ function refine(q,img,rk){const w=img.width,h=img.height,L=boxBlur(luma(img.data
   if(pts.length<N*.4)return q;lines.push(fitLine(pts))}
  const out=[];for(let i=0;i<4;i++){const p=inter(lines[(i+3)%4],lines[i]);if(!p||Math.hypot(p[0]-q[i][0],p[1]-q[i][1])>diag*.04)return q;out.push(p)}return isConvex(out)?out:q}
 /* ---------- scan filters ---------- */
-const FILTERS=[['orig','Original','No filter'],['auto','Auto enhance','Balances colour and contrast'],['magic','Magic colour','Clean white paper, vivid colours (like CamScanner)'],['light','Lighten','Removes shadows, keeps the look'],['white','Whiteboard','Whitens the board, keeps marker colours'],['gray','Grayscale','Clean grey scan'],['soft','Soft B&W','Smooth grey text, shadow free'],['bw','B&W document','Sharp black text on white paper'],['otsu','High contrast','Automatic strong black and white'],['rcpt','Receipt','Boosts faded thermal print'],['vivid','Vivid photo','Rich colours for photos and cards'],['inv','Negative','Inverted colours']];
+const FILTERS=[['orig','Original','No filter'],['auto','Auto enhance','Balances colour and contrast'],['magic','Magic colour','Clean white paper, vivid colours (like CamScanner)'],['light','Lighten','Removes shadows, keeps the look'],['white','Whiteboard','Whitens the board, keeps marker colours'],['gray','Grayscale','Clean grey scan'],['soft','Soft B&W','Smooth grey text, shadow free'],['bw','B&W document','Sharp black text on white paper'],['ink','Ink only','Pure white page, only the pen ink stays (keeps ink colour)'],['otsu','High contrast','Automatic strong black and white'],['rcpt','Receipt','Boosts faded thermal print'],['vivid','Vivid photo','Rich colours for photos and cards'],['inv','Negative','Inverted colours']];
 const T=[0,0,0];
 function resample(a,bw,bh,w,h){/* returns accessor arrays for bilinear upsample */const ix=new Int32Array(w),fx=new Float32Array(w);for(let x=0;x<w;x++){const g=clamp((x+.5)*bw/w-.5,0,bw-1.001);ix[x]=g|0;fx[x]=g-(g|0)}return{ix,fx}}
 function background(d,w,h,fast){/* per-channel paper colour estimate, shadows included */
@@ -1142,7 +1142,7 @@ function background(d,w,h,fast){/* per-channel paper colour estimate, shadows in
 function apply(d,w,h,F){/* F:{f,strength,ink,sharp,bright,contrast} -> in place */
  const f=F.f||'orig',st=clamp(F.strength==null?1:F.strength,0,1),N=w*h;
  if(f!='orig'&&st>0){const keep=st<1?new Uint8ClampedArray(d):null;let bg=null,rs=null;
-  const needBg=['magic','light','white','soft','bw','otsu','rcpt'].includes(f);if(needBg){bg=background(d,w,h,F.fast);}
+  const needBg=['magic','light','white','soft','bw','otsu','rcpt','ink'].includes(f);if(needBg){bg=background(d,w,h,F.fast);}
   const ink=clamp(F.ink==null?.82:F.ink,.5,.97);
   /* percentiles for auto-level filters */
   let lv=null;if(['auto','gray','vivid'].includes(f)){const hist=[0,1,2,3].map(()=>new Uint32Array(256));const stp=Math.max(1,Math.floor(N/60000));let cnt=0;for(let i=0;i<N;i+=stp){const p=i*4;hist[0][d[p]]++;hist[1][d[p+1]]++;hist[2][d[p+2]]++;hist[3][(d[p]*.299+d[p+1]*.587+d[p+2]*.114)|0]++;cnt++}
@@ -1167,6 +1167,9 @@ function apply(d,w,h,F){/* F:{f,strength,ink,sharp,bright,contrast} -> in place 
      case'white':{const lo=.42,hi=.9;r=clamp((r-lo)/(hi-lo),0,1);gg=clamp((gg-lo)/(hi-lo),0,1);b=clamp((b-lo)/(hi-lo),0,1);sat(r,gg,b,1.6);o0=T[0];o1=T[1];o2=T[2];break}
      case'gray':{const L=lv,l=(r*.299+gg*.587+b*.114)*255;o0=o1=o2=clamp((l-L.lo[0])/Math.max(20,L.hi[0]-L.lo[0]),0,1);break}
      case'soft':{const l=r*.299+gg*.587+b*.114,lo=ink-.5,hi=ink+.14,v=clamp((l-lo)/(hi-lo),0,1);o0=o1=o2=v+.25*(sm(v)-v);break}
+     case'ink':{/* paper is 1.0 after background division; anything darker than paper is ink. Paper, shadows, grain and paper colour are wiped to pure white, ink keeps its own colour */
+      const dk=1-Math.min(r,gg,b),lo=(1-ink)*.65,hi=(1-ink)*2.2,a=clamp((dk-lo)/Math.max(.02,hi-lo),0,1),al=a*a*(3-2*a);
+      if(al<=0){o0=o1=o2=1}else{const k=.96/Math.max(dk,.2);o0=1-al*clamp((1-r)*k,0,1);o1=1-al*clamp((1-gg)*k,0,1);o2=1-al*clamp((1-b)*k,0,1)}break}
      case'bw':{const l=r*.299+gg*.587+b*.114;o0=o1=o2=clamp((l-(ink-.045))/.09,0,1);break}
      case'otsu':{const l=r*.299+gg*.587+b*.114;o0=o1=o2=clamp((l-(otT-.04))/.08,0,1);break}
      case'rcpt':{const l=r*.299+gg*.587+b*.114,v=clamp((l-(ink-.42))/.5,0,1);o0=o1=o2=Math.pow(v,1.4);break}
@@ -2536,7 +2539,7 @@ function tabs(){for(const b of D.q('#sc-tabs').children)b.setAttribute('aria-pre
 function label(){const F=E.F,pg=cur(),q=D.q;q('#v-strength').textContent=Math.round(F.strength*100);q('#v-ink').textContent=Math.round(F.ink*100);q('#v-sharp').textContent=Math.round(F.sharp*100);q('#v-bright').textContent=Math.round(F.bright*100);q('#v-contrast').textContent=Math.round(F.contrast*100);q('#v-angle').textContent=pg?pg.angle:0}
 function sync(){const pg=cur(),F=E.F,q=D.q;if(!pg)return;for(const b of q('#sc-mode').children)b.setAttribute('aria-pressed',b.dataset.v==pg.mode);q('#sc-asp').value=pg.aspect;q('#sc-max').value=E.maxSide||0;
  for(const b of q('#sc-fg').children)b.setAttribute('aria-pressed',b.dataset.f==F.f);q('#r-strength').value=F.strength*100;q('#r-ink').value=F.ink*100;q('#r-sharp').value=F.sharp*100;q('#r-bright').value=F.bright*100;q('#r-contrast').value=F.contrast*100;q('#r-angle').value=pg.angle;
- q('#w-ink').style.display=['soft','bw','otsu','rcpt'].includes(F.f)?'':'none';q('#sc-rev').style.display=E.it.scan||(E.it.edits&&Object.keys(E.it.edits).length)?'':'none';label();paintStage()}
+ q('#w-ink').style.display=['soft','bw','otsu','rcpt','ink'].includes(F.f)?'':'none';q('#sc-rev').style.display=E.it.scan||(E.it.edits&&Object.keys(E.it.edits).length)?'':'none';label();paintStage()}
 function setMode(v){const pg=cur();if(pg.mode==v)return;if(v=='rect'){const xs=pg.pts.map(p=>p[0]),ys=pg.pts.map(p=>p[1]),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);pg.pts=[[x0,y0],[x1,y0],[x1,y1],[x0,y1]]}pg.mode=v;sync();changed(1)}
 /* ----- stage (corner editor): zoom, pan, precise handles ----- */
 const PAD=20;
