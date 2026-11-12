@@ -30,43 +30,55 @@ const PORTAL_DATA = [
         ]
       },
       {
-        name: "Ancient History",
+        name: "Ancient India",
         subtopics: [
-          { name: "1. Stone Age", file: "General_Awareness/Ancient_History/Stone_Age" },
-          { name: "2. Indus Valley Civilization", file: "General_Awareness/Ancient_History/Indus_Valley_Civilization" },
-          { name: "3. Vedic Age", file: "General_Awareness/Ancient_History/Vedic_Age" },
-          { name: "4. Jainism and Buddhism", file: "General_Awareness/Ancient_History/Jainism_and_Buddhism" },
-          { name: "5. Mahajanapadas", file: "General_Awareness/Ancient_History/Mahajanapadas" },
-          { name: "6. Maurya Dynasty", file: "General_Awareness/Ancient_History/Maurya_Dynasty" },
-          { name: "7. Post-Maurya Dynasties", file: "General_Awareness/Ancient_History/Post_Maurya_Dynasties" },
-          { name: "8. Gupta Dynasty", file: "General_Awareness/Ancient_History/Gupta_Dynasty" },
-          { name: "9. Post-Gupta Dynasties", file: "General_Awareness/Ancient_History/Post_Gupta_Dynasties" },
-          { name: "10. Sangam Age", file: "General_Awareness/Ancient_History/Sangam_Age" },
-          { name: "11. Tripartite Struggle and Cholas", file: "General_Awareness/Ancient_History/Tripartite_Struggle_and_Cholas" }
+          { name: "1. Stone Age, Metal Age and Chalcolithic Age", file: "General_Awareness/Ancient_India/Stone_Age_Metal_Age_and_Chalcolithic_Age" },
+          { name: "2. Indus Valley Civilization", file: "General_Awareness/Ancient_India/Indus_Valley_Civilization" },
+          { name: "3. Vedic Age", file: "General_Awareness/Ancient_India/Vedic_Age" },
+          { name: "4. Mahajanapadas and the Rise of Magadha", file: "General_Awareness/Ancient_India/Mahajanapadas_and_the_Rise_of_Magadha" },
+          { name: "5. Mauryan Empire", file: "General_Awareness/Ancient_India/Mauryan_Empire" },
+          { name: "6. Post-Mauryan Empire", file: "General_Awareness/Ancient_India/Post_Mauryan_Empire" },
+          { name: "7. Buddhism and Jainism", file: "General_Awareness/Ancient_India/Buddhism_and_Jainism" },
+          { name: "8. Gupta Period", file: "General_Awareness/Ancient_India/Gupta_Period" },
+          { name: "9. Post-Gupta Period and Rajput Dynasties", file: "General_Awareness/Ancient_India/Post_Gupta_Period_and_Rajput_Dynasties" },
+          { name: "10. Sangam Age and Kingdoms of South India", file: "General_Awareness/Ancient_India/Sangam_Age_and_Kingdoms_of_South_India" }
         ]
       },
       {
-        name: "Medieval History",
+        name: "Medieval India",
         subtopics: [
-          { name: "1. Delhi Sultanate", file: "General_Awareness/Medieval_History/Delhi_Sultanate" },
-          { name: "2. Vijayanagara and Bahmani Kingdom", file: "General_Awareness/Medieval_History/Vijayanagara_and_Bahmani_Kingdom" },
-          { name: "3. Mughal Empire", file: "General_Awareness/Medieval_History/Mughal_Empire" },
-          { name: "4. Marathas", file: "General_Awareness/Medieval_History/Marathas" },
-          { name: "5. Bhakti and Sufi Movements", file: "General_Awareness/Medieval_History/Bhakti_and_Sufi_Movements" }
+          { name: "11. Foreign Invasions and Medieval India", file: "General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India" },
+          { name: "12. Sources of Medieval India and the Slave Dynasty", file: "General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty" },
+          { name: "13. Khilji and Tughlaq Dynasties", file: "General_Awareness/Medieval_India/Khilji_and_Tughlaq_Dynasties" },
+          { name: "14. Sayyid and Lodhi Dynasties", file: "General_Awareness/Medieval_India/Sayyid_and_Lodhi_Dynasties" },
+          { name: "15. Vijayanagar and Bahmani Kingdoms", file: "General_Awareness/Medieval_India/Vijayanagar_and_Bahmani_Kingdoms" },
+          { name: "16. Babur, Humayun and Sher Shah Suri", file: "General_Awareness/Medieval_India/Babur_Humayun_and_Sher_Shah_Suri" },
+          { name: "17. Akbar and Jahangir", file: "General_Awareness/Medieval_India/Akbar_and_Jahangir" },
+          { name: "18. Shah Jahan and Aurangzeb", file: "General_Awareness/Medieval_India/Shah_Jahan_and_Aurangzeb" },
+          { name: "18-A. Mughal Administrative Structure", file: "General_Awareness/Medieval_India/Mughal_Administrative_Structure" },
+          { name: "19. Post-Mughal Period (Later Mughals)", file: "General_Awareness/Medieval_India/Post_Mughal_Period_Later_Mughals" },
+          { name: "20. Bhakti, Sufi and Maratha", file: "General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha" }
         ]
       },
       {
-        name: "Modern History",
+        name: "Modern India",
         subtopics: [
-          { name: "1. Advent of Europeans", file: "General_Awareness/Modern_History/Advent_of_Europeans" },
-          { name: "2. Socio-Religious Reforms", file: "General_Awareness/Modern_History/Socio_Religious_Reforms" },
-          { name: "3. Revolt of 1857", file: "General_Awareness/Modern_History/Revolt_of_1857" },
-          { name: "4. Indian National Congress", file: "General_Awareness/Modern_History/Indian_National_Congress" },
-          { name: "5. Bengal Partition", file: "General_Awareness/Modern_History/Bengal_Partition" },
-          { name: "6. Gandhian Era", file: "General_Awareness/Modern_History/Gandhian_Era" },
-          { name: "7. CDM and Simon Commission", file: "General_Awareness/Modern_History/CDM_and_Simon_Commission" },
-          { name: "8. Quit India Movement", file: "General_Awareness/Modern_History/Quit_India_Movement" },
-          { name: "9. Governor-General and Viceroy", file: "General_Awareness/Modern_History/Governor_General_and_Viceroy" }
+          { name: "21. Advent of the Europeans", file: "General_Awareness/Modern_India/Advent_of_the_Europeans" },
+          { name: "22. Autonomous States of the 18th Century", file: "General_Awareness/Modern_India/Autonomous_States_of_the_18th_Century" },
+          { name: "23. The British Conquest of India", file: "General_Awareness/Modern_India/The_British_Conquest_of_India" },
+          { name: "24. Expansion of British Power", file: "General_Awareness/Modern_India/Expansion_of_British_Power" },
+          { name: "25. Economic and Administrative Policies", file: "General_Awareness/Modern_India/Economic_and_Administrative_Policies" },
+          { name: "26. Socio-Religious Reform Movements", file: "General_Awareness/Modern_India/Socio_Religious_Reform_Movements" },
+          { name: "27. Peasant and Tribal Movements", file: "General_Awareness/Modern_India/Peasant_and_Tribal_Movements" },
+          { name: "28. Revolt of 1857", file: "General_Awareness/Modern_India/Revolt_of_1857" },
+          { name: "29. Development of Political Consciousness", file: "General_Awareness/Modern_India/Development_of_Political_Consciousness" },
+          { name: "30. Rise of Indian Nationalism", file: "General_Awareness/Modern_India/Rise_of_Indian_Nationalism" },
+          { name: "31. Second Phase of the National Movement", file: "General_Awareness/Modern_India/Second_Phase_of_the_National_Movement" },
+          { name: "32. Emergence of Gandhi", file: "General_Awareness/Modern_India/Emergence_of_Gandhi" },
+          { name: "33. Revolutionary Activities", file: "General_Awareness/Modern_India/Revolutionary_Activities" },
+          { name: "34. Freedom Struggle", file: "General_Awareness/Modern_India/Freedom_Struggle" },
+          { name: "35. Freedom Struggle II — The 1940s and Partition", file: "General_Awareness/Modern_India/Freedom_Struggle_II_The_1940s_and_Partition" },
+          { name: "36. Governor-Generals and Viceroys of India", file: "General_Awareness/Modern_India/Governor_Generals_and_Viceroys_of_India" }
         ]
       },
       {

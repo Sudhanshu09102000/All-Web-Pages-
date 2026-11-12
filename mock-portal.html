@@ -21924,6 +21924,30 @@ html body #candidateModal #candModeToggle .mi{font-size:1.05rem;line-height:1}
 })();
 </script>
 
+
+<style id="lightCloseFix">
+/* Light mode: make every close button visible (dark glyph on white, black outline).
+   Root cause: the light-theme rules strip background-image from everything inside modals,
+   which removed the X of Bootstrap's .btn-close; a few other close buttons were white-on-white. */
+html.lite-mode body :is(#candidateModal,#helpModal,#summaryModal,#qmarkHelpModal,#answerModal,.modal,.modal-content) .btn-close.btn-close.btn-close{
+  background-color:#fff!important;
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23000' d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e")!important;
+  background-size:.75em!important;background-repeat:no-repeat!important;background-position:center!important;
+  border:1px solid #000!important;opacity:1!important;filter:none!important;
+}
+html.lite-mode body :is(#candidateModal,#helpModal,#summaryModal,#qmarkHelpModal,#answerModal,.modal,.modal-content) .btn-close.btn-close.btn-close:hover{
+  background-color:#eee!important;
+}
+/* Navigator panel close (was white text on white) */
+html.lite-mode .nav-panel .nav-close-btn{
+  color:#000!important;-webkit-text-fill-color:#000!important;background:#fff!important;border:1px solid #000!important;
+}
+/* Mobile hint panel close (was light pink on white) */
+html.lite-mode #mobileHintPanel #mobileHintPanel-close{
+  color:#000!important;-webkit-text-fill-color:#000!important;background:#fff!important;border:1px solid #000!important;
+}
+</style>
+
 </body>
 
 

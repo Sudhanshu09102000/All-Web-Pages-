@@ -652,8 +652,8 @@ select{text-overflow:ellipsis}
 #xp .xch button{border:1px solid var(--bd);background:var(--in);color:var(--tx);font:700 12px Inter,system-ui,sans-serif;padding:7px 13px;border-radius:99px;cursor:pointer}
 #xp .xch button:active{transform:scale(.96)}
 #xp .xb{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-#xp .xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;padding:14px 16px 24px}
-#xp .xp-t{position:relative;display:block;padding:0;width:100%;aspect-ratio:var(--ar,.72);border-radius:14px;border:2px solid var(--bd);background:var(--in);overflow:hidden;cursor:pointer;content-visibility:auto;contain-intrinsic-size:104px 144px;transition:transform .12s,border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+#xp .xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;padding:14px 16px 24px}
+#xp .xp-t{position:relative;display:block;padding:0;width:100%;aspect-ratio:var(--ar,.72);border-radius:14px;border:2px solid var(--bd);background:var(--in);overflow:hidden;cursor:pointer;content-visibility:auto;contain-intrinsic-size:208px 288px;transition:transform .12s,border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
 #xp .xp-t:active{transform:scale(.96)}
 #xp .xp-t .n0{position:absolute;inset:0;display:grid;place-items:center;font:800 26px Inter,system-ui,sans-serif;color:var(--bd)}
 #xp .xp-t img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
@@ -689,6 +689,32 @@ select{text-overflow:ellipsis}
 #xp .xzq button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:700 12px Inter,system-ui,sans-serif;padding:6px 12px;border-radius:99px;cursor:pointer}
 #xp .xzq button.on{border-color:var(--a);background:var(--glow);color:var(--a)}
 #xp .xzp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);margin:0;cursor:pointer}#xp .xzp input{width:18px;height:18px;margin:0;accent-color:var(--a)}
+
+/* ---- page picker: magnifier on each tile + full-size viewer ---- */
+#xp .xp-t{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+#xp .xp-t img{pointer-events:none}
+#xp .xp-t .zm{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(10,12,26,.74);border:1.5px solid rgba(255,255,255,.55);color:#fff;font-size:15px;line-height:1;cursor:zoom-in;-webkit-tap-highlight-color:transparent;transition:transform .12s,background .15s}
+#xp .xp-t .zm:hover{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;transform:scale(1.08)}
+@media(max-width:520px){#xp .xg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#xv{position:fixed;inset:0;z-index:90;display:none;grid-template-rows:auto minmax(0,1fr) auto;background:#080a14;color:#fff;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow:hidden;max-width:100vw}
+#xv.on{display:grid;animation:xpin .18s both}
+#xv .xvh{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.1)}
+#xv .xvt{flex:1;min-width:0;text-align:center;line-height:1.25}
+#xv .xvt b{display:block;font:800 15px Inter,system-ui,sans-serif}#xv .xvt small{color:#9097bd;font:600 12px Inter,system-ui,sans-serif}
+#xv .xvb,#xv .xvf button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;font:700 13px Inter,system-ui,sans-serif;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#xv .xvb{padding:10px 14px;white-space:nowrap}
+#xv .xvsel{min-width:112px}
+#xv .xvsel.on{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}
+#xv .xvs{position:relative;overflow:auto;display:flex;padding:8px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;cursor:grab;-webkit-user-select:none;user-select:none}
+#xv .xvw{position:relative;margin:auto;flex:none;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.65);border-radius:3px}
+#xv .xvw .xvph,#xv .xvw .xvc{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:fill;pointer-events:none}
+#xv .xvc{opacity:0;transition:opacity .15s}
+#xv .xvl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 14px;border-radius:99px;background:rgba(10,12,26,.82);font:700 12px Inter,system-ui,sans-serif;white-space:nowrap}
+#xv .xvf{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.1)}
+#xv .xvf button{min-width:48px;height:46px;padding:0 14px;font-size:20px;line-height:1}
+#xv .xvf .xvz{font-size:13px;min-width:70px}
+#xv .xvf button:disabled{opacity:.3;cursor:default}
+#xv .xvf button:active:not(:disabled),#xv .xvb:active{transform:scale(.96)}
 
 /* ===== About card, guide modal, footer, protection ===== */
 .abt{position:relative;margin:26px 0 8px;padding:20px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(135deg,var(--a),var(--b)) border-box;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px -20px var(--glow);display:grid;gap:14px;overflow:hidden}
@@ -817,7 +843,7 @@ html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 <li><b>Adjust:</b> rotate, mirror, black &amp; white, brightness, contrast, background colour.</li>
 <li><b>Scan &amp; Crop:</b> auto-detects the page edges, straightens perspective and offers 12 scan modes. PDFs are edited page by page.</li>
 <li><b>Extract text (OCR):</b> read text from photos and scans, or the digital text inside PDFs. Export as PDF, TXT, Word or JSON. Many languages supported.</li>
-<li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit.</li>
+<li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit. Tap the 🔍 on any page (or long-press it) to read it full size and zoom in before you choose.</li>
 <li><b>Merge &amp; split:</b> combine files into one PDF or PPTX, or split a PDF into one card per page.</li>
 <li><b>Organise:</b> drag to reorder, reverse order, rename, per-file Undo / Redo, copy settings to many files.</li>
 <li><b>Save &amp; share:</b> download one file, Save all, or one ZIP (with an optional size limit).</li>
@@ -1344,19 +1370,19 @@ it.busy=0;it._real=0;it._lbl='';
 const idx=S.items.indexOf(it);mark();S.items.splice(idx<0?at:idx,1,...L);S.merged=null;render();toast(L.length+' page cards created')}
 catch(e){console.error(e);it.busy=0;it._real=0;it._lbl='';it.err=e.message||'Split failed';renderOne(it);toast(it.err)}}
 /* ===== page picker ===== */
-const XP=(()=>{let el,it,n=0,sel=new Set,doc=null,io=null,q=[],vis=new Set,ld=new Set,run=0,gen=0,tiles=[];
+const XP=(()=>{let el,it,n=0,sel=new Set,doc=null,io=null,q=[],vis=new Set,ld=new Set,run=0,gen=0,tiles=[],xv,vi=0,vz=1,vt=0,vr=.72,lp=0,lpt=0,lpx=0,lpy=0;
 const f=s=>el.querySelector(s);
 const parse=t=>{t=(t||'').trim();if(!t)return new Set;if(/^all$/i.test(t))return new Set([...Array(n).keys()].map(i=>i+1));const o=new Set;for(const p of t.split(/[,;\s]+/)){if(!p)continue;const m=p.match(/^(\d+)\s*(?:[-–]\s*(\d+))?$/);if(!m)return null;let a=+m[1],b=+(m[2]||m[1]);if(a>b)[a,b]=[b,a];if(a<1||a>n)return null;for(let i=a;i<=Math.min(n,b);i++)o.add(i)}return o};
 const pack=set=>{const a=[...set].sort((x,y)=>x-y),o=[];for(let i=0;i<a.length;){let j=i;while(j+1<a.length&&a[j+1]==a[j]+1)j++;o.push(j>i?a[i]+'-'+a[j]:''+a[i]);i=j+1}return o.join(', ')};
 const upd=()=>{const c=sel.size;f('.xcn').innerHTML='<b>'+c+'</b> of '+n+' page'+(n>1?'s':'')+' selected';const g=f('.xgo');g.disabled=!c;g.textContent=c?'⚡ Create PDF · '+c+' page'+(c>1?'s':''):'⚡ Create PDF';f('.xcl2').hidden=!f('.xi0').value;it._xsel=[...sel]};
-const apply=(set,fromInput)=>{for(let i=1;i<=n;i++){const on=set.has(i);if(on!==sel.has(i))tiles[i-1].classList.toggle('on',on)}sel=new Set(set);if(!fromInput)f('.xi0').value=pack(sel);f('.xin').classList.remove('bad');const nt=f('.xnote');nt.className='xnote';nt.textContent='Tap pages, or type a range like 1-5, 8, 11-13';upd()};
+const apply=(set,fromInput)=>{for(let i=1;i<=n;i++){const on=set.has(i);if(on!==sel.has(i))tiles[i-1].classList.toggle('on',on)}sel=new Set(set);if(!fromInput)f('.xi0').value=pack(sel);f('.xin').classList.remove('bad');const nt=f('.xnote');nt.className='xnote';nt.textContent='Tap pages, or type a range like 1-5, 8, 11-13';upd();if(xv)vsync()};
 let zu=1024;
 const zget=()=>{const on=f('.xzc').checked,v=+f('.xzv').value||0;return{on,v,u:zu,pad:f('.xzpad').checked}};
 const zsave=()=>{it._xz=zget()};
 const zui=()=>{const z=zget();f('.xz').classList.toggle('on',z.on);f('.xzb').hidden=!z.on;f('.xzs').textContent=z.on?(z.v?'Under '+z.v+' '+(z.u==1024?'KB':'MB'):'Choose a maximum size'):'Off · keeps original quality';f('.xzv').classList.remove('bad');f('.xzu').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.u==z.u));f('.xzq').querySelectorAll('button').forEach(b=>b.classList.toggle('on',z.v==+b.dataset.v&&z.u==+b.dataset.u));zsave()};
 const zset=z=>{z=z||{};f('.xzc').checked=!!z.on;f('.xzv').value=z.v||'';zu=z.u||1024;f('.xzpad').checked=z.pad!==false;zui()};
 const small=(c,m)=>{const k=Math.min(1,m/Math.max(c.width,c.height)),t=document.createElement('canvas');t.width=Math.max(1,c.width*k|0);t.height=Math.max(1,c.height*k|0);const g=t.getContext('2d');g.imageSmoothingQuality='medium';g.drawImage(c,0,0,t.width,t.height);return t};
-async function thumbOf(i){let c;if(it.kind=='pdf'){const e=it.edits&&it.edits[i];if(e)c=small(e,300);else{const pg=await doc.getPage(i),v=pg.getViewport({scale:1});c=await pcv(pg,Math.min(2,300/Math.max(v.width,v.height)));pg.cleanup()}}else c=await drawSlide(it,i-1,360);return c.toDataURL('image/jpeg',.72)}
+async function thumbOf(i){let c;if(it.kind=='pdf'){const e=it.edits&&it.edits[i];if(e)c=small(e,560);else{const pg=await doc.getPage(i),v=pg.getViewport({scale:1});c=await pcv(pg,Math.min(3,560/Math.max(v.width,v.height)));pg.cleanup()}}else c=await drawSlide(it,i-1,620);return c.toDataURL('image/jpeg',.8)}
 async function pump(){if(run)return;run=1;const g=gen;try{while(q.length&&g==gen){const i=q.shift();if(ld.has(i)||!vis.has(i))continue;if(!doc&&it.kind=='pdf'){q.unshift(i);await new Promise(r=>setTimeout(r,60));continue}try{const u=await thumbOf(i);if(g!=gen)break;ld.add(i);const t=tiles[i-1];t.insertAdjacentHTML('afterbegin','<img alt="" decoding="async" src="'+u+'">');const z=t.querySelector('.n0');if(z)z.remove();if(io)io.unobserve(t)}catch(e){console.error(e);ld.add(i)}await new Promise(r=>setTimeout(r,0))}}finally{run=0;if(q.length&&g==gen)setTimeout(pump,0)}}
 const build=()=>{if(el)return;el=document.createElement('div');el.id='xp';el.setAttribute('role','dialog');el.setAttribute('aria-label','Select pages');
 el.innerHTML='<div class="xh"><div class="xl">📑</div><div class="xt0"><b>Select pages</b><small class="xnm"></small></div><button class="btn xcl" type="button">✕ Close</button></div><div class="xr"><div class="xin"><span aria-hidden="true">🔢</span><input class="xi0" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="e.g. 1-5, 8, 11-13" aria-label="Page range"><button class="xcl2" type="button" hidden aria-label="Clear">✕</button></div><div class="xnote"></div><div class="xch"><button type="button" data-q="all">All</button><button type="button" data-q="odd">Odd</button><button type="button" data-q="even">Even</button><button type="button" data-q="inv">Invert</button><button type="button" data-q="none">Clear</button></div></div><div class="xb"><div class="xg"></div></div><div class="xf"><div class="xz"><label class="xzh"><span class="xzi">📦</span><span class="xzt"><b>Resize file size</b><small class="xzs">Off · keeps original quality</small></span><span class="xsw"><input type="checkbox" class="xzc" aria-label="Resize the output file"><i></i></span></label><div class="xzb" hidden><div class="xzr"><input class="xzv" type="number" min="1" inputmode="numeric" placeholder="Max size, e.g. 500" aria-label="Maximum file size"><div class="xzu"><button type="button" data-u="1024" class="on">KB</button><button type="button" data-u="1048576">MB</button></div></div><div class="xzq"><button type="button" data-v="100" data-u="1024">100 KB</button><button type="button" data-v="250" data-u="1024">250 KB</button><button type="button" data-v="500" data-u="1024">500 KB</button><button type="button" data-v="1" data-u="1048576">1 MB</button><button type="button" data-v="2" data-u="1048576">2 MB</button><button type="button" data-v="5" data-u="1048576">5 MB</button></div><label class="xzp"><input type="checkbox" class="xzpad" checked> Fill up to the limit (lands just under it)</label></div></div><div class="xfr"><div class="xcn"></div><button class="xgo" type="button" disabled>⚡ Create PDF</button></div></div>';
@@ -1365,19 +1391,70 @@ f('.xcl').onclick=()=>XP.close();
 f('.xi0').oninput=e=>{const set=parse(e.target.value),bad=set===null;f('.xin').classList.toggle('bad',bad);const nt=f('.xnote');nt.className='xnote'+(bad?' bad':'');nt.textContent=bad?'Check the range · pages go from 1 to '+n:'Tap pages, or type a range like 1-5, 8, 11-13';if(!bad)apply(set,true);f('.xcl2').hidden=!e.target.value};
 f('.xcl2').onclick=()=>{f('.xi0').value='';apply(new Set,true);f('.xi0').focus()};
 f('.xch').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;const k=b.dataset.q,o=new Set;for(let i=1;i<=n;i++){if(k=='all'||(k=='odd'&&i%2)||(k=='even'&&!(i%2))||(k=='inv'&&!sel.has(i)))o.add(i)}apply(o)};
-f('.xg').onclick=e=>{const t=e.target.closest('.xp-t');if(!t)return;const i=+t.dataset.n,o=new Set(sel);if(o.has(i))o.delete(i);else o.add(i);apply(o)};
+f('.xg').onclick=e=>{if(lp){lp=0;return}const t=e.target.closest('.xp-t');if(!t)return;const i=+t.dataset.n;if(e.target.closest('.zm')){vopen(i);return}const o=new Set(sel);if(o.has(i))o.delete(i);else o.add(i);apply(o)};
+f('.xg').ondblclick=e=>{const t=e.target.closest('.xp-t');if(t)vopen(+t.dataset.n)};
+f('.xg').addEventListener('pointerdown',e=>{lp=0;clearTimeout(lpt);const t=e.target.closest('.xp-t');if(!t||e.target.closest('.zm'))return;lpx=e.clientX;lpy=e.clientY;lpt=setTimeout(()=>{lp=1;try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}vopen(+t.dataset.n)},480)});
+const lpc=e=>{clearTimeout(lpt)};
+f('.xg').addEventListener('pointerup',lpc);f('.xg').addEventListener('pointercancel',lpc);f('.xg').addEventListener('pointerleave',lpc);
+f('.xg').addEventListener('pointermove',e=>{if(lpt&&(Math.abs(e.clientX-lpx)>10||Math.abs(e.clientY-lpy)>10))clearTimeout(lpt)});
+f('.xg').addEventListener('contextmenu',e=>e.preventDefault());
 f('.xzc').onchange=()=>{zui();if(f('.xzc').checked&&!f('.xzv').value)setTimeout(()=>f('.xzv').focus(),60)};
 f('.xzv').oninput=zui;f('.xzpad').onchange=zui;
 f('.xzu').onclick=e=>{const b=e.target.closest('[data-u]');if(!b)return;zu=+b.dataset.u;zui()};
 f('.xzq').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;zu=+b.dataset.u;f('.xzv').value=b.dataset.v;zui()};
 f('.xgo').onclick=()=>XP.make();
-addEventListener('keydown',e=>{if(e.key=='Escape'&&el&&el.classList.contains('on'))XP.close()})};
-const dispose=()=>{gen++;q=[];vis.clear();ld.clear();if(io){io.disconnect();io=null}if(doc){try{doc.destroy()}catch(e){}doc=null}};
+addEventListener('keydown',e=>{if(!el||!el.classList.contains('on'))return;const vo=xv&&xv.classList.contains('on');if(e.key=='Escape'){vo?vclose():XP.close();return}if(!vo)return;if(e.key=='ArrowLeft')vshow(vi-1);else if(e.key=='ArrowRight')vshow(vi+1);else if(e.key=='+'||e.key=='=')vzoom(vz*1.4);else if(e.key=='-')vzoom(vz/1.4);else if(e.key=='0')vzoom(1)});
+addEventListener('resize',()=>{if(xv&&xv.classList.contains('on'))vlay()})};
+const dispose=()=>{gen++;vt++;if(xv)xv.classList.remove('on');q=[];vis.clear();ld.clear();if(io){io.disconnect();io=null}if(doc){try{doc.destroy()}catch(e){}doc=null}};
+/* ---- full-size page viewer: read the page properly before you pick it ---- */
+const vf=s=>xv.querySelector(s);
+const vsync=()=>{if(!xv)return;const b=vf('.xvsel'),on=sel.has(vi);b.classList.toggle('on',on);b.textContent=on?'✓ Selected':'Select page'};
+const vfit=()=>{const s=vf('.xvs'),pw=Math.max(60,s.clientWidth-16),ph=Math.max(60,s.clientHeight-16);let w=pw,h=w/vr;if(h>ph){h=ph;w=h*vr}return[w,h]};
+const vlay=()=>{const[w,h]=vfit(),wr=vf('.xvw');wr.style.width=(w*vz)+'px';wr.style.height=(h*vz)+'px';vf('.xvz').textContent=vz<1.02?'Fit':Math.round(vz*100)+'%'};
+const vzoom=(nz,cx,cy)=>{nz=Math.min(4,Math.max(1,nz));if(Math.abs(nz-vz)<.001)return;const s=vf('.xvs'),wr=vf('.xvw'),r=s.getBoundingClientRect(),px=(cx==null?r.left+r.width/2:cx)-r.left,py=(cy==null?r.top+r.height/2:cy)-r.top,ow=wr.offsetWidth||1,oh=wr.offsetHeight||1,fx=(s.scrollLeft+px-wr.offsetLeft)/ow,fy=(s.scrollTop+py-wr.offsetTop)/oh;vz=nz;vlay();s.scrollLeft=fx*wr.offsetWidth+wr.offsetLeft-px;s.scrollTop=fy*wr.offsetHeight+wr.offsetTop-py};
+async function vshow(i){if(i<1||i>n)return;vi=i;const t=++vt;
+vf('.xvt b').textContent='Page '+i;vf('.xvt small').textContent='of '+n+' · pinch to zoom';
+vf('[data-a=prev]').disabled=i<=1;vf('[data-a=next]').disabled=i>=n;vsync();
+const tl=tiles[i-1],im=tl&&tl.querySelector('img'),ph=vf('.xvph'),cv=vf('.xvc'),lo=vf('.xvl'),s=vf('.xvs');
+cv.style.opacity=0;if(im){ph.src=im.src;ph.style.display=''}else ph.style.display='none';
+lo.style.display='';lo.textContent='Loading full size…';
+vr=im&&im.naturalWidth?im.naturalWidth/im.naturalHeight:(it.kind=='pdf'?(it.w&&it.h?it.w/it.h:.72):(it.cx&&it.cy?it.cx/it.cy:1.78));
+vz=1;s.scrollLeft=0;s.scrollTop=0;vlay();
+try{let c;
+if(it.kind=='pdf'){const e=it.edits&&it.edits[i];
+if(e)c=e;
+else{let w=0;while(!doc&&t==vt&&w++<250)await new Promise(r=>setTimeout(r,60));if(t!=vt)return;if(!doc)throw new Error('PDF not ready');
+const pg=await doc.getPage(i),v=pg.getViewport({scale:1});c=await pcv(pg,Math.min(4,Math.sqrt(14e6/(v.width*v.height))));pg.cleanup()}}
+else c=await drawSlide(it,i-1,1920);
+if(t!=vt)return;
+cv.width=c.width;cv.height=c.height;cv.getContext('2d').drawImage(c,0,0);
+vr=c.width/c.height;vlay();cv.style.opacity=1;ph.style.display='none';lo.style.display='none'}
+catch(e){console.error(e);if(t==vt)lo.textContent='Could not load this page'}}
+function vclose(){if(!xv)return;xv.classList.remove('on');vt++;const cv=vf('.xvc');cv.width=1;cv.height=1;const t=tiles[vi-1];if(t&&t.scrollIntoView)t.scrollIntoView({block:'nearest'})}
+function vopen(i){buildV();xv.classList.add('on');vshow(i)}
+function buildV(){if(xv)return;xv=document.createElement('div');xv.id='xv';xv.setAttribute('role','dialog');xv.setAttribute('aria-label','Page preview');
+xv.innerHTML='<div class="xvh"><button class="xvb xvx" type="button">← Back</button><div class="xvt"><b></b><small></small></div><button class="xvb xvsel" type="button">Select page</button></div><div class="xvs"><div class="xvw"><img class="xvph" alt=""><canvas class="xvc"></canvas><span class="xvl">Loading…</span></div></div><div class="xvf"><button type="button" data-a="prev" aria-label="Previous page">‹</button><button type="button" data-a="out" aria-label="Zoom out">−</button><button type="button" data-a="fit" class="xvz" aria-label="Fit page to screen">Fit</button><button type="button" data-a="in" aria-label="Zoom in">+</button><button type="button" data-a="next" aria-label="Next page">›</button></div>';
+document.body.append(xv);
+vf('.xvx').onclick=vclose;
+vf('.xvsel').onclick=()=>{const o=new Set(sel);if(o.has(vi))o.delete(vi);else o.add(vi);apply(o)};
+vf('.xvf').onclick=e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a;if(a=='prev')vshow(vi-1);else if(a=='next')vshow(vi+1);else if(a=='in')vzoom(vz*1.5);else if(a=='out')vzoom(vz/1.5);else vzoom(1)};
+const s=vf('.xvs');let pd=0,pz=1,pinched=0,sx=0,sy=0,st=0,lt=0,dg=null;
+const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+s.addEventListener('touchstart',e=>{if(e.touches.length==2){pd=dist(e.touches);pz=vz;pinched=1;e.preventDefault()}else if(e.touches.length==1){pinched=0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now()}},{passive:false});
+s.addEventListener('touchmove',e=>{if(e.touches.length==2&&pd){e.preventDefault();const t=e.touches;vzoom(pz*dist(t)/pd,(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2)}},{passive:false});
+s.addEventListener('touchend',e=>{if(e.touches.length<2)pd=0;if(e.touches.length||pinched||e.changedTouches.length!=1)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,now=Date.now();
+if(vz<1.05&&Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6&&now-st<600){vshow(vi+(dx<0?1:-1));lt=0;return}
+if(Math.abs(dx)<10&&Math.abs(dy)<10&&now-st<300){if(now-lt<320){e.preventDefault();lt=0;if(vz>1.05)vzoom(1);else vzoom(2.5,t.clientX,t.clientY)}else lt=now}},{passive:false});
+s.addEventListener('dblclick',e=>{if(vz>1.05)vzoom(1);else vzoom(2.5,e.clientX,e.clientY)});
+s.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();vzoom(vz*Math.exp(-e.deltaY*.0025),e.clientX,e.clientY)}},{passive:false});
+s.addEventListener('pointerdown',e=>{if(e.pointerType!='mouse'||e.button)return;dg={x:e.clientX,y:e.clientY,l:s.scrollLeft,t:s.scrollTop};try{s.setPointerCapture(e.pointerId)}catch(x){}s.style.cursor='grabbing'});
+s.addEventListener('pointermove',e=>{if(!dg)return;s.scrollLeft=dg.l-(e.clientX-dg.x);s.scrollTop=dg.t-(e.clientY-dg.y)});
+const dgEnd=()=>{dg=null;s.style.cursor=''};s.addEventListener('pointerup',dgEnd);s.addEventListener('pointercancel',dgEnd)}
 return{
 async open(item){build();dispose();it=item;n=item.np||1;sel=new Set((item._xsel||[]).filter(i=>i>=1&&i<=n));
 const ar=item.kind=='pdf'?(item.w&&item.h?item.w/item.h:.72):(item.cx&&item.cy?item.cx/item.cy:1.78);
 f('.xnm').textContent=item.name+' · '+n+' page'+(n>1?'s':'');
-f('.xg').innerHTML=Array.from({length:n},(_,i)=>'<button type="button" class="xp-t" data-n="'+(i+1)+'" style="--ar:'+ar.toFixed(3)+'" aria-label="Page '+(i+1)+'"><span class="n0">'+(i+1)+'</span><span class="pn">'+(i+1)+'</span><i class="ck"></i></button>').join('');
+f('.xg').innerHTML=Array.from({length:n},(_,i)=>'<button type="button" class="xp-t" data-n="'+(i+1)+'" style="--ar:'+ar.toFixed(3)+'" aria-label="Page '+(i+1)+'"><span class="n0">'+(i+1)+'</span><span class="pn">'+(i+1)+'</span><i class="ck"></i><span class="zm" title="View full size">🔍</span></button>').join('');
 tiles=[...f('.xg').children];f('.xb').scrollTop=0;
 const s0=sel;sel=new Set;apply(s0);zset(item._xz);
 el.classList.add('on');document.body.style.overflow='hidden';
@@ -1386,7 +1463,7 @@ io=new IntersectionObserver(es=>{let add=false;for(const e of es){const i=+e.tar
 tiles.forEach(t=>io.observe(t));
 if(item.kind=='pdf'){try{const d=await pdfjsLib.getDocument({data:item.ab.slice(0)}).promise;if(g!=gen){try{d.destroy()}catch(e){}return}doc=d}catch(e){console.error(e);toast('Could not open this PDF')}}},
 show(){if(!el)return;el.classList.add('on');document.body.style.overflow='hidden'},
-hide(){if(!el)return;el.classList.remove('on')},
+hide(){if(!el)return;if(xv)xv.classList.remove('on');el.classList.remove('on')},
 close(){if(!el)return;el.classList.remove('on');document.body.style.overflow='';dispose()},
 async make(){if(!sel.size)return;const Z=zget();if(Z.on&&Z.v<=0){const v=f('.xzv');v.classList.add('bad');v.focus();toast('Enter a maximum size, or switch Resize off');return}const T=Z.on?Math.round(Z.v*Z.u):0;const pages=[...sel].sort((a,b)=>a-b),N=pages.length,pdfSrc=it.kind=='pdf',scl=LS.scale||2;
 const lab=pack(sel).replace(/,\s*/g,'_'),nm=(cleanName(oname(it))||'document')+'_pages_'+(lab.length<=40?lab:N+'pages')+'.pdf';
