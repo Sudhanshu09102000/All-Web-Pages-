@@ -20961,8 +20961,11 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent!important;
 }
-#wdp .wd-word.m{font-size:28px}
-#wdp .wd-word.l{font-size:22px}
+#wdp .wd-word.m{font-size:28px!important}
+#wdp .wd-word.l{font-size:23px!important}
+#wdp .wd-word.xl{font-size:19px!important;line-height:1.3!important}
+#wdp .wd-word.xxl{font-size:16px!important;line-height:1.35!important}
+#wdp .wd-word.xl,#wdp .wd-word.xxl{max-height:118px;overflow:auto;scrollbar-width:none}
 #wdp .wd-sub{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;min-height:18px}
 #wdp .wd-phon{font:italic 500 16px/1 'Cormorant Garamond',Georgia,serif!important;color:#bfae80!important;letter-spacing:.3px}
 #wdp .wd-pos{
@@ -21040,6 +21043,31 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
 }
 #wdHi.pre i{opacity:.5;transform:scale(.97)}
 #wdHi.on i{opacity:1;transform:none}
+#wdHi.inst i{transition:none!important;opacity:1;transform:none}
+
+/* ── draggable selection handles ── */
+#wdHandles{position:fixed;left:0;top:0;width:0;height:0;z-index:2147483647!important;pointer-events:none}
+#wdHandles b{
+  position:absolute;display:none;width:42px;height:48px;margin-left:-21px;
+  pointer-events:auto;touch-action:none;cursor:grab;-webkit-tap-highlight-color:transparent;
+}
+#wdHandles.on b{display:block}
+#wdHandles b::before{content:"";position:absolute;left:50%;top:0;width:2px;height:13px;margin-left:-1px;border-radius:2px;background:#d4af37}
+#wdHandles b::after{
+  content:"";position:absolute;left:50%;top:11px;width:20px;height:20px;margin-left:-10px;border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,#fff3c4 0%,#e6c35f 52%,#b8902b 100%);border:2px solid #0b1121;
+  box-shadow:0 0 0 1.5px #d4af37,0 6px 14px rgba(0,0,0,.45),0 0 16px rgba(212,175,55,.55)!important;
+  transition:transform .15s ease!important;
+}
+#wdHandles b.act::after{transform:scale(1.28)}
+
+/* ── long translations + hint ── */
+#wdp .wd-tr.m{font-size:19px!important;line-height:1.45!important}
+#wdp .wd-tr.l{font-size:16px!important;line-height:1.55!important}
+#wdp .wd-hint{
+  margin-top:15px;padding-top:11px;border-top:1px solid rgba(212,175,55,.18);text-align:center;
+  font:italic 500 14.5px/1.35 'Cormorant Garamond',Georgia,serif!important;color:#8f98ad!important;
+}
 
 @media (prefers-reduced-motion:reduce){
   html body #wdp.wd-show,html body #wdp.wd-show.wd-out{animation-duration:.01ms!important}
@@ -21094,16 +21122,22 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
       '<div class="wd-sec wd-s-tr"><div class="wd-lab-row"><div class="wd-lab">Translation</div><div class="wd-lang"></div></div>' +
         '<div class="wd-tr-wrap"><div class="wd-tr"></div><div class="wd-rom" hidden></div><div class="wd-alt" hidden></div></div></div>' +
       '<div class="wd-sec wd-s-ex"><div class="wd-lab">In a sentence</div><div class="wd-ex"></div></div>' +
+      '<div class="wd-hint" hidden>Drag the gold handles to select a phrase, idiom or sentence</div>' +
     '</div>';
 
   var hi = document.createElement('div');
   hi.id = 'wdHi';
+  var hs = document.createElement('div');
+  hs.id = 'wdHandles';
+  hs.innerHTML = '<b></b><b></b>';
 
   function q(sel) { return pop.querySelector(sel); }
   var elBody = q('.wd-body'), elWord = q('.wd-word'), elPhon = q('.wd-phon'), elPos = q('.wd-pos'),
       elRoot = q('.wd-root'), elSay = q('.wd-say'), elMean = q('.wd-mean'), elTr = q('.wd-tr'),
       elRom = q('.wd-rom'), elAlt = q('.wd-alt'), elEx = q('.wd-ex'), elExSec = q('.wd-s-ex'),
-      elLang = q('.wd-lang');
+      elLang = q('.wd-lang'), elMeanSec = q('.wd-s-mean'), elHint = q('.wd-hint');
+  var hintSeen = false;
+  try { hintSeen = localStorage.getItem('wdHintSeen') === '1'; } catch (e) {}
 
   Object.keys(LANGS).forEach(function (code) {
     var b = document.createElement('button');
@@ -21115,6 +21149,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   if (!('speechSynthesis' in window)) elSay.style.display = 'none';
 
   document.body.appendChild(hi);
+  document.body.appendChild(hs);
   document.body.appendChild(pop);
 
   /* ───────────────────────── helpers ───────────────────────── */
@@ -21235,7 +21270,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
         data[0].forEach(function (seg) {
           if (!seg) return;
           if (seg[0]) tr += seg[0];
-          else if (typeof seg[2] === 'string') rom = seg[2];
+          else if (typeof seg[2] === 'string') rom += (rom ? ' ' : '') + seg[2];
         });
         tr = tr.trim();
         if (tr) {
@@ -21267,7 +21302,61 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     return trCache[k];
   }
 
-  /* ───────────────────────── word under finger ───────────────────────── */
+  /* ───────────────────────── phrase / idiom data ───────────────────────── */
+  var phraseCache = {};
+
+  function wiktDef(phrase) {
+    return fetchJSON(WIKT + encodeURIComponent(phrase.replace(/ /g, '_'))).then(function (data) {
+      var en = data && data.en; if (!en) return null;
+      for (var i = 0; i < en.length; i++) {
+        var defs = en[i].definitions || [];
+        for (var j = 0; j < defs.length; j++) {
+          var def = stripHtml(defs[j].definition || '');
+          if (def.length < 8) continue;
+          var cands = [], ex = '';
+          (defs[j].parsedExamples || []).forEach(function (x) { if (x && x.example) cands.push(x.example); });
+          (defs[j].examples || []).forEach(function (x) { if (typeof x === 'string') cands.push(x); });
+          for (var k = 0; k < cands.length; k++) {
+            var t = stripHtml(cands[k]);
+            if (t.length >= 15 && t.length <= 220) { ex = t; break; }
+          }
+          return { pos: en[i].partOfSpeech || '', def: def, ex: ex, phon: '' };
+        }
+      }
+      return null;
+    });
+  }
+
+  async function phraseLookup(key) {
+    var cands = [key]; if (!/^to /.test(key)) cands.push('to ' + key);
+    var net = false, i, r;
+    for (i = 0; i < cands.length; i++) {
+      try { r = await wiktDef(cands[i]); if (r) { r.found = true; r.form = cands[i]; return r; } }
+      catch (e) { net = true; }
+    }
+    for (i = 0; i < cands.length; i++) {
+      try {
+        var arr = await fetchJSON(DICT + encodeURIComponent(cands[i]));
+        if (Array.isArray(arr) && arr.length) { r = parseDict(arr, cands[i]); if (r) { r.found = true; return r; } }
+      } catch (e) { net = true; }
+    }
+    return net ? { net: true } : { found: false };
+  }
+
+  function getPhrase(key) {
+    if (!phraseCache[key]) {
+      phraseCache[key] = phraseLookup(key).then(function (d) { if (d.net) delete phraseCache[key]; return d; });
+    }
+    return phraseCache[key];
+  }
+
+  /* ───────────────────────── reading text under the finger ───────────────────────── */
+  var WORD_RE_G = new RegExp(WORD_SRC, 'g');
+  var CH = /[A-Za-z0-9'\u2019\-]/;
+  var SKIP_NODE = 'kbd,.kbd,.badge,script,style,button,#wdp,#wdHi,#wdHandles,[data-no-wd],.dual-lang-wrap,.dual-lang-opt-wrap';
+
+  function skipNode(n) { var p = n.parentElement; return !p || !!p.closest(SKIP_NODE); }
+
   function inRects(rects, x, y, tol) {
     for (var i = 0; i < rects.length; i++) {
       var r = rects[i];
@@ -21275,17 +21364,64 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     }
     return false;
   }
-  function buildHit(word, range, rects) {
-    var display = word.replace(/['\u2019]s$/i, '').replace(/['\u2019]$/, '');
-    if (display.length < 2) return null;
-    var b = range.getBoundingClientRect();
+
+  /* nearest block-level ancestor — the selection may grow only inside it */
+  function rootOf(node) {
+    var e = node.parentElement;
+    while (e && e !== document.body) {
+      var d = getComputedStyle(e).display;
+      if (d !== 'inline' && d !== 'inline-block' && d !== 'contents') break;
+      e = e.parentElement;
+    }
+    return e || document.body;
+  }
+
+  /* text + per-line rectangles for any range (may span several text nodes) */
+  function collect(range) {
+    var rects = [], parts = [];
+    var top = range.commonAncestorContainer;
+    if (top.nodeType === 3) top = top.parentNode;
+    var w = document.createTreeWalker(top, NodeFilter.SHOW_TEXT), n;
+    while ((n = w.nextNode())) {
+      if (!range.intersectsNode(n) || skipNode(n)) continue;
+      var s = (n === range.startContainer) ? range.startOffset : 0;
+      var e = (n === range.endContainer) ? range.endOffset : n.nodeValue.length;
+      if (e <= s) continue;
+      var seg = n.nodeValue.slice(s, e);
+      if (!/\S/.test(seg)) continue;
+      var rg = document.createRange(); rg.setStart(n, s); rg.setEnd(n, e);
+      [].forEach.call(rg.getClientRects(), function (r) {
+        if (r.width > 1 && r.height > 1) rects.push({ l: r.left, t: r.top, w: r.width, h: r.height });
+      });
+      parts.push(seg);
+    }
+    return { rects: rects, text: parts.join('') };
+  }
+
+  function makeHit(range, root, fromSel) {
+    var c = collect(range);
+    if (!c.rects.length) return null;
+    var text = c.text.replace(/\s+/g, ' ').trim();
+    var words = text.match(WORD_RE_G) || [];
+    if (!words.length) return null;
+    var kind = words.length === 1 ? 'word' : (words.length <= 5 && !/[.!?]/.test(text) ? 'phrase' : 'sentence');
+    var display, key;
+    if (kind === 'word') {
+      display = words[0].replace(/['\u2019]s$/i, '').replace(/['\u2019]$/, '');
+      if (display.length < 2) return null;
+      key = display.toLowerCase().replace(/\u2019/g, "'");
+    } else {
+      display = text.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.!?'"\u2019\u201d)]+$/, '');
+      key = kind === 'phrase' ? words.join(' ').toLowerCase().replace(/\u2019/g, "'") : display;
+    }
+    var L = 1e9, T = 1e9, R = -1e9, B = -1e9;
+    c.rects.forEach(function (r) { L = Math.min(L, r.l); T = Math.min(T, r.t); R = Math.max(R, r.l + r.w); B = Math.max(B, r.t + r.h); });
     return {
-      display: display,
-      key: display.toLowerCase().replace(/\u2019/g, "'"),
-      rects: [].slice.call(rects).map(function (r) { return { l: r.left, t: r.top, w: r.width, h: r.height }; }),
-      rect: { left: b.left, right: b.right, top: b.top, bottom: b.bottom, width: b.width, height: b.height }
+      kind: kind, display: display, key: key, rects: c.rects, range: range, root: root, fromSel: !!fromSel,
+      rect: { left: L, top: T, right: R, bottom: B, width: R - L, height: B - T }
     };
   }
+
   function hitInNode(node, x, y, off) {
     var text = node.nodeValue, re = new RegExp(WORD_SRC, 'g'), m;
     while ((m = re.exec(text))) {
@@ -21293,23 +21429,26 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
       if (off != null && (off < s || off > e)) continue;
       var rg = document.createRange();
       rg.setStart(node, s); rg.setEnd(node, e);
-      var rects = rg.getClientRects();
-      if (inRects(rects, x, y, 6)) return buildHit(m[0], rg, rects);
+      if (inRects(rg.getClientRects(), x, y, 6)) return makeHit(rg, rootOf(node), false);
     }
     return null;
   }
-  function viaCaret(x, y) {
-    var node = null, off = 0;
+
+  function caretAt(x, y) {
     try {
       if (document.caretPositionFromPoint) {
         var p = document.caretPositionFromPoint(x, y);
-        if (p) { node = p.offsetNode; off = p.offset; }
+        if (p) return { node: p.offsetNode, off: p.offset };
       } else if (document.caretRangeFromPoint) {
         var r = document.caretRangeFromPoint(x, y);
-        if (r) { node = r.startContainer; off = r.startOffset; }
+        if (r) return { node: r.startContainer, off: r.startOffset };
       }
     } catch (e) {}
-    return (node && node.nodeType === 3) ? hitInNode(node, x, y, off) : null;
+    return null;
+  }
+  function viaCaret(x, y) {
+    var c = caretAt(x, y);
+    return (c && c.node && c.node.nodeType === 3) ? hitInNode(c.node, x, y, c.off) : null;
   }
   function viaScan(x, y, el) {   /* fallback when a browser's caret API can't help */
     var e = el, hops = 0;
@@ -21326,8 +21465,25 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   }
   function wordFromPoint(x, y, el) { return viaCaret(x, y) || viaScan(x, y, el); }
 
-  /* ───────────────────────── highlight ───────────────────────── */
-  function showHi(hit, solid) {
+  /* first / last readable text position inside the selection root */
+  function edgeOf(root, which) {
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), n, first = null, last = null;
+    while ((n = w.nextNode())) {
+      if (skipNode(n) || !/[A-Za-z]/.test(n.nodeValue)) continue;
+      if (!first) first = n; last = n;
+    }
+    var node = which === 'start' ? first : last;
+    return node ? { node: node, off: which === 'start' ? 0 : node.nodeValue.length } : null;
+  }
+  function snap(node, off, which) {
+    var t = node.nodeValue, i = Math.min(off, t.length);
+    if (which === 'start') { while (i > 0 && CH.test(t[i - 1])) i--; }
+    else { while (i < t.length && CH.test(t[i])) i++; }
+    return { node: node, off: i };
+  }
+
+  /* ───────────────────────── highlight + handles ───────────────────────── */
+  function showHi(hit, solid, instant) {
     hi.innerHTML = '';
     hit.rects.forEach(function (r) {
       var i = document.createElement('i');
@@ -21335,12 +21491,19 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
       hi.appendChild(i);
     });
     void hi.offsetWidth;
-    hi.className = solid ? 'on' : 'pre';
+    hi.className = solid ? (instant ? 'on inst' : 'on') : 'pre';
   }
   function hideHi() { hi.className = ''; }
 
+  function layoutHandles(hit) {
+    var f = hit.rects[0], l = hit.rects[hit.rects.length - 1];
+    hs.children[0].style.cssText = 'left:' + (f.l - 4) + 'px;top:' + (f.t + f.h - 3) + 'px';
+    hs.children[1].style.cssText = 'left:' + (l.l + l.w + 4) + 'px;top:' + (l.t + l.h - 3) + 'px';
+    hs.className = 'on';
+  }
+
   /* ───────────────────────── card state ───────────────────────── */
-  var seq = 0, isOpen = false, current = null, openW = 0, hideTimer = 0;
+  var seq = 0, isOpen = false, selOn = false, current = null, sel = null, drag = null, openW = 0, hideTimer = 0;
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
@@ -21351,12 +21514,13 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     pop.style.width = w + 'px';
     var cx = r.left + r.width / 2;
     var left = clamp(cx - w / 2, MARGIN, Math.max(MARGIN, vw - w - MARGIN));
-    var below = vh - r.bottom - GAP - MARGIN, above = r.top - GAP - MARGIN;
+    var gapB = GAP + 24;                                   // leave room for the hanging handle
+    var below = vh - r.bottom - gapB - MARGIN, above = r.top - GAP - MARGIN;
     if (!current.side) current.side = (below >= 330 || below >= above) ? 'below' : 'above';
     var side = current.side, avail = side === 'below' ? below : above;
     pop.style.left = left + 'px';
     elBody.style.maxHeight = Math.max(170, avail) + 'px';
-    if (side === 'below') { pop.style.top = (r.bottom + GAP) + 'px'; pop.style.bottom = 'auto'; }
+    if (side === 'below') { pop.style.top = (r.bottom + gapB) + 'px'; pop.style.bottom = 'auto'; }
     else { pop.style.bottom = (vh - r.top + GAP) + 'px'; pop.style.top = 'auto'; }
     pop.style.setProperty('--wd-ax', clamp(cx - left, 28, w - 28) + 'px');
     pop.style.setProperty('--wd-dy', side === 'below' ? '-8px' : '8px');
@@ -21366,6 +21530,11 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
 
   function skeleton(el) { el.innerHTML = '<span class="wd-sk"></span><span class="wd-sk s"></span>'; }
   function muted(el, msg) { el.textContent = ''; var s = document.createElement('span'); s.className = 'wd-muted'; s.textContent = msg; el.appendChild(s); return s; }
+  function retryBtn(fn) {
+    var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'wd-retry'; rb.textContent = 'Retry';
+    rb.addEventListener('click', fn); return rb;
+  }
+  function textFor(hit) { return hit.kind === 'word' ? hit.key : hit.display.slice(0, 900); }
 
   function renderEx(text, hit, form) {
     elEx.textContent = '';
@@ -21380,34 +21549,34 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   }
 
   function renderDict(d, hit) {
-    elPhon.hidden = elPos.hidden = elRoot.hidden = true;
+    var isW = hit.kind === 'word';
+    elPhon.hidden = elRoot.hidden = true;
+    elPos.hidden = isW; if (!isW) elPos.textContent = 'phrase';
     if (d.net) {
-      var s = muted(elMean, 'Couldn\u2019t reach the dictionary.');
-      var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'wd-retry'; rb.textContent = 'Retry';
-      rb.addEventListener('click', function () { openFor(hit, true); });
-      elMean.appendChild(rb);
+      muted(elMean, 'Couldn\u2019t reach the dictionary.');
+      elMean.appendChild(retryBtn(function () { openFor(hit, true); }));
       elExSec.hidden = true; return;
     }
     if (!d.found) {
-      muted(elMean, 'No dictionary entry found for \u201c' + hit.display + '\u201d.');
+      muted(elMean, isW ? 'No dictionary entry found for \u201c' + hit.display + '\u201d.'
+                        : 'No dictionary entry found for this phrase \u2014 see its translation below.');
       elExSec.hidden = true; return;
     }
     if (d.phon) { elPhon.textContent = d.phon; elPhon.hidden = false; }
-    if (d.pos) { elPos.textContent = d.pos; elPos.hidden = false; }
-    if (d.form && d.form !== hit.key) { elRoot.textContent = 'form of \u201c' + d.form + '\u201d'; elRoot.hidden = false; }
+    if (isW) { if (d.pos) { elPos.textContent = d.pos; elPos.hidden = false; } }
+    else if (/idiom|proverb/i.test(d.pos || '')) elPos.textContent = d.pos.toLowerCase();
+    if (isW && d.form && d.form !== hit.key) { elRoot.textContent = 'form of \u201c' + d.form + '\u201d'; elRoot.hidden = false; }
     elMean.textContent = tidy(d.def);
     elExSec.hidden = false;
     if (d.ex) renderEx(tidy(d.ex), hit, d.form);
-    else muted(elEx, 'No example sentence available for this word.');
+    else muted(elEx, 'No example sentence available for this ' + (isW ? 'word' : 'phrase') + '.');
   }
 
   function renderTr(t, hit) {
     elRom.hidden = elAlt.hidden = true;
     if (!t) {
-      var s = muted(elTr, 'Translation unavailable right now.');
-      var rb = document.createElement('button'); rb.type = 'button'; rb.className = 'wd-retry'; rb.textContent = 'Retry';
-      rb.addEventListener('click', function () { loadTr(hit, seq); });
-      elTr.appendChild(rb);
+      muted(elTr, 'Translation unavailable right now.');
+      elTr.appendChild(retryBtn(function () { loadTr(hit, seq); }));
       return;
     }
     elTr.textContent = t.tr;
@@ -21422,7 +21591,9 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
 
   function loadTr(hit, token) {
     skeleton(elTr); elRom.hidden = elAlt.hidden = true;
-    getTr(hit.key, lang).then(function (t) {
+    var n = hit.display.length;
+    elTr.className = 'wd-tr' + (hit.kind === 'sentence' || n > 90 ? ' l' : n > 28 ? ' m' : '');
+    getTr(textFor(hit), lang).then(function (t) {
       if (token !== seq || !isOpen) return;
       renderTr(t, hit); place();
     });
@@ -21431,37 +21602,52 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   function openFor(hit, keepPos) {
     clearTimeout(hideTimer);
     var token = ++seq;
-    current = hit; isOpen = true; openW = document.documentElement.clientWidth;
-    if (!keepPos) { hit.side = ''; }
-    document.body.appendChild(hi); document.body.appendChild(pop);   // always on top of any newer modal
+    current = hit; isOpen = true; selOn = true; openW = document.documentElement.clientWidth;
+    if (hit.range) sel = { range: hit.range, root: hit.root };
+    if (!keepPos) hit.side = '';
+    document.body.appendChild(hi); document.body.appendChild(hs); document.body.appendChild(pop);   // always above any newer modal
 
+    var n = hit.display.length;
     elWord.textContent = hit.display;
-    elWord.className = 'wd-word' + (hit.display.length > 20 ? ' l' : hit.display.length > 13 ? ' m' : '');
-    elPhon.hidden = elPos.hidden = elRoot.hidden = true;
-    skeleton(elMean); elExSec.hidden = false; skeleton(elEx);
+    elWord.className = 'wd-word' + (n > 90 ? ' xxl' : n > 44 ? ' xl' : n > 20 ? ' l' : n > 13 ? ' m' : '');
+    elPhon.hidden = elRoot.hidden = true;
+    elPos.hidden = hit.kind === 'word'; elPos.textContent = hit.kind;
+    var isS = hit.kind === 'sentence';
+    elMeanSec.hidden = isS; elExSec.hidden = isS;
+    elHint.hidden = isS || hintSeen;
+    if (!isS) { skeleton(elMean); skeleton(elEx); }
     Array.prototype.forEach.call(elLang.children, function (b) { b.className = b.getAttribute('data-l') === lang ? 'on' : ''; });
 
-    showHi(hit, true);
+    showHi(hit, true, hit.fromSel);
+    layoutHandles(hit);
     place();
     pop.classList.remove('wd-out');
     pop.classList.add('wd-show');
     elBody.scrollTop = 0;
 
-    getDict(hit.key).then(function (d) {
-      if (token !== seq || !isOpen) return;
-      renderDict(d, hit); place();
-    });
+    if (hit.kind === 'word') {
+      getDict(hit.key).then(function (d) { if (token !== seq || !isOpen) return; renderDict(d, hit); place(); });
+    } else if (hit.kind === 'phrase') {
+      getPhrase(hit.key).then(function (d) { if (token !== seq || !isOpen) return; renderDict(d, hit); place(); });
+    }
     loadTr(hit, token);
   }
 
-  function closePop() {
+  /* hide just the card (selection + handles stay) — used while dragging a handle */
+  function hideCard() {
     if (!isOpen) return;
     isOpen = false; seq++;
-    hideHi();
     pop.classList.add('wd-out');
     clearTimeout(hideTimer);
     hideTimer = setTimeout(function () { pop.classList.remove('wd-show', 'wd-out'); }, 170);
     try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  /* full dismiss: card, highlight and handles */
+  function closePop() {
+    if (!isOpen && !selOn) return;
+    hideCard();
+    selOn = false; sel = null; drag = null;
+    hideHi(); hs.className = '';
   }
 
   /* ───────────────────────── card interactions ───────────────────────── */
@@ -21482,6 +21668,50 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     } catch (e) {}
   });
 
+  /* ───────────────────────── drag the gold handles ───────────────────────── */
+  function moveHandle(x, y, idx) {
+    if (!sel) return;
+    var which = idx === 0 ? 'start' : 'end', pos = null, c = caretAt(x, y);
+    if (c && c.node && c.node.nodeType === 3 && sel.root.contains(c.node) && !skipNode(c.node)) {
+      pos = snap(c.node, c.off, which);
+    } else {
+      var rr = sel.root.getBoundingClientRect();
+      if (y < rr.top) pos = edgeOf(sel.root, 'start');
+      else if (y > rr.bottom) pos = edgeOf(sel.root, 'end');
+    }
+    if (!pos) return;
+    var r = sel.range.cloneRange();
+    try { if (idx === 0) r.setStart(pos.node, pos.off); else r.setEnd(pos.node, pos.off); } catch (e) { return; }
+    if (r.collapsed) return;                       // handles can't cross each other
+    var h = makeHit(r, sel.root, true);
+    if (!h) return;
+    sel.range = r; current = h;
+    showHi(h, true, true); layoutHandles(h);
+  }
+  function endDrag(b) {
+    if (!drag) return;
+    drag = null; b.classList.remove('act');
+    hintSeen = true; try { localStorage.setItem('wdHintSeen', '1'); } catch (e) {}
+    var h = sel && makeHit(sel.range, sel.root, true);
+    if (h) openFor(h);
+  }
+  [].forEach.call(hs.children, function (b, idx) {
+    b.addEventListener('pointerdown', function (e) {
+      if (!sel) return;
+      e.preventDefault(); e.stopPropagation();
+      try { b.setPointerCapture(e.pointerId); } catch (err) {}
+      drag = { id: e.pointerId };
+      b.classList.add('act');
+      hideCard();
+      try { navigator.vibrate && navigator.vibrate(8); } catch (err) {}
+    });
+    b.addEventListener('pointermove', function (e) {
+      if (drag && drag.id === e.pointerId) moveHandle(e.clientX, e.clientY - 24, idx);   // read the line above the fingertip
+    });
+    b.addEventListener('pointerup', function () { endDrag(b); });
+    b.addEventListener('pointercancel', function () { endDrag(b); });
+  });
+
   /* ───────────────────────── press & hold ───────────────────────── */
   var press = null, swallow = false, swallowTimer = 0;
 
@@ -21489,7 +21719,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   function cancelPress() {
     if (!press) return;
     clearTimeout(press.t1); clearTimeout(press.t2);
-    if (!isOpen) hideHi();
+    if (!isOpen && !selOn) hideHi();
     press = null;
   }
   function fire() {
@@ -21502,7 +21732,8 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
 
   function onDown(e) {
     var t = e.target;
-    if (isOpen && !(t && pop.contains(t))) { closePop(); armSwallow(); }   // tap outside = dismiss only
+    if (t && t.closest && t.closest('#wdHandles')) return;                    // grabbing a handle
+    if ((isOpen || selOn) && !(t && pop.contains(t))) { closePop(); armSwallow(); }   // tap outside = dismiss only
     cancelPress();
     if (!e.isPrimary) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -21535,16 +21766,16 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
   }, true);
 
-  /* anything that moves the page or changes the question closes the card */
+  /* anything that moves the page or changes the question closes everything */
   document.addEventListener('scroll', function (e) {
     if (e.target && e.target.nodeType === 1 && pop.contains(e.target)) return;
     cancelPress(); closePop();
   }, { capture: true, passive: true });
   window.addEventListener('resize', function () {
-    if (isOpen && document.documentElement.clientWidth !== openW) closePop();
+    if ((isOpen || selOn) && document.documentElement.clientWidth !== openW) closePop();
   });
   document.addEventListener('keydown', function (e) {
-    if (isOpen && !pop.contains(e.target)) closePop();
+    if ((isOpen || selOn) && !pop.contains(e.target)) closePop();
   }, true);
   document.addEventListener('visibilitychange', function () { if (document.hidden) { cancelPress(); closePop(); } });
 })();
