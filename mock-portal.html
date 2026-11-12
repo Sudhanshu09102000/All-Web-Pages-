@@ -5352,6 +5352,15 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             <input id="candTimeInput" type="number" min="1" class="form-control" placeholder=" " />
             <div class="small subtle mt-2">If empty, auto time = 15 mins</div>
           </div>
+          <div class="mb-1">
+            <label class="form-label subtle">Test mode</label>
+            <div id="candModeToggle" class="mode-seg" role="radiogroup" aria-label="Test mode" data-mode="practice">
+              <span class="mode-seg-thumb" aria-hidden="true"></span>
+              <button type="button" class="mode-seg-opt on" data-mode="practice" role="radio" aria-checked="true"><span class="mi">&#128161;</span><span>Practice</span></button>
+              <button type="button" class="mode-seg-opt" data-mode="exam" role="radio" aria-checked="false"><span class="mi">&#128274;</span><span>Exam</span></button>
+            </div>
+            <div id="candModeHint" class="small subtle mt-2">Explanations, hints and concept pages stay available.</div>
+          </div>
         </div>
         <div class="modal-footer border-0">
           <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
@@ -6124,6 +6133,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
           nameEl.value = defaultName || " ";
           timeEl.value = "";
+          if (window.candSetMode) window.candSetMode("practice");   // always start on Practice
 
           const cleanup = () => {
             startBtn.onclick = null;
@@ -6144,7 +6154,8 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
             cleanup();
             bsModal.hide();
-            resolve({ name, timeMin: mins });
+            const examMode = !!(window.candGetMode && window.candGetMode() === "exam");
+            resolve({ name, timeMin: mins, examMode });
           };
 
           bsModal.show();
@@ -6176,6 +6187,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         state.candidateName = details.name;
         state.desiredTimeMin = details.timeMin; // store time for engine
+        state.startExamMode = !!details.examMode; // mode picked in the Start Test popup
 
 
         $('testInfoTop').textContent = `${sel.topicName} • ${sel.subtopicName}`;
@@ -6269,8 +6281,8 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         state.currentIndex = 0;
 
         // practice mode starts ON by default (turn Exam Mode on to hide concept pages / explanations)
-        state.examMode = false;
-        state.cluelessMode = false;
+        state.examMode = !!state.startExamMode;
+        state.cluelessMode = state.examMode;
 
         // ── Concept pages: unified sequence of questions + concept pages ──
         buildConceptSequence(conceptsList, seqRaw);
@@ -6303,8 +6315,8 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         buildNavigator();
         attachEngineHandlers();
-        state.examMode = false;      // practice mode by default
-        state.cluelessMode = false;
+        state.examMode = !!state.startExamMode;      // practice mode by default
+        state.cluelessMode = state.examMode;
         updateExamModeUI();
         initDualLangUI(); // ✅ Dual-language translation button
 
@@ -21735,6 +21747,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     if (t && t.closest && t.closest('#wdHandles')) return;                    // grabbing a handle
     if ((isOpen || selOn) && !(t && pop.contains(t))) { closePop(); armSwallow(); }   // tap outside = dismiss only
     cancelPress();
+    if (window.tlLensBlocked && window.tlLensBlocked()) return;   // hold-to-translate is off (exam / battle / English Comprehension)
     if (!e.isPrimary) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     if (!t || !t.closest || t.closest(SKIP)) return;
@@ -21778,6 +21791,136 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     if ((isOpen || selOn) && !pop.contains(e.target)) closePop();
   }, true);
   document.addEventListener('visibilitychange', function () { if (document.hidden) { cancelPress(); closePop(); } });
+})();
+</script>
+
+
+<style id="tlGateCss">
+/* English Comprehension: no translate buttons anywhere (question page, concept page, battle bar, battle review) */
+html.tl-no-translate #dualLangBtn,
+html.tl-no-translate #cpLangBtn,
+html.tl-no-translate #bmLangBtn,
+html.tl-no-translate #bmRcLangBtn,
+html.tl-no-translate #dualLangDropdown { display: none !important; }
+</style>
+<script id="tlGateJs">
+(function () {
+  'use strict';
+
+  /* Fields where translation + press-and-hold must be OFF.
+     Matched against subject / topic / subtopic name of the running test.
+     Change this one line if your field is named differently. */
+  var NO_TRANSLATE_FIELD = /english\s*comprehension/i;
+
+  function fieldName() {
+    var t = window.state && window.state.selectedTest;
+    return t ? [t.subjectTitle, t.topicName, t.subtopicName].join(' | ') : '';
+  }
+  function isNoTranslateField() { return NO_TRANSLATE_FIELD.test(fieldName()); }
+  function inEngine() {
+    var ev = document.getElementById('engineView');
+    return !!(ev && ev.classList.contains('active'));
+  }
+  function battleRunning() {
+    var o = document.getElementById('bmQuestionOverlay');
+    return !!(o && o.classList.contains('bm-active'));
+  }
+
+  /* Word Lens (press & hold) asks this on every press. Evaluated live, so
+     toggling Exam/Practice mid-test, submitting, or a battle ending takes
+     effect immediately. */
+  window.tlLensBlocked = function () {
+    if (battleRunning()) return true;                         // battle in progress
+    if (!inEngine()) return false;
+    var st = window.state;
+    if (!st) return false;
+    if (st.examMode && !st.submitted) return true;            // exam mode, before submission
+    return false;                                             // practice mode / after submit: hold works (English Comprehension too)
+  };
+
+  var wasNoTr = false;
+  function sync() {
+    var st = window.state;
+    var examLive = inEngine() && st && st.examMode && !st.submitted;
+    var off = isNoTranslateField() && (battleRunning() || examLive);   // English Comprehension: buttons only hidden in exam mode / battle
+    document.documentElement.classList.toggle('tl-no-translate', off);
+    if (off && !wasNoTr) {
+      /* also switch any language that was left on from a previous test back to "Off" */
+      try {
+        if (window.state && window.state.dualLang) {
+          var offItem = document.querySelector('#dualLangDropdown .dlang-item[data-lang=""]');
+          if (offItem) offItem.click();
+        }
+      } catch (e) {}
+    }
+    wasNoTr = off;
+  }
+  setInterval(sync, 400);
+  sync();
+})();
+</script>
+
+
+<style id="candModeCss">
+html body #candidateModal #candModeToggle{
+  position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:16px;
+  background:rgba(127,127,127,.13)!important;border:1px solid rgba(127,127,127,.3)!important;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.18)!important;isolation:isolate;
+}
+html body #candidateModal #candModeToggle .mode-seg-thumb{
+  position:absolute;z-index:0;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);border-radius:12px;
+  background:linear-gradient(135deg,#34d399 0%,#10b981 55%,#059669 100%)!important;
+  box-shadow:0 6px 18px -4px rgba(16,185,129,.7),inset 0 1px 0 rgba(255,255,255,.35)!important;
+  transform:translateX(0);
+  transition:transform .38s cubic-bezier(.2,.9,.25,1.12),background .3s ease,box-shadow .3s ease!important;
+}
+html body #candidateModal #candModeToggle[data-mode="exam"] .mode-seg-thumb{
+  transform:translateX(100%);
+  background:linear-gradient(135deg,#fbbf24 0%,#f97316 55%,#ef4444 100%)!important;
+  box-shadow:0 6px 18px -4px rgba(249,115,22,.75),inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
+html body #candidateModal #candModeToggle .mode-seg-opt{
+  position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 10px;border:0!important;background:transparent!important;box-shadow:none!important;
+  font-weight:700;font-size:.95rem;letter-spacing:.2px;cursor:pointer;border-radius:12px;
+  color:inherit!important;opacity:.62;-webkit-tap-highlight-color:transparent;
+  transition:opacity .25s ease,color .25s ease,transform .15s ease!important;
+}
+html body #candidateModal #candModeToggle .mode-seg-opt:active{transform:scale(.97)}
+html body #candidateModal #candModeToggle .mode-seg-opt:focus-visible{outline:2px solid rgba(59,130,246,.8);outline-offset:1px}
+html body #candidateModal #candModeToggle .mode-seg-opt.on{color:#fff!important;opacity:1;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+html body #candidateModal #candModeToggle .mi{font-size:1.05rem;line-height:1}
+</style>
+<script id="candModeJs">
+(function () {
+  'use strict';
+  var HINT = {
+    practice: 'Explanations, hints and concept pages stay available.',
+    exam: 'Exam conditions: no hints, explanations or concept pages until you submit.'
+  };
+  function box() { return document.getElementById('candModeToggle'); }
+  function setMode(m) {
+    var t = box(); if (!t) return;
+    m = (m === 'exam') ? 'exam' : 'practice';
+    t.setAttribute('data-mode', m);
+    [].forEach.call(t.querySelectorAll('.mode-seg-opt'), function (b) {
+      var on = b.getAttribute('data-mode') === m;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    var h = document.getElementById('candModeHint'); if (h) h.textContent = HINT[m];
+  }
+  window.candSetMode = setMode;
+  window.candGetMode = function () { var t = box(); return t ? t.getAttribute('data-mode') : 'practice'; };
+
+  var t = box(); if (!t) return;
+  [].forEach.call(t.querySelectorAll('.mode-seg-opt'), function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+  });
+  t.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { setMode('practice'); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { setMode('exam'); e.preventDefault(); }
+  });
 })();
 </script>
 
