@@ -1159,7 +1159,7 @@ start(list,title){mk();clearInterval(iv);steps=list;let a=0;base=list.map(t=>{co
 step(i,f,title,sub){if(!open||fin)return;if(i!=act){act=i;pills()}tg=Math.max(tg,(base[i]+steps[i].w*Math.max(0,Math.min(1,f||0)))*100);if(title!=null&&q('.jt').textContent!==title)q('.jt').textContent=title;if(sub!=null&&q('.js').textContent!==sub)q('.js').textContent=sub},
 async finish(title,sub,buttons){if(!open)return;fin=true;tg=100;pills();q('.jt').textContent=title;q('.js').textContent=sub||'';await new Promise(r=>{let n=0;const w=()=>cur>=99.5||++n>8?r():setTimeout(w,100);w()});cur=100;shown=-1;paint();clearInterval(iv);acts((buttons||[]).concat([{t:'Done',close:1}]));el.classList.add('fin');if(navigator.vibrate)try{navigator.vibrate(18)}catch(e){}},
 fail(msg){if(!open)return;fin=true;clearInterval(iv);el.classList.add('bad');q('.jt').textContent='Something went wrong';q('.js').textContent=msg||'';acts([{t:'Close',pri:1,close:1}])},
-close(){open=false;clearInterval(iv);el&&el.classList.remove('on')}}})();
+close(){open=false;clearInterval(iv);el&&el.classList.remove('on');const xp=document.getElementById('xp');if(!xp||!xp.classList.contains('on'))document.body.style.overflow=''}}})();
 const thumb=(src,w,h)=>{const k=Math.min(1,900/Math.max(w,h)),tw=Math.max(1,w*k|0),th=Math.max(1,h*k|0),s=k<1?scaleTo(src,tw,th):src,c=document.createElement('canvas');c.width=tw;c.height=th;const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(s,0,0,tw,th);return c.toDataURL('image/webp',.88)};
 const pv=s=>`transform:rotate(${s.rot||0}deg)${s.flip?' scaleX(-1)':''};filter:brightness(${s.br}%) contrast(${s.ct}%)${s.gray?' grayscale(1)':''}`;
 try{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'}catch(e){}
@@ -1463,7 +1463,7 @@ io=new IntersectionObserver(es=>{let add=false;for(const e of es){const i=+e.tar
 tiles.forEach(t=>io.observe(t));
 if(item.kind=='pdf'){try{const d=await pdfjsLib.getDocument({data:item.ab.slice(0)}).promise;if(g!=gen){try{d.destroy()}catch(e){}return}doc=d}catch(e){console.error(e);toast('Could not open this PDF')}}},
 show(){if(!el)return;el.classList.add('on');document.body.style.overflow='hidden'},
-hide(){if(!el)return;if(xv)xv.classList.remove('on');el.classList.remove('on')},
+hide(){if(!el)return;if(xv)xv.classList.remove('on');el.classList.remove('on');document.body.style.overflow=''},
 close(){if(!el)return;el.classList.remove('on');document.body.style.overflow='';dispose()},
 async make(){if(!sel.size)return;const Z=zget();if(Z.on&&Z.v<=0){const v=f('.xzv');v.classList.add('bad');v.focus();toast('Enter a maximum size, or switch Resize off');return}const T=Z.on?Math.round(Z.v*Z.u):0;const pages=[...sel].sort((a,b)=>a-b),N=pages.length,pdfSrc=it.kind=='pdf',scl=LS.scale||2;
 const lab=pack(sel).replace(/,\s*/g,'_'),nm=(cleanName(oname(it))||'document')+'_pages_'+(lab.length<=40?lab:N+'pages')+'.pdf';
