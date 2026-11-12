@@ -2264,7 +2264,7 @@ function draw(){if(!isOpen())return;const ae=document.activeElement;if(ae&&ae.ta
 <div><label class="rm-fl" for="px_p2">Room password</label><div class="rm-inp">${ic(IC.lock,19)}<input id="px_p2" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ask the person who made the room" value="${esc(pw2)}"><button type="button" class="rm-eye" data-eye="px_p2" aria-label="Show password">${ic(IC.eye,18)}</button></div></div>
 <button type="button" class="rm-cta" id="px_join">${ic(IC.enter,19)}Join room</button>
 <p class="rm-hint">Got an invite link? Just open it, or paste it into the room code box. You will not need the password.</p></div></div>
-${adv}<div class="rm-foot">${ic(IC.shield,16)}Encrypted from device to device. Nothing is stored on a server.</div>`}
+${chkHtml()}${adv}<div class="rm-foot">${ic(IC.shield,16)}Encrypted from device to device. Nothing is stored on a server.</div>`}
  else{
   const lab=on?(oth.length?'Connected · '+(oth.length+1)+' devices':'Connected'):role=='host'?'Room is open · waiting for others':state=='wait'?(role=='guest'?'Joining room…':'Connecting…'):'Not connected',cls=on||role=='host'?'ok':state=='wait'?'wait':'';
   h+=`<div class="rm-bar"><div class="rm-pill ${cls}" role="status"><span class="d"></span><span>${esc(lab)}</span></div><button type="button" class="rm-leave" id="px_d">${ic(IC.out,15)}Leave room</button></div>${note}${NB.banner()}
@@ -2301,6 +2301,7 @@ box.onclick=e=>{const b=e.target.closest('button');if(!b)return;const g=k=>b.dat
  else if(b.id=='px_cp')copyText(rpw,'Password copied');
  else if(b.id=='px_pv'){const e=document.getElementById('rm_pw');if(e){const sh=e.dataset.s=='1';e.dataset.s=sh?'':'1';e.textContent=sh?'••••••••••':rpw;b.innerHTML=ic(sh?IC.eye:IC.eyeoff,18);b.setAttribute('aria-label',sh?'Show password':'Hide password')}}
  else if(b.id=='px_retry')connect(code,1);
+ else if(b.id=='px_chk')runCheck();
  else if(b.id=='px_d'){leaveRoom('');ncode=rnd(8);pw1=pw2='';roll=1;draw();toast('You left the room')}
  else if(b.id=='px_all')rx.slice().reverse().forEach((f,i)=>setTimeout(()=>dl(f.name,f.blob,0),i*350));
  else if(b.id=='px_cqa'){(async()=>{for(const f of rx.filter(x=>x.card?!!x.card.orig:!!kindOf(x.name)).reverse()){if(await toQueue(f))f.added=1}draw()})()}
@@ -2424,6 +2425,26 @@ const NB=(()=>{
  addEventListener('pagehide',()=>{try{bye()}catch(e){}});
  return{html,sig,sync,pick,rescan,close,setAuto,rename,banner}})();
 
+/* ===== Connection check: shows exactly which part of the network is blocked ===== */
+let chk=null;
+async function runCheck(){if(chk&&chk.run)return;chk={run:1,rows:[]};draw();
+ const add=(n,ok,t,k)=>{chk.rows.push({n,ok,t,k});draw()},tm=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]),now=()=>performance.now(),dt=s0=>Math.round(now()-s0)+' ms';
+ let s0=now();
+ try{await tm(fetch('https://api.ipify.org?format=json',{mode:'no-cors',cache:'no-store'}),6000);add('Internet',1,dt(s0),'net')}catch(e){add('Internet',0,'not reachable','net')}
+ s0=now();try{await tm(fetch('https://0.peerjs.com/peerjs/id',{mode:'no-cors',cache:'no-store'}),6000);add('Direct-link service (PeerJS)',1,dt(s0),'sig')}catch(e){add('Direct-link service (PeerJS)',0,'blocked or down','sig')}
+ try{await lib();add('Connection library',1,'loaded','lib')}catch(e){add('Connection library',0,'could not load','lib')}
+ try{const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}]});pc.createDataChannel('x');let sf=0;pc.onicecandidate=e=>{if(e.candidate&&/ typ srflx/.test(e.candidate.candidate))sf++};await pc.setLocalDescription(await pc.createOffer());
+  await new Promise(r=>{const t=setTimeout(r,4500);pc.onicegatheringstatechange=()=>{if(pc.iceGatheringState=='complete'){clearTimeout(t);r()}}});pc.close();add('Direct link (STUN)',sf>0,sf>0?'public address found':'no public address found','stun')}catch(e){add('Direct link (STUN)',0,'WebRTC not available','stun')}
+ const urls=[...new Set(FB.URLS)];
+ await Promise.all(urls.map(u=>new Promise(res=>{const st=now();let done=0,ws,buf=new Uint8Array(0);const fin=(ok,t)=>{if(done)return;done=1;try{ws&&ws.close()}catch(e){}add('Relay '+u.replace(/^wss:\/\//,'').replace(/\/.*$/,''),ok,t,'relay');res()};
+  try{ws=new WebSocket(u,'mqtt')}catch(e){return fin(0,'blocked')}ws.binaryType='arraybuffer';const to=setTimeout(()=>fin(0,'no answer in 6 s'),6000);
+  ws.onopen=()=>{const id=enc('pfchk'+rnd(6)),v=[0,4,0x4d,0x51,0x54,0x54,4,2,0,30,id.length>>8,id.length&255,...id];try{ws.send(new Uint8Array([0x10,v.length,...v]))}catch(e){}};
+  ws.onmessage=e=>{const d=new Uint8Array(e.data),n=new Uint8Array(buf.length+d.length);n.set(buf);n.set(d,buf.length);buf=n;if(buf.length<4)return;clearTimeout(to);const g=buf[0]>>4==2&&buf[3]===0;fin(g,g?dt(st):'refused')};ws.onerror=()=>{clearTimeout(to);fin(0,'blocked')}})));
+ chk.run=0;chk.done=1;draw()}
+const chkHtml=()=>{const rows=chk?chk.rows:[],ok=k=>rows.some(r=>r.k==k&&r.ok),relays=rows.filter(r=>r.k=='relay'&&r.ok).length;let v='';
+ if(chk&&chk.done){const direct=ok('sig')&&ok('lib')&&ok('stun');
+  v=relays?(direct?'Both the direct link and the encrypted relay are reachable from this device. If the connection still fails, run this check on the other device too: the problem is on its side.':'The direct link is blocked here, but the encrypted relay works ('+relays+' server'+(relays>1?'s':'')+'). Connecting should still work through the relay.'):(direct?'The relay servers are blocked here, but the direct link works. Both devices need a direct route: same Wi-Fi with no VPN.':'Both routes are blocked on this device. Turn off any VPN, Private DNS or ad/content blocker, or switch networks (for example a phone hotspot), then check again.')}
+ return`<div class="note" style="margin:0"><button type="button" class="rm-sec" id="px_chk"${chk&&chk.run?' disabled':''}>${chk&&chk.run?'Checking…':'Check my connection'}</button>${rows.length?'<ul style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px;font-size:12.5px">'+rows.map(r=>'<li>'+(r.ok?'✅':'❌')+' <b>'+esc(r.n)+'</b> · '+esc(r.t)+'</li>').join('')+'</ul>':'<div style="margin-top:6px;font-size:12.5px">Tests the internet, the direct-link service and the relay servers. Run it on both devices if they will not connect.</div>'}${v?'<p style="margin:10px 0 0;font-weight:700">'+esc(v)+'</p>':''}</div>`};
 const wake=()=>{if(!want||document.hidden)return;conns.forEach(c=>{if(c.cx)c.cx.last=Date.now()});try{if(peer&&peer.disconnected)peer.reconnect()}catch(e){}
  if(state!='wait'&&!up().length){plog('Back online or visible, reconnecting');connect(want,1)}};
 document.addEventListener('visibilitychange',wake);addEventListener('online',wake);addEventListener('pageshow',wake);
