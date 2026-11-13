@@ -843,7 +843,7 @@ window.TEST_DATA = {
     `
   },
   33: {
-    questext: "कीटों के अध्ययन को क्या कहते हैं?",
+    questext: "What is the study of insects called?",
     options: ["etymology", "ecology", "entomology", "philology"],
     correct: "3",
     exptext: "✅ Entomology is the study of insects. 📌 Entomo = insect. ❌ Etymology is the study of word origins."
@@ -908,7 +908,7 @@ window.TEST_DATA = {
     `
   },
   43: {
-    questext: "कुशल वक्ता को क्या कहते हैं?",
+    questext: "What do you call a skilled speaker?",
     options: ["pedagogue", "demagogue", "archivist", "orator"],
     correct: "4",
     exptext: "✅ Orator is a skilled public speaker. 📌 Oral = spoken. ❌ A demagogue rouses crowds for power, not just speaks well."
