@@ -370,7 +370,7 @@
 
   function accentOf(host) {
     var scope = host.closest("#conceptBox") || document.body, c = "";
-    var pill = scope.querySelector(".cp-vocab span");
+    var pill = scope.querySelector(".cp-vocab .cp-pos") || scope.querySelector(".cp-vocab span");
     if (pill) c = getComputedStyle(pill).backgroundColor;
     if (!c || /rgba\(0, 0, 0, 0\)|transparent/.test(c)) c = "#6366f1";
     return c;

@@ -45,7 +45,7 @@ Object.keys(P).forEach((p) => !used.has(p) && E("IMG_PROMPTS not used: " + p));
 const vocab = keys.some((k) => /cp-vocab/.test(D[k].html || ""));
 if (vocab) {
   if (nq !== nc - 1) E("vocab: need exactly 1 question per word (words=" + (nc - 1) + ", questions=" + nq + ")");
-  keys.forEach((k) => { const e = D[k]; if (k > 1 && /cp-vocab/.test(e.html || "")) { if (!/lang="hi"/.test(e.html)) E(k + ": no Hindi meaning"); if (!(e.html.match(/<img /g) || []).length) E(k + ": no image"); const nx = D[k + 1]; if (!nx || nx.type === "concept") E(k + ": word page must be followed by its question"); } });
+  keys.forEach((k) => { const e = D[k]; if (k > 1 && /cp-vocab/.test(e.html || "")) { if (!/lang="hi"/.test(e.html)) E(k + ": no Hindi meaning"); if (!(e.html.match(/<img /g) || []).length) E(k + ": no image"); if (!/cp-vtop/.test(e.html)) E(k + ": old picture layout: run patch_layout.py on this file"); const nx = D[k + 1]; if (!nx || nx.type === "concept") E(k + ": word page must be followed by its question"); } });
   if (ch.length > nc) E("too many images");
 } else if (ch.length > 4) E("more than 3 chapter images + thumbnail");
 if (errs.length) { console.log("ERRORS (" + errs.length + "):\n" + errs.slice(0, 6).join("\n")); process.exit(1); }

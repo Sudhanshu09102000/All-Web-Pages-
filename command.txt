@@ -10,3 +10,10 @@ git pull origin main
 
 
 
+git add .
+git commit -m "Updated website"
+git push
+
+
+git pull
+
