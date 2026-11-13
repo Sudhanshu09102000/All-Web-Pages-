@@ -5,7 +5,8 @@ const el = () => new Proxy(function () {}, { get: (t, k) => (k === "style" ? { s
 const sb = { console, setTimeout, addEventListener() {}, removeEventListener() {}, getComputedStyle: () => ({ position: "static" }), document: { querySelectorAll: () => [], addEventListener() {}, getElementById: () => null, createElement: el, createTextNode: el, documentElement: {}, head: el(), body: el() }, navigator: {}, MutationObserver: undefined };
 sb.window = sb; vm.createContext(sb);
 try { vm.runInContext(fs.readFileSync(file, "utf8"), sb, { filename: file }); } catch (e) { console.log("LOAD ERROR: " + e.message); process.exit(1); }
-{ const src = fs.readFileSync(file, "utf8"); if (!/SNIPPET 3/.test(src)) E("SNIPPET 3 (speaker button) missing: run patch_snippet3.py on this file"); }
+{ const src = fs.readFileSync(file, "utf8"); if (!/SNIPPET 3/.test(src)) E("SNIPPET 3 (speaker button) missing: run patch_snippet3.py on this file");
+  if (/cp-vocab/.test(src) && !/SNIPPET 4/.test(src)) E("SNIPPET 4 (premium fit-to-screen layout) missing: run patch_vocab_v2.py on this file"); }
 const D = sb.TEST_DATA, P = sb.IMG_PROMPTS || {};
 if (!D) { console.log("window.TEST_DATA missing"); process.exit(1); }
 const keys = Object.keys(D).map(Number);
@@ -45,7 +46,7 @@ Object.keys(P).forEach((p) => !used.has(p) && E("IMG_PROMPTS not used: " + p));
 const vocab = keys.some((k) => /cp-vocab/.test(D[k].html || ""));
 if (vocab) {
   if (nq !== nc - 1) E("vocab: need exactly 1 question per word (words=" + (nc - 1) + ", questions=" + nq + ")");
-  keys.forEach((k) => { const e = D[k]; if (k > 1 && /cp-vocab/.test(e.html || "")) { if (!/lang="hi"/.test(e.html)) E(k + ": no Hindi meaning"); if (!(e.html.match(/<img /g) || []).length) E(k + ": no image"); if (!/cp-vtop/.test(e.html)) E(k + ": old picture layout: run patch_layout.py on this file"); const nx = D[k + 1]; if (!nx || nx.type === "concept") E(k + ": word page must be followed by its question"); } });
+  keys.forEach((k) => { const e = D[k]; if (k > 1 && /cp-vocab/.test(e.html || "")) { if (!/lang="hi"/.test(e.html)) E(k + ": no Hindi meaning"); if (!(e.html.match(/<img /g) || []).length) E(k + ": no image"); if (!/vp-grid/.test(e.html)) E(k + ": old word-page layout: run patch_vocab_v2.py on this file"); if (/vp-(chip|card|box|fig)/.test(e.html)) E(k + ": class name collides with portal styles (vp-chip/card/box/fig)"); const nx = D[k + 1]; if (!nx || nx.type === "concept") E(k + ": word page must be followed by its question"); } });
   if (ch.length > nc) E("too many images");
 } else if (ch.length > 4) E("more than 3 chapter images + thumbnail");
 if (errs.length) { console.log("ERRORS (" + errs.length + "):\n" + errs.slice(0, 6).join("\n")); process.exit(1); }

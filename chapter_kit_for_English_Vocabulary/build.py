@@ -18,8 +18,9 @@ OBJ = lambda d: "{\n" + ",\n".join("      %s: %s" % (k, J(v)) for k, v in d.item
 
 # ---- snippets (verbatim from snippets.txt) ----
 sn = open(os.path.join(HERE, "snippets.txt"), encoding="utf-8").read()
-a, b, s3, c = sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ SNIPPET 3"), sn.index("/* ═══ END SNIPPETS")
-snip = sn[a:b].rstrip() + "\n\n" + sn[b:s3].rstrip() + "\n\n" + sn[s3:c].rstrip() + "\n"
+a, b, s3, s4, c = (sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ SNIPPET 3"),
+                   sn.index("/* ═══ SNIPPET 4"), sn.index("/* ═══ END SNIPPETS"))
+snip = sn[a:b].rstrip() + "\n\n" + sn[b:s3].rstrip() + "\n\n" + sn[s3:s4].rstrip() + "\n\n" + sn[s4:c].rstrip() + "\n"
 
 # ---- shorthand parser ----
 def concept(head, body, n):
@@ -52,6 +53,11 @@ def concept(head, body, n):
 def hue_acc(n):
     r, g, b = colorsys.hls_to_rgb((n * 0.61803398875) % 1.0, (0.46, 0.52, 0.58)[n % 3], 0.68)
     return "#%02x%02x%02x" % (round(r * 255), round(g * 255), round(b * 255))
+def on_color(h):
+    """readable text colour (white or near-black) on an accent background"""
+    h = h.lstrip("#"); r, g, b = [int(h[i:i + 2], 16) for i in (0, 2, 4)]
+    f = lambda c: (c / 255) / 12.92 if c / 255 <= .03928 else (((c / 255) + .055) / 1.055) ** 2.4
+    return "#111" if .2126 * f(r) + .7152 * f(g) + .0722 * f(b) > .32 else "#fff"
 bold = lambda s: re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", esc(s))
 plain = lambda s: re.sub(r"\*\*(.+?)\*\*", r"\1", s).strip()
 def vocab(head, body, n, imgn):
@@ -71,32 +77,31 @@ def vocab(head, body, n, imgn):
     im = re.match(r"([123])\s*\|\s*(.+)$", d["IMG"])
     if not im: raise SystemExit("Word '%s': IMG must be  n | scene  (n = 1, 2 or 3)" % word)
     k, scene = int(im.group(1)), im.group(2).strip()
-    lab = lambda t, c=a: '<div style="font-size:.72em;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:%s;margin-bottom:6px">%s</div>' % (c, t)
-    pills = lambda items, c: "".join('<span style="display:inline-block;padding:4px 12px;margin:3px 6px 3px 0;border-radius:999px;font-size:.92em;font-weight:600;background:%s22;color:%s;border:1px solid %s55">%s</span>' % (c, c, c, esc(x)) for x in items.split(",") if x.strip())
+    # PREMIUM FIT-TO-SCREEN LAYOUT (styled by SNIPPET 4): left column = pos + pronunciation, meaning + Hindi,
+    # synonyms + antonyms, 3 usage sentences; right column = the picture (16:9). All sizes are em-based so the
+    # Control Panel font size controls them. Class names avoid the words chip/card/box/fig on purpose.
+    tags = lambda items, c: "".join('<span class="vp-tag %s">%s</span>' % (c, esc(x)) for x in items.split(",") if x.strip())
     sents = ""
     for i, key in enumerate(("E1", "E2", "E3"), 1):
-        mark = ' <span title="shown in the picture">🖼️</span>' if i == k else ""
-        sents += ('<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;%s">'
-                  '<span style="flex:none;width:24px;height:24px;border-radius:50%%;background:%s;color:#fff;text-align:center;line-height:24px;font-size:.8em;font-weight:700">%d</span>'
-                  '<span>%s%s</span></div>') % ("border-top:1px solid %s33;" % a if i > 1 else "", a, i, bold(d[key]), mark)
+        mark = ' <span class="vp-mark" title="shown in the picture">🖼️</span>' if i == k else ""
+        sents += '<div class="vp-s"><span class="vp-n">%d</span><span class="vp-t">%s%s</span></div>' % (i, bold(d[key]), mark)
     path = "images/%s/%s/%s/%d.png" % (field, subject, chap, imgn)
-    fig = ('<div class="cp-fig" style="flex:0 1 580px;max-width:100%%;margin:0 auto;padding:4px;border-radius:20px;background:linear-gradient(135deg,%s,%s77,#f6dc9577);box-shadow:0 14px 30px -14px %s99,0 2px 6px rgba(0,0,0,.12)">'
-           '<img src="%s" alt="%s" style="display:block;width:100%%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;background:%s14"></div>') % (a, a, a, path, "Picture for the word " + word, a)
-    # TOP ROW: picture sits top-right on wide screens (row-reverse); on phones the row wraps and the picture comes first, full width.
+    ants = tags(d["A"], "ant") if d["A"] != "-" else '<span class="vp-none">—</span>'
     out = [
-        '<div class="cp-vocab">',
-        '<div class="cp-vtop" style="display:flex;flex-direction:row-reverse;flex-wrap:wrap;align-items:flex-start;gap:6px 18px;margin:0">',
-        fig,
-        '<div style="flex:1 1 280px;min-width:0">',
-        '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 10px"><span class="cp-pos" style="padding:4px 14px;border-radius:999px;background:%s;color:#fff;font-size:.8em;font-weight:800;letter-spacing:.08em;text-transform:uppercase">%s</span>%s</div>' % (a, esc(pos), ('<span translate="no" style="opacity:.75;font-style:italic">%s</span>' % esc(pron)) if pron else ""),
-        '<div style="border-left:4px solid %s;background:%s14;border-radius:12px;padding:12px 14px;margin:8px 0">%s<p class="cp-lead" style="margin:0">%s</p></div>' % (a, a, lab("Meaning"), bold(d["D"])),
-        '<div style="border-left:4px solid %s;background:%s14;border-radius:12px;padding:12px 14px;margin:8px 0">%s<p lang="hi" style="margin:0;font-size:1.18em;font-weight:700">%s</p></div>' % (a, a, lab("हिंदी अर्थ"), esc(d["HI"])),
-        '</div></div>',
-        '<div style="display:flex;flex-wrap:wrap;gap:10px;margin:8px 0">'
-        '<div style="flex:1 1 210px;border:1px solid #16a34a55;border-radius:12px;padding:10px 12px">%s%s</div>'
-        '<div style="flex:1 1 210px;border:1px solid #dc262655;border-radius:12px;padding:10px 12px">%s%s</div></div>' % (lab("✅ Synonyms", "#16a34a"), pills(d["S"], "#16a34a"), lab("↔️ Antonyms", "#dc2626"), pills(d["A"], "#dc2626") if d["A"] != "-" else '<span style="opacity:.6">—</span>'),
-        '<div style="margin:8px 0">%s%s</div>' % (lab("✍️ Usage — 3 sentences"), sents),
-        '</div>']
+        '<div class="cp-vocab vp" style="--a:%s;--on:%s">' % (a, on_color(a)),
+        '<div class="vp-grid">',
+        '<div class="vp-left">',
+        '<div class="vp-meta"><span class="cp-pos vp-pos">%s</span>%s</div>' % (esc(pos), ('<span translate="no" class="vp-ipa">%s</span>' % esc(pron)) if pron else ""),
+        '<div class="vp-two">'
+        '<div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">%s</p></div>'
+        '<div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">%s</p></div></div>' % (bold(d["D"]), esc(d["HI"])),
+        '<div class="vp-two">'
+        '<div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags">%s</div></div>'
+        '<div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags">%s</div></div></div>' % (tags(d["S"], "syn"), ants),
+        '<div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div>%s</div>' % sents,
+        '</div>',
+        '<div class="vp-frame"><img src="%s" alt="%s"></div>' % (path, "Picture for the word " + word),
+        '</div></div>']
     html = "\n".join("      " + x for x in out)
     if "`" in html or "${" in html: raise SystemExit("backtick or ${ in word '%s'" % word)
     about = 'Scene from the sentence: "%s" — Show: %s. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image.' % (plain(d["E%d" % k]), scene)

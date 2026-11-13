@@ -459,4 +459,132 @@
   queue();
 })();
 
+/* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── PREMIUM FIT-TO-SCREEN LAYOUT (v2): every vocabulary page is one balanced two-column card that fits a laptop screen
+   without scrolling. Text size FOLLOWS the Control Panel font-size slider (all sizes are em-based and inherit it).
+   Fonts, colours and light/dark themes from the panel are respected. The big title card above is shrunk automatically,
+   and at the default font size the card is auto-fitted to the free height of the screen. ── */
+(function () {
+  var css = [
+    ".cp-vocab.vp{--a:#6366f1;--on:#fff;--k:1;font-size:calc(1em * var(--k));line-height:1.4;margin:0;padding:.15em .1em .3em;display:block;color:inherit}",
+    ".cp-vocab.vp *{box-sizing:border-box}",
+    ".cp-vocab.vp .vp-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:1.5em;align-items:stretch}",
+    ".cp-vocab.vp .vp-left{display:flex;flex-direction:column;gap:.85em;min-width:0}",
+    ".cp-vocab.vp .vp-meta{display:flex;align-items:center;gap:.9em;padding:.05em 0}",
+    ".cp-vocab.vp .vp-pos{display:inline-block;padding:.35em 1.25em;border-radius:999px;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 70%,#000));color:var(--on);font-size:.9em;font-weight:800;letter-spacing:.13em;text-transform:uppercase;box-shadow:0 .5em 1.1em -.5em var(--a),inset 0 1px 0 rgba(255,255,255,.4)}",
+    ".cp-vocab.vp .vp-ipa{font-style:italic;font-size:1.2em;opacity:.85;letter-spacing:.02em}",
+    ".cp-vocab.vp .vp-two{display:grid;grid-template-columns:1fr 1fr;gap:.85em}",
+    ".cp-vocab.vp .vp-def,.cp-vocab.vp .vp-pane,.cp-vocab.vp .vp-use{position:relative;min-width:0;border-radius:1.1em;padding:.95em 1.15em}",
+    ".cp-vocab.vp .vp-def{padding-left:1.5em;background:linear-gradient(135deg,color-mix(in srgb,var(--a) 20%,transparent),color-mix(in srgb,var(--a) 5%,transparent));border:1px solid color-mix(in srgb,var(--a) 45%,transparent);box-shadow:inset .32em 0 0 var(--a),0 .9em 1.8em -1.2em rgba(0,0,0,.55)}",
+    ".cp-vocab.vp .vp-pane{padding:1.15em 1.4em 1.25em;background:rgba(127,127,127,.09);border:1px solid rgba(127,127,127,.42);box-shadow:0 .9em 1.8em -1.3em rgba(0,0,0,.5)}",
+    ".cp-vocab.vp .vp-use{flex:1;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 10%,transparent),color-mix(in srgb,var(--a) 2%,transparent));border:1px solid color-mix(in srgb,var(--a) 45%,transparent);box-shadow:0 .9em 1.8em -1.3em rgba(0,0,0,.5)}",
+    ".cp-vocab.vp .vp-lbl{margin:0 0 .75em;font-size:.72em;font-weight:800;letter-spacing:.17em;text-transform:uppercase;opacity:.8}",
+    ".cp-vocab.vp .vp-lbl.syn{color:#15803d;opacity:1}",
+    ".cp-vocab.vp .vp-lbl.ant{color:#b91c1c;opacity:1}",
+    ".cp-vocab.vp[data-tone=dark] .vp-lbl.syn{color:#86efac}",
+    ".cp-vocab.vp[data-tone=dark] .vp-lbl.ant{color:#fca5a5}",
+    ".cp-vocab.vp .vp-en{margin:0;font-size:1.5em;font-weight:600;line-height:1.25}",
+    ".cp-vocab.vp .vp-hi{margin:0;font-size:1.55em;font-weight:800;line-height:1.25}",
+    ".cp-vocab.vp .vp-tags{display:flex;flex-wrap:wrap;gap:.6em .65em;padding:.15em 0 0;border:0;background:none;box-shadow:none;outline:0}",
+    ".cp-vocab.vp .vp-tag{display:inline-block;padding:.32em 1.05em;border-radius:999px;font-size:1.08em;font-weight:700;border:1px solid}",
+    ".cp-vocab.vp .vp-tag.syn{background:rgba(22,163,74,.15);color:#15803d;border-color:rgba(22,163,74,.55)}",
+    ".cp-vocab.vp .vp-tag.ant{background:rgba(220,38,38,.13);color:#b91c1c;border-color:rgba(220,38,38,.55)}",
+    ".cp-vocab.vp[data-tone=dark] .vp-tag.syn{color:#86efac;background:rgba(74,222,128,.14);border-color:rgba(74,222,128,.5)}",
+    ".cp-vocab.vp[data-tone=dark] .vp-tag.ant{color:#fca5a5;background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.5)}",
+    ".cp-vocab.vp .vp-none{opacity:.5;font-weight:700;font-size:1.2em}",
+    ".cp-vocab.vp .vp-s{display:flex;gap:.8em;align-items:flex-start;padding:.5em 0;border-top:1px solid color-mix(in srgb,var(--a) 30%,transparent);font-size:1.06em;line-height:1.4}",
+    ".cp-vocab.vp .vp-lbl + .vp-s{border-top:0;padding-top:.15em}",
+    ".cp-vocab.vp .vp-n{flex:none;display:grid;place-items:center;width:1.7em;height:1.7em;margin-top:.02em;border-radius:50%;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 70%,#000));color:var(--on);font-size:.82em;font-weight:800;line-height:1;box-shadow:0 .3em .7em -.3em var(--a)}",
+    ".cp-vocab.vp .vp-mark{margin-left:.35em;font-size:.95em}",
+    ".cp-vocab.vp .vp-frame{position:relative;align-self:center;aspect-ratio:16/9;width:100%;min-height:0;border-radius:1.6em;padding:.3em;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 40%,transparent) 55%,rgba(246,220,149,.9));box-shadow:0 1.5em 2.8em -1.5em var(--a),0 .15em .5em rgba(0,0,0,.25)}",
+    ".cp-vocab.vp .vp-frame img{position:absolute;inset:.3em;width:calc(100% - .6em);height:calc(100% - .6em);object-fit:cover;border-radius:1.35em;display:block;background:color-mix(in srgb,var(--a) 10%,transparent)}",
+    ".cp-vocab.vp .vp-frame .cpm{position:absolute!important;top:50%;left:50%;transform:translate(-50%,-50%);margin:0!important;width:min(430px,88%)!important}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-tags,html :is(#conceptBox,body) .cp-vocab.vp .vp-lbl,html :is(#conceptBox,body) .cp-vocab.vp .vp-grid,html :is(#conceptBox,body) .cp-vocab.vp .vp-left,html :is(#conceptBox,body) .cp-vocab.vp .vp-two,html :is(#conceptBox,body) .cp-vocab.vp .vp-meta{border:0!important;box-shadow:none!important;background:none!important;outline:0!important;border-radius:0!important}",
+    ".vp-titlecard{zoom:.7!important}",
+    "@media (max-height:700px){.vp-titlecard{zoom:.55!important}}",
+    /* light mode: keep the portal's crisp black-outline look */
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-def,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-use{border:1.5px solid #000!important;box-shadow:none}",
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-def{box-shadow:inset .34em 0 0 #000!important}",
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-frame{background:#000!important;box-shadow:none!important}",
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pos,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-n{background:var(--a)!important;color:var(--on)!important;-webkit-text-fill-color:var(--on)!important;border:1.5px solid #000;box-shadow:none}",
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-tag.syn{color:#14532d!important;-webkit-text-fill-color:#14532d!important;border-color:#14532d}",
+    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-tag.ant{color:#7f1d1d!important;-webkit-text-fill-color:#7f1d1d!important;border-color:#7f1d1d}",
+    /* narrow screens / phones: stack and allow normal scrolling */
+    "@media (max-width:900px){.cp-vocab.vp .vp-grid{grid-template-columns:1fr}.cp-vocab.vp .vp-frame{order:-1;min-height:0;aspect-ratio:16/9}.cp-vocab.vp .vp-two{grid-template-columns:1fr}.vp-titlecard{zoom:.8!important}}"
+  ].join("\n");
+  var st = document.createElement("style");
+  st.id = "vp-style";
+  st.textContent = css;
+  (document.head || document.documentElement).appendChild(st);
+
+  function px(el) { return parseFloat(getComputedStyle(el).fontSize) || 17; }
+  function lum(c) {
+    var m = String(c).match(/[\d.]+/g);
+    if (!m || m.length < 3) return 0;
+    return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
+  }
+  function scroller(v) {
+    var a = v.parentElement;
+    while (a && a !== document.body && a !== document.documentElement) {
+      var o = getComputedStyle(a).overflowY;
+      if ((o === "auto" || o === "scroll") && a.clientHeight > 0) return a;
+      a = a.parentElement;
+    }
+    return null;
+  }
+
+  /* the portal's big title card: a wide, rounded block just above the word card, 90–300px tall */
+  function markTitle(v) {
+    var cur = document.querySelector(".vp-titlecard");
+    if (cur && cur.isConnected && !cur.contains(v)) return;
+    var vr = v.getBoundingClientRect(), best = [], els = document.querySelectorAll("div,section,header,article"), i, j;
+    for (i = 0; i < els.length; i++) {
+      var e = els[i];
+      if (e.contains(v) || v.contains(e) || e.closest(".cpm,.cp-vocab")) continue;
+      var r = e.getBoundingClientRect();
+      if (r.width < window.innerWidth * 0.45 || r.height < 90 || r.height > 300 || r.bottom > vr.top + 6 || r.bottom < 0) continue;
+      if (parseFloat(getComputedStyle(e).borderTopLeftRadius) < 10) continue;
+      if ((e.textContent || "").trim().length > 90) continue;
+      for (j = best.length - 1; j >= 0; j--) { if (e.contains(best[j])) best.splice(j, 1); }
+      var inside = false;
+      for (j = 0; j < best.length; j++) { if (best[j].contains(e)) { inside = true; break; } }
+      if (!inside) best.push(e);
+    }
+    if (best.length) best[best.length - 1].classList.add("vp-titlecard");
+  }
+
+  var DEFAULT_PX = 17.6;
+  function layout() {
+    if (!document.body) return;
+    var v = document.querySelector(".cp-vocab.vp");
+    if (!v) {
+      Array.prototype.forEach.call(document.querySelectorAll(".vp-titlecard"), function (e) { e.classList.remove("vp-titlecard"); });
+      return;
+    }
+    var base = px(v.parentElement);              /* the Control Panel font size: the card text is exactly proportional to it */
+    v.setAttribute("data-tone", lum(getComputedStyle(v).color) > 0.55 ? "dark" : "light");
+    markTitle(v);
+    var k = Math.max(0.6, Math.min(1.12, Math.min(window.innerHeight / 910, window.innerWidth / 1850)));
+    v.style.setProperty("--k", k.toFixed(3));
+  }
+  var queued = false, lastBase = 0;
+  function queue() {
+    if (queued) return;
+    queued = true;
+    (window.requestAnimationFrame || setTimeout)(function () { queued = false; try { layout(); } catch (e) {} });
+  }
+  try { new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+  window.addEventListener("resize", queue);
+  window.addEventListener("load", queue);
+  document.addEventListener("load", queue, true);   /* images finishing */
+  /* follow the Control Panel font-size slider */
+  if (typeof setInterval === "function") setInterval(function () {
+    var v = document.querySelector(".cp-vocab.vp");
+    if (!v || !v.parentElement) return;
+    var b = px(v.parentElement);
+    if (b !== lastBase) { lastBase = b; queue(); }
+  }, 300);
+  queue();
+})();
+
 /* ═══ END SNIPPETS ═══ */

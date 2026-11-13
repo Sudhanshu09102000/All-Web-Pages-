@@ -196,7 +196,9 @@ const PORTAL_DATA = [
       {
         name: "Vocabulary",
         subtopics: [
-          { name: "Set 1", file: "English_Comprehension/Vocabulary/Set_1" }
+          { name: "Set 1", file: "English_Comprehension/Vocabulary/Set_1" },
+          { name: "Set 2", file: "English_Comprehension/Vocabulary/Set_2" },
+          { name: "Set 3", file: "English_Comprehension/Vocabulary/Set_3" }
         ]
       }
     ]

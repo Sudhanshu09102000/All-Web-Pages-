@@ -8,7 +8,7 @@ INPUTS
 If the word list or set name is missing, ask first. Silently fix obvious spelling mistakes, remove duplicates, keep my order.
 
 WORKFLOW (strict, keep it short)
-0. First run: mkdir -p /home/claude/parts && cp the attached build.py, validate.js, snippets.txt into /home/claude (find them in /mnt/user-data/uploads or the project files).
+0. First run: mkdir -p /home/claude/parts && cp the attached build.py, validate.js, snippets.txt into /home/claude (snippets.txt must contain SNIPPETS 1-4; SNIPPET 4 is the premium layout) (find them in /mnt/user-data/uploads or the project files).
 1. Read the word list ONCE. Never re-read, never print it back.
 2. Write /home/claude/parts/meta.json (entry 1) and parts p1.txt, p2.txt ... (6-8 words each, every word = its @@W page + its @@Q question; save each file at once).
 3. Run:  cd /home/claude && python build.py <Field> <Subject> <Chapter_Name> /home/claude/parts /mnt/user-data/outputs
@@ -31,16 +31,17 @@ IMG: n | scene to draw          (n = 1, 2 or 3: which sentence the picture shows
 ANS: 2
 EXP: ✅ answer + reason. 📌 hook. ❌ why the tempting wrong option fails.
 (Example of everything: example_vocab_meta.json and example_vocab_p1.txt)
+OLD FILES: to give an already-built vocabulary .js the premium layout run  python patch_vocab_v2.py <file.js>  (rewrites the word pages and adds/refreshes SNIPPET 4; safe to run twice). Not needed for new builds.
 
 WORD PAGE RULES (the premium design - badge, meaning card, Hindi card, synonym/antonym pills, numbered usage, picture - is added automatically; write NO html, NO H: lines)
 - Part of speech: noun / verb / adjective / adverb / preposition / idiom etc. If the word has several, use its most common EXAM meaning, and keep D, HI, S, A, E1-E3 all on that same meaning.
-- D: one beginner-friendly sentence, max 18 words, no difficult words inside it.
+- D: one beginner-friendly sentence, max 14 words (it sits in a half-width card), no difficult words inside it.
 - HI: natural Devanagari meaning, 1-3 short words separated by commas (e.g. शांत, निर्मल). No transliteration, no English.
 - S: 3-5 synonyms. A: 2-4 antonyms (write "-" only if no real antonym exists). Same part of speech as the word, single words or very short phrases, exam-relevant, never the word itself.
-- E1-E3: three different natural sentences, 8-18 words each, in three different settings (daily life / news-work-study / formal-literary). Context must hint at the meaning. Use the word exactly as used in the sentence inside **double stars** (inflected forms allowed). Never use ** anywhere else.
+- E1-E3: three different natural sentences, 8-16 words each (one line each on a laptop screen), in three different settings (daily life / news-work-study / formal-literary). Context must hint at the meaning. Use the word exactly as used in the sentence inside **double stars** (inflected forms allowed). Never use ** anywhere else.
 - IMG: pick the MOST visual of the three sentences and describe one concrete scene of it: who, where, action, mood, objects (max 35 words). Abstract words: show the situation or a facial expression. No text/labels/speech bubbles in the scene. Vary n across words. Never draw images yourself.
 - A premium speaker button (click = the word is spoken aloud) is added automatically beside every word by the build (SNIPPET 3). Write nothing for it; just spell the word correctly, because the spelling is what gets spoken.
-- Picture placement is automatic and responsive (build.py): top-right beside the meaning cards on PC/tablet, full width above the meaning on phones. Write nothing for it.
+- Page layout is automatic (build.py + SNIPPET 4 in snippets.txt): a premium two-column card that fits a laptop screen with no scrolling - left: part of speech + pronunciation, Meaning and Hindi cards side by side, Synonyms and Antonyms side by side, the 3 usage sentences; right: the picture at its true 16:9 shape. All text sizes follow the portal Control Panel font-size slider. On phones it stacks into one column. The big title card above shrinks automatically. Write nothing for any of this - and keep the sentences short (see E1-E3 rules) because the page must fit one screen.
 - Every word page automatically gets exactly 1 picture, numbered in order (1.png, 2.png ...). Do not register word images in meta.json; "images" there contains ONLY thumbnail.png.
 
 meta.json (entry 1 - overview; stats are counted automatically):
