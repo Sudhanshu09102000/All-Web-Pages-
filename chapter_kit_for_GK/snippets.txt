@@ -26,7 +26,7 @@
     return "Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle gradient in the accent colour " + a + " and restrained champagne-gold highlights; soft cinematic lighting with a gentle glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette, very subtle fine grain, realistic shallow depth of field. Place only these elegant, realistic, softly blurred objects, mostly on the right and in the back: " + o + ", rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because a banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.";
   };
   var F = function (d) {
-    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide). No people, no logos, no watermarks. If it is geography, draw a schematic, not a realistic map.";
+    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide).";
   };
   function getPrompt(src) {
     var p = (window.IMG_PROMPTS || {})[src];
@@ -68,6 +68,19 @@
     ".cpm:not(.cpm-tight) .cpm-short{display:none}",
     ".cpm-tight .cpm-ico{width:30px;height:30px;border-radius:10px}.cpm-tight .cpm-ico svg{width:16px;height:16px}",
     ".cpm-tight .cpm-btn{min-height:38px;padding:0 20px}",
+    ".cpm-cmd{display:flex;align-items:center;gap:8px;width:100%;max-width:100%;padding:6px 6px 6px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(2,6,23,.88),rgba(10,16,40,.88));border:1px solid rgba(246,220,149,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 18px -10px rgba(2,6,23,.9)}",
+    ".cpm-cmd-p{flex:none;color:#34d399!important;font-weight:800;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;user-select:none;-webkit-user-select:none}",
+    ".cpm-cmd-t{flex:1;min-width:0;text-align:left;color:#e6edf8!important;font-size:10.5px;line-height:1.45;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;background:transparent!important;border:0!important;padding:0!important}",
+    ".cpm-cmd-t b{color:#f6dc95!important;font-weight:700}",
+    ".cpm-cmd-b{flex:none;display:grid!important;place-items:center;width:32px;height:32px;padding:0!important;border-radius:9px;cursor:pointer;color:#f6dc95!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))!important;border:1px solid rgba(246,220,149,.45)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:transform .15s,filter .15s,background .15s}",
+    ".cpm-cmd-b svg{width:16px;height:16px;pointer-events:none}",
+    ".cpm-cmd-b *{pointer-events:none}",
+    ".cpm-cmd-b:hover{transform:translateY(-1px);filter:brightness(1.25)}",
+    ".cpm-cmd-b:active{transform:scale(.92)}",
+    ".cpm-cmd-b:focus-visible{outline:2px solid #f6dc95;outline-offset:2px}",
+    ".cpm-cmd-b.ok{color:#fff!important;background:linear-gradient(135deg,#059669,#34d399)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-cmd-b.err{color:#fff!important;background:linear-gradient(135deg,#d97706,#ef4444)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-tight .cpm-cmd{padding:4px 4px 4px 10px}.cpm-tight .cpm-cmd-b{width:28px;height:28px}",
     "/* ── LIGHT MODE: the portal forces black text inside the studio / concept page, which made the dark card unreadable. In Light Mode the card becomes a plain white card with black text and a black button. ── */",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm{background:#fff!important;background-image:none!important;border:2px solid #000!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:#000!important;-webkit-text-fill-color:#000!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm::before{display:none!important}",
@@ -85,7 +98,13 @@
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn:focus-visible{outline:3px solid #2563eb!important;outline-offset:2px}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-ta{background:#fff!important;background-color:#fff!important;border:1px solid #000!important}",
-    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd{background:#f3f4f6!important;background-color:#f3f4f6!important;border:1px solid #000!important;box-shadow:none!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-p{color:#166534!important;-webkit-text-fill-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b{background:#000!important;background-color:#000!important;border:1px solid #000!important;box-shadow:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b *{color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.ok{background:#166534!important;background-color:#166534!important;border-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
+    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}.cpm-cmd-t{font-size:10px}}",
     "@media (prefers-reduced-motion:reduce){.cpm-btn::after{animation:none}.cpm-btn{transition:none}}"
   ].join("");
   function addCss() {
@@ -116,6 +135,17 @@
     b.innerHTML = s[1] + '<span class="cpm-lbl">' + s[0] + "</span>";
     clearTimeout(b._t);
     if (st !== "idle") b._t = setTimeout(function () { setBtn(b, "idle"); }, st === "ok" ? 1800 : 4500);
+  }
+
+  var CMD_ST = { idle: [ICON_COPY, ""], ok: [ICON_OK, " ok"], err: [ICON_WARN, " err"] };
+  function setCmdBtn(b, st) {
+    var x = CMD_ST[st];
+    b.className = "cpm-cmd-b" + x[1];
+    b.innerHTML = x[0];
+    b.title = st === "ok" ? "Copied!" : "Copy command";
+    b.setAttribute("aria-label", b.title);
+    clearTimeout(b._t);
+    if (st !== "idle") b._t = setTimeout(function () { setCmdBtn(b, "idle"); }, st === "ok" ? 1800 : 3500);
   }
 
   /* Copy strategy (most reliable first):
@@ -223,6 +253,20 @@
     fillPath(box.querySelector(".cpm-full"), src);
     fillPath(box.querySelector(".cpm-short"), short);
     box.querySelector(".cpm-path").title = src;
+    var dir = parts.length > 1 ? parts.slice(0, -1).join("/") : "";
+    if (dir) {
+      var cmd = "mkdir -p " + dir;
+      var cb = document.createElement("div");
+      cb.className = "cpm-cmd";
+      cb.innerHTML = '<span class="cpm-cmd-p">$</span><code class="cpm-cmd-t"></code>';
+      cb.querySelector(".cpm-cmd-t").textContent = cmd;
+      var cbtn = document.createElement("button");
+      cbtn.type = "button";
+      cbtn.setAttribute("data-cmd", cmd);
+      setCmdBtn(cbtn, "idle");
+      cb.appendChild(cbtn);
+      box.appendChild(cb);
+    }
     var btn = document.createElement("button");
     btn.type = "button";
     btn.setAttribute("data-ph-src", src);
@@ -282,16 +326,22 @@
   /* Listens on window (capture) so the page's own handlers can't swallow the click. If a transparent overlay
      of the studio sits on top of the button, the button is still found by the click position. */
   window.addEventListener("click", function (e) {
-    var b = e.target && e.target.closest ? e.target.closest("[data-ph-src]") : null;
+    var SEL = "[data-ph-src],[data-cmd]";
+    var b = e.target && e.target.closest ? e.target.closest(SEL) : null;
     if (!b && e.clientX > 0 && document.elementsFromPoint) {
       var els = document.elementsFromPoint(e.clientX, e.clientY);
       for (var i = 0; i < els.length; i++) {
-        if (els[i].hasAttribute && els[i].hasAttribute("data-ph-src")) { b = els[i]; break; }
+        if (els[i].hasAttribute && (els[i].hasAttribute("data-ph-src") || els[i].hasAttribute("data-cmd"))) { b = els[i]; break; }
       }
     }
     if (!b) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    if (b.hasAttribute("data-cmd")) {
+      var c = b.getAttribute("data-cmd");
+      copy(c, function () { setCmdBtn(b, "ok"); }, function () { setCmdBtn(b, "err"); }, b.parentNode);
+      return;
+    }
     press(b);
   }, true);
   try { new MutationObserver(sweep).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
