@@ -16,18 +16,19 @@ for f in sys.argv[1:]:
             alt = re.search(r'alt="([^"]*)"', L[i + 6]).group(1)
             src = re.search(r'src="([^"]*)"', L[i + 6]).group(1)
             badge = L[i + 1].replace('<span style="padding:4px 14px', '<span class="cp-pos" style="padding:4px 14px', 1)
-            fig = (ind + '<div class="cp-fig" style="flex:0 1 360px;max-width:100%;margin:0 auto;padding:4px;border-radius:20px;'
+            fig = (ind + '<div class="cp-fig" style="flex:0 1 580px;max-width:100%;margin:0 auto;padding:4px;border-radius:20px;'
                    f'background:linear-gradient(135deg,{acc},{acc}77,#f6dc9577);box-shadow:0 14px 30px -14px {acc}99,0 2px 6px rgba(0,0,0,.12)">'
                    f'<img src="{src}" alt="{alt}" style="display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;background:{acc}14"></div>')
             out += [L[i],
                     ind + '<div class="cp-vtop" style="display:flex;flex-direction:row-reverse;flex-wrap:wrap;align-items:flex-start;gap:6px 18px;margin:0">',
                     fig,
-                    ind + '<div style="flex:1 1 300px;min-width:0">',
+                    ind + '<div style="flex:1 1 280px;min-width:0">',
                     badge, L[i + 2], L[i + 3],
                     ind + '</div></div>',
                     L[i + 4], L[i + 5]]
             i += 7; n += 1
         else:
             out.append(L[i]); i += 1
-    open(f, "w", encoding="utf-8", newline="").write(nl.join(out))
+    res = nl.join(out).replace("flex:0 1 360px", "flex:0 1 580px").replace("flex:0 1 460px", "flex:0 1 580px").replace("flex:1 1 300px;min-width:0", "flex:1 1 280px;min-width:0")
+    open(f, "w", encoding="utf-8", newline="").write(res)
     print("patched %d word pages:" % n, f)

@@ -80,14 +80,14 @@ def vocab(head, body, n, imgn):
                   '<span style="flex:none;width:24px;height:24px;border-radius:50%%;background:%s;color:#fff;text-align:center;line-height:24px;font-size:.8em;font-weight:700">%d</span>'
                   '<span>%s%s</span></div>') % ("border-top:1px solid %s33;" % a if i > 1 else "", a, i, bold(d[key]), mark)
     path = "images/%s/%s/%s/%d.png" % (field, subject, chap, imgn)
-    fig = ('<div class="cp-fig" style="flex:0 1 360px;max-width:100%%;margin:0 auto;padding:4px;border-radius:20px;background:linear-gradient(135deg,%s,%s77,#f6dc9577);box-shadow:0 14px 30px -14px %s99,0 2px 6px rgba(0,0,0,.12)">'
+    fig = ('<div class="cp-fig" style="flex:0 1 580px;max-width:100%%;margin:0 auto;padding:4px;border-radius:20px;background:linear-gradient(135deg,%s,%s77,#f6dc9577);box-shadow:0 14px 30px -14px %s99,0 2px 6px rgba(0,0,0,.12)">'
            '<img src="%s" alt="%s" style="display:block;width:100%%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;background:%s14"></div>') % (a, a, a, path, "Picture for the word " + word, a)
     # TOP ROW: picture sits top-right on wide screens (row-reverse); on phones the row wraps and the picture comes first, full width.
     out = [
         '<div class="cp-vocab">',
         '<div class="cp-vtop" style="display:flex;flex-direction:row-reverse;flex-wrap:wrap;align-items:flex-start;gap:6px 18px;margin:0">',
         fig,
-        '<div style="flex:1 1 300px;min-width:0">',
+        '<div style="flex:1 1 280px;min-width:0">',
         '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 10px"><span class="cp-pos" style="padding:4px 14px;border-radius:999px;background:%s;color:#fff;font-size:.8em;font-weight:800;letter-spacing:.08em;text-transform:uppercase">%s</span>%s</div>' % (a, esc(pos), ('<span translate="no" style="opacity:.75;font-style:italic">%s</span>' % esc(pron)) if pron else ""),
         '<div style="border-left:4px solid %s;background:%s14;border-radius:12px;padding:12px 14px;margin:8px 0">%s<p class="cp-lead" style="margin:0">%s</p></div>' % (a, a, lab("Meaning"), bold(d["D"])),
         '<div style="border-left:4px solid %s;background:%s14;border-radius:12px;padding:12px 14px;margin:8px 0">%s<p lang="hi" style="margin:0;font-size:1.18em;font-weight:700">%s</p></div>' % (a, a, lab("हिंदी अर्थ"), esc(d["HI"])),
