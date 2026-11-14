@@ -78,8 +78,8 @@ def vocab(head, body, n, imgn):
     if not im: raise SystemExit("Word '%s': IMG must be  n | scene  (n = 1, 2 or 3)" % word)
     k, scene = int(im.group(1)), im.group(2).strip()
     # PREMIUM FIT-TO-SCREEN LAYOUT (styled by SNIPPET 4): left column = pos + pronunciation, meaning + Hindi,
-    # synonyms + antonyms, 3 usage sentences; right column = the picture (16:9). All sizes are em-based so the
-    # Control Panel font size controls them. Class names avoid the words chip/card/box/fig on purpose.
+    # synonyms + antonyms, 3 usage sentences; right column = the picture (16:9) with a caption box below it. Text size = half of the
+    # heading word size (SNIPPET 4 sets it) and follows the Control Panel font size. Class names avoid the words chip/card/box/fig on purpose.
     tags = lambda items, c: "".join('<span class="vp-tag %s">%s</span>' % (c, esc(x)) for x in items.split(",") if x.strip())
     sents = ""
     for i, key in enumerate(("E1", "E2", "E3"), 1):
@@ -100,7 +100,10 @@ def vocab(head, body, n, imgn):
         '<div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags">%s</div></div></div>' % (tags(d["S"], "syn"), ants),
         '<div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div>%s</div>' % sents,
         '</div>',
-        '<div class="vp-frame"><img src="%s" alt="%s"></div>' % (path, "Picture for the word " + word),
+        # right column: picture pinned to the top + premium caption box repeating the sentence the picture shows
+        '<div class="vp-right"><div class="vp-frame"><img src="%s" alt="%s"></div>' % (path, "Picture for the word " + word),
+        '<div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div>'
+        '<p class="vp-cap-txt">%s</p></div></div>' % bold(d["E%d" % k]),
         '</div></div>']
     html = "      " + "".join(out)   # one line, exactly like the finished layout (no whitespace between the blocks)
     if "`" in html or "${" in html: raise SystemExit("backtick or ${ in word '%s'" % word)

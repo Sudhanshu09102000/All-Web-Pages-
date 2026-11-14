@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """python patch_vocab_v2.py <existing_chapter.js> [more.js ...]
 Upgrades already-built vocabulary files to the PREMIUM FIT-TO-SCREEN word-page layout:
-  1. rewrites every word page (cp-vocab) into the new two-column markup (same words, meanings, pictures, sentences);
+  1. rewrites every word page (cp-vocab) into the new two-column markup (same words, meanings, pictures, sentences),
+     with the picture pinned to the top and a premium caption box below it that repeats the sentence the picture shows
+     (pages already in the two-column layout just get the caption box added);
   2. adds / refreshes SNIPPET 4 (the layout styles + title-card shrinking) from snippets.txt.
 Safe to run twice. Keeps CRLF/LF line endings. New builds (build.py) already produce this layout."""
 import sys, os, re
@@ -13,6 +15,17 @@ def on_color(h):
     h = h.lstrip("#"); r, g, b = [int(h[i:i + 2], 16) for i in (0, 2, 4)]
     f = lambda c: (c / 255) / 12.92 if c / 255 <= .03928 else (((c / 255) + .055) / 1.055) ** 2.4
     return "#111" if .2126 * f(r) + .7152 * f(g) + .0722 * f(b) > .32 else "#fff"
+
+CAP = ('<div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div>'
+       '<p class="vp-cap-txt">%s</p></div>')
+SENT = re.compile(r'<div class="vp-s"><span class="vp-n">\d</span><span class="vp-t">((?:(?!</span></div>).)*?)<span class="vp-mark"[^>]*>🖼️</span></span></div>')
+FRAME = re.compile(r'<div class="vp-frame"><img [^>]*></div>')
+def add_caption(body):
+    """page already in the two-column layout: wrap the picture in .vp-right and add the caption box"""
+    if "vp-cap" in body: return body
+    sm, fm = SENT.search(body), FRAME.search(body)
+    if not (sm and fm): raise ValueError("no marked sentence / picture")
+    return body[:fm.start()] + '<div class="vp-right">' + fm.group(0) + CAP % sm.group(1).strip() + '</div>' + body[fm.end():]
 
 PILL = re.compile(r'<span style="display:inline-block[^>]*>(.*?)</span>', re.S)
 def build(body):
@@ -30,6 +43,8 @@ def build(body):
     tags = lambda L, c: "".join('<span class="vp-tag %s">%s</span>' % (c, x) for x in L)
     rows = "".join('<div class="vp-s"><span class="vp-n">%s</span><span class="vp-t">%s</span></div>' % (
         n, t.replace('<span title="shown in the picture">🖼️</span>', '<span class="vp-mark" title="shown in the picture">🖼️</span>').strip()) for n, t in sents)
+    marked = [t.replace('<span title="shown in the picture">🖼️</span>', "").strip() for n, t in sents if "🖼️" in t]
+    cap = CAP % marked[0] if marked else ""
     return ('\n      <div class="cp-vocab vp" style="--a:%s;--on:%s">'
             '<div class="vp-grid"><div class="vp-left">'
             '<div class="vp-meta"><span class="cp-pos vp-pos">%s</span>%s</div>'
@@ -38,9 +53,9 @@ def build(body):
             '<div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags">%s</div></div>'
             '<div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags">%s</div></div></div>'
             '<div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div>%s</div></div>'
-            '<div class="vp-frame"><img src="%s" alt="%s"></div></div></div>\n    '
+            '<div class="vp-right"><div class="vp-frame"><img src="%s" alt="%s"></div>%s</div></div></div>\n    '
             % (acc, on_color(acc), pos, ('<span translate="no" class="vp-ipa">%s</span>' % ipa.group(1)) if ipa else "", mean, hindi,
-               tags(syns, "syn"), tags(ants, "ant") or '<span class="vp-none">—</span>', rows, img.group(1), img.group(2)))
+               tags(syns, "syn"), tags(ants, "ant") or '<span class="vp-none">—</span>', rows, img.group(1), img.group(2), cap))
 
 PAT = re.compile(r'(\n    html: `)(\s*<div class="cp-vocab">.*?)(`\n  \},)', re.S)
 for f in sys.argv[1:]:
@@ -50,6 +65,14 @@ for f in sys.argv[1:]:
         try: out = m.group(1) + build(m.group(2)) + m.group(3); n[0] += 1; return out
         except Exception as e: n[1] += 1; print("  could not convert one page:", str(e)[:60]); return m.group(0)
     t = PAT.sub(rep, t)
+    PAT2 = re.compile(r'(\n    html: `)(\s*<div class="cp-vocab vp".*?)(`\n  \},)', re.S)
+    def rep2(m):
+        try:
+            out = m.group(1) + add_caption(m.group(2)) + m.group(3)
+            if out != m.group(0): n[0] += 1
+            return out
+        except Exception as e: n[1] += 1; print("  could not add caption to one page:", str(e)[:60]); return m.group(0)
+    t = PAT2.sub(rep2, t)
     # SNIPPET 4: refresh if present, else insert right before the data block
     nxt = lambda after: min([i for i in (t.find("/* Field:", after), t.find("window.TEST_DATA = {", after)) if i >= 0] or [-1])
     a = t.find("/* ═══ SNIPPET 4")

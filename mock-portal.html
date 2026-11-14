@@ -4419,7 +4419,17 @@ html.lite-mode #navToggleIcon span{background:#000!important;box-shadow:none!imp
 #hudDock #timerShowBtn:hover{ background:rgba(59,130,246,.22) !important; }
 /* divider */
 #hudDock .hud-sep{ flex:none; width:1px; height:18px; margin:0 5px; background:linear-gradient(transparent,rgba(59,130,246,.55),transparent); }
-#hudDock:not(:has(#timerPill[style*="flex"])):not(:has(#timerShowBtn[style*="flex"])) .hud-sep{ display:none; }
+#hudDock:not(:has(#timerPill[style*="flex"])):not(:has(#timerShowBtn[style*="flex"])) .hud-sep-timer{ display:none; }
+/* 🌐 Translate inside the dock */
+#hudDock #dualLangBtn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; flex:none;
+  height:24px; min-height:0 !important; margin:0 !important; padding:0 8px !important;
+  font-size:12px !important; font-weight:800 !important; line-height:1; white-space:nowrap;
+  border:0 !important; border-radius:8px !important; box-shadow:none !important; transform:none !important;
+  background:transparent !important; color:#60a5fa !important; cursor:pointer; user-select:none;
+}
+#hudDock #dualLangBtn:hover{ background:rgba(59,130,246,.22) !important; }
+#hudDock #dualLangBtn.dl-active{ background:rgba(59,130,246,.22) !important; color:#93c5fd !important; }
 /* hamburger */
 #hudDock #navToggleIcon.nav-toggle-icon{
   position:static !important; width:26px !important; height:24px !important; min-height:0 !important;
@@ -4431,7 +4441,8 @@ html.lite-mode #navToggleIcon span{background:#000!important;box-shadow:none!imp
 #hudDock #navToggleIcon.nav-toggle-icon:hover{ background:rgba(59,130,246,.22) !important; box-shadow:none !important; transform:none !important; }
 #hudDock #navToggleIcon span{ width:14px !important; height:2px !important; background:#60a5fa !important; box-shadow:0 0 6px rgba(59,130,246,.55); }
 /* keep topbar content clear of the pinned dock */
-#engineView .engine-topbar .container-fluid{ padding-right:150px !important; }
+#engineView .engine-topbar .container-fluid{ padding-right:270px !important; }
+@media (max-width:576px){ #engineView .engine-topbar .container-fluid{ padding-right:10px !important; padding-top:38px !important; } }
 /* ☰ ⇄ ✕ : the menu icon turns into a cross while the navigator is open (the panel's own close button is hidden) */
 #navCloseBtn{ display:none !important; }
 #hudDock #navToggleIcon span{ transition:transform .25s ease, opacity .2s ease, background .2s ease; transform-origin:center; }
@@ -4441,6 +4452,8 @@ html.lite-mode #navToggleIcon span{background:#000!important;box-shadow:none!imp
 #hudDock.nav-open{ z-index:10001 !important; }
 /* lite mode */
 html.lite-mode #engineView > #hudDock.hud-dock{ background:#fff !important; border:1px solid #000 !important; border-right:0 !important; box-shadow:none !important; -webkit-backdrop-filter:none; backdrop-filter:none; }
+html.lite-mode #hudDock #dualLangBtn{ color:#000 !important; -webkit-text-fill-color:#000 !important; background:transparent !important; }
+html.lite-mode #hudDock #dualLangBtn.dl-active{ background:#eee !important; }
 html.lite-mode #hudDock #timerText,html.lite-mode #hudDock #timerHideBtn,html.lite-mode #hudDock #timerShowBtn{ color:#000 !important; -webkit-text-fill-color:#000 !important; text-shadow:none !important; }
 html.lite-mode #hudDock #navToggleIcon span{ background:#000 !important; box-shadow:none !important; }
 html.lite-mode #hudDock .hud-sep{ background:#000; }
@@ -4825,6 +4838,9 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
     <div id="engineView" class="view">
       <!-- ✅ NAV ICON — outside the topbar, small, fixed top-right corner -->
       <div id="hudDock" class="hud-dock">
+        <!-- 🌐 Translate (works on both the concept page and the question page) -->
+        <div id="dualLangBtn" class="btn" role="button" tabindex="0" title="Show translation alongside English">🌐 Translate</div>
+        <span class="hud-sep hud-sep-lang" aria-hidden="true"></span>
         <!-- restore button (shown only after the timer is hidden) -->
         <button id="timerShowBtn" class="btn" title="Show Timer">⏱</button>
         <!-- live timer (shown/hidden by the existing engine code) -->
@@ -4832,7 +4848,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           <span id="timerText">00:00</span>
           <button id="timerHideBtn" title="Hide timer" onclick="(function(){document.getElementById('timerPill').style.display='none';var s=document.getElementById('timerShowBtn');if(s){s.style.display='flex';}})()">✕</button>
         </div>
-        <span class="hud-sep" aria-hidden="true"></span>
+        <span class="hud-sep hud-sep-timer" aria-hidden="true"></span>
         <button id="navToggleIcon" class="nav-toggle-icon" aria-label="Open Navigator">
           <span></span><span></span><span></span>
         </button>
@@ -5015,10 +5031,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
                 <button id="examModeBtn" class="btn btn-glass btn-sm">Exam Mode: On</button>
                 <button id="helpBtn" class="btn btn-glass btn-sm" style="display: none;">Help</button>
 
-                <!-- ✅ Dual-Language Translation Button -->
-                <div id="dualLangBtn" class="btn btn-glass btn-sm" title="Show translation alongside English" style="cursor:pointer;user-select:none;position:relative;">
-                  🌐 Translate
-                </div>
+                <!-- 🌐 Translate button now lives in the top-right HUD dock (#hudDock) -->
 
               </div>
               </div><!-- end #qaOneLine -->
@@ -5030,8 +5043,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             <div class="glass test-resizable-box" id="conceptBox" style="display:none;">
               <div class="cp-top">
                 <span class="cp-tag" id="cpTag">📖 CONCEPT</span>
-                <!-- 🌐 language button (same languages + same translator as the question page) -->
-                <button type="button" id="cpLangBtn" class="btn btn-glass btn-sm cp-lang-btn" title="Show translation under the English text">🌐 Translate</button>
+                <!-- 🌐 Translate lives in the top-right HUD dock (#hudDock), shared with the question page -->
               </div>
               <div class="cp-progress"><i id="cpReadBar"></i></div>
 
@@ -6909,10 +6921,12 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         /* Position dropdown above the button using fixed coords */
         function positionDropdown() {
           const r = btn.getBoundingClientRect();
-          dd.style.bottom = (window.innerHeight - r.top + 6) + 'px';
-          dd.style.right  = (window.innerWidth - r.right) + 'px';
+          const dock = btn.closest('#hudDock');
+          const dr = dock ? dock.getBoundingClientRect() : r;
+          dd.style.top    = (r.bottom + 8) + 'px';      /* below the dock */
+          dd.style.right  = Math.max(8, window.innerWidth - dr.right + 8) + 'px';
           dd.style.left   = 'auto';
-          dd.style.top    = 'auto';
+          dd.style.bottom = 'auto';
         }
 
         btn.addEventListener('click', (e) => {
