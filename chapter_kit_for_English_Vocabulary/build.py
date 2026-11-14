@@ -102,7 +102,7 @@ def vocab(head, body, n, imgn):
         '</div>',
         '<div class="vp-frame"><img src="%s" alt="%s"></div>' % (path, "Picture for the word " + word),
         '</div></div>']
-    html = "\n".join("      " + x for x in out)
+    html = "      " + "".join(out)   # one line, exactly like the finished layout (no whitespace between the blocks)
     if "`" in html or "${" in html: raise SystemExit("backtick or ${ in word '%s'" % word)
     about = 'Scene from the sentence: "%s" — Show: %s. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image.' % (plain(d["E%d" % k]), scene)
     return dict(kind="c", icon=icon, accent=a, title=word[:1].upper() + word[1:], html=html, img=(path, about))

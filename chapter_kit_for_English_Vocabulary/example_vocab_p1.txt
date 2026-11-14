@@ -1,0 +1,89 @@
+@@W ✒️ | Calligrapher | noun | /kəˈlɪɡrəfər/
+D: a person who is skilled in beautiful, artistic handwriting
+HI: सुलेखक, सुंदर लिखने वाला
+S: penman, scribe, letterer, handwriting artist
+A: -
+E1: The **calligrapher** dipped her pen carefully and wrote the invitation in flowing letters.
+E2: The museum hired a **calligrapher** to copy the old poem onto a scroll.
+E3: A gifted **calligrapher**, he turned every word into a small work of art.
+IMG: 1 | a calligrapher dipping a brush pen in ink and writing flowing letters on a wedding invitation, ink bottle and paper on a wooden desk
+
+@@Q A person famous for beautiful handwriting is called a ______.
+1) cartographer  2) calligrapher  3) archivist  4) lexicographer
+ANS: 2
+EXP: ✅ Calligrapher means an artist of beautiful handwriting. 📌 Calli = beauty, graph = write. ❌ A cartographer draws maps.
+
+@@W 📝 | Cacography | noun | /kəˈkɒɡrəfi/
+D: bad handwriting or bad spelling
+HI: बुरी लिखावट, गलत वर्तनी
+S: bad handwriting, scrawl, illegible writing, poor spelling
+A: calligraphy, neat writing
+E1: The doctor's **cacography** made the prescription impossible for the chemist to read.
+E2: Teachers marked down his essay for constant **cacography** and spelling errors.
+E3: Her early letters show a childish **cacography** that later became elegant.
+IMG: 1 | a pharmacist squinting at a doctor's messy scribbled prescription with a confused face, pill bottles and counter in a small shop
+
+@@Q Choose the OPPOSITE of "cacography".
+1) scrawl  2) scribble  3) cartography  4) calligraphy
+ANS: 4
+EXP: ✅ Calligraphy is beautiful writing, the opposite of bad writing. 📌 Caco = bad. ❌ Scrawl is a synonym.
+
+@@W 🗺️ | Cartographer | noun | /kɑːˈtɒɡrəfər/
+D: a person who draws or makes maps
+HI: मानचित्रकार, नक्शा बनाने वाला
+S: mapmaker, chart maker, map designer
+A: -
+E1: The **cartographer** carefully marked every river and mountain on the new district map.
+E2: Satellite images help a modern **cartographer** update city maps within days.
+E3: Old sailors trusted the **cartographer** whose charts had guided many ships across the ocean.
+IMG: 2 | a cartographer at a drafting table with compass and satellite printouts, drawing a city map, focused mood
+
+@@Q The ______ spent months drawing an accurate map of the new coastline.
+1) cartographer  2) philatelist  3) numismatist  4) archivist
+ANS: 1
+EXP: ✅ A cartographer makes maps. 📌 Carto = map. ❌ A philatelist collects stamps, not maps.
+
+@@W 📮 | Philatelist | noun | /fɪˈlætəlɪst/
+D: a person who collects or studies postage stamps
+HI: डाक टिकट संग्राहक
+S: stamp collector, stamp hobbyist, stamp enthusiast
+A: -
+E1: My grandfather, a keen **philatelist**, kept thousands of stamps in neat albums.
+E2: The **philatelist** paid a huge sum for a rare stamp at the auction.
+E3: Every **philatelist** knows that a tiny printing error can make a stamp priceless.
+IMG: 2 | an elderly man with a magnifying glass and tweezers examining a rare stamp at a desk with open stamp albums
+
+@@Q What do you call someone who collects postage stamps?
+1) numismatist  2) archivist  3) philatelist  4) calligrapher
+ANS: 3
+EXP: ✅ Philatelist collects stamps. 📌 Phila-TELL-ist: tell the post. ❌ A numismatist collects coins.
+
+@@W 🗄️ | Archivist | noun | /ˈɑːkɪvɪst/
+D: a person who looks after old records and important documents
+HI: अभिलेखपाल, दस्तावेज़ संरक्षक
+S: record keeper, curator, custodian, registrar
+A: -
+E1: The **archivist** found a letter from 1857 hidden inside an old government file.
+E2: As the city **archivist**, she protects thousands of records from damp and insects.
+E3: No historian can work without the patient help of a good **archivist**.
+IMG: 3 | an archivist in white gloves lifting a fragile old document from a box in a records room with tall shelves
+
+@@Q Which sentence uses "archivist" correctly?
+1) The archivist painted a map of the sea.  2) The archivist drew new stamps for the post office.  3) The archivist wrote wedding cards in fancy letters.  4) The archivist stored old records safely in the library.
+ANS: 4
+EXP: ✅ An archivist keeps old records safe. 📌 Archive = record room. ❌ Writing fancy letters is a calligrapher's work.
+
+@@W 🪙 | Numismatist | noun | /njuːˈmɪzmətɪst/
+D: a person who collects or studies coins and medals
+HI: सिक्का संग्राहक, मुद्राशास्त्री
+S: coin collector, coin expert, coin hobbyist
+A: -
+E1: The **numismatist** examined the ancient silver coin under a bright lamp.
+E2: A museum invited the **numismatist** to date the coins found at the excavation site.
+E3: The young **numismatist** proudly showed his collection of coins from many nations.
+IMG: 1 | a numismatist with a magnifying glass studying an ancient silver coin under a lamp, trays of old coins on velvet
+
+@@Q Which word means a person who collects coins?
+1) philatelist  2) numismatist  3) archivist  4) cartographer
+ANS: 2
+EXP: ✅ Numismatist collects coins. 📌 Numis = coin (like "numismatic"). ❌ Philatelist collects stamps.

@@ -1,0 +1,123 @@
+{
+ "icon": "📚",
+ "accent": "#6366f1",
+ "title": "Vocabulary Set 1 — One Word Substitution, Confusing Words & Word Power",
+ "lead": "A <u>picture-based vocabulary class</u> of 80 exam favourites — each word comes with meaning, Hindi meaning, synonyms, antonyms and 3 sentences.",
+ "roadmap": [
+  [
+   "Words 1–8",
+   "calligrapher, cacography, cartographer, philatelist, archivist, numismatist, mint, nyctophobia"
+  ],
+  [
+   "Words 9–16",
+   "agoraphobia, xenophobia, gynophobia, digamist, claustrophobia, lexicographer, etymology, entomology"
+  ],
+  [
+   "Words 17–24",
+   "philologist, neology, paleographer, coinage, orator, demagogue, pedagogue, synagogue"
+  ],
+  [
+   "Words 25–32",
+   "eloquent, harbinger, herald, emissary, archaism, jargon, argot, neologism"
+  ],
+  [
+   "Words 33–40",
+   "colloquialism, dialect, non sequitur, equivocation, tautology, almanac, chronicle, ledger"
+  ],
+  [
+   "Words 41–48",
+   "epigrapher, epitaph, epitome, epilogue, stoic, sanguine, anchorite, recluse"
+  ],
+  [
+   "Words 49–56",
+   "ascetic, recline, mystic, charlatan, masquerade, omniscient, ubiquitous, immanent"
+  ],
+  [
+   "Words 57–64",
+   "imminent, eminent, impasse, quagmire, pyrrhic, impromptu, extempore, pedant"
+  ],
+  [
+   "Words 65–72",
+   "surrealism, verism, veracity, masochist, sadist, savant, virtuoso, allusion"
+  ],
+  [
+   "Words 73–80",
+   "elusion, illusion, elude, anarchist, realist, jingoistic, reverie, euphoria"
+  ],
+  [
+   "Practice",
+   "1 question after every word."
+  ]
+ ],
+ "exam": "<b>Why it matters:</b> one-word substitution, synonym, antonym and confusing-word questions (imminent/eminent, allusion/illusion) appear in every English paper.",
+ "thumb": {
+  "banner": "COMPETITIVE EXAMS 2026",
+  "line1": "VOCAB",
+  "line2": "SET 1",
+  "line3": "80 WORDS WITH PICTURES",
+  "badge": "FULL CLASS",
+  "ribbon": "MEANING • HINDI • SYNONYMS • ANTONYMS"
+ },
+ "yt": {
+  "title": "Vocabulary Set 1 | 80 Words with Meaning, Hindi, Synonyms, Antonyms | One Word Substitution",
+  "altTitles": [
+   "80 Important English Vocabulary Words With Pictures",
+   "One Word Substitution + Confusing Words for SSC Banking UPSC"
+  ],
+  "description": "Learn exam vocabulary the smart way: 80 words, each with meaning, Hindi meaning, part of speech, synonyms, antonyms, 3 example sentences and a picture to remember it.\n\n📌 IN THIS CLASS\n✅ calligrapher, philatelist, numismatist, phobias, lexicographer, etymology\n✅ orator, demagogue, pedagogue, eloquent, harbinger, herald\n✅ jargon, argot, dialect, tautology, epitaph, epitome\n✅ stoic, sanguine, recluse, ascetic, mystic, charlatan\n✅ imminent, eminent, allusion, illusion, elude, reverie, euphoria\n✅ 1 practice question per word\n\n#Vocabulary #SSCCGL #English",
+  "tags": [
+   "english vocabulary",
+   "vocabulary for all exams",
+   "one word substitution",
+   "synonyms and antonyms",
+   "hindi meaning",
+   "vocab with pictures",
+   "confusing words",
+   "SSC CGL vocabulary",
+   "banking vocabulary",
+   "UPSC vocabulary",
+   "phobias list",
+   "imminent eminent",
+   "allusion illusion",
+   "word meaning in hindi",
+   "daily vocabulary",
+   "vocabulary tricks",
+   "SSC CGL",
+   "UPSC",
+   "Banking",
+   "Railways",
+   "Defence",
+   "competitive exams",
+   "full class",
+   "tricks",
+   "questions",
+   "MCQ",
+   "previous year questions",
+   "vocabulary",
+   "word meaning",
+   "synonyms antonyms",
+   "important questions"
+  ],
+  "hashtags": [
+   "Vocabulary",
+   "SSCCGL",
+   "English"
+  ],
+  "thumbText": "VOCAB SET 1",
+  "pinnedComment": "📌 Which word was new for you? Comment below 👇",
+  "communityPost": "📚 New vocab class is live: 80 words with pictures. Try the questions! 🎯",
+  "chapters": "00:00 Class overview\n00:00 Words 1-16\n00:00 Words 17-32\n00:00 Words 33-48\n00:00 Words 49-64\n00:00 Words 65-80",
+  "playlist": "Daily Vocabulary — Competitive Exams"
+ },
+ "images": {
+  "thumbnail.png": {
+   "t": "thumb",
+   "accent": "#6366f1",
+   "objects": "an open elegant dictionary, a gold fountain pen and a few floating letter tiles"
+  }
+ },
+ "changelog": [
+  "Duplicate words removed: Paleographer, Philologist, Herald, Recluse.",
+  "'Henophobia' was hard to read in the handwriting; treated as Gynophobia (fear of women). Please verify."
+ ]
+}

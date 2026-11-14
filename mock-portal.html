@@ -15541,7 +15541,7 @@ body.qa-only-mode #qaToolbarRow {
     <div class="gcp-appear-label">Font Size</div>
     <div class="gcp-size-row">
       <button class="gcp-size-btn" id="gpSizeMinus">A−</button>
-      <input type="range" id="gpSizeSlider" min="13" max="22" step="1" value="16" />
+      <input type="range" id="gpSizeSlider" min="2" max="40" step="1" value="16" />
       <button class="gcp-size-btn" id="gpSizePlus">A+</button>
       <span id="gpSizeLabel" class="gcp-size-label">16px</span>
     </div>
@@ -16892,8 +16892,8 @@ body.qa-only-mode #qaToolbarRow {
   document.getElementById('gpTextColor').addEventListener('input', function(e){ state.text = e.target.value; applyAll(); persist(); });
 
   document.getElementById('gpSizeSlider').addEventListener('input', function(e){ state.fs = parseInt(e.target.value,10); applyAll(); persist(); });
-  document.getElementById('gpSizeMinus').addEventListener('click', function(){ state.fs = Math.max(13, state.fs-1); applyAll(); persist(); });
-  document.getElementById('gpSizePlus').addEventListener('click', function(){ state.fs = Math.min(22, state.fs+1); applyAll(); persist(); });
+  document.getElementById('gpSizeMinus').addEventListener('click', function(){ state.fs = Math.max(2, state.fs-1); applyAll(); persist(); });
+  document.getElementById('gpSizePlus').addEventListener('click', function(){ state.fs = Math.min(40, state.fs+1); applyAll(); persist(); });
 
   document.getElementById('gpResetBtn').addEventListener('click', function(){
     state = {
