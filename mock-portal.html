@@ -15033,7 +15033,7 @@ setTimeout(addBattleButtons, 1800);
 #gcp-trigger {
   position: fixed;
   left: 0;
-  top: 50%;
+  top: 14%;   /* moved up from 50% so it no longer covers the left-edge resize handle of the question box */
   transform: translateY(-50%);
   z-index: 2147483647;
   width: 12px;
@@ -15064,9 +15064,9 @@ setTimeout(addBattleButtons, 1800);
   content: "";
   position: absolute;
   left: 0;
-  top: -24px;
-  bottom: -24px;
-  width: 40px;
+  top: -16px;
+  bottom: -16px;
+  width: 28px;
 }
 @media (pointer: coarse), (max-width: 768px) {
   #gcp-trigger { width: 20px; height: 84px; gap: 5px; }
