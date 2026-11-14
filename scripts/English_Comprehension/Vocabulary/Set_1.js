@@ -1128,7 +1128,7 @@ window.TEST_DATA = {
     `
   },
   71: {
-    questext: "जो निष्कर्ष पिछली बात से तर्कसंगत रूप से न निकले, उसे क्या कहते हैं?",
+    questext: "What do you call a conclusion that does not follow logically from what preceded it?",
     options: ["tautology", "epitome", "equivocation", "non sequitur"],
     correct: "4",
     exptext: "✅ Non sequitur means \"it does not follow\". 📌 Non = not, sequitur = follows. ❌ Tautology repeats the same idea."
