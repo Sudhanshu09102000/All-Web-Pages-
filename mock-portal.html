@@ -1865,6 +1865,9 @@
       }
     }
 
+    /* Instagram-style push: old card slides out, new card slides in */
+    .nav-ghost { pointer-events: none !important; z-index: 60; margin: 0 !important; transition: none !important; will-change: transform, opacity; }
+    .nav-ghost, .nav-ghost * { animation: none !important; }
     /* ✅ Swipe classic slide transition for Question Box */
     .resizable-question-box {
       position: relative;
@@ -2957,9 +2960,7 @@ body:not(.dark-mode) .sqc-badge-wrong {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.resizable-question-box {
-  animation: questionFadeIn .3s ease;
-}
+.resizable-question-box { animation: none; }
 
 /* ── Search result buttons ── */
 #searchResults .btn-glass {
@@ -4066,7 +4067,6 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
   position: relative;
   display: none;
   flex-direction: column;
-  animation: cpBoxIn .35s ease;
 }
 #conceptBox::before {
   content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; z-index: 2;
@@ -4128,7 +4128,7 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
   font-size: calc(var(--gp-fs, 16px) * .96875);
   line-height: 1.75; color: var(--txt, #f1f5f9);
 }
-.cp-body > * { animation: cpUp .5s ease both; }
+.cp-body > * { animation: none; }
 .cp-body > *:nth-child(1) { animation-delay: .03s; } .cp-body > *:nth-child(2) { animation-delay: .08s; }
 .cp-body > *:nth-child(3) { animation-delay: .13s; } .cp-body > *:nth-child(4) { animation-delay: .18s; }
 .cp-body > *:nth-child(5) { animation-delay: .23s; } .cp-body > *:nth-child(6) { animation-delay: .28s; }
@@ -7312,8 +7312,35 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         if (!it) return;
         if (it.t === 'q') renderQuestion(it.idx); else renderConcept(p);
       }
-      function goNext() { if (canStepNext()) openSeq(curSeqPos() + 1); }
-      function goPrev() { if (canStepPrev()) openSeq(curSeqPos() - 1); }
+      function slideNav(dir, step) {
+        const vis = state.conceptView ? $('conceptBox') : $('questionBox');
+        const r = vis && vis.getBoundingClientRect();
+        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!vis || !vis.animate || reduce || window.__noNavAnim || !r.width || !r.height) { step(); return; }
+        document.querySelectorAll('.nav-ghost').forEach(g => g.remove());
+        const ghost = vis.cloneNode(true);
+        ghost.removeAttribute('id');
+        ghost.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+        ghost.classList.add('nav-ghost');
+        ghost.style.position = 'fixed';
+        ghost.style.left = r.left + 'px'; ghost.style.top = r.top + 'px';
+        ghost.style.width = r.width + 'px'; ghost.style.height = r.height + 'px';
+        document.body.appendChild(ghost);
+        const a = vis.querySelectorAll('*'), b = ghost.querySelectorAll('*');
+        for (let i = 0; i < a.length && i < b.length; i++) if (a[i].scrollTop) b[i].scrollTop = a[i].scrollTop;
+        step();
+        const nb = state.conceptView ? $('conceptBox') : $('questionBox');
+        const d = Math.round(Math.min(72, r.width * 0.12)) * (dir === 'next' ? 1 : -1);
+        const opt = { duration: 300, easing: 'cubic-bezier(.25,.8,.25,1)', fill: 'both' };
+        const root = document.documentElement;
+        root.style.overflowX = 'clip';
+        const done = () => { ghost.remove(); root.style.overflowX = ''; };
+        ghost.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(' + (-d) + 'px)', opacity: 0 }], opt).onfinish = done;
+        nb.animate([{ transform: 'translateX(' + d + 'px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { ...opt, fill: 'none' });
+        setTimeout(done, 450);
+      }
+      function goNext() { if (canStepNext()) slideNav('next', () => openSeq(curSeqPos() + 1)); }
+      function goPrev() { if (canStepPrev()) slideNav('prev', () => openSeq(curSeqPos() - 1)); }
       /* question-only stepping (used by the PPT capture so concept pages are skipped) */
       function goNextQuestion() {
         if (state.conceptView) {
@@ -7728,42 +7755,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       let swipeActive = false;
       let swipeLocked = false;
 
-      function animateQuestionSwipe(direction, goFn) {
-        if (swipeLocked) return;
-        swipeLocked = true;
-
-        let box = state.conceptView ? document.getElementById("conceptBox") : document.getElementById("questionBox");
-        if (!box) { goFn(); swipeLocked = false; return; }
-
-        box.classList.add("q-swipe-anim");
-
-        // OUT animation
-        box.classList.remove("q-out-left", "q-out-right", "q-in-from-left", "q-in-from-right", "q-in");
-        box.classList.add(direction === "next" ? "q-out-left" : "q-out-right");
-
-        setTimeout(() => {
-          // change question
-          box.classList.remove("q-out-left", "q-out-right");
-          goFn();
-          // the visible box may have switched (question <-> concept page)
-          box = state.conceptView ? document.getElementById("conceptBox") : document.getElementById("questionBox");
-          box.classList.add("q-swipe-anim");
-
-          // IN prepare
-          box.classList.remove("q-out-left", "q-out-right");
-          box.classList.add(direction === "next" ? "q-in-from-right" : "q-in-from-left");
-
-          requestAnimationFrame(() => {
-            box.classList.add("q-in");
-            box.classList.remove("q-in-from-right", "q-in-from-left");
-          });
-
-          setTimeout(() => {
-            swipeLocked = false;
-          }, 260);
-
-        }, 170);
-      }
+      function animateQuestionSwipe(direction, goFn) { goFn(); }
 
       function enableSwipeNavigation() {
         const box = document.getElementById("questionBox");
