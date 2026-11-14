@@ -404,21 +404,44 @@
     synth.speak(u);
   }
 
-  /* ── find the big title text on the page and place the button right after it ── */
+  /* ── find the big title of the word page that is ON SCREEN and place the button right after it ──
+     Only the visible vocabulary page counts (never a question's answer options, never a hidden copy of the title). ── */
+  function visible(el) {
+    if (!el || !el.getClientRects || !el.getClientRects().length) return false;
+    var r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  }
+  function activePage() {
+    var all = document.querySelectorAll(".cp-vocab"), i;
+    for (i = 0; i < all.length; i++) if (visible(all[i])) return all[i];
+    return null;
+  }
+  function wordOf(v, map) {
+    var im = v.querySelector("img[alt]"), m = im && /^Picture for the word\s+(.+)$/i.exec(im.getAttribute("alt") || "");
+    if (m) return m[1].trim();
+    var bd = v.querySelector(".vp-t b"), t = bd && (bd.textContent || "").trim().toLowerCase();
+    return t && map[t] ? map[t] : "";
+  }
   var queued = false;
   function sweep() {
-    var map = titles();
     if (!document.body) return;
-    var existing = document.querySelectorAll("[" + MARK + "]");
-    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, host = null, word = "";
-    while ((n = w.nextNode())) {
-      var txt = (n.nodeValue || "").trim().toLowerCase();
-      if (!txt || !map[txt]) continue;
-      var el = n.parentElement;
-      if (!el || el.closest(".cp-vocab,.cpm,[" + MARK + "],button,option,label")) continue;
-      if (parseFloat(getComputedStyle(el).fontSize) < 22) continue;
-      host = el; word = map[txt]; break;
+    var map = titles(), v = activePage(), host = null, word = "";
+    if (v) {
+      word = wordOf(v, map);
+      if (word) {
+        var low = word.toLowerCase(), top = v.getBoundingClientRect().top;
+        var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n;
+        while ((n = w.nextNode())) {
+          if ((n.nodeValue || "").trim().toLowerCase() !== low) continue;
+          var el = n.parentElement;
+          if (!el || el.closest(".cp-vocab,.cpm,[" + MARK + "],button,option,label,.cp-footer")) continue;
+          if (!visible(el) || parseFloat(getComputedStyle(el).fontSize) < 22) continue;
+          if (el.getBoundingClientRect().top > top) continue;          /* the title card sits above the word card */
+          host = el; break;
+        }
+      }
     }
+    var existing = document.querySelectorAll("[" + MARK + "]");
     Array.prototype.forEach.call(existing, function (b) {
       if (!host || b.parentElement !== host || b.getAttribute("data-word") !== word) {
         if (current === b) stop();
@@ -454,7 +477,9 @@
     e.stopImmediatePropagation();
     speak(b);
   }, true);
-  try { new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+  try { new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "hidden"] }); } catch (e) {}
+  window.addEventListener("resize", queue);
+  if (typeof setInterval === "function") setInterval(queue, 700);   /* safety net: re-check where the title is */
   window.addEventListener("beforeunload", stop);
   queue();
 })();
@@ -591,7 +616,7 @@
   window.addEventListener("load", queue);
   document.addEventListener("load", queue, true);   /* images finishing */
   /* follow the Control Panel font-size slider */
-  setInterval(function () {
+  if (typeof setInterval === "function") setInterval(function () {
     var v = document.querySelector(".cp-vocab.vp");
     if (!v || !v.parentElement) return;
     var b = px(v.parentElement);
