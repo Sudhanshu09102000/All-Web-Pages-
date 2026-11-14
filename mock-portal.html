@@ -21954,6 +21954,103 @@ html.lite-mode #mobileHintPanel #mobileHintPanel-close{
 }
 </style>
 
+
+<!-- ════════ Refresh confirmation (premium) ════════ -->
+<style id="reloadGuardCss">
+html, body { overscroll-behavior-y: contain; }
+#reloadGuardOverlay {
+  display: none; position: fixed; inset: 0; z-index: 100050; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(3,6,16,.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+#reloadGuardOverlay.show { display: flex; animation: rgFade .2s ease both; }
+@keyframes rgFade { from { opacity: 0; } to { opacity: 1; } }
+#reloadGuardBox {
+  position: relative; width: 100%; max-width: 390px; padding: 34px 26px 24px; text-align: center; overflow: hidden;
+  border-radius: 26px; color: #f1f5f9;
+  background: linear-gradient(160deg, rgba(20,26,48,.98), rgba(9,12,26,.98));
+  border: 1px solid rgba(212,175,55,.4);
+  box-shadow: 0 36px 90px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 60px rgba(212,175,55,.12);
+  animation: rgPop .28s cubic-bezier(.22,1.2,.36,1) both;
+}
+@keyframes rgPop { from { transform: translateY(14px) scale(.94); opacity: 0; } to { transform: none; opacity: 1; } }
+#reloadGuardBox::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, #d4af37, #f3dc92, #d4af37, transparent);
+}
+#reloadGuardBox::after {
+  content: ""; position: absolute; left: 50%; top: -70px; width: 240px; height: 160px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(212,175,55,.22), transparent); pointer-events: none;
+}
+#reloadGuardBox .rg-icon {
+  position: relative; z-index: 1; width: 68px; height: 68px; margin: 0 auto 16px; display: grid; place-items: center;
+  border-radius: 50%; font-size: 1.9rem;
+  background: radial-gradient(circle at 30% 25%, rgba(243,220,146,.28), rgba(212,175,55,.08));
+  border: 1px solid rgba(212,175,55,.55); box-shadow: 0 0 26px rgba(212,175,55,.3);
+}
+#reloadGuardBox .rg-title {
+  position: relative; z-index: 1; font: 700 1.2rem 'Cinzel', Georgia, serif; letter-spacing: .6px; margin-bottom: 8px;
+  background: linear-gradient(180deg, #fff3c4, #d4af37); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+#reloadGuardBox .rg-sub { position: relative; z-index: 1; font: 500 .88rem/1.6 'Inter', system-ui, sans-serif; color: rgba(241,245,249,.7); margin-bottom: 22px; }
+#reloadGuardBox .rg-btns { position: relative; z-index: 1; display: flex; gap: 10px; }
+#reloadGuardBox button {
+  flex: 1; padding: 13px 10px; border-radius: 14px; font: 800 .9rem 'Inter', system-ui, sans-serif; cursor: pointer;
+  transition: transform .15s ease, filter .15s ease, background .15s ease; -webkit-tap-highlight-color: transparent;
+}
+#reloadGuardBox button:active { transform: scale(.97); }
+#rgStay { border: 0; color: #1b1505; background: linear-gradient(180deg, #f3dc92, #c9a23a); box-shadow: 0 8px 22px rgba(212,175,55,.3); }
+#rgStay:hover { filter: brightness(1.06); }
+#rgGo { border: 1px solid rgba(255,255,255,.18); color: rgba(241,245,249,.8); background: rgba(255,255,255,.06); }
+#rgGo:hover { background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.5); color: #fecaca; }
+#reloadGuardBox .rg-hint { position: relative; z-index: 1; margin-top: 14px; font: 600 .7rem 'Inter', sans-serif; letter-spacing: .4px; color: rgba(241,245,249,.38); }
+</style>
+<div id="reloadGuardOverlay" role="alertdialog" aria-modal="true" aria-labelledby="rgTitle">
+  <div id="reloadGuardBox">
+    <div class="rg-icon">&#8635;</div>
+    <div class="rg-title" id="rgTitle">Refresh this page?</div>
+    <div class="rg-sub">Your running test, answers and timer will be lost if you refresh now.</div>
+    <div class="rg-btns">
+      <button id="rgStay" type="button">Stay here</button>
+      <button id="rgGo" type="button">Refresh anyway</button>
+    </div>
+    <div class="rg-hint">Press Esc to stay</div>
+  </div>
+</div>
+<script>
+(function () {
+  var ov = document.getElementById('reloadGuardOverlay');
+  var stay = document.getElementById('rgStay'), go = document.getElementById('rgGo');
+  var leaving = false;
+  function testOpen() {
+    try {
+      var pv = document.getElementById('portalView');
+      var st = window.state;
+      return !!(st && st.startedAt && pv && !pv.classList.contains('active'));
+    } catch (e) { return false; }
+  }
+  function open() { ov.classList.add('show'); setTimeout(function () { stay.focus(); }, 30); }
+  function close() { ov.classList.remove('show'); }
+  document.addEventListener('keydown', function (e) {
+    if (ov.classList.contains('show')) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'Tab') { e.preventDefault(); (document.activeElement === stay ? go : stay).focus(); }
+      else if ((e.key === 'F5') || ((e.ctrlKey || e.metaKey) && (e.key || '').toLowerCase() === 'r')) { e.preventDefault(); }
+      return;
+    }
+    var k = (e.key || '').toLowerCase();
+    var isReload = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && k === 'r');
+    if (isReload && testOpen()) { e.preventDefault(); e.stopPropagation(); open(); }
+  }, true);
+  ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+  stay.addEventListener('click', close);
+  go.addEventListener('click', function () { leaving = true; location.reload(); });
+  /* browser's own refresh button / pull-to-refresh: browsers only allow their native prompt here */
+  window.addEventListener('beforeunload', function (e) {
+    if (leaving) return;
+    try { if (testOpen() && !window.state.submitted) { e.preventDefault(); e.returnValue = ''; } } catch (_) {}
+  });
+})();
+</script>
 </body>
 
 
