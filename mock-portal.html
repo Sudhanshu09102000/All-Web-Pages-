@@ -1866,6 +1866,7 @@
     }
 
     /* Instagram-style push: old card slides out, new card slides in */
+    #questionBox, #conceptBox, #questionBox *, #conceptBox * { animation: none !important; }
     .nav-ghost { pointer-events: none !important; z-index: 60; margin: 0 !important; transition: none !important; will-change: transform, opacity; }
     .nav-ghost, .nav-ghost * { animation: none !important; }
     /* ✅ Swipe classic slide transition for Question Box */
@@ -1880,10 +1881,7 @@
     }
 
     /* animation states */
-    .q-swipe-anim {
-      transition: transform 0.01s ease, opacity 0.20s ease;
-      will-change: transform, opacity;
-    }
+    .q-swipe-anim { transition: none !important; }
 
     .q-out-left {
       transform: translateX(-28px);
@@ -1950,11 +1948,8 @@
     }
 
     /* ── Swipe live-drag feedback ── */
-    #questionBox {
-      transition: transform 0.08s ease;
-    }
-    #questionBox.swiping-left  { transform: translateX(-8px); }
-    #questionBox.swiping-right { transform: translateX(8px); }
+    #questionBox { transition: none; }
+    #questionBox.swiping-left, #questionBox.swiping-right { transform: none; }
 
     /* ✅ ONLY question+options scroll, buttons always visible */
     .question-scroll-area {
@@ -7312,33 +7307,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         if (!it) return;
         if (it.t === 'q') renderQuestion(it.idx); else renderConcept(p);
       }
-      function slideNav(dir, step) {
-        const vis = state.conceptView ? $('conceptBox') : $('questionBox');
-        const r = vis && vis.getBoundingClientRect();
-        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!vis || !vis.animate || reduce || window.__noNavAnim || !r.width || !r.height) { step(); return; }
-        document.querySelectorAll('.nav-ghost').forEach(g => g.remove());
-        const ghost = vis.cloneNode(true);
-        ghost.removeAttribute('id');
-        ghost.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
-        ghost.classList.add('nav-ghost');
-        ghost.style.position = 'fixed';
-        ghost.style.left = r.left + 'px'; ghost.style.top = r.top + 'px';
-        ghost.style.width = r.width + 'px'; ghost.style.height = r.height + 'px';
-        document.body.appendChild(ghost);
-        const a = vis.querySelectorAll('*'), b = ghost.querySelectorAll('*');
-        for (let i = 0; i < a.length && i < b.length; i++) if (a[i].scrollTop) b[i].scrollTop = a[i].scrollTop;
-        step();
-        const nb = state.conceptView ? $('conceptBox') : $('questionBox');
-        const d = Math.round(Math.min(72, r.width * 0.12)) * (dir === 'next' ? 1 : -1);
-        const opt = { duration: 300, easing: 'cubic-bezier(.25,.8,.25,1)', fill: 'both' };
-        const root = document.documentElement;
-        root.style.overflowX = 'clip';
-        const done = () => { ghost.remove(); root.style.overflowX = ''; };
-        ghost.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(' + (-d) + 'px)', opacity: 0 }], opt).onfinish = done;
-        nb.animate([{ transform: 'translateX(' + d + 'px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { ...opt, fill: 'none' });
-        setTimeout(done, 450);
-      }
+      function slideNav(dir, step) { step(); }   /* no slide animation: switch instantly */
       function goNext() { if (canStepNext()) slideNav('next', () => openSeq(curSeqPos() + 1)); }
       function goPrev() { if (canStepPrev()) slideNav('prev', () => openSeq(curSeqPos() - 1)); }
       /* question-only stepping (used by the PPT capture so concept pages are skipped) */
