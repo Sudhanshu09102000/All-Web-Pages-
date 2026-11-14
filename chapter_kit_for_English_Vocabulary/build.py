@@ -78,7 +78,7 @@ def vocab(head, body, n, imgn):
     if not im: raise SystemExit("Word '%s': IMG must be  n | scene  (n = 1, 2 or 3)" % word)
     k, scene = int(im.group(1)), im.group(2).strip()
     # PREMIUM FIT-TO-SCREEN LAYOUT (styled by SNIPPET 4): left column = pos + pronunciation, meaning + Hindi,
-    # synonyms + antonyms, 3 usage sentences; right column = the picture (16:9) with a caption box below it. Text size = half of the
+    # synonyms + antonyms, 3 usage sentences; right column = the picture (16:9) with a caption box below it; SNIPPET 4 stretches the right column to the left column's height on desktop (no vertical gap). Text size = half of the
     # heading word size (SNIPPET 4 sets it) and follows the Control Panel font size. Class names avoid the words chip/card/box/fig on purpose.
     tags = lambda items, c: "".join('<span class="vp-tag %s">%s</span>' % (c, esc(x)) for x in items.split(",") if x.strip())
     sents = ""

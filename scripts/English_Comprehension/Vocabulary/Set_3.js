@@ -641,6 +641,13 @@
     "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none){display:flex!important;flex-direction:row!important;align-items:center!important;gap:.8em!important;padding:.55em .8em!important}",
     "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-lbl{margin:0!important;white-space:nowrap}",
     "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-tags{margin:0!important;min-height:0!important}",
+    "}",
+    "/* ═ DESKTOP BALANCE FIX v6: the picture column always stretches to the SAME height as the text column, so there is no empty vertical gap on the right under the caption. The picture grows a little (never beyond 4:3), the caption box takes up the rest and keeps its text centred ═ */",
+    "@media (min-width:901px){",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-grid{align-items:stretch!important}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-right{align-self:stretch!important;display:flex!important;flex-direction:column!important;container-type:inline-size}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-frame{align-self:stretch!important;flex:3 1 auto!important;min-height:0!important;max-height:75cqw}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-cap{flex:2 1 auto!important;display:flex!important;flex-direction:column!important;justify-content:center!important}",
     "}"
   ].join("\n");
   var st = document.createElement("style");
