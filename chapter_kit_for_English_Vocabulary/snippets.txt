@@ -635,6 +635,12 @@
     "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.syn){border-top:.24em solid #14532d!important}",
     "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.ant){border-top:.24em solid #7f1d1d!important}",
     "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-s:has(.vp-mark){background:color-mix(in srgb,var(--a) 22%,#fff)!important;box-shadow:inset 0 0 0 1.5px #000!important}",
+    "/* ═ MOBILE FIX v5: no empty white space beside / below synonyms-antonyms ═ */",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two + .vp-two{align-items:start!important}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two + .vp-two:has(.vp-none){grid-template-columns:minmax(0,1fr)!important}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none){display:flex!important;flex-direction:row!important;align-items:center!important;gap:.8em!important;padding:.55em .8em!important}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-lbl{margin:0!important;white-space:nowrap}",
+    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-tags{margin:0!important;min-height:0!important}",
     "}"
   ].join("\n");
   var st = document.createElement("style");
