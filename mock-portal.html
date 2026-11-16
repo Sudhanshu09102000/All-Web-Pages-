@@ -22501,8 +22501,16 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
   }
 
   /* ───── text extraction (one block at a time, skips translations) ───── */
-  var EMO=/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\uFE0F\u200D]/gu;
-  function clean(t){ return t.replace(EMO,' ').replace(/→|⇒|➜/g,' leads to ').replace(/&/g,' and ').replace(/[•▪◆★✔✓]/g,' ').replace(/\s+/g,' ').trim(); }
+  /* everything that is an emoji / icon / pictogram / decorative symbol is removed before speaking */
+  var EMO=/[\p{Extended_Pictographic}\p{Emoji_Presentation}\p{So}\p{Co}\u{1F1E6}-\u{1F1FF}\u{1F3FB}-\u{1F3FF}\uFE0E\uFE0F\u200D\u20E3\u2190-\u21FF\u2300-\u23FF\u25A0-\u25FF\u2B00-\u2BFF\u2022\u00B7\u2023\u25E6]/gu;
+  function clean(t){
+    return t.replace(/°/g,' degrees ')
+            .replace(/[→⇒➜➔⟶↔⇔]/g,', ')          /* arrows become a short pause */
+            .replace(EMO,' ')
+            .replace(/&/g,' and ')
+            .replace(/\s+([,.;:!?])/g,'$1').replace(/^[\s,.;:–—-]+/,'')
+            .replace(/\s+/g,' ').trim();
+  }
   function blockOf(n,root){ var e=n.parentElement; while(e&&e!==root){ var d=getComputedStyle(e).display; if(d!=='inline'&&d!=='contents'&&d.indexOf('inline')!==0) return e; e=e.parentElement; } return root; }
   function collect(){
     var root=$('conceptBox'), out=[], map=new Map();
