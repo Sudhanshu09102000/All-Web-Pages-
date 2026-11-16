@@ -15618,7 +15618,9 @@ body.qa-only-mode #qaToolbarRow {
       <span class="ab-main-tx"><b id="abBtnTitle">Listen to Concepts</b><small id="abSub">Reads every concept page aloud, one by one</small></span>
       <span class="ab-play" id="abBtnIcon">▶</span>
     </button>
-    <div class="ab-row"><label for="abVoice">Voice</label><select id="abVoice"></select></div>
+    <div class="ab-row"><label for="abVoice">Voice</label><select id="abVoice"></select><button type="button" class="ab-test" id="abTest" title="Hear this voice">▶</button></div>
+    <div class="ab-row"><label for="abVoiceTl">Trans.</label><select id="abVoiceTl" disabled><option>Turn on Translate first</option></select><button type="button" class="ab-test" id="abTestTl" title="Hear this voice">▶</button></div>
+    <div class="ab-hint" id="abHint"></div>
     <div class="ab-row"><label for="abRate">Speed</label><input type="range" id="abRate" min="0.6" max="1.8" step="0.05" value="1"><span id="abRateVal">1.0×</span></div>
     <div class="ab-row"><label for="abMode">Read</label><select id="abMode"><option value="both">English + translation</option><option value="tl">Translation only</option><option value="en">English only</option></select></div>
   </div>
@@ -22401,6 +22403,9 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
 .ab-row select option{color:#111}
 .ab-row input[type=range]{flex:1;accent-color:#8b5cf6}
 .ab-row span{width:44px;text-align:right;font-weight:700}
+.ab-test{flex:none;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b5cf6,#ec4899);font-size:.75rem}
+.ab-test:hover{filter:brightness(1.15)}
+.ab-hint{font-size:.72rem;line-height:1.35;opacity:.85;margin:2px 2px 6px;padding:6px 8px;border-radius:8px;background:rgba(139,92,246,.14)}
 
 #abPlayer{position:fixed;right:22px;bottom:92px;z-index:99990;display:none;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 28px));
   padding:10px 14px 14px;border-radius:20px;color:#fff;overflow:hidden;
@@ -22434,18 +22439,53 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
   function setSub(t){ var e=$('abSub'); if(e) e.textContent=t; }
 
   /* ───── voices ───── */
+  function isNat(v){ return /natural|neural|online/i.test(v.name); }
+  function grp(v){ return isNat(v)?0:(/google/i.test(v.name)?1:2); }
+  function enScore(v){ return /en[-_]IN/i.test(v.lang)?3:(/en[-_](GB|US)/i.test(v.lang)?2:(/^en/i.test(v.lang)?1:0)); }
+  function base(l){ return (l||'').toLowerCase().split(/[-_]/)[0]; }
+  function optGroups(sel,list,saved){
+    var names=['⭐ Natural (best, free in Edge)','Google voices','Other voices'];
+    sel.innerHTML='';
+    [0,1,2].forEach(function(g){
+      var items=list.filter(function(v){return grp(v)===g;}); if(!items.length) return;
+      var og=document.createElement('optgroup'); og.label=names[g];
+      items.forEach(function(v){ var o=document.createElement('option'); o.value=v.name; o.textContent=v.name+' ('+v.lang+')'; og.appendChild(o); });
+      sel.appendChild(og);
+    });
+  }
   function loadVoices(){
     var sel=$('abVoice'); if(!sel||!synth) return;
     var vs=synth.getVoices(); if(!vs.length) return;
     var saved=''; try{saved=localStorage.getItem('abVoice')||'';}catch(e){}
-    function score(v){ var n=v.name+' '+v.lang, sc=0;
-      if(/en[-_](IN|GB|US)/i.test(v.lang)) sc+=3; else if(/^en/i.test(v.lang)) sc+=2;
-      if(/natural|neural|online/i.test(n)) sc+=4; if(/google/i.test(n)) sc+=2; return sc; }
-    var sorted=vs.slice().sort(function(a,b){return score(b)-score(a);});
-    sel.innerHTML='';
-    sorted.forEach(function(v){ var o=document.createElement('option'); o.value=v.name; o.textContent=v.name+' ('+v.lang+')'; sel.appendChild(o); });
-    sel.value = sorted.some(function(v){return v.name===saved;}) ? saved : sorted[0].name;
+    var list=vs.slice().sort(function(a,b){ return (grp(a)-grp(b))||(enScore(b)-enScore(a))||a.name.localeCompare(b.name); });
+    optGroups(sel,list);
+    var all=[].slice.call(sel.querySelectorAll('option')).map(function(o){return o.value;});
+    var best=list.filter(function(v){return enScore(v)>0;}).sort(function(a,b){return (grp(a)-grp(b))||(enScore(b)-enScore(a));})[0]||list[0];
+    sel.value = all.indexOf(saved)>-1 ? saved : best.name;
     st.voice = vs.filter(function(v){return v.name===sel.value;})[0]||null;
+    var nat=vs.filter(isNat).length, h=$('abHint');
+    if(h) h.textContent = nat ? '✅ '+nat+' natural (human-like) voices found on this browser.' : '💡 Tip: open this page in Microsoft Edge to get free, human-like Natural voices (Aria, Swara, Tanishaa…).';
+    fillTl(true);
+  }
+  function tlSaved(b){ try{return localStorage.getItem('abVoiceTl_'+b)||'';}catch(e){return '';} }
+  function fillTl(force){
+    var sel=$('abVoiceTl'); if(!sel||!synth) return;
+    var lang=S().dualLang||'', b=base(lang);
+    if(!force&&sel.dataset.base===b) return;
+    sel.dataset.base=b;
+    if(!lang){ sel.innerHTML='<option>Turn on Translate first</option>'; sel.disabled=true; return; }
+    var vs=synth.getVoices().filter(function(v){return base(v.lang)===b;}).sort(function(a,b2){return grp(a)-grp(b2);});
+    if(!vs.length){ sel.innerHTML='<option>No “'+lang+'” voice installed</option>'; sel.disabled=true; return; }
+    sel.disabled=false; sel.innerHTML='<option value="">Auto (best available)</option>';
+    vs.forEach(function(v){ var o=document.createElement('option'); o.value=v.name; o.textContent=(isNat(v)?'⭐ ':'')+v.name+' ('+v.lang+')'; sel.appendChild(o); });
+    sel.value=tlSaved(b);
+    if(sel.value!==tlSaved(b)) sel.value='';
+  }
+  var SAMPLES={en:'Hello! This is how I will read your concepts.',hi:'नमस्ते, मैं आपके कॉन्सेप्ट इस आवाज़ में पढ़ूँगा।',bn:'নমস্কার, আমি আপনার ধারণাগুলো এই কণ্ঠে পড়ব।',ta:'வணக்கம், இந்த குரலில் படிப்பேன்.',te:'నమస్కారం, ఈ స్వరంలో చదువుతాను.',mr:'नमस्कार, मी या आवाजात वाचेन.',gu:'નમસ્તે, હું આ અવાજમાં વાંચીશ.',kn:'ನಮಸ್ಕಾರ, ಈ ಧ್ವನಿಯಲ್ಲಿ ಓದುತ್ತೇನೆ.',ml:'നമസ്കാരം, ഈ ശബ്ദത്തിൽ വായിക്കാം.',ur:'السلام علیکم، میں اس آواز میں پڑھوں گا۔',pa:'ਸਤ ਸ੍ਰੀ ਅਕਾਲ, ਮੈਂ ਇਸ ਆਵਾਜ਼ ਵਿੱਚ ਪੜ੍ਹਾਂਗਾ।',fr:'Bonjour, voici ma voix.',de:'Hallo, so klinge ich.',es:'Hola, así es mi voz.'};
+  function testVoice(v,lang){
+    if(!synth) return; var wasPlaying=st.playing&&!st.paused; if(wasPlaying){ st.paused=true; st.tok++; ui(); }
+    try{synth.cancel();}catch(e){}
+    var u=new SpeechSynthesisUtterance(SAMPLES[base(lang)]||SAMPLES.en); if(v){ u.voice=v; u.lang=v.lang; } else if(lang) u.lang=lang; u.rate=st.rate; synth.speak(u);
   }
   if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
 
@@ -22453,7 +22493,7 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
     if(!lang||!synth) return null;
     var base=lang.toLowerCase().split(/[-_]/)[0], vs=synth.getVoices().filter(function(v){return v.lang.toLowerCase().split(/[-_]/)[0]===base;});
     if(!vs.length) return null;
-    var want=(st.voice&&st.voice.name)||'';
+    var sv=tlSaved(base); if(sv){ var pick=vs.filter(function(v){return v.name===sv;})[0]; if(pick) return pick; }
     vs.sort(function(a,b){ function sc(v){return (/natural|neural|online/i.test(v.name)?4:0)+(/google/i.test(v.name)?2:0);} return sc(b)-sc(a); });
     return vs[0];
   }
@@ -22603,6 +22643,10 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
     var b=$('abBtn'); if(!b) return;
     b.addEventListener('click',toggle);
     var v=$('abVoice'); v.addEventListener('change',function(){ var vs=synth.getVoices().filter(function(x){return x.name===v.value;}); st.voice=vs[0]||null; try{localStorage.setItem('abVoice',v.value);}catch(e){} if(st.playing&&!st.paused) resumeChunk(); });
+    var vt=$('abVoiceTl'); vt.addEventListener('change',function(){ try{localStorage.setItem('abVoiceTl_'+(vt.dataset.base||''),vt.value);}catch(e){} if(st.playing&&!st.paused) resumeChunk(); });
+    $('abTest').addEventListener('click',function(){ testVoice(st.voice,st.voice&&st.voice.lang); });
+    $('abTestTl').addEventListener('click',function(){ var l=S().dualLang||''; if(!l) return; testVoice(voiceFor(l),l); });
+    setInterval(function(){ fillTl(false); },1000);
     var r=$('abRate'); r.addEventListener('input',function(){ setRate(parseFloat(r.value)); });
     r.addEventListener('change',function(){ if(st.playing&&!st.paused) resumeChunk(); });
     var m=$('abMode'); m.value=st.mode; m.addEventListener('change',function(){ st.mode=m.value; try{localStorage.setItem('abMode',st.mode);}catch(e){} if(st.playing&&!st.paused) loadCurrent(); });
