@@ -5,6 +5,7 @@ Upgrades already-built vocabulary files to the PREMIUM FIT-TO-SCREEN word-page l
      with the picture pinned to the top and a premium caption box below it that repeats the sentence the picture shows
      (pages already in the two-column layout just get the caption box added);
   2. adds / refreshes SNIPPET 4 (the layout styles + title-card shrinking) from snippets.txt.
+IPA (pronunciation like /ɔːrθədɒks/) is NOT shown beside the part-of-speech pill any more.
 Safe to run twice. Keeps CRLF/LF line endings. New builds (build.py) already produce this layout."""
 import sys, os, re
 H = os.path.dirname(os.path.abspath(__file__))
@@ -54,7 +55,7 @@ def build(body):
             '<div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags">%s</div></div></div>'
             '<div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div>%s</div></div>'
             '<div class="vp-right"><div class="vp-frame"><img src="%s" alt="%s"></div>%s</div></div></div>\n    '
-            % (acc, on_color(acc), pos, ('<span translate="no" class="vp-ipa">%s</span>' % ipa.group(1)) if ipa else "", mean, hindi,
+            % (acc, on_color(acc), pos, "",  mean, hindi,
                tags(syns, "syn"), tags(ants, "ant") or '<span class="vp-none">—</span>', rows, img.group(1), img.group(2), cap))
 
 PAT = re.compile(r'(\n    html: `)(\s*<div class="cp-vocab">.*?)(`\n  \},)', re.S)
