@@ -7670,7 +7670,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         pb.disabled = !prv;
         pb.textContent = !prv ? '◀ Previous'
-          : prv.t === 'q' ? '◀ Back to Q' + (prv.idx + 1) : '◀ Previous concept';
+          : prv.t === 'q' ? '◀ Back to Q' + (prv.idx + 1) : '◀ Concept';
 
         nb.disabled = false;
         if (!nxt) {
@@ -7687,7 +7687,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           nb.textContent = (state.submitted ? 'Q' : 'Start Q') + (nxt.idx + 1) + ' ▶';
         } else {
           nb.dataset.act = 'next';
-          nb.textContent = 'Next concept ▶';
+          nb.textContent = 'Concept ▶';
         }
       }
 
@@ -20717,6 +20717,11 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
 })();
 </script>
 
+<style id="hudDockCollapse">
+/* ☰ controls BOTH boxes: closed = only the ☰ button shows; open = full top pill + navigator panel */
+#engineView > #hudDock.hud-dock:not(.nav-open){ padding:0 4px 0 6px !important; }
+#hudDock:not(.nav-open) > :not(#navToggleIcon){ display:none !important; }
+</style>
 <script id="hudDockNavSync">
 /* Mirrors the navigator panel's open/closed state onto the menu icon (☰ ⇄ ✕). Works for every way the panel opens or closes. */
 (function () {
