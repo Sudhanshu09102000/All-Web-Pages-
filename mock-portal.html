@@ -4436,7 +4436,7 @@ html.lite-mode #navToggleIcon span{background:#000!important;box-shadow:none!imp
 #hudDock #navToggleIcon.nav-toggle-icon:hover{ background:rgba(59,130,246,.22) !important; box-shadow:none !important; transform:none !important; }
 #hudDock #navToggleIcon span{ width:14px !important; height:2px !important; background:#60a5fa !important; box-shadow:0 0 6px rgba(59,130,246,.55); }
 /* keep topbar content clear of the pinned dock */
-#engineView .engine-topbar .container-fluid{ padding-right:270px !important; }
+#engineView .engine-topbar .container-fluid{ padding-right:410px !important; }
 @media (max-width:576px){ #engineView .engine-topbar .container-fluid{ padding-right:10px !important; padding-top:38px !important; } }
 /* ☰ ⇄ ✕ : the menu icon turns into a cross while the navigator is open (the panel's own close button is hidden) */
 #navCloseBtn{ display:none !important; }
@@ -4833,6 +4833,13 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
     <div id="engineView" class="view">
       <!-- ✅ NAV ICON — outside the topbar, small, fixed top-right corner -->
       <div id="hudDock" class="hud-dock">
+        <!-- 🎚 Mode switch (Exam / Practice / Concept) — lives in the dock so it is visible on question pages AND concept pages -->
+        <div id="modeSwitch" class="mode-switch" role="radiogroup" aria-label="Test mode" data-mode="practice">
+          <button type="button" data-mode="exam" role="radio" aria-checked="false" title="Exam mode — no hints, explanations or concept pages"><span class="ms-ic">🔒</span><span class="ms-tx">Exam</span></button>
+          <button type="button" data-mode="practice" role="radio" aria-checked="true" class="on" title="Practice mode — hints, explanations and concept pages"><span class="ms-ic">💡</span><span class="ms-tx">Practice</span></button>
+          <button type="button" data-mode="concept" role="radio" aria-checked="false" title="Concept mode — study only the concept pages"><span class="ms-ic">📖</span><span class="ms-tx">Concept</span></button>
+        </div>
+        <span class="hud-sep" aria-hidden="true"></span>
         <!-- 🌐 Translate (works on both the concept page and the question page) -->
         <div id="dualLangBtn" class="btn" role="button" tabindex="0" title="Show translation alongside English">🌐 Translate</div>
         <span class="hud-sep hud-sep-lang" aria-hidden="true"></span>
@@ -5023,7 +5030,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
                 </button>
 
                 <button id="soundBtn" class="btn btn-glass btn-sm">Sound: On</button>
-                <button id="examModeBtn" class="btn btn-glass btn-sm">Exam Mode: On</button>
+                <button id="examModeBtn" class="btn btn-glass btn-sm" style="display:none;">Mode: Practice</button>
                 <button id="helpBtn" class="btn btn-glass btn-sm" style="display: none;">Help</button>
 
                 <!-- 🌐 Translate button now lives in the top-right HUD dock (#hudDock) -->
@@ -5363,10 +5370,11 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             <label class="form-label subtle">Test mode</label>
             <div id="candModeToggle" class="mode-seg" role="radiogroup" aria-label="Test mode" data-mode="practice">
               <span class="mode-seg-thumb" aria-hidden="true"></span>
-              <button type="button" class="mode-seg-opt on" data-mode="practice" role="radio" aria-checked="true"><span class="mi">&#128161;</span><span>Practice</span></button>
               <button type="button" class="mode-seg-opt" data-mode="exam" role="radio" aria-checked="false"><span class="mi">&#128274;</span><span>Exam</span></button>
+              <button type="button" class="mode-seg-opt on" data-mode="practice" role="radio" aria-checked="true"><span class="mi">&#128161;</span><span>Practice</span></button>
+              <button type="button" class="mode-seg-opt" data-mode="concept" role="radio" aria-checked="false"><span class="mi">&#128214;</span><span>Concept</span></button>
             </div>
-            <div id="candModeHint" class="small subtle mt-2">Explanations, hints and concept pages stay available.</div>
+            <div id="candModeHint" class="small subtle mt-2">Instant feedback, hints and explanations, with concept pages between questions.</div>
           </div>
         </div>
         <div class="modal-footer border-0">
@@ -6161,8 +6169,9 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
             cleanup();
             bsModal.hide();
-            const examMode = !!(window.candGetMode && window.candGetMode() === "exam");
-            resolve({ name, timeMin: mins, examMode });
+            const mode = (window.candGetMode && window.candGetMode()) || "practice";
+            const examMode = (mode === "exam");
+            resolve({ name, timeMin: mins, examMode, mode });
           };
 
           bsModal.show();
@@ -6195,6 +6204,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         state.candidateName = details.name;
         state.desiredTimeMin = details.timeMin; // store time for engine
         state.startExamMode = !!details.examMode; // mode picked in the Start Test popup
+        state.startMode = details.mode || (details.examMode ? "exam" : "practice");   // exam | practice | concept
 
 
         $('testInfoTop').textContent = `${sel.topicName} • ${sel.subtopicName}`;
@@ -6288,8 +6298,10 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         state.currentIndex = 0;
 
         // practice mode starts ON by default (turn Exam Mode on to hide concept pages / explanations)
-        state.examMode = !!state.startExamMode;
+        state.mode = normMode(state.startMode || (state.startExamMode ? 'exam' : 'practice'));
+        state.examMode = (state.mode === 'exam');
         state.cluelessMode = state.examMode;
+        state.conceptOnly = (state.mode === 'concept');
 
         // ── Concept pages: unified sequence of questions + concept pages ──
         buildConceptSequence(conceptsList, seqRaw);
@@ -6322,9 +6334,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         buildNavigator();
         attachEngineHandlers();
-        state.examMode = !!state.startExamMode;      // practice mode by default
-        state.cluelessMode = state.examMode;
-        updateExamModeUI();
+        setTestMode(state.mode, { init: true });   // exam | practice | concept (falls back to practice if the test has no concept pages)
         initDualLangUI(); // ✅ Dual-language translation button
 
 
@@ -6383,7 +6393,9 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           wrap.appendChild(b);
         });
         const _showC = state.hasConcepts && !state.examMode;   // exam mode ON -> no concept pages anywhere
-        $('navLegend').textContent = `${state.qCount} Qs` + (_showC ? ` · ${state.concepts.length} 📖` : '');
+        $('navLegend').textContent = state.conceptOnly
+          ? `${state.concepts.length} 📖 concept pages`
+          : `${state.qCount} Qs` + (_showC ? ` · ${state.concepts.length} 📖` : '');
         const _cl = $('navConceptLegend');
         if (_cl) _cl.style.display = _showC ? '' : 'none';
       }
@@ -7320,6 +7332,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         goToIndex(state.currentIndex + 1);
       }
       function goToIndex(i) {
+        if (state.conceptOnly) return;          // concept-only mode: questions are not reachable
         if (i < 0 || i >= state.qCount) return;
         renderQuestion(i);
       }
@@ -7365,12 +7378,21 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         applyConceptVisibility();
       }
 
-      /* 🔒 Exam mode ON  -> overview + every concept page disappear (navigator, Next/Previous, swipe, keys)
-         💡 Exam mode OFF -> they come back exactly where they were */
+      /* THREE MODES
+         🔒 exam     -> questions only: no hints, no explanations, no concept pages
+         💡 practice -> questions + instant feedback / hints + concept pages in between
+         📖 concept  -> concept pages ONLY (no questions, timer paused)
+         state.examMode / state.conceptOnly are derived from state.mode so all older code keeps working. */
+      function normMode(m) { return (m === 'exam' || m === 'concept') ? m : 'practice'; }
+
       function applyConceptVisibility() {
         if (!state.seqAll) return;
         if (!state.hasConcepts) { state.seq = state.seqAll.slice(); return; }
         const hide = !!state.examMode;
+        const only = !!state.conceptOnly;
+        // remember which concept page we are on (positions change when the sequence changes)
+        let curCi = null;
+        if (state.conceptView) { const cur = state.seq[state.seqPos]; if (cur && cur.t === 'c') curCi = cur.ci; }
         // standing on a concept page while exam mode turns ON -> move to the question it leads into
         if (hide && state.conceptView) {
           const it = state.seq[state.seqPos];
@@ -7380,11 +7402,72 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           state.timerPaused = false;
           try { syncMainBoxes(); } catch (_) { }
         }
-        state.seq = hide ? state.seqAll.filter(s => s.t === 'q') : state.seqAll.slice();
-        if (state.qState) {            // navigator exists already -> rebuild it for the new sequence
+        state.seq = hide ? state.seqAll.filter(s => s.t === 'q')
+                  : only ? state.seqAll.filter(s => s.t === 'c')
+                  : state.seqAll.slice();
+        if (curCi !== null && !hide) {
+          const p = state.seq.findIndex(s => s.t === 'c' && s.ci === curCi);
+          if (p >= 0) state.seqPos = p;
+        }
+        if (state.qCount && state.qState) {   // navigator exists already -> rebuild it for the new sequence
           try { buildNavigator(); updateNavigator(); } catch (_) { }
         }
       }
+
+      /* which concept page to open when entering concept-only mode from a question */
+      function conceptPosFor(qIdx) {
+        const all = state.seqAll;
+        const qp = all.findIndex(s => s.t === 'q' && s.idx === qIdx);
+        let ci = -1;
+        for (let i = (qp < 0 ? all.length - 1 : qp); i >= 0; i--) { if (all[i].t === 'c') { ci = all[i].ci; break; } }
+        if (ci < 0) { const f = all.find(s => s.t === 'c'); ci = f ? f.ci : 0; }
+        const p = state.seq.findIndex(s => s.t === 'c' && s.ci === ci);
+        return p < 0 ? 0 : p;
+      }
+
+      function showModeToast(msg) {
+        try {
+          let t = document.getElementById('modeToast');
+          if (!t) {
+            t = document.createElement('div'); t.id = 'modeToast';
+            t.style.cssText = 'position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100000;max-width:90vw;padding:10px 16px;border-radius:12px;background:rgba(15,23,42,.96);color:#fff;font:600 13px system-ui,sans-serif;border:1px solid rgba(96,165,250,.5);box-shadow:0 8px 24px rgba(0,0,0,.4);text-align:center;';
+            document.body.appendChild(t);
+          }
+          t.textContent = msg; t.style.display = 'block';
+          clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, 3500);
+        } catch (_) { }
+      }
+
+      function setTestMode(mode, opts) {
+        opts = opts || {};
+        mode = normMode(mode);
+        if (mode === 'concept' && !state.hasConcepts) {
+          mode = 'practice';
+          showModeToast('This test has no concept pages — switched to Practice mode.');
+        }
+        if (!opts.init && mode === state.mode) return;
+        state.mode = mode;
+        state.examMode = (mode === 'exam');
+        state.cluelessMode = state.examMode;       // exam mode = no feedback colours / sounds
+        state.conceptOnly = (mode === 'concept');
+        updateExamModeUI();
+        applyConceptVisibility();
+        if (opts.init) return;                      // initEngine renders the first page itself
+
+        if (state.examMode) {                       // hide any open hint panel
+          const sp = document.getElementById('stickyExpPanel');
+          if (sp) sp.classList.remove('visible');
+        }
+        if (state.conceptOnly) {
+          if (state.conceptView) renderConcept(state.seqPos);        // refresh footer + timer pause
+          else renderConcept(conceptPosFor(state.currentIndex));
+        } else if (state.conceptView) {
+          renderConcept(state.seqPos);                               // still on the concept page, footer/timer refreshed
+        } else {
+          renderQuestion(state.currentIndex);                        // re-render to reset colours
+        }
+      }
+      window.setTestMode = setTestMode;
 
       let activeTestBoxResize = null;
       let testBoxResizeEventsBound = false;
@@ -7539,7 +7622,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         state.seqPos = pos;
         // keep a valid question index for legacy code: the question that follows
         state.currentIndex = c.nextQ >= 0 ? c.nextQ : Math.max(0, state.qCount - 1);
-        state.timerPaused = !!c.pauseTimer && !state.submitted;
+        state.timerPaused = (!!c.pauseTimer || !!state.conceptOnly) && !state.submitted;   // concept-only mode: timer is paused
         c.seen = true;
 
         try { hideQmarkPopover(); hideInlineHintPanel(); } catch (_) { }
@@ -7590,9 +7673,14 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
         nb.disabled = false;
         if (!nxt) {
-          nb.dataset.act = 'submit';
-          nb.textContent = state.submitted ? 'End of test' : 'Submit test ✔';
-          nb.disabled = !!state.submitted;
+          if (state.conceptOnly && !state.submitted && state.qCount > 0) {
+            nb.dataset.act = 'practice';
+            nb.textContent = '✏️ Start practice ▶';
+          } else {
+            nb.dataset.act = 'submit';
+            nb.textContent = state.submitted ? 'End of test' : 'Submit test ✔';
+            nb.disabled = !!state.submitted;
+          }
         } else if (nxt.t === 'q') {
           nb.dataset.act = 'next';
           nb.textContent = (state.submitted ? 'Q' : 'Start Q') + (nxt.idx + 1) + ' ▶';
@@ -7605,6 +7693,13 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       function cpPrimary() {
         const nb = $('cpNextBtn');
         if (nb && nb.dataset.act === 'submit') { $('submitBtn').click(); return; }
+        if (nb && nb.dataset.act === 'practice') {      // end of concept-only mode -> jump into the questions
+          const it = state.seq[state.seqPos];
+          const c = it && state.concepts[it.ci];
+          setTestMode('practice');
+          goToIndex(c && c.nextQ >= 0 ? c.nextQ : 0);
+          return;
+        }
         goNext();
       }
 
@@ -7888,21 +7983,11 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
 
 
-        $('examModeBtn').onclick = () => {
-          state.examMode = !state.examMode;
-          state.cluelessMode = state.examMode;  // Sync clueless with exam mode
-          updateExamModeUI();
-          applyConceptVisibility();   // exam ON: hide overview + all concept pages; OFF: show them again
-          const qid = state.qIds[state.currentIndex];
-
-          // Hide sticky panel if switching to exam mode
-          if (state.examMode) {
-            const sp = document.getElementById('stickyExpPanel');
-            if (sp) sp.classList.remove('visible');
-          }
-
-          // Re-render current question to reset colors
-          if (!state.conceptView) renderQuestion(state.currentIndex);
+        $('examModeBtn').onclick = () => {      // cycles Exam -> Practice -> Concept (the dock switcher picks directly)
+          const order = ['exam', 'practice', 'concept'];
+          let next = order[(order.indexOf(state.mode || 'practice') + 1) % order.length];
+          if (next === 'concept' && !state.hasConcepts) next = 'exam';
+          setTestMode(next);
         };
 
 
@@ -8019,15 +8104,31 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       }
 
       function updateExamModeUI() {
-        $('examModeBtn').textContent = `Exam mode: ${state.examMode ? 'On' : 'Off'}`;
+        const _m = state.mode || (state.examMode ? 'exam' : 'practice');
+        const _LBL = { exam: 'Exam', practice: 'Practice', concept: 'Concept' };
+        const _BADGE = { exam: '🔒 EXAM', practice: '💡 PRACTICE', concept: '📖 CONCEPT' };
+        $('examModeBtn').textContent = `Mode: ${_LBL[_m]}`;
 
         // Update mode badge
         const badge = $('modeBadge');
         if (badge) {
-          badge.className = state.examMode
-            ? 'hud-mode-badge hud-mode-exam'
-            : 'hud-mode-badge hud-mode-practice';
-          badge.textContent = state.examMode ? '🔒 EXAM' : '💡 PRACTICE';
+          badge.className = 'hud-mode-badge hud-mode-' + _m;
+          badge.textContent = _BADGE[_m];
+        }
+
+        // Always-visible 3-way switch in the top-right dock
+        const sw = document.getElementById('modeSwitch');
+        if (sw) {
+          sw.setAttribute('data-mode', _m);
+          sw.querySelectorAll('button[data-mode]').forEach(b => {
+            const on = b.getAttribute('data-mode') === _m;
+            b.classList.toggle('on', on);
+            b.setAttribute('aria-checked', on ? 'true' : 'false');
+            if (b.getAttribute('data-mode') === 'concept') {
+              b.disabled = !state.hasConcepts;
+              b.title = state.hasConcepts ? 'Concept mode — study only the concept pages' : 'This test has no concept pages';
+            }
+          });
         }
 
         // Show ? button ONLY in practice mode
@@ -8528,7 +8629,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8.5);
         doc.text(
-          `Date: ${dateStr}  |  Time: ${timeStr}  |  Mode: ${state.examMode ? 'Exam' : 'Practice'}  |  Auto-submit: ${state.autoSubmittedFinal ? 'Yes' : 'No'}`,
+          `Date: ${dateStr}  |  Time: ${timeStr}  |  Mode: ${state.mode === 'concept' ? 'Concept' : (state.examMode ? 'Exam' : 'Practice')}  |  Auto-submit: ${state.autoSubmittedFinal ? 'Yes' : 'No'}`,
           pageW / 2, ciY + 38, { align: 'center' }
         );
 
@@ -15073,6 +15174,9 @@ body.hide-top-bar #pdfTutorPanel { height: calc(100dvh - 16px); }
 #gcp-deck[data-mode="practice"] .gd-mode {
   color: #bbf7d0; background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.45);
 }
+#gcp-deck[data-mode="concept"] .gd-mode {
+  color: #c7d2fe; background: rgba(99,102,241,.2); border-color: rgba(99,102,241,.5);
+}
 #gcp-deck .gd-q {
   font-size: 12px; font-weight: 700; color: #93c5fd; padding: 4px 10px; border-radius: 999px;
   background: rgba(59,130,246,.14); border: 1px solid rgba(59,130,246,.3);
@@ -15662,9 +15766,9 @@ body.qa-only-mode #qaToolbarRow {
     if (!on) return;
 
     const mb = $d('modeBadge');
-    const practice = !!mb && mb.classList.contains('hud-mode-practice');
-    deck.dataset.mode = practice ? 'practice' : 'exam';
-    $d('gd-mode').textContent = practice ? '💡 PRACTICE' : '🔒 EXAM';
+    const dm = !mb ? 'exam' : mb.classList.contains('hud-mode-concept') ? 'concept' : mb.classList.contains('hud-mode-practice') ? 'practice' : 'exam';
+    deck.dataset.mode = dm;
+    $d('gd-mode').textContent = dm === 'concept' ? '📖 CONCEPT' : dm === 'practice' ? '💡 PRACTICE' : '🔒 EXAM';
 
     const info = $d('testInfoTop');
     $d('gd-title').textContent = (info && info.textContent.trim()) || 'Test';
@@ -21837,27 +21941,33 @@ html.tl-no-translate #dualLangDropdown { display: none !important; }
 
 
 <style id="candModeCss">
+/* Start-test popup: 3-way selector (Exam | Practice | Concept) */
 html body #candidateModal #candModeToggle{
-  position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:16px;
+  position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:16px;
   background:rgba(127,127,127,.13)!important;border:1px solid rgba(127,127,127,.3)!important;
   box-shadow:inset 0 2px 8px rgba(0,0,0,.18)!important;isolation:isolate;
 }
 html body #candidateModal #candModeToggle .mode-seg-thumb{
-  position:absolute;z-index:0;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);border-radius:12px;
+  position:absolute;z-index:0;top:4px;left:4px;width:calc((100% - 8px) / 3);height:calc(100% - 8px);border-radius:12px;
   background:linear-gradient(135deg,#34d399 0%,#10b981 55%,#059669 100%)!important;
   box-shadow:0 6px 18px -4px rgba(16,185,129,.7),inset 0 1px 0 rgba(255,255,255,.35)!important;
-  transform:translateX(0);
+  transform:translateX(100%);
   transition:transform .38s cubic-bezier(.2,.9,.25,1.12),background .3s ease,box-shadow .3s ease!important;
 }
 html body #candidateModal #candModeToggle[data-mode="exam"] .mode-seg-thumb{
-  transform:translateX(100%);
+  transform:translateX(0);
   background:linear-gradient(135deg,#fbbf24 0%,#f97316 55%,#ef4444 100%)!important;
   box-shadow:0 6px 18px -4px rgba(249,115,22,.75),inset 0 1px 0 rgba(255,255,255,.35)!important;
 }
+html body #candidateModal #candModeToggle[data-mode="concept"] .mode-seg-thumb{
+  transform:translateX(200%);
+  background:linear-gradient(135deg,#818cf8 0%,#6366f1 55%,#3b82f6 100%)!important;
+  box-shadow:0 6px 18px -4px rgba(99,102,241,.75),inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
 html body #candidateModal #candModeToggle .mode-seg-opt{
-  position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:11px 10px;border:0!important;background:transparent!important;box-shadow:none!important;
-  font-weight:700;font-size:.95rem;letter-spacing:.2px;cursor:pointer;border-radius:12px;
+  position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px 6px;border:0!important;background:transparent!important;box-shadow:none!important;
+  font-weight:700;font-size:.9rem;letter-spacing:.2px;cursor:pointer;border-radius:12px;
   color:inherit!important;opacity:.62;-webkit-tap-highlight-color:transparent;
   transition:opacity .25s ease,color .25s ease,transform .15s ease!important;
 }
@@ -21869,14 +21979,16 @@ html body #candidateModal #candModeToggle .mi{font-size:1.05rem;line-height:1}
 <script id="candModeJs">
 (function () {
   'use strict';
+  var ORDER = ['exam', 'practice', 'concept'];
   var HINT = {
-    practice: 'Explanations, hints and concept pages stay available.',
-    exam: 'Exam conditions: no hints, explanations or concept pages until you submit.'
+    exam: 'Exam conditions: no hints, explanations or concept pages until you submit.',
+    practice: 'Instant feedback, hints and explanations, with concept pages between questions.',
+    concept: 'Study mode: only the concept pages, no questions, timer paused. You can switch any time.'
   };
   function box() { return document.getElementById('candModeToggle'); }
   function setMode(m) {
     var t = box(); if (!t) return;
-    m = (m === 'exam') ? 'exam' : 'practice';
+    m = (ORDER.indexOf(m) > -1) ? m : 'practice';
     t.setAttribute('data-mode', m);
     [].forEach.call(t.querySelectorAll('.mode-seg-opt'), function (b) {
       var on = b.getAttribute('data-mode') === m;
@@ -21893,8 +22005,45 @@ html body #candidateModal #candModeToggle .mi{font-size:1.05rem;line-height:1}
     b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
   });
   t.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft') { setMode('practice'); e.preventDefault(); }
-    else if (e.key === 'ArrowRight') { setMode('exam'); e.preventDefault(); }
+    var i = ORDER.indexOf(window.candGetMode());
+    if (e.key === 'ArrowLeft')  { setMode(ORDER[Math.max(0, i - 1)]); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { setMode(ORDER[Math.min(ORDER.length - 1, i + 1)]); e.preventDefault(); }
+  });
+})();
+</script>
+
+<style id="modeSwitchCss">
+/* In-test 3-way mode switch — fixed in the top-right dock, so it shows on question pages AND concept pages */
+#hudDock .mode-switch{display:flex;align-items:center;gap:2px;height:24px;padding:2px;border-radius:9px;background:rgba(255,255,255,.07);flex:none}
+#hudDock .mode-switch button{display:inline-flex;align-items:center;gap:4px;height:20px;min-height:0;padding:0 8px;margin:0;border:0;border-radius:7px;
+  background:transparent;color:#93c5fd;font:800 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.2px;white-space:nowrap;cursor:pointer;
+  opacity:.72;-webkit-tap-highlight-color:transparent;transition:background .2s,opacity .2s,color .2s}
+#hudDock .mode-switch button:hover{opacity:1;background:rgba(59,130,246,.2)}
+#hudDock .mode-switch button:disabled{opacity:.3;cursor:not-allowed}
+#hudDock .mode-switch button.on{opacity:1;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.3)}
+#hudDock .mode-switch[data-mode="exam"] button.on{background:linear-gradient(135deg,#f97316,#ef4444)}
+#hudDock .mode-switch[data-mode="practice"] button.on{background:linear-gradient(135deg,#34d399,#059669)}
+#hudDock .mode-switch[data-mode="concept"] button.on{background:linear-gradient(135deg,#818cf8,#3b82f6)}
+@media (max-width:576px){
+  #hudDock .mode-switch button{padding:0 6px}
+  #hudDock .mode-switch button .ms-tx{display:none}
+  #hudDock .mode-switch button.on .ms-tx{display:inline}
+}
+/* the old mode badge in the top bar is replaced by the switch */
+html body #engineView .engine-topbar .right-top-actions > #modeBadge{display:none !important}
+.hud-mode-concept{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.4);color:#a5b4fc}
+html.lite-mode #hudDock .mode-switch{background:#fff !important;border:1px solid #000}
+html.lite-mode #hudDock .mode-switch button{color:#000 !important;-webkit-text-fill-color:#000}
+html.lite-mode #hudDock .mode-switch button.on{background:#000 !important;color:#fff !important;-webkit-text-fill-color:#fff;text-shadow:none}
+</style>
+<script id="modeSwitchJs">
+(function () {
+  var sw = document.getElementById('modeSwitch'); if (!sw) return;
+  sw.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-mode]'); if (!b || b.disabled) return;
+    e.stopPropagation();
+    var st = window.state;
+    if (typeof window.setTestMode === 'function' && st && st.qIds && st.qIds.length) window.setTestMode(b.getAttribute('data-mode'));
   });
 })();
 </script>
