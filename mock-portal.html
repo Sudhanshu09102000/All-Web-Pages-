@@ -7694,10 +7694,8 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         const nb = $('cpNextBtn');
         if (nb && nb.dataset.act === 'submit') { $('submitBtn').click(); return; }
         if (nb && nb.dataset.act === 'practice') {      // end of concept-only mode -> jump into the questions
-          const it = state.seq[state.seqPos];
-          const c = it && state.concepts[it.ci];
           setTestMode('practice');
-          goToIndex(c && c.nextQ >= 0 ? c.nextQ : 0);
+          goToIndex(0);   // always start practice from Question 1
           return;
         }
         goNext();
@@ -21160,6 +21158,70 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   font:italic 500 14.5px/1.35 'Cormorant Garamond',Georgia,serif!important;color:#8f98ad!important;
 }
 
+/* ── simplified card: word + meaning + Hindi, with Copy and Google ── */
+#wdp .wd-sub,#wdp .wd-say,#wdp .wd-s-ex,#wdp .wd-lang,#wdp .wd-rom,#wdp .wd-alt,#wdp .wd-hint{display:none!important}
+#wdp .wd-foot{display:flex;align-items:center;gap:10px;margin:20px 16px 0 0}
+#wdp .wd-copy{
+  position:relative;flex:1;min-width:0;height:44px;overflow:hidden;appearance:none;-webkit-appearance:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 18px;border-radius:15px;cursor:pointer;
+  border:1px solid rgba(255,243,196,.6);
+  background:linear-gradient(180deg,#f8e6a6 0%,#e2bc42 52%,#b88c20 100%);
+  color:#1b1505!important;
+  font:700 12px/1 'Cinzel','Inter',Georgia,serif!important;letter-spacing:1.7px;text-transform:uppercase;
+  box-shadow:0 12px 24px -9px rgba(212,175,55,.8),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.15)!important;
+  transition:transform .18s ease,filter .2s ease,box-shadow .25s ease,background .3s ease!important;
+}
+#wdp .wd-copy::after{
+  content:"";position:absolute;top:0;bottom:0;left:-60%;width:38%;transform:skewX(-22deg);pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);transition:left .65s ease!important;
+}
+#wdp .wd-copy:hover{transform:translateY(-2px);filter:brightness(1.06)}
+#wdp .wd-copy:hover::after{left:135%}
+#wdp .wd-copy:active{transform:scale(.97)}
+#wdp .wd-copy svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#wdp .wd-copy .wd-ck{display:none}
+#wdp .wd-copy.done{
+  background:linear-gradient(180deg,#b4f5d2 0%,#34d399 52%,#0e9a6b 100%);border-color:rgba(209,250,229,.7);
+  box-shadow:0 12px 24px -9px rgba(16,185,129,.8),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.15)!important;
+}
+#wdp .wd-copy.done .wd-cc{display:none}
+#wdp .wd-copy.done .wd-ck{display:block;animation:wdPop .4s cubic-bezier(.2,.9,.3,1.5) both!important}
+@keyframes wdPop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+#wdp .wd-goog{
+  flex:0 0 auto;width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:50%;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background:linear-gradient(180deg,#fff,#eceff5);border:1px solid rgba(212,175,55,.75);
+  box-shadow:0 10px 22px -9px rgba(0,0,0,.75),0 0 0 3px rgba(212,175,55,.13),inset 0 -2px 0 rgba(0,0,0,.07)!important;
+  transition:transform .18s ease,box-shadow .25s ease!important;
+}
+#wdp .wd-goog:hover{transform:translateY(-2px) scale(1.07);box-shadow:0 14px 26px -8px rgba(0,0,0,.7),0 0 0 4px rgba(212,175,55,.28),0 0 22px rgba(66,133,244,.35)!important}
+#wdp .wd-goog:active{transform:scale(.93)}
+#wdp .wd-goog svg{width:22px;height:22px;display:block}
+#wdp .wd-spk{
+  flex:0 0 auto;width:44px;height:44px;padding:0;display:grid;place-items:center;border-radius:50%;cursor:pointer;
+  appearance:none;-webkit-appearance:none;color:#f3dc92!important;
+  background:linear-gradient(180deg,rgba(243,220,146,.2),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.75);
+  box-shadow:0 10px 22px -9px rgba(0,0,0,.75),0 0 0 3px rgba(212,175,55,.1),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  transition:transform .18s ease,box-shadow .25s ease,background .25s ease!important;
+}
+#wdp .wd-spk:hover{transform:translateY(-2px) scale(1.07);background:linear-gradient(180deg,rgba(243,220,146,.34),rgba(212,175,55,.16));box-shadow:0 14px 26px -8px rgba(0,0,0,.7),0 0 0 4px rgba(212,175,55,.25),0 0 22px rgba(212,175,55,.45)!important}
+#wdp .wd-spk:active{transform:scale(.93)}
+#wdp .wd-spk.on{background:linear-gradient(180deg,#f8e6a6,#d4af37);color:#1b1505!important}
+#wdp .wd-spk svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── resize grip ── */
+#wdp .wd-grip{
+  position:absolute;right:4px;bottom:4px;width:28px;height:28px;z-index:3;display:grid;place-items:center;
+  border-radius:9px;cursor:nwse-resize;touch-action:none;opacity:.7;-webkit-tap-highlight-color:transparent;
+  transition:opacity .2s ease,background .2s ease!important;
+}
+#wdp .wd-grip:hover,#wdp.wd-resizing .wd-grip{opacity:1;background:rgba(212,175,55,.18)}
+#wdp .wd-grip svg{width:13px;height:13px;fill:none;stroke:#e8cb68;stroke-width:1.7;stroke-linecap:round;pointer-events:none}
+#wdp[data-side="above"] .wd-grip{bottom:auto;top:4px;cursor:nesw-resize}
+#wdp[data-side="above"] .wd-grip svg{transform:scaleY(-1)}
+#wdp[data-side="above"] .wd-head{padding-right:20px}
+#wdp.wd-resizing .wd-body{box-shadow:0 30px 70px -18px rgba(0,0,0,.72),0 0 0 1.5px rgba(243,217,139,.85),0 0 46px -8px rgba(212,175,55,.7)!important}
+
 @media (prefers-reduced-motion:reduce){
   html body #wdp.wd-show,html body #wdp.wd-show.wd-out{animation-duration:.01ms!important}
   #wdHi i{transition-duration:.01ms!important}
@@ -21177,8 +21239,10 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   var PRE_MS  = 140;      // when the soft "pressing" highlight starts
   var MOVE_TOL = 9;       // px of finger/mouse drift that cancels the hold
   var GAP = 12, MARGIN = 12;
+  var MINW = 250, MINH = 170;                // smallest size the card can be resized to
+  var userW = null, userH = null, userLeft = null, availNow = 600;   // user-chosen size (kept while the page is open)
 
-  var LANGS = { hi: 'हिन्दी', bn: 'বাংলা' };
+  var LANGS = { hi: 'हिन्दी' };   // card shows Hindi only
   var lang = 'hi';
   try { var saved = localStorage.getItem('wdLang'); if (saved && LANGS[saved]) lang = saved; } catch (e) {}
 
@@ -21204,17 +21268,28 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
           '<div class="wd-word"></div>' +
           '<div class="wd-sub"><span class="wd-phon" hidden></span><span class="wd-pos" hidden></span><span class="wd-root" hidden></span></div>' +
         '</div>' +
-        '<button type="button" class="wd-say" aria-label="Hear pronunciation">' +
-          '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>' +
-        '</button>' +
       '</div>' +
       '<div class="wd-orn"></div>' +
       '<div class="wd-sec wd-s-mean"><div class="wd-lab">Meaning</div><div class="wd-mean"></div></div>' +
-      '<div class="wd-sec wd-s-tr"><div class="wd-lab-row"><div class="wd-lab">Translation</div><div class="wd-lang"></div></div>' +
+      '<div class="wd-sec wd-s-tr"><div class="wd-lab-row"><div class="wd-lab">Hindi Translation</div><div class="wd-lang"></div></div>' +
         '<div class="wd-tr-wrap"><div class="wd-tr"></div><div class="wd-rom" hidden></div><div class="wd-alt" hidden></div></div></div>' +
       '<div class="wd-sec wd-s-ex"><div class="wd-lab">In a sentence</div><div class="wd-ex"></div></div>' +
       '<div class="wd-hint" hidden>Drag the gold handles to select a phrase, idiom or sentence</div>' +
-    '</div>';
+      '<div class="wd-foot">' +
+        '<button type="button" class="wd-copy" aria-label="Copy selected text">' +
+          '<svg class="wd-cc" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>' +
+          '<svg class="wd-ck" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>' +
+          '<span class="wd-ct">Copy text</span>' +
+        '</button>' +
+        '<button type="button" class="wd-spk" aria-label="Hear pronunciation" title="Hear pronunciation">' +
+          '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>' +
+        '</button>' +
+        '<button type="button" class="wd-goog" aria-label="Search on Google" title="Search on Google">' +
+          '<svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>' +
+        '</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="wd-grip" role="separator" aria-label="Drag to resize" title="Drag to resize (double-click to reset)"><svg viewBox="0 0 12 12"><path d="M11 3 3 11M11 7 7 11"/></svg></div>';
 
   var hi = document.createElement('div');
   hi.id = 'wdHi';
@@ -21224,7 +21299,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
 
   function q(sel) { return pop.querySelector(sel); }
   var elBody = q('.wd-body'), elWord = q('.wd-word'), elPhon = q('.wd-phon'), elPos = q('.wd-pos'),
-      elRoot = q('.wd-root'), elSay = q('.wd-say'), elMean = q('.wd-mean'), elTr = q('.wd-tr'),
+      elRoot = q('.wd-root'), elMean = q('.wd-mean'), elTr = q('.wd-tr'),
       elRom = q('.wd-rom'), elAlt = q('.wd-alt'), elEx = q('.wd-ex'), elExSec = q('.wd-s-ex'),
       elLang = q('.wd-lang'), elMeanSec = q('.wd-s-mean'), elHint = q('.wd-hint');
   var hintSeen = false;
@@ -21237,7 +21312,6 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     elLang.appendChild(b);
   });
 
-  if (!('speechSynthesis' in window)) elSay.style.display = 'none';
 
   document.body.appendChild(hi);
   document.body.appendChild(hs);
@@ -21306,7 +21380,7 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     });
     if (!defs.length) return null;
     /* prefer a common sense that ships with a real example sentence */
-    var pick = defs.slice(0, 4).filter(function (d) { return d.ex; })[0] || defs[0];
+    var pick = defs[0];
     return { form: form, phon: phon, pos: pick.pos, def: pick.def, ex: pick.ex };
   }
 
@@ -21338,10 +21412,6 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
       } catch (e) { net = true; break; }
     }
     if (!res) return net ? { net: true } : { found: false };
-    if (!res.ex) {
-      res.ex = await wiktExample(res.form);
-      if (!res.ex && res.form !== key) res.ex = await wiktExample(key);
-    }
     res.found = true;
     return res;
   }
@@ -21601,16 +21671,19 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
   function place() {
     if (!current) return;
     var r = current.rect, vw = document.documentElement.clientWidth, vh = window.innerHeight;
-    var w = Math.min(344, vw - 2 * MARGIN);
+    var w = userW ? clamp(userW, Math.min(MINW, vw - 2 * MARGIN), vw - 2 * MARGIN) : Math.min(344, vw - 2 * MARGIN);
     pop.style.width = w + 'px';
     var cx = r.left + r.width / 2;
-    var left = clamp(cx - w / 2, MARGIN, Math.max(MARGIN, vw - w - MARGIN));
+    var left = userLeft != null ? clamp(userLeft, MARGIN, Math.max(MARGIN, vw - w - MARGIN))
+                               : clamp(cx - w / 2, MARGIN, Math.max(MARGIN, vw - w - MARGIN));
     var gapB = GAP + 24;                                   // leave room for the hanging handle
     var below = vh - r.bottom - gapB - MARGIN, above = r.top - GAP - MARGIN;
-    if (!current.side) current.side = (below >= 330 || below >= above) ? 'below' : 'above';
+    if (!current.side) current.side = (below >= (userH ? Math.min(userH, 330) : 330) || below >= above) ? 'below' : 'above';
     var side = current.side, avail = side === 'below' ? below : above;
     pop.style.left = left + 'px';
-    elBody.style.maxHeight = Math.max(170, avail) + 'px';
+    availNow = Math.max(MINH, avail);
+    if (userH) { elBody.style.height = clamp(userH, MINH, availNow) + 'px'; elBody.style.maxHeight = 'none'; }
+    else { elBody.style.height = ''; elBody.style.maxHeight = Math.max(170, avail) + 'px'; }
     if (side === 'below') { pop.style.top = (r.bottom + gapB) + 'px'; pop.style.bottom = 'auto'; }
     else { pop.style.bottom = (vh - r.top + GAP) + 'px'; pop.style.top = 'auto'; }
     pop.style.setProperty('--wd-ax', clamp(cx - left, 28, w - 28) + 'px');
@@ -21695,11 +21768,12 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     var token = ++seq;
     current = hit; isOpen = true; selOn = true; openW = document.documentElement.clientWidth;
     if (hit.range) sel = { range: hit.range, root: hit.root };
-    if (!keepPos) hit.side = '';
+    if (!keepPos) { hit.side = ''; userLeft = null; }
     document.body.appendChild(hi); document.body.appendChild(hs); document.body.appendChild(pop);   // always above any newer modal
 
     var n = hit.display.length;
     elWord.textContent = hit.display;
+    resetCopy();
     elWord.className = 'wd-word' + (n > 90 ? ' xxl' : n > 44 ? ' xl' : n > 20 ? ' l' : n > 13 ? ' m' : '');
     elPhon.hidden = elRoot.hidden = true;
     elPos.hidden = hit.kind === 'word'; elPos.textContent = hit.kind;
@@ -21750,14 +21824,68 @@ html body #wdp.wd-show.wd-out{animation:wdOut .16s ease-in both!important}
     Array.prototype.forEach.call(elLang.children, function (x) { x.className = x === b ? 'on' : ''; });
     loadTr(current, seq);
   });
-  elSay.addEventListener('click', function () {
+  /* ── copy + Google ── */
+  var elCopy = q('.wd-copy'), elCopyTx = q('.wd-ct'), elGoog = q('.wd-goog'), elGrip = q('.wd-grip'), copyTimer = 0;
+  function resetCopy() { clearTimeout(copyTimer); elCopy.classList.remove('done'); elCopyTx.textContent = 'Copy text'; }
+  function copyStr(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+    return new Promise(function (ok, no) {
+      var ta = document.createElement('textarea');
+      ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      var good = false; try { good = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); good ? ok() : no();
+    });
+  }
+  elCopy.addEventListener('click', function () {
+    if (!current) return;
+    copyStr(current.display).then(function () {
+      elCopy.classList.add('done'); elCopyTx.textContent = 'Copied!';
+      try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
+    }, function () { elCopyTx.textContent = 'Copy failed'; });
+    clearTimeout(copyTimer); copyTimer = setTimeout(resetCopy, 1700);
+  });
+  var elSpk = q('.wd-spk');
+  if (!('speechSynthesis' in window)) elSpk.style.display = 'none';
+  elSpk.addEventListener('click', function () {
     if (!current) return;
     try {
       var ss = window.speechSynthesis; ss.cancel();
       var u = new SpeechSynthesisUtterance(current.display);
-      u.lang = 'en-IN'; u.rate = .9; ss.speak(u);
+      u.lang = 'en-IN'; u.rate = .9;
+      u.onstart = function () { elSpk.classList.add('on'); };
+      u.onend = u.onerror = function () { elSpk.classList.remove('on'); };
+      ss.speak(u);
     } catch (e) {}
   });
+  elGoog.addEventListener('click', function () {
+    if (!current) return;
+    window.open('https://www.google.com/search?q=' + encodeURIComponent(current.display), '_blank', 'noopener');
+  });
+
+  /* ── resize: drag the corner grip (double-click it to go back to auto size) ── */
+  var rs = null;
+  elGrip.addEventListener('pointerdown', function (e) {
+    if (!current) return;
+    e.preventDefault(); e.stopPropagation();
+    try { elGrip.setPointerCapture(e.pointerId); } catch (err) {}
+    var rc = pop.getBoundingClientRect();
+    rs = { id: e.pointerId, x: e.clientX, y: e.clientY, w: rc.width, h: elBody.getBoundingClientRect().height,
+           above: pop.getAttribute('data-side') === 'above' };
+    userW = rs.w; userH = rs.h; userLeft = rc.left;
+    pop.classList.add('wd-resizing');
+  });
+  elGrip.addEventListener('pointermove', function (e) {
+    if (!rs || rs.id !== e.pointerId) return;
+    var vw = document.documentElement.clientWidth, dy = e.clientY - rs.y;
+    userW = clamp(rs.w + (e.clientX - rs.x), MINW, Math.max(MINW, vw - userLeft - MARGIN));
+    userH = clamp(rs.h + (rs.above ? -dy : dy), MINH, availNow);
+    place();
+  });
+  function endResize() { if (!rs) return; rs = null; pop.classList.remove('wd-resizing'); }
+  elGrip.addEventListener('pointerup', endResize);
+  elGrip.addEventListener('pointercancel', endResize);
+  elGrip.addEventListener('dblclick', function () { userW = userH = userLeft = null; if (current) { current.side = ''; place(); } });
 
   /* ───────────────────────── drag the gold handles ───────────────────────── */
   function moveHandle(x, y, idx) {
