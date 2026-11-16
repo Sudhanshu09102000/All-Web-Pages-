@@ -22297,6 +22297,62 @@ html, body { overscroll-behavior-y: contain; }
   });
 })();
 </script>
+
+<style id="qaMatchConceptButtons">
+/* Previous + Save & Next now sit exactly where the concept page's Previous / Next sit
+   (Previous = far left, Save & Next = far right) and share the same look. */
+@media (min-width: 768px) {
+  #qaOneLine { padding: 10px clamp(.5rem, 1vw, 1rem) 6px !important; gap: 8px !important; font-size: 1rem !important; }
+
+  /* same size / typography as the concept-page buttons (.cp-footer .btn) */
+  #qaOneLine #prevBtn, #qaOneLine #saveNextBtn {
+    font-size: 1rem !important; font-weight: 600 !important; line-height: 1.5 !important;
+    height: auto !important; min-height: 0 !important;
+    padding: .375rem .75rem !important; border-radius: 12px !important; letter-spacing: .2px;
+  }
+
+  /* Previous -> far left (like #cpPrevBtn) */
+  #qaOneLine #prevBtn { order: 0 !important; margin-right: auto !important; }
+
+  /* Save & Next -> far right, highlighted exactly like #cpNextBtn (.cp-primary) */
+  #qaOneLine #saveNextBtn {
+    order: 99 !important; margin-left: auto !important; font-weight: 800 !important;
+    background: #2563eb !important; border-color: #1d4ed8 !important; color: #fff !important;
+    -webkit-text-fill-color: #fff !important; opacity: 1 !important; text-shadow: none !important;
+    box-shadow: 0 4px 14px rgba(37,99,235,.35) !important;
+  }
+  #qaOneLine #saveNextBtn:hover { background: #1d4ed8 !important; border-color: #1e40af !important; }
+  #qaOneLine #saveNextBtn:disabled { opacity: .55 !important; }
+
+  /* everything else stays between them, centred */
+  #qaOneLine #reviewNextBtn, #qaOneLine #clearBtn, #qaOneLine #qmarkBtn,
+  #qaOneLine #googleSearchBtnTop, #qaOneLine #soundBtn, #qaOneLine #showSummaryBtn { order: 1; }
+}
+</style>
+
+<style id="hideExpOnConcept">
+/* Pinned "Answer & Explanation" panel must never show on concept pages */
+body.on-concept-page #stickyExpPanel,
+body.on-concept-page #stickyExpPanel.visible,
+body.on-concept-page #mobileHintPanel,
+body.on-concept-page #mobileHintSlot { display: none !important; }
+</style>
+<script id="hideExpOnConceptJs">
+(function () {
+  function sync() {
+    var cb = document.getElementById('conceptBox');
+    var on = !!cb && getComputedStyle(cb).display !== 'none';
+    document.body.classList.toggle('on-concept-page', on);
+  }
+  function start() {
+    var cb = document.getElementById('conceptBox');
+    if (cb) new MutationObserver(sync).observe(cb, { attributes: true, attributeFilter: ['style', 'class'] });
+    sync();
+    setInterval(sync, 400); // safety net
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
 </body>
 
 
