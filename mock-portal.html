@@ -20718,9 +20718,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
 </script>
 
 <style id="hudDockCollapse">
-/* ☰ controls BOTH boxes: closed = only the ☰ button shows; open = full top pill + navigator panel */
+/* ☰ controls BOTH boxes: closed = only the timer + ☰ button show; open = full top pill + navigator panel */
 #engineView > #hudDock.hud-dock:not(.nav-open){ padding:0 4px 0 6px !important; }
-#hudDock:not(.nav-open) > :not(#navToggleIcon){ display:none !important; }
+#hudDock:not(.nav-open) > :not(#navToggleIcon):not(#timerPill):not(#timerShowBtn):not(.hud-sep-timer){ display:none !important; }
 </style>
 <script id="hudDockNavSync">
 /* Mirrors the navigator panel's open/closed state onto the menu icon (☰ ⇄ ✕). Works for every way the panel opens or closes. */
