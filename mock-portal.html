@@ -15620,6 +15620,7 @@ body.qa-only-mode #qaToolbarRow {
     </button>
     <div class="ab-row"><label for="abVoice">Voice</label><select id="abVoice"></select><button type="button" class="ab-test" id="abTest" title="Hear this voice">▶</button></div>
     <div class="ab-row"><label for="abVoiceTl">Trans.</label><select id="abVoiceTl" disabled><option>Turn on Translate first</option></select><button type="button" class="ab-test" id="abTestTl" title="Hear this voice">▶</button></div>
+    <label class="ab-check"><input type="checkbox" id="abWake"> <span>Keep screen on while listening</span></label>
     <div class="ab-hint" id="abHint"></div>
     <div class="ab-row"><label for="abRate">Speed</label><input type="range" id="abRate" min="0.6" max="1.8" step="0.05" value="1"><span id="abRateVal">1.0×</span></div>
     <div class="ab-row"><label for="abMode">Read</label><select id="abMode"><option value="both">English + translation</option><option value="tl">Translation only</option><option value="en">English only</option></select></div>
@@ -22403,6 +22404,7 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
 .ab-row select option{color:#111}
 .ab-row input[type=range]{flex:1;accent-color:#8b5cf6}
 .ab-row span{width:44px;text-align:right;font-weight:700}
+.ab-check{display:flex;align-items:center;gap:8px;font-size:.82rem;margin:6px 2px;cursor:pointer}.ab-check input{accent-color:#8b5cf6;width:16px;height:16px}
 .ab-test{flex:none;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b5cf6,#ec4899);font-size:.75rem}
 .ab-test:hover{filter:brightness(1.15)}
 .ab-hint{font-size:.72rem;line-height:1.35;opacity:.85;margin:2px 2px 6px;padding:6px 8px;border-radius:8px;background:rgba(139,92,246,.14)}
@@ -22537,6 +22539,7 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
     if(btn){ btn.classList.toggle('ab-on',on); btn.setAttribute('aria-pressed',st.playing?'true':'false'); }
     if($('abBtnIcon')) $('abBtnIcon').textContent = on?'❚❚':'▶';
     if($('abBtnTitle')) $('abBtnTitle').textContent = !st.playing?'Listen to Concepts':(st.paused?'Paused — tap to resume':'Now reading…');
+    try{bgSync(on);}catch(e){}
     var pl=$('abPlayer'); if(pl){ pl.classList.toggle('show',st.playing); var pp=pl.querySelector('.ab-pp'); if(pp) pp.textContent=on?'❚❚':'▶'; var eq=pl.querySelector('.ab-eq2'); if(eq) eq.classList.toggle('go',on); }
   }
   function buildPlayer(){
@@ -22604,6 +22607,7 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
       var q=[]; var ttl=clean(title);
       if($('abTitle')) $('abTitle').textContent=ttl||'Concept';
       if($('abCount')) $('abCount').textContent='Concept '+(idx+1)+' of '+ds.length;
+      bgMeta(ttl||'Concept','Concept '+(idx+1)+' of '+ds.length);
       var pr=$('abProg'); if(pr) pr.style.width='0';
       collect().forEach(function(r){ chunks(r.text).forEach(function(c){ q.push({el:r.el,text:c,lang:r.lang}); }); });
       if(idx>=0&&!document.body.classList.contains('tl-only')) q.unshift({el:null,text:'Concept '+(idx+1)+' of '+ds.length+'.'});
@@ -22638,11 +22642,45 @@ body.on-concept-page #mobileHintSlot { display: none !important; }
     else { st.paused=true; st.tok++; try{synth.cancel();}catch(e){} ui(); }
   }
 
+  /* ───── background play: keep-alive audio + lock-screen controls + wake lock ───── */
+  var bg={audio:null,lock:null,wake:false};
+  try{ bg.wake=localStorage.getItem('abWake')==='1'; }catch(e){}
+  function silentUrl(){
+    var n=8000, b=new ArrayBuffer(44+n*2), v=new DataView(b);
+    function w(o,t){ for(var i=0;i<t.length;i++) v.setUint8(o+i,t.charCodeAt(i)); }
+    w(0,'RIFF'); v.setUint32(4,36+n*2,true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,8000,true); v.setUint32(28,16000,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+    return URL.createObjectURL(new Blob([b],{type:'audio/wav'}));
+  }
+  function bgAudio(){ if(!bg.audio){ var a=new Audio(silentUrl()); a.loop=true; a.volume=0.01; a.setAttribute('playsinline',''); bg.audio=a; } return bg.audio; }
+  function wakeOn(){ try{ if(bg.wake&&navigator.wakeLock&&!bg.lock){ navigator.wakeLock.request('screen').then(function(l){ bg.lock=l; l.addEventListener('release',function(){bg.lock=null;}); }).catch(function(){}); } }catch(e){} }
+  function wakeOff(){ try{ if(bg.lock){ bg.lock.release(); bg.lock=null; } }catch(e){} }
+  function bgSync(on){
+    if(!st.playing){ try{ if(bg.audio) bg.audio.pause(); }catch(e){} wakeOff();
+      if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState='none'; navigator.mediaSession.metadata=null; }catch(e){} } return; }
+    try{ var a=bgAudio(); if(on){ var pr=a.play(); if(pr&&pr.catch) pr.catch(function(){}); } else a.pause(); }catch(e){}
+    if(on) wakeOn(); else wakeOff();
+    if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState=on?'playing':'paused'; }catch(e){} }
+  }
+  function bgMeta(title,sub){
+    if(!('mediaSession' in navigator)||typeof MediaMetadata==='undefined') return;
+    try{ navigator.mediaSession.metadata=new MediaMetadata({title:title||'Concept',artist:sub||'Audiobook',album:'Mock Test Portal'});
+      navigator.mediaSession.setActionHandler('play',function(){ if(st.paused||!st.playing) toggle(); });
+      navigator.mediaSession.setActionHandler('pause',function(){ if(st.playing&&!st.paused) toggle(); });
+      navigator.mediaSession.setActionHandler('nexttrack',function(){ jump(1); });
+      navigator.mediaSession.setActionHandler('previoustrack',function(){ jump(-1); });
+      navigator.mediaSession.setActionHandler('stop',function(){ stop(); }); }catch(e){}
+  }
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible'&&st.playing&&!st.paused){ wakeOn(); try{ if(synth&&!synth.speaking) resumeChunk(); }catch(e){} }
+  });
+
   /* ───── wiring ───── */
   function wire(){
     var b=$('abBtn'); if(!b) return;
     b.addEventListener('click',toggle);
     var v=$('abVoice'); v.addEventListener('change',function(){ var vs=synth.getVoices().filter(function(x){return x.name===v.value;}); st.voice=vs[0]||null; try{localStorage.setItem('abVoice',v.value);}catch(e){} if(st.playing&&!st.paused) resumeChunk(); });
+    var wk=$('abWake'); wk.checked=bg.wake; wk.addEventListener('change',function(){ bg.wake=wk.checked; try{localStorage.setItem('abWake',bg.wake?'1':'0');}catch(e){} if(st.playing&&!st.paused){ bg.wake?wakeOn():wakeOff(); } });
     var vt=$('abVoiceTl'); vt.addEventListener('change',function(){ try{localStorage.setItem('abVoiceTl_'+(vt.dataset.base||''),vt.value);}catch(e){} if(st.playing&&!st.paused) resumeChunk(); });
     $('abTest').addEventListener('click',function(){ testVoice(st.voice,st.voice&&st.voice.lang); });
     $('abTestTl').addEventListener('click',function(){ var l=S().dualLang||''; if(!l) return; testVoice(voiceFor(l),l); });
