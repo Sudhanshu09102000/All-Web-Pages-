@@ -7475,9 +7475,9 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
       function setTestBoxSize(box, width, height) {
         const isMobile = window.innerWidth <= 767;
-        const maxWidth = Math.max(280, window.innerWidth - 24);
-        const minWidth = Math.min(isMobile ? 280 : 320, maxWidth);
-        const maxHeight = Math.max(260, window.innerHeight - 32);
+        const maxWidth = Math.max(240, window.innerWidth - 4);
+        const minWidth = Math.min(isMobile ? 240 : 320, maxWidth);
+        const maxHeight = Math.max(260, window.innerHeight - 4);
         const minHeight = Math.min(isMobile ? 260 : 280, maxHeight);
         box.style.width = Math.max(minWidth, Math.min(maxWidth, width)) + 'px';
         box.style.height = Math.max(minHeight, Math.min(maxHeight, height)) + 'px';
@@ -7493,11 +7493,11 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             const nextWidth = width + dx * (edge.includes('e') ? 1 : edge.includes('w') ? -1 : 0);
             const nextHeight = height + dy * (edge.includes('s') ? 1 : edge.includes('n') ? -1 : 0);
             const maxWidthFromAnchor = edge.includes('w')
-              ? left + width - 12
-              : window.innerWidth - left - 12;
+              ? left + width - 4
+              : window.innerWidth - left - 4;
             const maxHeightFromAnchor = edge.includes('n')
-              ? screenTop + height - 16
-              : window.innerHeight - screenTop - 16;
+              ? screenTop + height - 4
+              : window.innerHeight - screenTop - 4;
             setTestBoxSize(
               box,
               Math.min(nextWidth, maxWidthFromAnchor),
@@ -22793,6 +22793,116 @@ body.tl-only #conceptBox .cp-tl{border-left:0;padding-left:0;margin-top:0}
     apply();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
+<style id="spaceReclaim">
+/* ═══ SPACE RECLAIM — Concept mode + Test mode: minimal outer/inner padding, content gets the room ═══ */
+
+/* ---------- PC / tablet ---------- */
+@media (min-width: 768px) {
+  #engineView > .container-fluid { padding: 4px 4px 4px !important; }
+  #questionBox, #conceptBox, #pdfTutorPanel {
+    padding: 6px 8px !important;
+    border-radius: 12px !important;
+    height: calc(100dvh - var(--topbar-h, 96px) - 8px);
+  }
+  body.hide-top-bar #questionBox, body.hide-top-bar #conceptBox { height: calc(100dvh - 8px); }
+
+  /* test mode */
+  .test-resizable-box .question-scroll-area { padding: 0 !important; }
+  .test-resizable-box .qbox { padding: 10px 14px !important; margin-bottom: .6rem !important; border-radius: 12px; }
+  #optionsArea .option { padding: .7rem .9rem !important; }
+  #optionsArea { gap: .6rem !important; }
+
+  /* concept mode */
+  #conceptBox .cp-top    { padding: 4px 6px 4px !important; }
+  #conceptBox .cp-scroll { padding: 8px 6px 12px !important; }
+  #conceptBox .cp-footer { padding: 6px 6px 2px !important; }
+  #conceptBox .cp-hero   { padding: 12px 16px !important; margin-bottom: 12px !important; border-radius: 14px; }
+  #conceptBox .cp-card   { padding: 12px 16px 12px 20px !important; }
+  #conceptBox .cp-note   { padding: 10px 14px !important; }
+  #conceptBox .cp-formula { padding: 14px 16px !important; }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 767px) {
+  #engineView > .container-fluid {
+    padding-left: 2px !important; padding-right: 2px !important; padding-bottom: 2px !important;
+  }
+  #engineView .engine-shell { margin: 0 !important; }
+
+  /* the two boxes go (almost) edge to edge */
+  #questionBox.test-resizable-box,
+  #conceptBox.test-resizable-box {
+    max-width: none !important; min-width: 0 !important;
+    width: 100%;
+    margin: 0 0 4px;
+    padding: 4px 4px !important;
+    border-radius: 10px !important;
+  }
+
+  /* concept box was stuck at 70vh — let it fill the screen below the topbar */
+  #conceptBox.test-resizable-box {
+    height: calc(100dvh - var(--topbar-h, 110px) - 10px);
+    max-height: none !important; min-height: 240px !important;
+  }
+  #conceptBox .cp-top    { padding: 6px 8px 4px !important; }
+  #conceptBox .cp-scroll { padding: 6px 6px 10px !important; }
+  #conceptBox .cp-footer { padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)) !important; border-radius: 0 0 10px 10px; }
+  #conceptBox .cp-hero   { padding: 10px !important; gap: 10px !important; margin-bottom: 10px !important; border-radius: 12px; }
+  #conceptBox .cp-icon   { width: 44px !important; height: 44px !important; font-size: 1.4rem !important; border-radius: 12px; }
+  #conceptBox .cp-title  { font-size: 1.25rem !important; }
+  #conceptBox .cp-body   { font-size: 1rem !important; line-height: 1.6 !important; }
+  #conceptBox .cp-card   { padding: 10px 12px 10px 14px !important; margin: 10px 0 !important; }
+  #conceptBox .cp-note   { padding: 8px 12px !important; margin: 10px 0 !important; }
+  #conceptBox .cp-formula { padding: 12px 10px !important; }
+  #conceptBox .cp-steps > li { padding: 9px 10px 9px 52px; }
+  #conceptBox .cp-body td, #conceptBox .cp-body th { padding: 7px 8px; }
+
+  /* test mode */
+  #questionBox .question-scroll-area { padding: 0 !important; }
+  #questionBox .qbox,
+  .test-resizable-box .qbox { padding: 8px 8px !important; margin-bottom: .5rem !important; border-radius: 10px; }
+  #questionBox #optionsArea .option,
+  .test-resizable-box #optionsArea .option { padding: .6rem .6rem !important; }
+  #qaFooterButtonsRow { margin: 8px -2px 0 !important; padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+/* very small phones: use every pixel */
+@media (max-width: 400px) {
+  #engineView > .container-fluid { padding-left: 0 !important; padding-right: 0 !important; }
+  #questionBox.test-resizable-box, #conceptBox.test-resizable-box { padding: 3px !important; border-radius: 8px !important; }
+  #conceptBox .cp-scroll { padding: 4px 4px 8px !important; }
+}
+/* resize handles: slimmer strips so they don't cover content now that padding is smaller */
+#questionBox .test-box-resize-handle[data-edge="n"], #questionBox .test-box-resize-handle[data-edge="s"],
+#conceptBox  .test-box-resize-handle[data-edge="n"], #conceptBox  .test-box-resize-handle[data-edge="s"] { height: 8px; left: 24px; right: 24px; }
+#questionBox .test-box-resize-handle[data-edge="e"], #questionBox .test-box-resize-handle[data-edge="w"],
+#conceptBox  .test-box-resize-handle[data-edge="e"], #conceptBox  .test-box-resize-handle[data-edge="w"] { width: 8px; top: 24px; bottom: 24px; }
+#questionBox .test-box-resize-handle[data-edge="n"]::after, #questionBox .test-box-resize-handle[data-edge="s"]::after,
+#conceptBox  .test-box-resize-handle[data-edge="n"]::after, #conceptBox  .test-box-resize-handle[data-edge="s"]::after { top: 3px; }
+#questionBox .test-box-resize-handle[data-edge="e"]::after, #questionBox .test-box-resize-handle[data-edge="w"]::after,
+#conceptBox  .test-box-resize-handle[data-edge="e"]::after, #conceptBox  .test-box-resize-handle[data-edge="w"]::after { left: 3px; }
+#questionBox .test-box-resize-handle[data-edge="ne"], #questionBox .test-box-resize-handle[data-edge="nw"],
+#questionBox .test-box-resize-handle[data-edge="se"], #questionBox .test-box-resize-handle[data-edge="sw"],
+#conceptBox  .test-box-resize-handle[data-edge="ne"], #conceptBox  .test-box-resize-handle[data-edge="nw"],
+#conceptBox  .test-box-resize-handle[data-edge="se"], #conceptBox  .test-box-resize-handle[data-edge="sw"] { width: 22px; height: 22px; }
+</style>
+<script>
+/* if the screen size/orientation changes, drop saved inline sizes that no longer fit */
+(function(){
+  var t;
+  function fit(){
+    document.querySelectorAll('.test-resizable-box').forEach(function(b){
+      var w=parseFloat(b.style.width)||0, h=parseFloat(b.style.height)||0;
+      if((w && w>window.innerWidth-2) || (h && h>window.innerHeight-2)){
+        ['width','height','marginLeft','marginRight','top'].forEach(function(k){ b.style[k]=''; });
+      }
+    });
+  }
+  window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(fit,150); });
+  window.addEventListener('orientationchange',function(){ setTimeout(fit,250); });
 })();
 </script>
 </body>
