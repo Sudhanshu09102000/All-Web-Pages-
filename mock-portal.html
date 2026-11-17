@@ -5847,16 +5847,16 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           col.innerHTML = `
       <div class="glass subject-card ${s.colorClass} p-3 p-md-4 h-100" role="button" tabindex="0">
         <div class="d-flex align-items-start gap-3">
-          <div class="subject-accent">
+          <div class="subject-accent" style="flex-shrink:0;">
             <span style="position:relative;z-index:1;font-size:18px;">${icon}</span>
           </div>
-          <div class="flex-grow-1">
-            <div class="fs-5 fw-bold">${escapeHtml(s.title)}</div>
+          <div class="flex-grow-1" style="min-width:0;">
+            <div class="fs-5 fw-bold" style="overflow-wrap:anywhere;">${escapeHtml(s.title)}</div>
             <div class="subtle mt-1" style="font-size:.82rem;">
               ${s.topics?.length || 0} topic groups &nbsp;·&nbsp; ${totalSubs} subtopics
             </div>
           </div>
-          <span class="pill" style="background:rgba(59, 130, 246,.12);border-color:rgba(59, 130, 246,.3);color:#3b82f6;">Open →</span>
+          <span class="pill" style="flex-shrink:0;white-space:nowrap;align-self:center;background:rgba(59, 130, 246,.12);border-color:rgba(59, 130, 246,.3);color:#3b82f6;">Open →</span>
         </div>
       </div>
     `;

@@ -1,15 +1,18 @@
 @@C 📊 | #22c55e | Percentage — Successive Change
-L: A percentage is just a fraction out of <b>100</b>. <u>Stop calculating and start recognising.</u>
-H: <div class="cp-formula" translate="no"><small>Successive change</small>Net % = a + b + <span class="cp-frac"><i>a × b</i><i>100</i></span></div>
+L: A percentage tells us how many parts we have out of <b>100</b>. <u>Do not calculate every time. Learn to see the pattern.</u>
+N tip: "Successive change" simply means a number changes once, and then it changes again. For example, a price goes up and then comes down.
+H: <div class="cp-formula" translate="no"><small>Successive change</small>Net percent change = a + b + <span class="cp-frac"><i>a × b</i><i>100</i></span></div>
+L: Here, a is the first change and b is the second change. Write an increase as a plus number and a decrease as a minus number.
 H: <div class="cp-fig"><img src="images/Quantitative_Aptitude/Maths/Percentage_and_Profit_Loss/1.png" alt="Bar diagram: 100 to 120 to 108" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-T: Step | Value | Change ;; Start | 100 | — ;; After +20% | 120 | +20 ;; After −10% | 108 | −12
-N trap: Percentages of <i>different bases</i> can never be added directly.
-M: a + b + ab⁄100 — “<b>A</b>dd <b>B</b>oth, then <b>A</b>dd <b>B</b>y hundred”
-@@Q A number is increased by 20% and then decreased by 10%. What is the net change?
-1) 6% increase  2) 8% increase  3) 10% increase  4) 12% increase
+T: Step | Value | Change ;; Start | 100 | No change yet ;; After a 20 percent increase | 120 | Up by 20 ;; After a 10 percent decrease | 108 | Down by 12
+L: The second change is taken on 120, not on 100. That is why the final answer is 108, which is a net increase of 8 percent.
+N trap: You cannot add two percentages directly when they are taken on different starting values. The second percentage is always taken on the new value.
+M: Add both changes, then add the product of both divided by one hundred.
+@@Q A number is increased by 20 percent and then decreased by 10 percent. What is the net change?
+1) 6 percent increase  2) 8 percent increase  3) 10 percent increase  4) 12 percent increase
 ANS: 2
-EXP: ✅ 8%: 20 − 10 + (20 × −10)/100. 📌 Check: 100 → 120 → 108. ❌ 10% forgets the ab/100 term.
-@@Q Sugar price rises by 25%. By what percent must consumption fall to keep expenditure the same?
-1) 20%  2) 25%  3) 15%  4) 30%
+EXP: ✅ The answer is 8 percent. Use 20 − 10 + (20 × −10) ÷ 100 = 8. 📌 Check by starting with 100: it becomes 120 and then 108. ❌ 10 percent is wrong because it forgets the last part of the formula.
+@@Q The price of sugar goes up by 25 percent. By how much percent should a family reduce its use of sugar so that the money spent stays the same?
+1) 20 percent  2) 25 percent  3) 15 percent  4) 30 percent
 ANS: 1
-EXP: ✅ 20%: 25/125 × 100. 📌 Price ↑ 1/4 → use ↓ 1/5. ❌ 25% ignores the new base.
+EXP: ✅ The answer is 20 percent. Divide the rise by the new price: 25 ÷ 125 × 100. 📌 If the price goes up by one fourth, the use must come down by one fifth. ❌ 25 percent is wrong because it ignores the new, higher price.

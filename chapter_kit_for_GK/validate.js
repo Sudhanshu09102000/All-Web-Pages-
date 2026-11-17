@@ -18,7 +18,7 @@ for (const k of keys) {
     if (!e.icon) E(k + ": no icon"); if (e.pauseTimer !== true) E(k + ": pauseTimer"); if (!e.accent) E(k + ": no accent");
     if (acc[e.accent]) E(k + ": accent repeats entry " + acc[e.accent]); acc[e.accent] = k;
     if (/cp-hl/.test(e.html)) E(k + ": cp-hl used");
-    const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 30) E(k + ": page too long");
+    const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 45) E(k + ": page too long");
     for (const m of e.html.matchAll(/src="([^"]+)"/g)) used.add(m[1]);
   } else {
     nq++;
@@ -26,7 +26,7 @@ for (const k of keys) {
     if (!Array.isArray(e.options) || e.options.length !== 4 || new Set(e.options.map((o) => o.trim().toLowerCase())).size !== 4) E(k + ": options not 4 distinct");
     if (!["1", "2", "3", "4"].includes(e.correct)) E(k + ": bad correct"); else ans[e.correct]++;
     if ([e.questext, e.exptext, ...(e.options || [])].some((s) => tag.test(s))) E(k + ": HTML tag in text");
-    if (e.exptext && e.exptext.trim().split(/\s+/).length > 32) E(k + ": exptext too long");
+    if (e.exptext && e.exptext.trim().split(/\s+/).length > 60) E(k + ": exptext too long");
   }
 }
 const e1 = D[1];
