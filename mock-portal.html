@@ -6454,18 +6454,27 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         // Update legend
         if (!state.submitted) {
           const attempted = state.qIds.filter(qid => !!state.qState[qid].selectedMetaId).length;
+          const _pct = state.qCount ? Math.round(attempted / state.qCount * 100) : 0;
           $('navLegend').innerHTML =
-            `<span style="color:#22c55e;">●</span> ${attempted} answered &nbsp;` +
-            `<span style="color:rgba(255,255,255,.3);">●</span> ${state.qCount - attempted} left`;
+            `<span class="nv-pills">` +
+              `<span class="nv-pill nv-ok"><i></i><b>${attempted}</b> answered</span>` +
+              `<span class="nv-pill nv-left"><i></i><b>${state.qCount - attempted}</b> left</span>` +
+            `</span>` +
+            `<span class="nv-prog"><span style="width:${_pct}%"></span></span>`;
         } else {
           const correct = state.qIds.filter(qid => {
             const qs = state.qState[qid];
             if (!qs.selectedMetaId) return false;
             return qs.selectedMetaId === getOrBuildShuffle(qid).correctMetaId;
           }).length;
+          const _wrong = state.qIds.filter(qid=>{const qs=state.qState[qid];return qs.selectedMetaId && qs.selectedMetaId!==getOrBuildShuffle(qid).correctMetaId;}).length;
+          const _pc = state.qCount ? Math.round(correct / state.qCount * 100) : 0;
           $('navLegend').innerHTML =
-            `<span style="color:#22c55e;">●</span> ${correct} correct &nbsp;` +
-            `<span style="color:#ef4444;">●</span> ${state.qIds.filter(qid=>{const qs=state.qState[qid];return qs.selectedMetaId && qs.selectedMetaId!==getOrBuildShuffle(qid).correctMetaId;}).length} wrong`;
+            `<span class="nv-pills">` +
+              `<span class="nv-pill nv-ok"><i></i><b>${correct}</b> correct</span>` +
+              `<span class="nv-pill nv-bad"><i></i><b>${_wrong}</b> wrong</span>` +
+            `</span>` +
+            `<span class="nv-prog"><span style="width:${_pc}%"></span></span>`;
         }
       }
 
@@ -7974,6 +7983,14 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         window.addEventListener("keydown", (e) => {
           if (e.key === "Escape") closeNavPanel();
         });
+
+        // ✅ tap/click on the dimmed area outside the navigator closes it
+        document.addEventListener('pointerdown', (e) => {
+          if (!navPanel.classList.contains('open')) return;
+          if (navPanel.contains(e.target)) return;
+          if (navIcon && navIcon.contains(e.target)) return;
+          closeNavPanel();
+        }, true);
 
 
         $('soundBtn').onclick = () => {
@@ -23297,6 +23314,319 @@ html.lite-mode #questionBox.test-resizable-box{ background:#fff !important; bord
 @media (max-width:767px){
   body.hide-top-bar #questionBox.test-resizable-box,
   body.hide-top-bar #conceptBox.test-resizable-box{ max-height:none !important; }
+}
+</style>
+
+
+<style id="navPremiumCss">
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM QUESTION NAVIGATOR — theme-aware (uses --gp-* variables)
+   Scoped with html:not(.lite-mode) so Light/plain mode stays plain.
+═══════════════════════════════════════════════════════════════ */
+html:not(.lite-mode) {
+  --nv-text: var(--gp-text, #f1f5f9);
+  --nv-accent: #3b82f6;
+  --nv-violet: #8b5cf6;
+  --nv-line: color-mix(in srgb, var(--nv-text) 14%, transparent);
+  --nv-soft: color-mix(in srgb, var(--nv-text) 6%, transparent);
+}
+
+/* ── Proper dimmed backdrop (old one was clipped into a grey frame) ── */
+html:not(.lite-mode) #navPanel.open::before { display: none !important; }
+html:not(.lite-mode) .nav-panel { padding: 0 !important; background: transparent !important; box-shadow: none; transition: transform .32s cubic-bezier(.22,.8,.3,1), box-shadow .32s ease; }
+html:not(.lite-mode) .nav-panel.open { box-shadow: 0 0 0 100vmax rgba(2,6,23,.55); }
+html:not(.lite-mode) .nav-panel { width: min(380px, 94vw); }
+
+/* ── Panel card ── */
+html:not(.lite-mode) .nav-panel .nav-panel-inner {
+  border-radius: 26px 0 0 26px !important;
+  border: 1px solid var(--nv-line) !important;
+  border-right: 0 !important;
+  padding: 18px 16px 22px !important;
+  box-shadow: -18px 0 60px rgba(0,0,0,.35) !important;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--nv-text) 25%, transparent) transparent;
+}
+html:not(.lite-mode) .nav-panel .nav-panel-inner::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  border-radius: 26px 0 0 0; opacity: .9; pointer-events: none;
+}
+
+/* ── Header ── */
+html:not(.lite-mode) .nav-panel-inner > .d-flex:first-child {
+  margin-bottom: 12px !important; padding: 6px 2px 12px;
+  border-bottom: 1px solid var(--nv-line);
+}
+html:not(.lite-mode) .nav-panel-inner > .d-flex:first-child > .fw-semibold {
+  font-size: 1.18rem; font-weight: 800 !important; letter-spacing: .2px;
+  display: flex; align-items: center; gap: 10px;
+}
+html:not(.lite-mode) .nav-panel-inner > .d-flex:first-child > .fw-semibold::before {
+  content: '☰'; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px;
+  font-size: 16px; color: #fff; font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6); box-shadow: 0 6px 16px rgba(99,102,241,.4);
+}
+html:not(.lite-mode) .nav-panel .nav-close-btn {
+  width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: 700;
+  color: var(--nv-text); background: var(--nv-soft); border: 1px solid var(--nv-line);
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+html:not(.lite-mode) .nav-panel .nav-close-btn:hover { background: color-mix(in srgb, #ef4444 18%, transparent); border-color: rgba(239,68,68,.6); transform: rotate(90deg); }
+
+/* ── Summary: pills + progress bar ── */
+html:not(.lite-mode) #navLegend { display: block !important; margin: 2px 0 6px; font-size: 13px !important; }
+#navLegend .nv-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+#navLegend .nv-pill {
+  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px 6px 10px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; line-height: 1;
+  color: var(--nv-text, #f1f5f9); background: var(--nv-soft, rgba(255,255,255,.06)); border: 1px solid var(--nv-line, rgba(255,255,255,.14));
+}
+#navLegend .nv-pill b { font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; }
+#navLegend .nv-pill i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+#navLegend .nv-ok i   { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,.7); }
+#navLegend .nv-left i { background: #94a3b8; }
+#navLegend .nv-bad i  { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,.7); }
+#navLegend .nv-prog { display: block; height: 6px; margin-top: 12px; border-radius: 99px; overflow: hidden; background: var(--nv-soft, rgba(255,255,255,.08)); }
+#navLegend .nv-prog > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #22c55e, #3b82f6); transition: width .4s ease; min-width: 0; }
+
+/* ── Grid ── */
+html:not(.lite-mode) #qNav {
+  display: grid !important; grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px 10px !important; padding: 10px 2px 4px !important; justify-items: center; margin: 0 !important; width: 100%;
+}
+
+/* ── Question number chips ── */
+html:not(.lite-mode) #qNav .qdot:not(.cdot) {
+  width: 52px; height: 52px; border-radius: 50%;
+  font-size: 15px !important; font-weight: 800 !important; font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--nv-text) 82%, transparent) !important;
+  border: 1.5px solid color-mix(in srgb, var(--nv-text) 20%, transparent) !important;
+  background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--nv-text) 12%, transparent), color-mix(in srgb, var(--nv-text) 4%, transparent) 70%) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.12) !important;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+html:not(.lite-mode) #qNav .qdot:not(.cdot):hover { transform: translateY(-2px) scale(1.07) !important; border-color: var(--nv-accent) !important; box-shadow: 0 8px 18px rgba(59,130,246,.3) !important; }
+html:not(.lite-mode) #qNav .qdot:not(.cdot):active { transform: scale(.94) !important; }
+
+html:not(.lite-mode) #qNav .qdot.st-notanswered, html:not(.lite-mode) #qNav .qdot.st-notanswered:hover {
+  background: radial-gradient(circle at 30% 25%, rgba(253,186,116,.55), rgba(251,146,60,.2) 75%) !important;
+  border-color: rgba(251,146,60,.9) !important; color: color-mix(in srgb, #c2410c 55%, var(--nv-text)) !important;
+  box-shadow: 0 4px 10px rgba(251,146,60,.28), inset 0 1px 0 rgba(255,255,255,.35) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-attempted, html:not(.lite-mode) #qNav .qdot.st-attempted:hover {
+  background: linear-gradient(145deg, #22c55e, #16a34a) !important; border-color: #15803d !important; color: #fff !important;
+  box-shadow: 0 6px 14px rgba(34,197,94,.4), inset 0 1px 0 rgba(255,255,255,.4) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-review, html:not(.lite-mode) #qNav .qdot.st-review:hover {
+  background: linear-gradient(145deg, #fde047, #facc15) !important; border-color: #ca8a04 !important; color: #422006 !important;
+  box-shadow: 0 6px 14px rgba(250,204,21,.4), inset 0 1px 0 rgba(255,255,255,.5) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-reviewanswered, html:not(.lite-mode) #qNav .qdot.st-reviewanswered:hover {
+  background: linear-gradient(135deg, #22c55e 0 50%, #facc15 50% 100%) !important; border-color: #15803d !important; color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45); box-shadow: 0 6px 14px rgba(34,197,94,.35) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-skipped, html:not(.lite-mode) #qNav .qdot.st-skipped:hover {
+  background: color-mix(in srgb, #64748b 22%, transparent) !important; border-color: rgba(100,116,139,.6) !important;
+  color: color-mix(in srgb, var(--nv-text) 60%, transparent) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-final-correct, html:not(.lite-mode) #qNav .qdot.st-final-correct:hover {
+  background: linear-gradient(145deg, #22c55e, #15803d) !important; border-color: #14532d !important; color: #fff !important;
+  box-shadow: 0 6px 14px rgba(34,197,94,.45) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-final-wrong, html:not(.lite-mode) #qNav .qdot.st-final-wrong:hover {
+  background: linear-gradient(145deg, #ef4444, #b91c1c) !important; border-color: #7f1d1d !important; color: #fff !important;
+  box-shadow: 0 6px 14px rgba(239,68,68,.45) !important;
+}
+html:not(.lite-mode) #qNav .qdot.st-final-unattempted, html:not(.lite-mode) #qNav .qdot.st-final-unattempted:hover {
+  background: color-mix(in srgb, #64748b 20%, transparent) !important; border-color: rgba(100,116,139,.55) !important;
+  color: color-mix(in srgb, var(--nv-text) 55%, transparent) !important;
+}
+/* current question: bright ring + soft halo (works on top of any state colour) */
+html:not(.lite-mode) #qNav .qdot.current:not(.cdot) {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gp-box1, #0b1220) 92%, transparent), 0 0 0 5px #3b82f6, 0 0 24px rgba(59,130,246,.55) !important;
+  transform: scale(1.06);
+}
+
+/* ── Section / concept rows ── */
+html:not(.lite-mode) #qNav .qdot.cdot {
+  grid-column: 1 / -1; width: 100% !important; min-height: 48px; height: auto !important;
+  margin-top: 8px; padding: 8px 12px 8px 8px !important; gap: 12px !important; border-radius: 16px !important;
+  display: flex !important; align-items: center; text-align: left;
+  font-size: 13.5px !important; font-weight: 700 !important; letter-spacing: .1px;
+  color: var(--nv-text) !important;
+  border: 1px solid color-mix(in srgb, var(--nv-violet) 38%, transparent) !important;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--nv-violet) 16%, transparent), color-mix(in srgb, var(--nv-accent) 6%, transparent)) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12) !important;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+html:not(.lite-mode) #qNav .qdot.cdot:first-child { margin-top: 0; }
+html:not(.lite-mode) #qNav .qdot.cdot:hover { transform: translateY(-1px) !important; border-color: var(--nv-violet) !important; box-shadow: 0 8px 20px rgba(139,92,246,.28) !important; }
+html:not(.lite-mode) #qNav .qdot.cdot .cdot-ic {
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; font-size: 17px;
+  background: color-mix(in srgb, var(--nv-violet) 22%, transparent); border: 1px solid color-mix(in srgb, var(--nv-violet) 40%, transparent);
+}
+html:not(.lite-mode) #qNav .qdot.cdot .cdot-tx { color: var(--nv-text); }
+html:not(.lite-mode) #qNav .qdot.cdot::after {
+  content: '›'; flex: 0 0 auto; margin-left: auto; font-size: 20px; line-height: 1; opacity: .55; font-weight: 800;
+}
+html:not(.lite-mode) #qNav .qdot.cdot.seen { border-color: rgba(34,197,94,.55) !important; background: linear-gradient(100deg, rgba(34,197,94,.16), color-mix(in srgb, var(--nv-accent) 5%, transparent)) !important; }
+html:not(.lite-mode) #qNav .qdot.cdot.seen .cdot-ic { background: rgba(34,197,94,.2); border-color: rgba(34,197,94,.5); }
+html:not(.lite-mode) #qNav .qdot.cdot.seen::after { content: '✓'; color: #22c55e; opacity: 1; font-size: 16px; }
+html:not(.lite-mode) #qNav .qdot.cdot.current {
+  border-color: var(--nv-violet) !important;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--nv-violet) 34%, transparent), color-mix(in srgb, var(--nv-accent) 14%, transparent)) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--nv-violet) 45%, transparent), 0 8px 24px rgba(139,92,246,.4) !important;
+}
+
+/* ── Legend card ── */
+html:not(.lite-mode) .nav-legend-wrap {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; margin-top: 18px !important;
+  padding: 26px 14px 12px; position: relative; border-radius: 16px; line-height: 1.3 !important;
+  background: var(--nv-soft); border: 1px solid var(--nv-line);
+  font-size: 11.5px !important; opacity: 1 !important; color: var(--nv-text) !important;
+}
+html:not(.lite-mode) .nav-legend-wrap::before {
+  content: 'LEGEND'; position: absolute; top: 9px; left: 14px; font-size: 9.5px; font-weight: 800; letter-spacing: 1.6px; opacity: .55;
+}
+html:not(.lite-mode) .nav-legend-item { display: flex; align-items: center; font-weight: 600; opacity: .9; }
+html:not(.lite-mode) .nav-legend-item > span:first-child { width: 14px !important; height: 14px !important; flex: 0 0 auto; margin-right: 8px !important; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+
+/* ── Action buttons ── */
+html:not(.lite-mode) .nav-panel .nav-actions-vertical { align-items: stretch; gap: 10px; margin-top: 18px !important; }
+html:not(.lite-mode) .nav-panel .nav-actions-vertical .btn {
+  width: 100% !important; min-height: 50px; border-radius: 16px; font-weight: 800; font-size: 15px; letter-spacing: .3px;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+html:not(.lite-mode) .nav-panel #submitBtn {
+  border: 0; color: #fff; background: linear-gradient(135deg, #ef4444, #e11d48);
+  box-shadow: 0 10px 24px rgba(225,29,72,.42), inset 0 1px 0 rgba(255,255,255,.3);
+}
+html:not(.lite-mode) .nav-panel #submitBtn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 14px 30px rgba(225,29,72,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+html:not(.lite-mode) .nav-panel #submitBtn:active { transform: scale(.97); }
+html:not(.lite-mode) .nav-panel #downloadPdfBtn {
+  color: var(--nv-text); background: var(--nv-soft); border: 1px solid var(--nv-line);
+}
+html:not(.lite-mode) .nav-panel #downloadPdfBtn:hover { transform: translateY(-2px); border-color: var(--nv-accent); }
+
+@media (max-width: 576px) {
+  html:not(.lite-mode) .nav-panel { width: 94vw; }
+  html:not(.lite-mode) #qNav .qdot:not(.cdot) { width: 50px; height: 50px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.lite-mode) .nav-panel, html:not(.lite-mode) #qNav .qdot { transition: none !important; }
+}
+</style>
+
+
+<style id="navDockMergeCss">
+/* ═══════════════════════════════════════════════════════════════
+   TOP DOCK ⇄ NAVIGATOR — one merged premium card
+   • Fix: `contain:layout` on .view/.container-fluid made the panel & dock
+     position against the page box (not the screen) → panel looked cut short.
+   • Open  : dock becomes the control deck at the top of the navigator.
+   • Closed: slim glass pill (timer + menu).
+═══════════════════════════════════════════════════════════════ */
+html:not(.lite-mode) #engineView,
+html:not(.lite-mode) #engineView .container-fluid { contain: none !important; }
+
+html:not(.lite-mode) {
+  --nv-glass-bg: linear-gradient(135deg, var(--gp-box1-tint, var(--gp-box1, #0b1220)), var(--gp-box2-tint, var(--gp-box2, #070d1b)));
+}
+
+/* ───────── CLOSED: slim pill ───────── */
+html:not(.lite-mode) #engineView > #hudDock.hud-dock:not(.nav-open) {
+  top: 10px; height: 38px; padding: 0 6px 0 12px !important; gap: 8px; border-radius: 19px 0 0 19px;
+  border: 1px solid color-mix(in srgb, var(--nv-accent, #3b82f6) 45%, transparent); border-right: 0;
+  background-color: var(--gp-box1, #0b1220);
+  background-image: var(--nv-glass-bg);
+  box-shadow: -6px 8px 22px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 18px rgba(59,130,246,.18);
+}
+html:not(.lite-mode) #hudDock:not(.nav-open) #timerPill {
+  font-size: 14px !important; color: var(--nv-text, #f1f5f9) !important; gap: 6px;
+}
+html:not(.lite-mode) #hudDock:not(.nav-open) #timerText { color: var(--nv-text, #f1f5f9) !important; text-shadow: none !important; font-size: 14px !important; }
+html:not(.lite-mode) #hudDock:not(.nav-open) #timerHideBtn { width: 22px; height: 22px; border-radius: 50%; color: var(--nv-text); background: var(--nv-soft); }
+html:not(.lite-mode) #hudDock:not(.nav-open) #navToggleIcon.nav-toggle-icon {
+  width: 30px !important; height: 30px !important; border-radius: 50% !important; gap: 4px !important;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important; box-shadow: 0 4px 12px rgba(99,102,241,.5) !important;
+}
+html:not(.lite-mode) #hudDock:not(.nav-open) #navToggleIcon span { background: #fff !important; box-shadow: none !important; width: 13px !important; }
+html:not(.lite-mode) #hudDock:not(.nav-open) #timerShowBtn { color: var(--nv-text) !important; }
+html:not(.lite-mode) #hudDock:not(.nav-open) .hud-sep { background: var(--nv-line); }
+
+/* ───────── OPEN: control deck merged on top of the navigator ───────── */
+html:not(.lite-mode) #engineView > #hudDock.hud-dock.nav-open {
+  top: 0; right: 0; left: auto; width: min(380px, 94vw); height: 108px; box-sizing: border-box;
+  padding: 16px 14px 12px !important; gap: 8px; flex-wrap: wrap; align-content: flex-start; align-items: center;
+  border-radius: 26px 0 0 0; border: 1px solid var(--nv-line); border-right: 0; border-bottom: 0;
+  background-color: var(--gp-box1, #0b1220);
+  background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899), var(--nv-glass-bg);
+  background-size: 100% 4px, 100% 100%; background-repeat: no-repeat, no-repeat; background-position: top left, center;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: none;
+}
+/* thin separator between the deck and the navigator content */
+html:not(.lite-mode) #hudDock.nav-open::before {
+  content: ''; position: absolute; left: 14px; right: 14px; bottom: 0; height: 1px; background: var(--nv-line); order: 0; pointer-events: none;
+}
+/* forced line break → row 1: [mode switch][✕]   row 2: [Translate][timer] */
+html:not(.lite-mode) #hudDock.nav-open::after { content: ''; order: 3; flex: 0 0 100%; height: 0; }
+html:not(.lite-mode) #hudDock.nav-open .hud-sep { display: none !important; }
+
+/* mode switch = segmented control */
+html:not(.lite-mode) #hudDock.nav-open .mode-switch {
+  order: 1; flex: 1 1 0; min-width: 0; height: 40px; padding: 3px; gap: 3px; border-radius: 14px;
+  background: var(--nv-soft); border: 1px solid var(--nv-line);
+}
+html:not(.lite-mode) #hudDock.nav-open .mode-switch button {
+  flex: 1 1 0; justify-content: center; min-width: 0; height: 32px; padding: 0 4px; gap: 5px; border-radius: 11px;
+  font-size: 12.5px; color: var(--nv-text); opacity: .72;
+}
+html:not(.lite-mode) #hudDock.nav-open .mode-switch button .ms-tx { display: inline !important; }
+html:not(.lite-mode) #hudDock.nav-open .mode-switch button.on { opacity: 1; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.28); }
+
+/* close ✕ (the hamburger morphs into it) */
+html:not(.lite-mode) #hudDock.nav-open #navToggleIcon.nav-toggle-icon {
+  order: 2; width: 40px !important; height: 40px !important; border-radius: 50% !important; gap: 4px !important; flex: 0 0 auto;
+  background: var(--nv-soft) !important; border: 1px solid var(--nv-line) !important; box-shadow: none !important;
+  transition: background .2s ease, transform .25s ease !important;
+}
+html:not(.lite-mode) #hudDock.nav-open #navToggleIcon.nav-toggle-icon:hover { background: color-mix(in srgb, #ef4444 20%, transparent) !important; transform: rotate(90deg) !important; }
+html:not(.lite-mode) #hudDock.nav-open #navToggleIcon span { background: var(--nv-text) !important; box-shadow: none !important; width: 16px !important; }
+
+/* Translate / Hide English / timer = soft pills */
+html:not(.lite-mode) #hudDock.nav-open #dualLangBtn,
+html:not(.lite-mode) #hudDock.nav-open #hideEnBtn,
+html:not(.lite-mode) #hudDock.nav-open #timerShowBtn,
+html:not(.lite-mode) #hudDock.nav-open #timerPill {
+  height: 36px !important; min-height: 0 !important; margin: 0 !important; padding: 0 12px !important; border-radius: 12px !important;
+  background: var(--nv-soft) !important; border: 1px solid var(--nv-line) !important;
+  color: var(--nv-text) !important; font-size: 13px !important; font-weight: 700 !important; box-sizing: border-box;
+  transition: background .18s ease, border-color .18s ease, transform .15s ease;
+}
+html:not(.lite-mode) #hudDock.nav-open #dualLangBtn { order: 4; flex: 1 1 auto; justify-content: center; }
+html:not(.lite-mode) #hudDock.nav-open #hideEnBtn  { order: 5; flex: 0 0 auto; }
+html:not(.lite-mode) #hudDock.nav-open #timerShowBtn { order: 6; flex: 0 0 auto; }
+html:not(.lite-mode) #hudDock.nav-open #timerPill { order: 7; flex: 0 0 auto; align-items: center; gap: 8px; }
+html:not(.lite-mode) #hudDock.nav-open #dualLangBtn:hover,
+html:not(.lite-mode) #hudDock.nav-open #hideEnBtn:hover,
+html:not(.lite-mode) #hudDock.nav-open #timerShowBtn:hover { border-color: var(--nv-accent, #3b82f6) !important; background: color-mix(in srgb, #3b82f6 14%, transparent) !important; }
+html:not(.lite-mode) #hudDock.nav-open #dualLangBtn.dl-active { background: color-mix(in srgb, #3b82f6 22%, transparent) !important; border-color: #3b82f6 !important; }
+html:not(.lite-mode) #hudDock.nav-open #hideEnBtn.on { background: color-mix(in srgb, #ec4899 24%, transparent) !important; border-color: #ec4899 !important; }
+html:not(.lite-mode) #hudDock.nav-open #timerText { color: var(--nv-text) !important; text-shadow: none !important; font-size: 14px !important; letter-spacing: .6px; }
+html:not(.lite-mode) #hudDock.nav-open #timerHideBtn { width: 22px; height: 22px; border-radius: 50%; color: var(--nv-text); background: var(--nv-soft); }
+html:not(.lite-mode) #hudDock.nav-open #timerHideBtn:hover { background: color-mix(in srgb, #ef4444 25%, transparent); }
+
+/* ── navigator content starts below the merged deck; its own top strip is now on the deck ── */
+html:not(.lite-mode) .nav-panel .nav-panel-inner { padding-top: 120px !important; border-top-left-radius: 26px !important; }
+html:not(.lite-mode) .nav-panel .nav-panel-inner::before { display: none !important; }
+html:not(.lite-mode) .nav-panel-inner > .d-flex:first-child { border-bottom: 0; padding-bottom: 4px; }
+
+@media (max-width: 576px) {
+  html:not(.lite-mode) #engineView > #hudDock.hud-dock.nav-open { width: 94vw; }
 }
 </style>
 
