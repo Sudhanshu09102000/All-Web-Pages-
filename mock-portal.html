@@ -7989,6 +7989,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           if (!navPanel.classList.contains('open')) return;
           if (navPanel.contains(e.target)) return;
           if (navIcon && navIcon.contains(e.target)) return;
+          if (e.target.closest && e.target.closest('#hudDock')) return;   // top control deck belongs to the navigator
           closeNavPanel();
         }, true);
 
