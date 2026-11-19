@@ -22905,6 +22905,377 @@ body.tl-only #conceptBox .cp-tl{border-left:0;padding-left:0;margin-top:0}
   window.addEventListener('orientationchange',function(){ setTimeout(fit,250); });
 })();
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════
+     CONTROL PANEL — slim edge tab (never covers text) + premium buttons
+     Theme-aware: every colour comes from the --gp-* variables, so all
+     themes (Midnight, Good Board, custom colours…) restyle these too.
+═══════════════════════════════════════════════════════════════════ -->
+<style id="gcpPremiumUiCss">
+/* ───────────── 1. EDGE TAB: only a 5px glowing sliver rests on the screen edge ─────────────
+   The tap area stays big (invisible ::before), so it is still easy to hit with a thumb,
+   but the visible part is thin enough that no content text is ever hidden behind it.
+   It widens (and shows its grip dots) only while a finger / mouse is on it. */
+html body #gcp-trigger{
+  width:5px; height:68px;
+  background:linear-gradient(180deg,#7dd3fc 0%,#3b82f6 45%,#6366f1 100%);
+  border:0; border-radius:0 9px 9px 0; gap:4px;
+  box-shadow:0 0 12px rgba(59,130,246,.65), inset -1px 0 0 rgba(255,255,255,.4);
+  opacity:.92;
+  transition:width .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, opacity .2s ease;
+}
+html body #gcp-trigger::before{ left:0; top:-22px; bottom:-22px; width:30px; }
+html body #gcp-trigger #gcp-trigger-dots{ opacity:0; transition:opacity .15s ease; }
+html body #gcp-trigger #gcp-trigger-dots span{ width:3px; height:3px; }
+html body:not(.rec-live-on) #gcp-trigger{ animation:gcpTabHint 2.6s ease-in-out 2; }
+@keyframes gcpTabHint{
+  0%,100%{ box-shadow:0 0 12px rgba(59,130,246,.65), inset -1px 0 0 rgba(255,255,255,.4); }
+  50%    { box-shadow:0 0 22px rgba(96,165,250,1), 0 0 40px rgba(99,102,241,.6), inset -1px 0 0 rgba(255,255,255,.5); }
+}
+@media (hover:hover) and (pointer:fine){
+  html body #gcp-trigger{ width:8px; }
+  html body #gcp-trigger:hover{ width:22px; box-shadow:6px 0 26px rgba(59,130,246,.8), inset -1px 0 0 rgba(255,255,255,.4); }
+  html body #gcp-trigger:hover #gcp-trigger-dots{ opacity:1; }
+}
+@media (hover:none){ html body #gcp-trigger:hover{ width:5px; } }
+html body #gcp-trigger:active{ width:18px; opacity:1; }
+html body #gcp-trigger:active #gcp-trigger-dots{ opacity:1; }
+
+/* ───────────── 2. PREMIUM BUTTONS (all inside the control panel) ───────────── */
+html:not(.lite-mode) #gcp-panel{ --pb-hi:rgba(255,255,255,.17); --pb-ease:cubic-bezier(.2,.8,.2,1); }
+
+/* sheen that sweeps across a button on hover / press (cheap: one transform, no loop) */
+html:not(.lite-mode) #gcp-panel :is(.gcp-btn,.rec-primary,.gcp-img-upload-btn,.ab-main,#gcp-deck .gd-btn)::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
+  background:linear-gradient(110deg,transparent 34%,rgba(255,255,255,.2) 50%,transparent 66%);
+  transform:translateX(-130%); transition:transform .7s var(--pb-ease);
+}
+html:not(.lite-mode) #gcp-panel :is(.gcp-btn,.rec-primary,.ab-main,#gcp-deck .gd-btn):hover::before{ transform:translateX(130%); }
+
+/* — action buttons (.gcp-btn): Capture PPT, Question Answer Mode, Performance, Reset — */
+html:not(.lite-mode) #gcp-panel .gcp-btn{
+  position:relative; overflow:hidden; min-height:54px; padding:9px 14px 9px 10px; gap:12px;
+  border-radius:18px; font-size:13px; font-weight:700; letter-spacing:.2px; line-height:1.25;
+  box-shadow:0 10px 22px rgba(0,0,0,.3), inset 0 1px 0 var(--pb-hi), inset 0 -1px 0 rgba(0,0,0,.28);
+  transition:transform .2s var(--pb-ease), box-shadow .25s ease, border-color .25s ease, background .25s ease;
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn:not([class*="accent-"]){
+  background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)) !important;
+  border:1px solid var(--gp-tx-12) !important;
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn:not([class*="accent-"]):hover{
+  background:linear-gradient(150deg,var(--gp-glow-22),var(--gp-tx-06)) !important;
+  border-color:var(--gp-glow-40) !important;
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 30px rgba(0,0,0,.38), 0 0 0 1px var(--gp-glow-40), inset 0 1px 0 var(--pb-hi);
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn:active{ transform:translateY(0) scale(.975); transition-duration:.08s; }
+html:not(.lite-mode) #gcp-panel .gcp-btn > span:not(.gcp-icon):not(.gcp-kbd){ position:relative; z-index:2; }
+html:not(.lite-mode) #gcp-panel .gcp-btn:not(:has(.gcp-kbd))::after{
+  content:"›"; margin-left:auto; font-size:22px; line-height:1; font-weight:400; opacity:.5; position:relative; z-index:2;
+  transition:transform .2s var(--pb-ease), opacity .2s ease;
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn:hover::after{ transform:translateX(4px); opacity:.95; }
+
+/* glowing icon tile */
+html:not(.lite-mode) #gcp-panel .gcp-btn .gcp-icon{
+  position:relative; z-index:2; width:36px; height:36px; border-radius:13px; font-size:17px;
+  background:linear-gradient(145deg,var(--gp-glow-40),var(--gp-glow-10));
+  border:1px solid var(--gp-glow-40);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 5px 12px rgba(0,0,0,.32);
+}
+
+/* status pill (Off / On) */
+html:not(.lite-mode) #gcp-panel .gcp-btn .gcp-kbd{
+  position:relative; z-index:2; margin-left:auto; padding:5px 11px; border-radius:99px;
+  font-family:'Inter',sans-serif; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+  background:rgba(0,0,0,.38); border:1px solid rgba(255,255,255,.16); color:rgba(255,255,255,.7);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
+}
+
+/* colour families */
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan{
+  background:linear-gradient(135deg,rgba(59,130,246,.46),rgba(99,102,241,.16)); border-color:rgba(125,170,255,.6);
+}
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan:hover{ background:linear-gradient(135deg,rgba(59,130,246,.62),rgba(99,102,241,.26)); border-color:rgba(147,197,253,.9); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan .gcp-icon{ background:linear-gradient(145deg,#60a5fa,#4f46e5); border-color:rgba(255,255,255,.35); }
+
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-purple{ background:linear-gradient(135deg,rgba(139,92,246,.44),rgba(236,72,153,.14)); border-color:rgba(167,139,250,.6); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-purple .gcp-icon{ background:linear-gradient(145deg,#a78bfa,#7c3aed); border-color:rgba(255,255,255,.35); }
+
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-green{ background:linear-gradient(135deg,rgba(34,197,94,.42),rgba(16,185,129,.12)); border-color:rgba(74,222,128,.6); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-green .gcp-icon{ background:linear-gradient(145deg,#4ade80,#16a34a); border-color:rgba(255,255,255,.35); }
+
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange{ background:linear-gradient(135deg,rgba(251,146,60,.42),rgba(245,158,11,.12)); border-color:rgba(253,186,116,.6); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange:hover{ background:linear-gradient(135deg,rgba(251,146,60,.58),rgba(245,158,11,.2)); border-color:rgba(253,186,116,.95); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange .gcp-icon{ background:linear-gradient(145deg,#fdba74,#ea580c); border-color:rgba(255,255,255,.35); }
+/* active states keep their meaning: green = on, red = hidden */
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange.qa-active{ background:linear-gradient(135deg,rgba(34,197,94,.46),rgba(16,185,129,.14)); border-color:rgba(74,222,128,.8); box-shadow:0 0 24px rgba(34,197,94,.22), 0 10px 22px rgba(0,0,0,.3), inset 0 1px 0 var(--pb-hi); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange.qa-active .gcp-icon{ background:linear-gradient(145deg,#4ade80,#16a34a); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-orange.qa-active .gcp-kbd{ background:rgba(34,197,94,.35); border-color:rgba(74,222,128,.7); color:#dcfce7; }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan.topbar-hidden{ background:linear-gradient(135deg,rgba(239,68,68,.46),rgba(239,68,68,.12)); border-color:rgba(248,113,113,.8); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan.topbar-hidden .gcp-icon{ background:linear-gradient(145deg,#f87171,#dc2626); }
+html:not(.lite-mode) #gcp-panel .gcp-btn.accent-cyan.topbar-hidden .gcp-kbd{ background:rgba(239,68,68,.35); border-color:rgba(248,113,113,.7); color:#fee2e2; }
+
+/* — Session-deck buttons (Portal / Switch mode / PDF Tutor / Battle) — */
+html:not(.lite-mode) #gcp-panel #gcp-deck .gd-btn{
+  position:relative; overflow:hidden; min-height:48px; gap:9px; padding:8px 10px; border-radius:16px; font-weight:700; letter-spacing:.2px;
+  background:linear-gradient(150deg,rgba(255,255,255,.17),rgba(255,255,255,.05));
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 8px 18px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.25);
+  transition:transform .2s var(--pb-ease), background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+html:not(.lite-mode) #gcp-panel #gcp-deck .gd-btn span{
+  position:relative; z-index:2; width:28px; height:28px; display:grid; place-items:center; border-radius:10px; font-size:14px;
+  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.06)); box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+}
+html:not(.lite-mode) #gcp-panel #gcp-deck .gd-btn:hover{
+  background:linear-gradient(150deg,rgba(96,165,250,.5),rgba(167,139,250,.28)); border-color:rgba(165,205,255,.8);
+  transform:translateY(-2px); box-shadow:0 14px 26px rgba(37,99,235,.35), inset 0 1px 0 rgba(255,255,255,.3);
+}
+html:not(.lite-mode) #gcp-panel #gcp-deck .gd-btn:active{ transform:scale(.96); transition-duration:.08s; }
+
+/* — Font size  A− / A+ — */
+html:not(.lite-mode) #gcp-panel .gcp-size-btn{
+  width:36px; height:36px; border-radius:13px; font-size:12px; font-weight:800; letter-spacing:.2px;
+  background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)) !important;
+  border:1px solid var(--gp-tx-25) !important;
+  box-shadow:0 5px 12px rgba(0,0,0,.28), inset 0 1px 0 var(--pb-hi);
+  transition:transform .18s var(--pb-ease), box-shadow .2s ease, border-color .2s ease;
+}
+html:not(.lite-mode) #gcp-panel .gcp-size-btn:hover{ background:linear-gradient(150deg,var(--gp-glow-40),var(--gp-glow-10)) !important; border-color:var(--gp-glow) !important; transform:translateY(-1px); }
+html:not(.lite-mode) #gcp-panel .gcp-size-btn:active{ transform:scale(.9); }
+html:not(.lite-mode) #gcp-panel #gpSizeSlider{ accent-color:var(--gp-glow); }
+
+/* — Font style chips — */
+html:not(.lite-mode) #gcp-panel .gcp-font-item{ position:relative; padding:9px 3px 8px; border-radius:14px; box-shadow:inset 0 1px 0 rgba(255,255,255,.1); }
+html:not(.lite-mode) #gcp-panel .gcp-font-item.gp-active::after{
+  content:"✓"; position:absolute; top:3px; right:6px; font-size:9px; font-weight:900; color:var(--gp-text); text-shadow:0 0 8px var(--gp-glow);
+}
+
+/* — Upload / remove image buttons — */
+html:not(.lite-mode) #gcp-panel .gcp-img-upload-btn{ min-height:46px; border-radius:15px; box-shadow:0 6px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.14); }
+html:not(.lite-mode) #gcp-panel .gcp-img-remove-btn{ width:36px; height:36px; border-radius:50%; box-shadow:0 5px 12px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.14); }
+
+/* — Switch rows (Light Mode, Hide English) — */
+html:not(.lite-mode) #gcp-panel .lite-toggle-row{
+  padding:13px 14px; gap:12px; border-radius:18px;
+  background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-12);
+  box-shadow:0 8px 18px rgba(0,0,0,.24), inset 0 1px 0 var(--pb-hi);
+  transition:transform .18s var(--pb-ease), background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+html:not(.lite-mode) #gcp-panel .lite-toggle-row:active{ transform:scale(.98); }
+html:not(.lite-mode) #gcp-panel .lite-toggle-row.on{
+  background:linear-gradient(135deg,rgba(34,197,94,.34),rgba(16,185,129,.1)); border-color:rgba(74,222,128,.7);
+  box-shadow:0 0 24px rgba(34,197,94,.2), 0 8px 18px rgba(0,0,0,.24), inset 0 1px 0 var(--pb-hi);
+}
+html:not(.lite-mode) #gcp-panel .lite-switch{ width:52px; height:30px; background:rgba(120,130,155,.45); box-shadow:inset 0 2px 5px rgba(0,0,0,.45); }
+html:not(.lite-mode) #gcp-panel .lite-knob{
+  top:3px; left:3px; width:24px; height:24px; background:linear-gradient(180deg,#fff,#dfe3ea);
+  box-shadow:0 3px 8px rgba(0,0,0,.45); transition:transform .3s cubic-bezier(.3,1.4,.5,1);
+}
+html:not(.lite-mode) #gcp-panel .lite-toggle-row.on .lite-switch{ background:linear-gradient(135deg,#22c55e,#10b981); box-shadow:inset 0 2px 4px rgba(0,0,0,.25), 0 0 14px rgba(34,197,94,.6); }
+html:not(.lite-mode) #gcp-panel .lite-toggle-row.on .lite-knob{ transform:translateX(22px); }
+
+/* — Audiobook — */
+html:not(.lite-mode) #gcp-panel .ab-main{
+  position:relative; overflow:hidden; border-radius:20px; padding:13px 14px;
+  box-shadow:0 14px 32px rgba(139,92,246,.42), inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 0 rgba(0,0,0,.16);
+}
+html:not(.lite-mode) #gcp-panel .ab-main > *{ position:relative; z-index:2; }
+html:not(.lite-mode) #gcp-panel .ab-play{ width:42px; height:42px; background:linear-gradient(180deg,#fff,#ece6ff); color:#6d28d9; box-shadow:0 6px 14px rgba(0,0,0,.32); }
+html:not(.lite-mode) #gcp-panel .ab-row select{ height:36px; padding:0 10px; border-radius:12px; background:var(--gp-tx-06); border:1px solid var(--gp-tx-25); outline:none; }
+html:not(.lite-mode) #gcp-panel .ab-row select:focus{ border-color:var(--gp-glow); box-shadow:0 0 0 3px var(--gp-glow-22); }
+html:not(.lite-mode) #gcp-panel .ab-test{ width:36px; height:36px; box-shadow:0 6px 14px rgba(139,92,246,.42), inset 0 1px 0 rgba(255,255,255,.4); transition:transform .15s ease, filter .2s ease; }
+html:not(.lite-mode) #gcp-panel .ab-test:active{ transform:scale(.9); }
+html:not(.lite-mode) #gcp-panel .ab-row input[type=range]{ accent-color:var(--gp-glow); }
+
+/* — Screen recorder — */
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row{
+  padding:12px; gap:12px; border-radius:18px;
+  background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-12);
+  box-shadow:0 6px 16px rgba(0,0,0,.22), inset 0 1px 0 var(--pb-hi);
+}
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row.on{
+  background:linear-gradient(135deg,rgba(255,59,92,.24),rgba(255,106,61,.06)); border-color:rgba(255,95,120,.65);
+  box-shadow:0 0 22px rgba(255,59,92,.15), 0 6px 16px rgba(0,0,0,.22), inset 0 1px 0 var(--pb-hi);
+}
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row:active{ transform:scale(.98); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row .ic{ width:38px; height:38px; border-radius:14px; background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.05)); box-shadow:inset 0 1px 0 rgba(255,255,255,.22); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-sw{ width:46px; height:26px; box-shadow:inset 0 2px 4px rgba(0,0,0,.4); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-sw::after{ top:3px; left:3px; width:20px; height:20px; background:linear-gradient(180deg,#fff,#dfe3ea); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row.on .rec-sw::after{ transform:translateX(20px); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-row.on .rec-sw{ box-shadow:0 0 14px rgba(255,59,92,.6), inset 0 2px 4px rgba(0,0,0,.2); }
+
+html:not(.lite-mode) #gcp-panel #rec-root .rec-seg{ padding:4px; gap:4px; border-radius:16px; background:rgba(0,0,0,.3); border:1px solid var(--gp-tx-12); box-shadow:inset 0 2px 6px rgba(0,0,0,.38); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-seg button{ min-height:36px; padding:6px 3px; border-radius:12px; font-size:11px; line-height:1.15; transition:background .2s ease, color .2s ease, box-shadow .2s ease, transform .12s ease; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-seg button:active{ transform:scale(.95); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-seg button.on{
+  background:linear-gradient(145deg,#3b82f6,#6366f1); color:#fff;
+  box-shadow:0 6px 16px rgba(59,130,246,.5), inset 0 1px 0 rgba(255,255,255,.38);
+}
+html:not(.lite-mode) #gcp-panel #rec-root .rec-select{ height:38px; border-radius:12px; border:1px solid var(--gp-tx-25); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-mini{ padding:7px 13px; border-radius:99px; background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-25); box-shadow:inset 0 1px 0 var(--pb-hi); transition:transform .15s ease, background .2s ease; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-mini:active{ transform:scale(.94); }
+
+html:not(.lite-mode) #gcp-panel #rec-root .rec-primary{
+  position:relative; overflow:hidden; min-height:56px; border-radius:20px; font-size:14px; letter-spacing:.5px;
+  background:linear-gradient(135deg,#ff3b5c 0%,#ff6a3d 60%,#ff8f3d 100%);
+  box-shadow:0 14px 30px rgba(255,59,92,.46), inset 0 1px 0 rgba(255,255,255,.4), inset 0 -3px 0 rgba(0,0,0,.14);
+  transition:transform .2s var(--pb-ease), box-shadow .25s ease;
+}
+html:not(.lite-mode) #gcp-panel #rec-root .rec-primary > *{ position:relative; z-index:2; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-primary:active{ transform:scale(.97); transition-duration:.08s; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-primary .dot{ box-shadow:0 0 0 4px rgba(255,255,255,.3); }
+
+html:not(.lite-mode) #gcp-panel #rec-root .rec-cb{ padding:12px 4px 10px; border-radius:17px; background:linear-gradient(150deg,rgba(255,255,255,.16),rgba(255,255,255,.05)); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 6px 14px rgba(0,0,0,.3); transition:transform .15s ease, background .2s ease; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-cb:active{ transform:scale(.94); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-cb.stop{ background:linear-gradient(135deg,#ff3b5c,#ff6a3d); box-shadow:0 10px 22px rgba(255,59,92,.5), inset 0 1px 0 rgba(255,255,255,.38); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-dl{ padding:13px 14px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.18); }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-ghost{ padding:12px 6px; border-radius:15px; background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-25); box-shadow:inset 0 1px 0 var(--pb-hi); transition:transform .15s ease, background .2s ease; }
+html:not(.lite-mode) #gcp-panel #rec-root .rec-ghost:active{ transform:scale(.95); }
+
+/* — Text Studio  B / I / U  and reset — */
+html:not(.lite-mode) #gcp-panel .ts-fx button{ background:linear-gradient(150deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-25); box-shadow:inset 0 1px 0 var(--pb-hi), 0 3px 8px rgba(0,0,0,.25); }
+html:not(.lite-mode) #gcp-panel .ts-fx button:active{ transform:scale(.9); }
+html:not(.lite-mode) #gcp-panel .ts-fx button.on{ background:linear-gradient(145deg,var(--gp-glow),var(--gp-glow-40)); color:#fff; box-shadow:0 0 0 1px var(--gp-glow), 0 5px 14px var(--gp-glow-40), inset 0 1px 0 rgba(255,255,255,.35); }
+html:not(.lite-mode) #gcp-panel .ts-font{ border:1px solid var(--gp-tx-25); }
+html:not(.lite-mode) #gcp-panel .ts-reset{ box-shadow:inset 0 1px 0 var(--pb-hi), 0 3px 8px rgba(0,0,0,.25); }
+
+/* — Shortcut keycaps — */
+html:not(.lite-mode) #gcp-panel .gcp-shortcut-row .k{
+  min-width:44px; padding:3px 10px; border-radius:9px; font-weight:800;
+  background:linear-gradient(180deg,var(--gp-tx-12),var(--gp-tx-06)); border:1px solid var(--gp-tx-25); border-bottom-width:3px;
+  box-shadow:0 3px 6px rgba(0,0,0,.3), inset 0 1px 0 var(--pb-hi);
+}
+
+/* — Close button — */
+html:not(.lite-mode) #gcp-panel .gcp-close{ box-shadow:0 4px 12px rgba(0,0,0,.35), inset 0 1px 0 var(--pb-hi); }
+
+@media (prefers-reduced-motion:reduce){
+  html body #gcp-trigger{ animation:none !important; }
+  html:not(.lite-mode) #gcp-panel *::before{ transition:none !important; }
+}
+</style>
+
+<style id="gcpPremiumLiteCss">
+/* ═══ LIGHT MODE (the default on every launch): crisp white + black "tactile" premium buttons ═══
+   Solid colours and a hard offset shadow only — no gradients/blur/animation, so it stays fast. */
+html.lite-mode #gcp-panel .gcp-header-title{
+  background:none !important; -webkit-text-fill-color:#000 !important; color:#000 !important;
+  font-size:13px; letter-spacing:4px; font-weight:800;
+}
+html.lite-mode #gcp-panel .gcp-header-sub{ opacity:.7; }
+html.lite-mode #gcp-panel .gcp-close{ width:34px; height:34px; border-radius:50%; background:#fff !important; border:1.5px solid #000 !important; box-shadow:0 2px 0 #000; }
+html.lite-mode #gcp-panel .gcp-close:active{ transform:translateY(2px); box-shadow:none; }
+
+/* action buttons */
+html.lite-mode #gcp-panel .gcp-btn{
+  min-height:54px; padding:9px 14px 9px 10px; gap:12px; border-radius:16px;
+  border:1.5px solid #000 !important; box-shadow:0 3px 0 #000 !important; background:#fff !important;
+  font-size:13px; font-weight:700; letter-spacing:.2px; transform:none;
+}
+html.lite-mode #gcp-panel .gcp-btn:hover{ background:#f3f3f3 !important; transform:none; }
+html.lite-mode #gcp-panel .gcp-btn:active{ transform:translateY(3px); box-shadow:0 0 0 #000 !important; }
+html.lite-mode #gcp-panel .gcp-btn .gcp-icon{
+  width:36px; height:36px; border-radius:12px; font-size:17px; background:#f0f0f0 !important; border:1.5px solid #000; box-shadow:none;
+}
+html.lite-mode #gcp-panel .gcp-btn:not(:has(.gcp-kbd))::after{ content:"›"; margin-left:auto; font-size:22px; line-height:1; font-weight:400; }
+html.lite-mode #gcp-panel .gcp-btn .gcp-kbd{
+  margin-left:auto; padding:5px 11px; border-radius:99px; border:0; background:#000 !important; color:#fff !important;
+  font-family:'Inter',sans-serif; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+}
+html.lite-mode #gcp-panel .gcp-btn.qa-active,
+html.lite-mode #gcp-panel .gcp-btn.topbar-hidden{ background:#000 !important; }
+html.lite-mode #gcp-panel .gcp-btn.qa-active > span:not(.gcp-icon):not(.gcp-kbd),
+html.lite-mode #gcp-panel .gcp-btn.topbar-hidden > span:not(.gcp-icon):not(.gcp-kbd){ color:#fff !important; }
+html.lite-mode #gcp-panel .gcp-btn.qa-active .gcp-icon,
+html.lite-mode #gcp-panel .gcp-btn.topbar-hidden .gcp-icon{ background:#fff !important; border-color:#fff; }
+html.lite-mode #gcp-panel .gcp-btn.qa-active .gcp-kbd,
+html.lite-mode #gcp-panel .gcp-btn.topbar-hidden .gcp-kbd{ background:#fff !important; color:#000 !important; }
+
+/* session deck buttons */
+html.lite-mode #gcp-panel #gcp-deck .gd-btn{
+  min-height:48px; gap:9px; padding:8px 10px; border-radius:15px; font-weight:700;
+  background:#fff !important; border:1.5px solid #000 !important; box-shadow:0 3px 0 #000 !important;
+}
+html.lite-mode #gcp-panel #gcp-deck .gd-btn:active{ transform:translateY(3px); box-shadow:0 0 0 #000 !important; }
+html.lite-mode #gcp-panel #gcp-deck .gd-btn span{
+  width:28px; height:28px; display:grid; place-items:center; border-radius:10px; font-size:14px; background:#f0f0f0 !important; border:1.5px solid #000;
+}
+
+/* font size / font chips */
+html.lite-mode #gcp-panel .gcp-size-btn{ width:36px; height:36px; border-radius:13px; font-weight:800; border:1.5px solid #000 !important; box-shadow:0 3px 0 #000; }
+html.lite-mode #gcp-panel .gcp-size-btn:active{ transform:translateY(3px); box-shadow:none; }
+html.lite-mode #gcp-panel .gcp-font-item{ position:relative; border-radius:14px; border:1.5px solid #000 !important; }
+html.lite-mode #gcp-panel .gcp-font-item.gp-active{ background:#000 !important; box-shadow:none; }
+html.lite-mode #gcp-panel .gcp-font-item.gp-active *{ color:#fff !important; }
+
+/* switches */
+html.lite-mode #gcp-panel .lite-toggle-row{ padding:13px 14px; gap:12px; border-radius:18px; border:1.5px solid #000 !important; box-shadow:0 3px 0 #000; background:#fff !important; }
+html.lite-mode #gcp-panel .lite-toggle-row:active{ transform:translateY(3px); box-shadow:none; }
+html.lite-mode #gcp-panel .lite-switch{ width:52px; height:30px; background:#dcdcdc !important; border:1.5px solid #000; }
+html.lite-mode #gcp-panel .lite-knob{ top:2.5px; left:3px; width:22px; height:22px; background:#fff; border:1.5px solid #000; box-shadow:none; }
+html.lite-mode #gcp-panel .lite-toggle-row.on .lite-switch{ background:#000 !important; }
+html.lite-mode #gcp-panel .lite-toggle-row.on .lite-knob{ transform:translateX(21px); }
+
+/* audiobook */
+html.lite-mode #gcp-panel .ab-main{ border-radius:20px; padding:13px 14px; background:#fff !important; border:1.5px solid #000 !important; box-shadow:0 3px 0 #000 !important; filter:none; }
+html.lite-mode #gcp-panel .ab-main:active{ transform:translateY(3px); box-shadow:none !important; }
+html.lite-mode #gcp-panel .ab-play{ width:42px; height:42px; background:#000 !important; color:#fff !important; }
+html.lite-mode #gcp-panel .ab-eq i, html.lite-mode #gcp-panel .ab-eq2 i{ background:#000 !important; }
+html.lite-mode #gcp-panel .ab-row select{ height:36px; padding:0 10px; border-radius:12px; border:1.5px solid #000; background:#fff; }
+html.lite-mode #gcp-panel .ab-test{ width:36px; height:36px; background:#000 !important; color:#fff !important; }
+html.lite-mode #gcp-panel .ab-hint{ background:#f3f3f3; border:1px solid #ccc; }
+
+/* screen recorder */
+html.lite-mode #gcp-panel #rec-root .rec-row{ padding:12px; gap:12px; border-radius:18px; border:1.5px solid #000; box-shadow:0 3px 0 #000; background:#fff; }
+html.lite-mode #gcp-panel #rec-root .rec-row.on{ background:#f3f3f3; }
+html.lite-mode #gcp-panel #rec-root .rec-row:active{ transform:translateY(3px); box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-row .ic{ width:38px; height:38px; border-radius:14px; background:#fff; border:1.5px solid #000; }
+html.lite-mode #gcp-panel #rec-root .rec-sw{ width:46px; height:26px; background:#dcdcdc; border:1.5px solid #000; box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-sw::after{ top:2px; left:2px; width:18px; height:18px; background:#fff; border:1.5px solid #000; box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-row.on .rec-sw{ background:#000; box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-row.on .rec-sw::after{ transform:translateX(21px); }
+html.lite-mode #gcp-panel #rec-root .rec-seg{ padding:4px; border-radius:16px; background:#f3f3f3; border:1.5px solid #000; box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-seg button{ min-height:36px; padding:6px 3px; border-radius:12px; font-size:11px; line-height:1.15; background:transparent !important; box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-seg button.on{ background:#000 !important; color:#fff !important; }
+html.lite-mode #gcp-panel #rec-root .rec-select{ height:38px; border-radius:12px; border:1.5px solid #000; background:#fff; }
+html.lite-mode #gcp-panel #rec-root .rec-mini{ padding:7px 13px; border-radius:99px; background:#fff; border:1.5px solid #000; box-shadow:0 2px 0 #000; }
+html.lite-mode #gcp-panel #rec-root .rec-primary{ min-height:56px; border-radius:18px; border:0; background:#000 !important; color:#fff !important; box-shadow:0 4px 0 #666; }
+html.lite-mode #gcp-panel #rec-root .rec-primary:active{ transform:translateY(3px); box-shadow:0 1px 0 #666; }
+html.lite-mode #gcp-panel #rec-root .rec-primary .dot{ background:#ff3b5c !important; box-shadow:0 0 0 3px rgba(255,59,92,.4); }
+html.lite-mode #gcp-panel #rec-root .rec-cb{ border-radius:16px; background:#fff; border:1.5px solid #000; box-shadow:0 3px 0 #000; }
+html.lite-mode #gcp-panel #rec-root .rec-cb:active{ transform:translateY(3px); box-shadow:none; }
+html.lite-mode #gcp-panel #rec-root .rec-cb.stop{ background:#000; }
+html.lite-mode #gcp-panel #rec-root .rec-cb.stop, html.lite-mode #gcp-panel #rec-root .rec-cb.stop *{ color:#fff !important; }
+html.lite-mode #gcp-panel #rec-root .rec-dl{ border-radius:18px; background:#fff !important; border:1.5px solid #000; box-shadow:0 3px 0 #000; }
+html.lite-mode #gcp-panel #rec-root .rec-ghost{ border-radius:15px; background:#fff; border:1.5px solid #000; box-shadow:0 3px 0 #000; }
+html.lite-mode #gcp-panel #rec-root .rec-ghost:active{ transform:translateY(3px); box-shadow:none; }
+
+/* text studio + keycaps */
+html.lite-mode #gcp-panel .ts-fx button{ border-radius:10px; background:#fff; border:1.5px solid #000; box-shadow:0 2px 0 #000; }
+html.lite-mode #gcp-panel .ts-fx button:active{ transform:translateY(2px); box-shadow:none; }
+html.lite-mode #gcp-panel .ts-fx button.on{ background:#000 !important; color:#fff !important; box-shadow:none; }
+html.lite-mode #gcp-panel .gcp-shortcut-row .k{ min-width:44px; padding:3px 10px; border-radius:9px; font-weight:800; background:#fff; border:1.5px solid #000; border-bottom-width:3px; }
+
+/* — Light Mode polish — */
+html.lite-mode #gcp-panel .gcp-btn:not(:has(.gcp-kbd))::after{ color:#000 !important; -webkit-text-fill-color:#000 !important; opacity:1 !important; }
+html.lite-mode #gcp-panel .gcp-header{ background:#fff !important; background-image:none !important; border-bottom:1.5px solid #000 !important; box-shadow:none !important; }
+html.lite-mode #gcp-panel .gcp-header::after{ display:none !important; }
+html.lite-mode #gcp-panel .gcp-size-btn, html.lite-mode #gcp-panel .ab-test{ min-width:0 !important; min-height:0 !important; padding:0 !important; flex:none; display:grid; place-items:center; }
+html.lite-mode #gcp-panel .gcp-size-btn{ width:36px !important; height:36px !important; }
+html.lite-mode #gcp-panel .ab-test{ width:36px !important; height:36px !important; border-radius:50% !important; }
+html.lite-mode #gcp-panel .ab-hint{ border:0; }
+html.lite-mode #gcp-panel .ab-hint:empty{ display:none !important; }
+html.lite-mode #gcp-panel #rec-root .rec-mic-detail{ background:#f6f6f6; border:1.5px dashed #000; border-radius:16px; }
+html.lite-mode #gcp-panel #rec-root .rec-meter{ background:#e2e2e2; }
+html:not(.lite-mode) #gcp-panel .ab-test, html:not(.lite-mode) #gcp-panel .gcp-size-btn{ min-width:0; min-height:0; padding:0; flex:none; display:grid; place-items:center; }
+html:not(.lite-mode) #gcp-panel .ab-test{ width:36px; height:36px; border-radius:50%; }
+html:not(.lite-mode) #gcp-panel .ab-hint:empty{ display:none; }
+</style>
+
 </body>
 
 
