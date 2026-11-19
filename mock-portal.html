@@ -833,7 +833,8 @@
       display: none;
       position: fixed;
       top: 80px;
-      right: 18px;
+      left: calc(50% - 170px);
+      right: auto;
       width: 340px;
       min-width: 200px;
       min-height: 140px;
@@ -9451,7 +9452,14 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         if (!panel || !body) return;
 
         body.innerHTML = html + imgHtml;
+        const _spWasVisible = panel.classList.contains('visible');
         panel.classList.add('visible');
+        // ✅ Fresh open → appear exactly centred left-to-right (drag/resize still work after)
+        if (!_spWasVisible) {
+          const _w = panel.getBoundingClientRect().width;
+          panel.style.right = 'auto';
+          panel.style.left  = Math.max(0, (document.documentElement.clientWidth - _w) / 2) + 'px';
+        }
         initStickyPanelDrag(panel);
 
         // ✅ Independently (re)trigger translation for this panel.
@@ -9522,7 +9530,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           panel.classList.remove('visible');
           panel.style.left = '';
           panel.style.top  = '80px';
-          panel.style.right = '18px';
+          panel.style.right = 'auto';   // re-centred on next open
         };
 
         // ── Custom resize handles (all 8 dirs, no size limits) ──
@@ -17255,28 +17263,28 @@ html.lite-mode .lite-switch,html.lite-mode .lite-knob{transition:none!important}
 })();
 </script>
 <style id="mobileExamLayoutFix">
-/* Mobile exam layout fix: box grows with content, nav row pinned to bottom */
+/* Mobile exam layout: the QUESTION box now behaves exactly like the CONCEPT box —
+   same fixed size, same resize handles on every edge/corner, content scrolls inside,
+   button row pinned at the bottom. (No !important on height/width, so the sizes you
+   set with the handles are applied to both boxes.) */
 @media (max-width: 767px) {
   #questionBox.test-resizable-box {
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    flex: none !important;
-    margin-bottom: 12px !important;
+    overflow: hidden;
+    margin-bottom: 4px;
   }
   #questionBox .question-scroll-area {
-    overflow: visible !important;
-    flex: none !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    max-height: none;
     padding: 0 !important;
   }
-  #questionBox .test-box-resize-handles { display: none !important; }
-
   #questionBox > hr { display: none !important; }
-  #qaFooterButtonsRow {
+#qaFooterButtonsRow {
     position: sticky;
     bottom: 0;
     z-index: 20;
@@ -22843,6 +22851,7 @@ body.tl-only #conceptBox .cp-tl{border-left:0;padding-left:0;margin-top:0}
   }
 
   /* concept box was stuck at 70vh — let it fill the screen below the topbar */
+  #questionBox.test-resizable-box,
   #conceptBox.test-resizable-box {
     height: calc(100dvh - var(--topbar-h, 110px) - 10px);
     max-height: none !important; min-height: 240px !important;
@@ -23274,6 +23283,21 @@ html.lite-mode #gcp-panel #rec-root .rec-meter{ background:#e2e2e2; }
 html:not(.lite-mode) #gcp-panel .ab-test, html:not(.lite-mode) #gcp-panel .gcp-size-btn{ min-width:0; min-height:0; padding:0; flex:none; display:grid; place-items:center; }
 html:not(.lite-mode) #gcp-panel .ab-test{ width:36px; height:36px; border-radius:50%; }
 html:not(.lite-mode) #gcp-panel .ab-hint:empty{ display:none; }
+</style>
+
+
+<style id="uniformBoxCss">
+/* ═══ QUESTION page box = CONCEPT page box (one uniform, resizable box) ═══
+   Same size source, same shape, same border, same handles on phones and desktop. */
+#questionBox.test-resizable-box,
+#conceptBox.test-resizable-box{
+  box-sizing:border-box; position:relative; flex-direction:column;
+}
+html.lite-mode #questionBox.test-resizable-box{ background:#fff !important; border:2px solid #000 !important; }
+@media (max-width:767px){
+  body.hide-top-bar #questionBox.test-resizable-box,
+  body.hide-top-bar #conceptBox.test-resizable-box{ max-height:none !important; }
+}
 </style>
 
 </body>
