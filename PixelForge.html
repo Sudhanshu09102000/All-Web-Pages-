@@ -758,6 +758,32 @@ select{text-overflow:ellipsis}
 #xv .xvf button{min-width:48px;height:46px;padding:0 14px;font-size:20px;line-height:1}
 #xv .xvf .xvz{font-size:13px;min-width:70px}
 #xv .xvf button:disabled{opacity:.3;cursor:default}
+
+/* ---- page picker: crop (box · freehand · polygon) ---- */
+#xp .xp-t .ct{right:54px}
+#xp .xp-t .cb{position:absolute;left:6px;top:6px;padding:2px 8px;border-radius:99px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font:700 10px Inter,system-ui,sans-serif;pointer-events:none}
+#xp .xp-t:not(.cr) .cb{display:none}
+#xv .xvf{display:grid;gap:8px}
+#xv .xvn{display:flex;align-items:center;justify-content:center;gap:8px}
+#xv .xvh .xvcr{padding:10px 12px}
+#xv .xvw .xvo{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+#xv.crop .xvo{pointer-events:auto;touch-action:none;cursor:crosshair}
+#xv.crop .xvcr{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}
+#xv .xvcb{display:none;gap:8px}
+#xv.crop .xvcb{display:grid}
+#xv .xvcb [hidden]{display:none}
+#xv .xvct{display:flex;gap:6px}
+#xv .xvct button{flex:1;min-width:0;height:40px;padding:0 6px;font-size:13px}
+#xv .xvct button.on{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}
+#xv .xvhint{font:600 12px/1.35 Inter,system-ui,sans-serif;color:#9097bd;text-align:center}
+#xv .xvallw{display:flex;align-items:center;gap:8px;margin:0;font:600 12px Inter,system-ui,sans-serif;color:#c9ceea;cursor:pointer}
+#xv .xvallw input{width:18px;height:18px;margin:0;padding:0;accent-color:var(--a)}
+#xv .xvcc{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#xv .xvcc button{min-width:0;height:40px;padding:0 14px;font-size:13px}
+#xv .xvcc button:disabled{opacity:.4;cursor:default}
+#xv .xvcc .pri{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent}
+@media(max-width:520px){#xv .xvcr span{display:none}}
+@media(max-height:640px){#xv .xvhint{display:none}}
 #xv .xvf button:active:not(:disabled),#xv .xvb:active{transform:scale(.96)}
 
 /* ===== About card, guide modal, footer, protection ===== */
@@ -887,7 +913,7 @@ html.dtx #dtx{display:grid}html.dtx body>*:not(#dtx){display:none!important}
 <li><b>Adjust:</b> rotate, mirror, black &amp; white, brightness, contrast, background colour.</li>
 <li><b>Scan &amp; Crop:</b> auto-detects the page edges, straightens perspective and offers 13 scan modes, including Ink only (pen ink on a pure white page). PDFs are edited page by page.</li>
 <li><b>Extract text (OCR):</b> read text from photos and scans, or the digital text inside PDFs. Export as PDF, TXT, Word or JSON. Many languages supported.</li>
-<li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit. Tap the 🔍 on any page (or long-press it) to read it full size and zoom in before you choose.</li>
+<li><b>Select pages:</b> pick a range like 1-5, 8 and make a new PDF, with an optional size limit. Tap the 🔍 on any page (or long-press it) to read it full size and zoom in before you choose. Tap ✂ to crop a page to a box, a hand-drawn freehand shape or a polygon with any number of corners; cropped pages are saved that way into the new PDF.</li>
 <li><b>Merge &amp; split:</b> combine files into one PDF or PPTX, or split a PDF into one card per page.</li>
 <li><b>Organise:</b> drag to reorder, reverse order, rename, per-file Undo / Redo, copy settings to many files.</li>
 <li><b>Code &amp; archives:</b> add HTML, CSS, JS, JSON and other code files, or ZIP, RAR, 7z, TAR and GZ archives. They are never changed: Save, Send or add them to a ZIP exactly as they are.</li>
@@ -1427,7 +1453,7 @@ const XP=(()=>{let el,it,n=0,sel=new Set,doc=null,io=null,q=[],vis=new Set,ld=ne
 const f=s=>el.querySelector(s);
 const parse=t=>{t=(t||'').trim();if(!t)return new Set;if(/^all$/i.test(t))return new Set([...Array(n).keys()].map(i=>i+1));const o=new Set;for(const p of t.split(/[,;\s]+/)){if(!p)continue;const m=p.match(/^(\d+)\s*(?:[-–]\s*(\d+))?$/);if(!m)return null;let a=+m[1],b=+(m[2]||m[1]);if(a>b)[a,b]=[b,a];if(a<1||a>n)return null;for(let i=a;i<=Math.min(n,b);i++)o.add(i)}return o};
 const pack=set=>{const a=[...set].sort((x,y)=>x-y),o=[];for(let i=0;i<a.length;){let j=i;while(j+1<a.length&&a[j+1]==a[j]+1)j++;o.push(j>i?a[i]+'-'+a[j]:''+a[i]);i=j+1}return o.join(', ')};
-const upd=()=>{const c=sel.size;f('.xcn').innerHTML='<b>'+c+'</b> of '+n+' page'+(n>1?'s':'')+' selected';const g=f('.xgo');g.disabled=!c;g.textContent=c?'⚡ Create PDF · '+c+' page'+(c>1?'s':''):'⚡ Create PDF';f('.xcl2').hidden=!f('.xi0').value;it._xsel=[...sel]};
+const upd=()=>{const c=sel.size,cr0=it&&it._xcr||{},cc=[...sel].filter(i=>cr0[i]).length;f('.xcn').innerHTML='<b>'+c+'</b> of '+n+' page'+(n>1?'s':'')+' selected'+(cc?' · ✂ '+cc+' cropped':'')+'';const g=f('.xgo');g.disabled=!c;g.textContent=c?'⚡ Create PDF · '+c+' page'+(c>1?'s':''):'⚡ Create PDF';f('.xcl2').hidden=!f('.xi0').value;it._xsel=[...sel]};
 const apply=(set,fromInput)=>{for(let i=1;i<=n;i++){const on=set.has(i);if(on!==sel.has(i))tiles[i-1].classList.toggle('on',on)}sel=new Set(set);if(!fromInput)f('.xi0').value=pack(sel);f('.xin').classList.remove('bad');const nt=f('.xnote');nt.className='xnote';nt.textContent='Tap pages, or type a range like 1-5, 8, 11-13';upd();if(xv)vsync()};
 let zu=1024;
 const zget=()=>{const on=f('.xzc').checked,v=+f('.xzv').value||0;return{on,v,u:zu,pad:f('.xzpad').checked}};
@@ -1444,7 +1470,7 @@ f('.xcl').onclick=()=>XP.close();
 f('.xi0').oninput=e=>{const set=parse(e.target.value),bad=set===null;f('.xin').classList.toggle('bad',bad);const nt=f('.xnote');nt.className='xnote'+(bad?' bad':'');nt.textContent=bad?'Check the range · pages go from 1 to '+n:'Tap pages, or type a range like 1-5, 8, 11-13';if(!bad)apply(set,true);f('.xcl2').hidden=!e.target.value};
 f('.xcl2').onclick=()=>{f('.xi0').value='';apply(new Set,true);f('.xi0').focus()};
 f('.xch').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;const k=b.dataset.q,o=new Set;for(let i=1;i<=n;i++){if(k=='all'||(k=='odd'&&i%2)||(k=='even'&&!(i%2))||(k=='inv'&&!sel.has(i)))o.add(i)}apply(o)};
-f('.xg').onclick=e=>{if(lp){lp=0;return}const t=e.target.closest('.xp-t');if(!t)return;const i=+t.dataset.n;if(e.target.closest('.zm')){vopen(i);return}const o=new Set(sel);if(o.has(i))o.delete(i);else o.add(i);apply(o)};
+f('.xg').onclick=e=>{if(lp){lp=0;return}const t=e.target.closest('.xp-t');if(!t)return;const i=+t.dataset.n;if(e.target.closest('.ct')){vopen(i,1);return}if(e.target.closest('.zm')){vopen(i);return}const o=new Set(sel);if(o.has(i))o.delete(i);else o.add(i);apply(o)};
 f('.xg').ondblclick=e=>{const t=e.target.closest('.xp-t');if(t)vopen(+t.dataset.n)};
 f('.xg').addEventListener('pointerdown',e=>{lp=0;clearTimeout(lpt);const t=e.target.closest('.xp-t');if(!t||e.target.closest('.zm'))return;lpx=e.clientX;lpy=e.clientY;lpt=setTimeout(()=>{lp=1;try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}vopen(+t.dataset.n)},480)});
 const lpc=e=>{clearTimeout(lpt)};
@@ -1456,16 +1482,96 @@ f('.xzv').oninput=zui;f('.xzpad').onchange=zui;
 f('.xzu').onclick=e=>{const b=e.target.closest('[data-u]');if(!b)return;zu=+b.dataset.u;zui()};
 f('.xzq').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;zu=+b.dataset.u;f('.xzv').value=b.dataset.v;zui()};
 f('.xgo').onclick=()=>XP.make();
-addEventListener('keydown',e=>{if(!el||!el.classList.contains('on'))return;const vo=xv&&xv.classList.contains('on');if(e.key=='Escape'){vo?vclose():XP.close();return}if(!vo)return;if(e.key=='ArrowLeft')vshow(vi-1);else if(e.key=='ArrowRight')vshow(vi+1);else if(e.key=='+'||e.key=='=')vzoom(vz*1.4);else if(e.key=='-')vzoom(vz/1.4);else if(e.key=='0')vzoom(1)});
+addEventListener('keydown',e=>{if(!el||!el.classList.contains('on'))return;const vo=xv&&xv.classList.contains('on');if(e.key=='Escape'){vo?(cm?cropExit():vclose()):XP.close();return}if(!vo)return;if(e.key=='Enter'&&cm&&tool=='poly'&&Wk&&!Wk.rect&&!Wk.closed&&Wk.pts.length>=3){Wk.closed=true;ui();ovDraw();return}if(cm&&(e.key=='ArrowLeft'||e.key=='ArrowRight'))return;if(e.key=='ArrowLeft')vshow(vi-1);else if(e.key=='ArrowRight')vshow(vi+1);else if(e.key=='+'||e.key=='=')vzoom(vz*1.4);else if(e.key=='-')vzoom(vz/1.4);else if(e.key=='0')vzoom(1)});
 addEventListener('resize',()=>{if(xv&&xv.classList.contains('on'))vlay()})};
-const dispose=()=>{gen++;vt++;if(xv)xv.classList.remove('on');q=[];vis.clear();ld.clear();if(io){io.disconnect();io=null}if(doc){try{doc.destroy()}catch(e){}doc=null}};
+const dispose=()=>{gen++;vt++;if(xv){cropExit();xv.classList.remove('on')}q=[];vis.clear();ld.clear();if(io){io.disconnect();io=null}if(doc){try{doc.destroy()}catch(e){}doc=null}};
 /* ---- full-size page viewer: read the page properly before you pick it ---- */
 const vf=s=>xv.querySelector(s);
+/* ---- crop: box · freehand · polygon (normalised 0-1 coordinates, applied when the PDF is built) ---- */
+let cm=0,tool='rect',Wk=null,gest=null,pinch=null;const ptr=new Map();
+const CRS=()=>(it._xcr||(it._xcr={}));
+const c01=v=>Math.min(1,Math.max(0,v));
+const rectPts=r=>[[r[0],r[1]],[r[2],r[1]],[r[2],r[3]],[r[0],r[3]]];
+const specPts=s=>s?(s.k=='r'?rectPts(s.r):s.pts):null;
+const wPts=w=>w?(w.rect?rectPts(w.r):w.pts):null;
+const wOk=w=>!!w&&(w.rect?(Math.abs(w.r[2]-w.r[0])>=.01&&Math.abs(w.r[3]-w.r[1])>=.01):(w.closed&&w.pts.length>=3));
+const bbox=pts=>{let a=1,b=1,c=0,d=0;for(const[x,y]of pts){if(x<a)a=x;if(x>c)c=x;if(y<b)b=y;if(y>d)d=y}return[a,b,c,d]};
+const normR=r=>[Math.min(r[0],r[2]),Math.min(r[1],r[3]),Math.max(r[0],r[2]),Math.max(r[1],r[3])];
+const inPoly=(pts,x,y)=>{let o=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const[xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>y)!=(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)o=!o}return o};
+const pdist=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy;if(!L)return Math.hypot(p[0]-a[0],p[1]-a[1]);const t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L));return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)};
+const rdp=(P,e)=>{if(P.length<3)return P;const a=P[0],b=P[P.length-1];let m=0,k=0;for(let i=1;i<P.length-1;i++){const d=pdist(P[i],a,b);if(d>m){m=d;k=i}}if(m>e){const l=rdp(P.slice(0,k+1),e),r=rdp(P.slice(k),e);return l.slice(0,-1).concat(r)}return[a,b]};
+const cropApply=(c,s)=>{if(!s)return c;const CW=c.width,CH=c.height,pts=specPts(s),b=bbox(pts),sx=Math.floor(b[0]*CW),sy=Math.floor(b[1]*CH),w=Math.ceil(b[2]*CW)-sx,h=Math.ceil(b[3]*CH)-sy;if(w<4||h<4)return c;
+const o=document.createElement('canvas');o.width=w;o.height=h;const g=o.getContext('2d');
+if(s.k=='r'){g.drawImage(c,sx,sy,w,h,0,0,w,h);return o}
+g.fillStyle='#fff';g.fillRect(0,0,w,h);g.beginPath();pts.forEach(([x,y],i)=>{const X=x*CW-sx,Y=y*CH-sy;i?g.lineTo(X,Y):g.moveTo(X,Y)});g.closePath();g.clip();g.drawImage(c,-sx,-sy);return o};
+const tbadge=()=>{tiles.forEach((t,i)=>t.classList.toggle('cr',!!(it._xcr&&it._xcr[i+1])));upd()};
+const dims=()=>{const wr=vf('.xvw');return[wr.clientWidth,wr.clientHeight]};
+const rHandles=r=>{const[x0,y0,x1,y1]=r,mx=(x0+x1)/2,my=(y0+y1)/2;return[['tl',x0,y0],['tr',x1,y0],['br',x1,y1],['bl',x0,y1],['t',mx,y0],['b',mx,y1],['l',x0,my],['r',x1,my]]};
+const handlesPx=(w,h)=>Wk.rect?rHandles([Wk.r[0]*w,Wk.r[1]*h,Wk.r[2]*w,Wk.r[3]*h]):Wk.pts.map(([x,y],i)=>[i,x*w,y*h]);
+function ovDraw(){if(!xv)return;const cv=vf('.xvo'),[w,h]=dims();if(!w||!h)return;const d=Math.min(2,window.devicePixelRatio||1),pw=Math.round(w*d),ph=Math.round(h*d);if(cv.width!=pw||cv.height!=ph){cv.width=pw;cv.height=ph}
+const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);
+let pts=null,open=false;
+if(cm&&Wk){pts=wPts(Wk);open=!Wk.rect&&!Wk.closed}else if(!cm){const s=(it._xcr||{})[vi];if(s)pts=specPts(s)}
+if(!pts||!pts.length)return;
+const P=pts.map(([x,y])=>[x*w,y*h]),path=()=>{g.beginPath();P.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y))};
+if(!open&&P.length>=3){g.fillStyle='rgba(8,10,22,.62)';g.beginPath();g.rect(0,0,w,h);P.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.fill('evenodd');path();g.closePath()}else path();
+g.lineJoin='round';g.lineWidth=cm?2:1.5;g.strokeStyle='#fff';g.shadowColor='rgba(0,0,0,.65)';g.shadowBlur=3;if(!cm)g.setLineDash([6,4]);g.stroke();g.setLineDash([]);g.shadowBlur=0;
+if(cm&&!(gest&&gest.t=='lasso')){const hs=handlesPx(w,h),many=!Wk.rect&&hs.length>40;g.lineWidth=2;for(const[id,x,y]of hs){const first=open&&id===0&&P.length>=3;g.beginPath();if(typeof id=='string'&&id.length==1){const a=id=='t'||id=='b';g.roundRect?g.roundRect(x-(a?11:5),y-(a?5:11),a?22:10,a?10:22,4):g.rect(x-(a?11:5),y-(a?5:11),a?22:10,a?10:22)}else g.arc(x,y,many?3.5:(first?9:7.5),0,7);g.fillStyle=first?'#6d5efc':'#fff';g.strokeStyle=first?'#fff':'#6d5efc';g.fill();g.stroke()}}}
+const toLocal=e=>{const r=vf('.xvw').getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top,r.width||1,r.height||1]};
+const toN=e=>{const[x,y,w,h]=toLocal(e);return[c01(x/w),c01(y/h)]};
+const hitR=e=>e.pointerType=='touch'?26:13;
+function hitH(e){if(!Wk)return null;const[x,y,w,h]=toLocal(e),R=hitR(e);let best=null,bd=R*R;for(const[id,hx,hy]of handlesPx(w,h)){const d2=(hx-x)**2+(hy-y)**2;if(d2<=bd){bd=d2;best=id}}return best}
+function edgeHit(e){const[x,y,w,h]=toLocal(e),R=hitR(e)*.8,P=Wk.pts.map(([a,b])=>[a*w,b*h]);for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];if(pdist([x,y],a,b)<=R)return{i:i+1,p:[c01(x/w),c01(y/h)]}}return null}
+function ovDown(e){if(!cm)return;e.preventDefault();e.stopPropagation();const ov=vf('.xvo');ptr.set(e.pointerId,[e.clientX,e.clientY]);try{ov.setPointerCapture(e.pointerId)}catch(x){}
+if(ptr.size==2){gest=null;if(Wk&&Wk.free&&!Wk.closed)Wk=null;const a=[...ptr.values()];pinch={d:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])||1,z:vz,mx:(a[0][0]+a[1][0])/2,my:(a[0][1]+a[1][1])/2};ovDraw();return}
+if(ptr.size>1)return;
+const p=toN(e),inside=()=>Wk&&(Wk.rect?(()=>{const r=normR(Wk.r);return p[0]>=r[0]&&p[0]<=r[2]&&p[1]>=r[1]&&p[1]<=r[3]})():inPoly(Wk.pts,p[0],p[1]));
+if(tool=='rect'){
+if(Wk&&Wk.rect){const hh=hitH(e);if(hh){gest={t:'h',id:hh}}else if(inside()){Wk.r=normR(Wk.r);gest={t:'mv',p0:p,o:Wk.r.slice()}}}
+if(!gest){Wk={rect:true,r:[p[0],p[1],p[0],p[1]]};gest={t:'h',id:'br'}}}
+else if(tool=='free'){
+if(Wk&&!Wk.rect&&Wk.closed){const hh=hitH(e);if(hh!=null)gest={t:'v',i:hh};else if(inside())gest={t:'mv',p0:p,o:Wk.pts.map(a=>a.slice())}}
+if(!gest){Wk={rect:false,pts:[p],closed:false,free:true};gest={t:'lasso'}}}
+else{
+if(Wk&&!Wk.rect&&Wk.closed){const hh=hitH(e);if(hh!=null)gest={t:'v',i:hh};else{const ed=edgeHit(e);if(ed){Wk.pts.splice(ed.i,0,ed.p);gest={t:'v',i:ed.i}}else if(inside())gest={t:'mv',p0:p,o:Wk.pts.map(a=>a.slice())}}
+if(!gest){Wk={rect:false,pts:[p],closed:false};gest={t:'v',i:0}}}
+else if(Wk&&!Wk.rect&&!Wk.closed){const hh=hitH(e);if(hh===0&&Wk.pts.length>=3){Wk.closed=true}else if(hh!=null)gest={t:'v',i:hh};else{Wk.pts.push(p);gest={t:'v',i:Wk.pts.length-1}}}
+else{Wk={rect:false,pts:[p],closed:false};gest={t:'v',i:0}}}
+ui();ovDraw()}
+function ovMove(e){if(!cm)return;if(ptr.has(e.pointerId))ptr.set(e.pointerId,[e.clientX,e.clientY]);
+if(pinch&&ptr.size>=2){e.preventDefault();const a=[...ptr.values()],dd=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])||1,mx=(a[0][0]+a[1][0])/2,my=(a[0][1]+a[1][1])/2;vzoom(pinch.z*dd/pinch.d,mx,my);const s=vf('.xvs');s.scrollLeft-=mx-pinch.mx;s.scrollTop-=my-pinch.my;pinch.mx=mx;pinch.my=my;return}
+if(!gest||!ptr.has(e.pointerId)){if(e.pointerType=='mouse'&&!gest)vf('.xvo').style.cursor=hitH(e)!=null?'grab':'crosshair';return}
+e.preventDefault();const p=toN(e);
+if(gest.t=='h'){const id=gest.id,r=Wk.r;if(id.includes('t'))r[1]=p[1];if(id.includes('b'))r[3]=p[1];if(id.includes('l'))r[0]=p[0];if(id.includes('r'))r[2]=p[0]}
+else if(gest.t=='v')Wk.pts[gest.i]=p;
+else if(gest.t=='lasso'){const[w,h]=dims(),L=Wk.pts[Wk.pts.length-1];if(Math.hypot((p[0]-L[0])*w,(p[1]-L[1])*h)>3)Wk.pts.push(p)}
+else if(gest.t=='mv'){const o=gest.o,pts=Wk.rect?rectPts(o):o,b=bbox(pts);const dx=Math.max(-b[0],Math.min(1-b[2],p[0]-gest.p0[0])),dy=Math.max(-b[1],Math.min(1-b[3],p[1]-gest.p0[1]));if(Wk.rect)Wk.r=[o[0]+dx,o[1]+dy,o[2]+dx,o[3]+dy];else Wk.pts=o.map(([x,y])=>[x+dx,y+dy])}
+ovDraw()}
+function ovUp(e){ptr.delete(e.pointerId);try{vf('.xvo').releasePointerCapture(e.pointerId)}catch(x){}if(ptr.size<2)pinch=null;if(!gest)return;const g=gest;gest=null;
+if(g.t=='lasso'){const[w,h]=dims(),P=Wk.pts.map(([x,y])=>[x*w,y*h]);if(P.length<8)Wk=null;else{let eps=2.5,S=rdp(P,eps);while(S.length>48&&eps<40){eps*=1.4;S=rdp(P,eps)}if(S.length<3)Wk=null;else Wk={rect:false,pts:S.map(([x,y])=>[c01(x/w),c01(y/h)]),closed:true}}}
+else if(Wk&&Wk.rect){Wk.r=normR(Wk.r);if(!wOk(Wk))Wk=null}
+ui();ovDraw()}
+const HINT={rect:'Drag on the page to draw a box. Pull any corner or side to resize, drag inside to move.',free:'Draw any shape with your finger or mouse. Let go to close it, then drag the dots to fine-tune.',poly:'Tap to place corner points, then tap the first point (or Close shape). Drag dots to adjust, tap an edge to add a point.'};
+function ui(){if(!xv)return;vf('.xvcb').querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x.dataset.t==tool));vf('.xvhint').textContent=HINT[tool];vf('[data-c=apply]').disabled=!wOk(Wk);const op=tool=='poly'&&!!Wk&&!Wk.rect&&!Wk.closed;vf('[data-c=pback]').hidden=!op;vf('[data-c=pclose]').hidden=!(op&&Wk.pts.length>=3);vf('[data-c=remove]').hidden=!(it._xcr&&it._xcr[vi])}
+function setTool(t){if(t==tool)return;if(Wk){if(t=='rect'){if(!Wk.rect){Wk=wOk(Wk)?{rect:true,r:bbox(Wk.pts)}:null}}else if(Wk.rect){if(wOk(Wk))Wk={rect:false,pts:rectPts(normR(Wk.r)),closed:true};else Wk=null}else if(!Wk.closed)Wk=null}tool=t;gest=null;ui();ovDraw()}
+function cropStart(){if(cm||!xv||!xv.classList.contains('on'))return;cm=1;const s=(it._xcr||{})[vi];Wk=s?(s.k=='r'?{rect:true,r:s.r.slice()}:{rect:false,pts:s.pts.map(a=>a.slice()),closed:true}):null;tool=s&&s.k=='p'?'free':'rect';gest=null;pinch=null;ptr.clear();xv.classList.add('crop');vf('[data-a=prev]').disabled=vf('[data-a=next]').disabled=true;vf('.xvt small').textContent='Crop · draw on the page';ui();ovDraw()}
+function cropExit(){if(!xv)return;const was=cm;cm=0;Wk=null;gest=null;pinch=null;ptr.clear();xv.classList.remove('crop');if(was){vf('[data-a=prev]').disabled=vi<=1;vf('[data-a=next]').disabled=vi>=n;vf('.xvt small').textContent='of '+n+' · pinch to zoom'}ovDraw()}
+function cropScope(){const t=new Set([vi]);if(vf('.xvall').checked)sel.forEach(i=>t.add(i));return t}
+function cropCmd(c){if(c=='cancel')return cropExit();
+if(c=='reset'){Wk=null;gest=null;ui();return ovDraw()}
+if(c=='pback'){if(Wk&&!Wk.rect&&!Wk.closed){Wk.pts.pop();if(!Wk.pts.length)Wk=null}ui();return ovDraw()}
+if(c=='pclose'){if(Wk&&!Wk.rect&&!Wk.closed&&Wk.pts.length>=3)Wk.closed=true;ui();return ovDraw()}
+if(c=='remove'){const t=cropScope(),st=CRS();t.forEach(i=>{delete st[i]});cropExit();tbadge();toast('Crop removed');return}
+if(c=='apply'){if(!wOk(Wk))return;const sp=Wk.rect?{k:'r',r:normR(Wk.r).map(v=>+v.toFixed(5))}:{k:'p',pts:Wk.pts.map(([x,y])=>[+x.toFixed(5),+y.toFixed(5)])},t=cropScope(),st=CRS();t.forEach(i=>{st[i]=JSON.parse(JSON.stringify(sp))});const o=new Set(sel);o.add(vi);cropExit();apply(o);tbadge();toast(t.size>1?'Crop applied to '+t.size+' pages':'Page '+vi+' cropped and selected')}}
+function cropWire(){const ov=vf('.xvo');ov.addEventListener('pointerdown',ovDown);ov.addEventListener('pointermove',ovMove);ov.addEventListener('pointerup',ovUp);ov.addEventListener('pointercancel',ovUp);['touchstart','touchmove','touchend','dblclick'].forEach(t=>ov.addEventListener(t,e=>{if(cm)e.stopPropagation()},{passive:true}));
+vf('.xvcr').onclick=()=>{cm?cropExit():cropStart()};
+vf('.xvcb').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.t)setTool(b.dataset.t);else if(b.dataset.c)cropCmd(b.dataset.c)}}
+
 const vsync=()=>{if(!xv)return;const b=vf('.xvsel'),on=sel.has(vi);b.classList.toggle('on',on);b.textContent=on?'✓ Selected':'Select page'};
 const vfit=()=>{const s=vf('.xvs'),pw=Math.max(60,s.clientWidth-16),ph=Math.max(60,s.clientHeight-16);let w=pw,h=w/vr;if(h>ph){h=ph;w=h*vr}return[w,h]};
-const vlay=()=>{const[w,h]=vfit(),wr=vf('.xvw');wr.style.width=(w*vz)+'px';wr.style.height=(h*vz)+'px';vf('.xvz').textContent=vz<1.02?'Fit':Math.round(vz*100)+'%'};
+const vlay=()=>{const[w,h]=vfit(),wr=vf('.xvw');wr.style.width=(w*vz)+'px';wr.style.height=(h*vz)+'px';vf('.xvz').textContent=vz<1.02?'Fit':Math.round(vz*100)+'%';ovDraw()};
 const vzoom=(nz,cx,cy)=>{nz=Math.min(4,Math.max(1,nz));if(Math.abs(nz-vz)<.001)return;const s=vf('.xvs'),wr=vf('.xvw'),r=s.getBoundingClientRect(),px=(cx==null?r.left+r.width/2:cx)-r.left,py=(cy==null?r.top+r.height/2:cy)-r.top,ow=wr.offsetWidth||1,oh=wr.offsetHeight||1,fx=(s.scrollLeft+px-wr.offsetLeft)/ow,fy=(s.scrollTop+py-wr.offsetTop)/oh;vz=nz;vlay();s.scrollLeft=fx*wr.offsetWidth+wr.offsetLeft-px;s.scrollTop=fy*wr.offsetHeight+wr.offsetTop-py};
-async function vshow(i){if(i<1||i>n)return;vi=i;const t=++vt;
+async function vshow(i){if(i<1||i>n||(cm&&i!=vi))return;vi=i;const t=++vt;
 vf('.xvt b').textContent='Page '+i;vf('.xvt small').textContent='of '+n+' · pinch to zoom';
 vf('[data-a=prev]').disabled=i<=1;vf('[data-a=next]').disabled=i>=n;vsync();
 const tl=tiles[i-1],im=tl&&tl.querySelector('img'),ph=vf('.xvph'),cv=vf('.xvc'),lo=vf('.xvl'),s=vf('.xvs');
@@ -1483,12 +1589,12 @@ if(t!=vt)return;
 cv.width=c.width;cv.height=c.height;cv.getContext('2d').drawImage(c,0,0);
 vr=c.width/c.height;vlay();cv.style.opacity=1;ph.style.display='none';lo.style.display='none'}
 catch(e){console.error(e);if(t==vt)lo.textContent='Could not load this page'}}
-function vclose(){if(!xv)return;xv.classList.remove('on');vt++;const cv=vf('.xvc');cv.width=1;cv.height=1;const t=tiles[vi-1];if(t&&t.scrollIntoView)t.scrollIntoView({block:'nearest'})}
-function vopen(i){buildV();xv.classList.add('on');vshow(i)}
+function vclose(){if(!xv)return;cropExit();xv.classList.remove('on');vt++;const cv=vf('.xvc');cv.width=1;cv.height=1;const t=tiles[vi-1];if(t&&t.scrollIntoView)t.scrollIntoView({block:'nearest'})}
+function vopen(i,c){buildV();xv.classList.add('on');vshow(i);if(c)cropStart()}
 function buildV(){if(xv)return;xv=document.createElement('div');xv.id='xv';xv.setAttribute('role','dialog');xv.setAttribute('aria-label','Page preview');
-xv.innerHTML='<div class="xvh"><button class="xvb xvx" type="button">← Back</button><div class="xvt"><b></b><small></small></div><button class="xvb xvsel" type="button">Select page</button></div><div class="xvs"><div class="xvw"><img class="xvph" alt=""><canvas class="xvc"></canvas><span class="xvl">Loading…</span></div></div><div class="xvf"><button type="button" data-a="prev" aria-label="Previous page">‹</button><button type="button" data-a="out" aria-label="Zoom out">−</button><button type="button" data-a="fit" class="xvz" aria-label="Fit page to screen">Fit</button><button type="button" data-a="in" aria-label="Zoom in">+</button><button type="button" data-a="next" aria-label="Next page">›</button></div>';
+xv.innerHTML='<div class="xvh"><button class="xvb xvx" type="button">← Back</button><div class="xvt"><b></b><small></small></div><button class="xvb xvcr" type="button" aria-label="Crop this page">✂<span> Crop</span></button><button class="xvb xvsel" type="button">Select page</button></div><div class="xvs"><div class="xvw"><img class="xvph" alt=""><canvas class="xvc"></canvas><canvas class="xvo"></canvas><span class="xvl">Loading…</span></div></div><div class="xvf"><div class="xvn"><button type="button" data-a="prev" aria-label="Previous page">‹</button><button type="button" data-a="out" aria-label="Zoom out">−</button><button type="button" data-a="fit" class="xvz" aria-label="Fit page to screen">Fit</button><button type="button" data-a="in" aria-label="Zoom in">+</button><button type="button" data-a="next" aria-label="Next page">›</button></div><div class="xvcb"><div class="xvct"><button type="button" data-t="rect">▭ Box</button><button type="button" data-t="free">✎ Freehand</button><button type="button" data-t="poly">◇ Polygon</button></div><div class="xvhint"></div><label class="xvallw"><input type="checkbox" class="xvall"> Same crop on all selected pages</label><div class="xvcc"><button type="button" data-c="pback" hidden>↶ Point</button><button type="button" data-c="pclose" hidden>✓ Close shape</button><button type="button" data-c="reset">Reset</button><button type="button" data-c="remove" hidden>Remove crop</button><button type="button" data-c="cancel">Cancel</button><button type="button" data-c="apply" class="pri" disabled>✓ Apply crop</button></div></div></div>';
 document.body.append(xv);
-vf('.xvx').onclick=vclose;
+vf('.xvx').onclick=vclose;cropWire();
 vf('.xvsel').onclick=()=>{const o=new Set(sel);if(o.has(vi))o.delete(vi);else o.add(vi);apply(o)};
 vf('.xvf').onclick=e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a;if(a=='prev')vshow(vi-1);else if(a=='next')vshow(vi+1);else if(a=='in')vzoom(vz*1.5);else if(a=='out')vzoom(vz/1.5);else vzoom(1)};
 const s=vf('.xvs');let pd=0,pz=1,pinched=0,sx=0,sy=0,st=0,lt=0,dg=null;
@@ -1496,7 +1602,7 @@ const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
 s.addEventListener('touchstart',e=>{if(e.touches.length==2){pd=dist(e.touches);pz=vz;pinched=1;e.preventDefault()}else if(e.touches.length==1){pinched=0;sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now()}},{passive:false});
 s.addEventListener('touchmove',e=>{if(e.touches.length==2&&pd){e.preventDefault();const t=e.touches;vzoom(pz*dist(t)/pd,(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2)}},{passive:false});
 s.addEventListener('touchend',e=>{if(e.touches.length<2)pd=0;if(e.touches.length||pinched||e.changedTouches.length!=1)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,now=Date.now();
-if(vz<1.05&&Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6&&now-st<600){vshow(vi+(dx<0?1:-1));lt=0;return}
+if(!cm&&vz<1.05&&Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6&&now-st<600){vshow(vi+(dx<0?1:-1));lt=0;return}
 if(Math.abs(dx)<10&&Math.abs(dy)<10&&now-st<300){if(now-lt<320){e.preventDefault();lt=0;if(vz>1.05)vzoom(1);else vzoom(2.5,t.clientX,t.clientY)}else lt=now}},{passive:false});
 s.addEventListener('dblclick',e=>{if(vz>1.05)vzoom(1);else vzoom(2.5,e.clientX,e.clientY)});
 s.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();vzoom(vz*Math.exp(-e.deltaY*.0025),e.clientX,e.clientY)}},{passive:false});
@@ -1507,8 +1613,8 @@ return{
 async open(item){build();dispose();it=item;n=item.np||1;sel=new Set((item._xsel||[]).filter(i=>i>=1&&i<=n));
 const ar=item.kind=='pdf'?(item.w&&item.h?item.w/item.h:.72):(item.cx&&item.cy?item.cx/item.cy:1.78);
 f('.xnm').textContent=item.name+' · '+n+' page'+(n>1?'s':'');
-f('.xg').innerHTML=Array.from({length:n},(_,i)=>'<button type="button" class="xp-t" data-n="'+(i+1)+'" style="--ar:'+ar.toFixed(3)+'" aria-label="Page '+(i+1)+'"><span class="n0">'+(i+1)+'</span><span class="pn">'+(i+1)+'</span><i class="ck"></i><span class="zm" title="View full size">🔍</span></button>').join('');
-tiles=[...f('.xg').children];f('.xb').scrollTop=0;
+f('.xg').innerHTML=Array.from({length:n},(_,i)=>'<button type="button" class="xp-t" data-n="'+(i+1)+'" style="--ar:'+ar.toFixed(3)+'" aria-label="Page '+(i+1)+'"><span class="n0">'+(i+1)+'</span><span class="pn">'+(i+1)+'</span><i class="ck"></i><span class="zm ct" title="Crop this page" role="button" aria-label="Crop page">✂</span><span class="cb">✂ Cropped</span><span class="zm" title="View full size">🔍</span></button>').join('');
+tiles=[...f('.xg').children];f('.xb').scrollTop=0;tbadge();
 const s0=sel;sel=new Set;apply(s0);zset(item._xz);
 el.classList.add('on');document.body.style.overflow='hidden';
 const g=gen;
@@ -1527,7 +1633,7 @@ let d2=null;
 try{if(pdfSrc)d2=await pdfjsLib.getDocument({data:it.ab.slice(0)}).promise;
 const o={fmt:'jpeg',q:92,kb:0,pad:false,mode:'orig',sc:100,W:0,H:0,fit:1920,stretch:false,dpi:(pdfSrc?72:96)*scl,rot:0,flip:false,gray:false,br:100,ct:100,bg:'#ffffff'},L=[],pend=new Set;
 for(let j=0;j<N;j++){const p0=pages[j];JOB.step(0,j/N,'Reading pages','Page '+p0+' · '+(j+1)+' of '+N);
-const c=pdfSrc?((it.edits&&it.edits[p0])||await pcv(await d2.getPage(p0),scl)):await drawSlide(it,p0-1,Math.round(960*scl));
+const c=cropApply(pdfSrc?((it.edits&&it.edits[p0])||await pcv(await d2.getPage(p0),scl)):await drawSlide(it,p0-1,Math.round(960*scl)),it._xcr&&it._xcr[p0]);
 const p={s:{...o,page:'img'}};L.push(p);const pr=enc({src:c,w:c.width,h:c.height},o).then(out=>{p.out=out;p.jpg=out.blob;pend.delete(pr)});pend.add(pr);if(pend.size>=3)await Promise.race(pend)}
 await Promise.all(pend);JOB.step(1,0,'Building PDF',N+' page'+(N>1?'s':''));await fr();
 let blob,ok=true;

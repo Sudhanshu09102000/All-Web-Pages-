@@ -10,6 +10,8 @@ if (!D) { console.log("window.TEST_DATA missing"); process.exit(1); }
 const keys = Object.keys(D).map(Number);
 keys.forEach((k, i) => k !== i + 1 && E("numbering breaks at " + k));
 const tag = /<[a-z!\/][^>]*>/i, used = new Set(), acc = {}, ans = { 1: 0, 2: 0, 3: 0, 4: 0 };
+const BAN = /\b(according to|as per|as given in|as mentioned in|as stated in|as written in|based on|by|from|in) (the |your |these |this )?(notes?|book|text ?book|study material|given text|passage)\b|\bthe (notes?|book) (say|says|state|states|mention|mentions)\b/i;
+const banCheck = (k, s) => { const m = typeof s === "string" && s.replace(/<[^>]+>/g, " ").match(BAN); if (m) E(k + ': banned phrase "' + m[0] + '" (never refer to notes or book)'); };
 let nc = 0, nq = 0;
 for (const k of keys) {
   const e = D[k];
@@ -18,6 +20,7 @@ for (const k of keys) {
     if (!e.icon) E(k + ": no icon"); if (e.pauseTimer !== true) E(k + ": pauseTimer"); if (!e.accent) E(k + ": no accent");
     if (acc[e.accent]) E(k + ": accent repeats entry " + acc[e.accent]); acc[e.accent] = k;
     if (/cp-hl/.test(e.html)) E(k + ": cp-hl used");
+    banCheck(k, e.title); banCheck(k, e.html);
     const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 45) E(k + ": page too long");
     for (const m of e.html.matchAll(/src="([^"]+)"/g)) used.add(m[1]);
   } else {
@@ -26,6 +29,8 @@ for (const k of keys) {
     if (!Array.isArray(e.options) || e.options.length !== 4 || new Set(e.options.map((o) => o.trim().toLowerCase())).size !== 4) E(k + ": options not 4 distinct");
     if (!["1", "2", "3", "4"].includes(e.correct)) E(k + ": bad correct"); else ans[e.correct]++;
     if ([e.questext, e.exptext, ...(e.options || [])].some((s) => tag.test(s))) E(k + ": HTML tag in text");
+    [e.questext, e.exptext, ...(e.options || [])].forEach((s) => banCheck(k, s));
+    if (/following statements?|statements? given below/i.test(e.questext || "") && !/\n1\. .+\n2\. /.test(e.questext)) E(k + ": statement question needs each numbered statement on its own line (use S: lines)");
     if (e.exptext && e.exptext.trim().split(/\s+/).length > 60) E(k + ": exptext too long");
   }
 }
@@ -36,6 +41,7 @@ else {
   else used.add(e1.thumb.image);
   const t = e1.yt && e1.yt.tags; if (!t || t.join(", ").length !== 500) E("yt.tags length " + (t ? t.join(", ").length : "missing") + " != 500");
   if (t && t.some((x) => x.length > 30)) E("a tag is over 30 chars");
+  banCheck(1, e1.lead); banCheck(1, e1.yt && e1.yt.description);
   ["title", "altTitles", "description", "hashtags", "thumbText", "pinnedComment", "communityPost", "chapters", "playlist"].forEach((f) => !(e1.yt || {})[f] && E("yt." + f + " missing"));
 }
 const ch = [...used].filter((p) => p.split("/").length >= 5);

@@ -16,3 +16,10 @@ EXP: ✅ The answer is 8 percent. Use 20 − 10 + (20 × −10) ÷ 100 = 8. 📌
 1) 20 percent  2) 25 percent  3) 15 percent  4) 30 percent
 ANS: 1
 EXP: ✅ The answer is 20 percent. Divide the rise by the new price: 25 ÷ 125 × 100. 📌 If the price goes up by one fourth, the use must come down by one fifth. ❌ 25 percent is wrong because it ignores the new, higher price.
+@@Q Consider the following statements about successive percentage change:
+S: An increase of 20 percent followed by a decrease of 20 percent gives no net change.
+S: An increase of 10 percent followed by an increase of 10 percent gives a net increase of 21 percent.
+W: Which of the statements given above is correct?
+1) Only 1  2) Both 1 and 2  3) Only 2  4) Neither 1 nor 2
+ANS: 3
+EXP: ✅ Only statement 2 is correct, because 10 + 10 + (10 × 10) ÷ 100 = 21. 📌 Equal rise and fall never cancel; the second change is taken on a new value. ❌ Statement 1 is wrong because the net change is a decrease of 4 percent.

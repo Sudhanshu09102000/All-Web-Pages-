@@ -47,12 +47,17 @@ def concept(head, body, n):
     return dict(kind="c", icon=icon, accent=acc, title=title.strip(), html=html)
 
 def question(head, body):
-    q, opts_txt, ans, exp = head.strip(), [], None, ""
+    q, opts_txt, ans, exp, stm, tail = head.strip(), [], None, "", [], ""
     for ln in body:
         s = ln.strip()
         if s.startswith("ANS:"): ans = s[4:].strip()
         elif s.startswith("EXP:"): exp = s[4:].strip()
+        elif s.startswith("S:"): stm.append(s[2:].strip())      # statement line (numbered automatically)
+        elif s.startswith("W:"): tail = s[2:].strip()           # closing line, e.g. "Which of the statements is correct?"
         elif s: opts_txt.append(s)
+    if stm:  # statement-type: lead-in, then each numbered statement on its own line, then closing line
+        q = q + "\n" + "\n".join("%d. %s" % (i, t) for i, t in enumerate(stm, 1)) + (("\n" + tail) if tail else "")
+    elif tail: q = q + "\n" + tail
     parts = re.split(r"(?:^|\s)([1-4])\)\s+", " ".join(opts_txt))
     opts = [p.strip() for p in parts[2::2]]
     if len(opts) != 4 or ans not in list("1234"): raise SystemExit("Bad question: " + q[:60])
@@ -129,6 +134,10 @@ L[-1] = L[-1].rstrip(",")
 L.append("};\n")
 ip = []
 for name, v in M.get("images", {}).items():
+    if v["t"] == "real":  # real photo / current-affairs image: no AI prompt, only a search text for the user
+        txt = 'REAL PHOTO NEEDED (do not generate with AI). Search this text on Google Images: "%s". Download a clear, suitable photo and save it as %s' % (v["search"], img + name)
+        if v.get("note"): txt += ". " + v["note"]
+        ip.append('  %s: %s' % (J(img + name), J(txt))); continue
     body = ('t: "thumb", accent: %s, objects: %s' % (J(M["accent"]), J(v["objects"]))) if v["t"] == "thumb" else ('t: "fig", about: %s' % J(v["about"]))
     ip.append('  %s: { %s }' % (J(img + name), body))
 L.append("window.IMG_PROMPTS = Object.assign(window.IMG_PROMPTS || {}, {\n" + ",\n".join(ip) + "\n});\n")
