@@ -4876,6 +4876,11 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
                 📄 PDF Tutor
               </button>
 
+              <!-- 🖼 Copy all image prompts → ChatGPT (one tab per prompt) -->
+              <button id="copyImgPromptsBtn" class="btn btn-glass btn-sm" title="Copy all image prompts of this test and open one ChatGPT tab per prompt" style="display:inline-flex;gap:6px;align-items:center;">
+                🖼 Copy all image prompts
+              </button>
+
               <!-- ⏱ Timer restore button (appears when timer is hidden) -->
               <!-- timer restore button now lives in #hudDock -->
 
@@ -15535,6 +15540,16 @@ body.qa-only-mode #qaToolbarRow {
     <div id="gcp-ppt-status"></div>
   </div>
 
+  <!-- IMAGE PROMPTS -> ChatGPT -->
+  <div class="gcp-section" id="gcp-imgprompt-section">
+    <div class="gcp-section-title">🖼 Image Prompts</div>
+    <button class="gcp-btn accent-cyan" id="gcp-imgprompt-btn" type="button">
+      <span class="gcp-icon">🖼</span>
+      <span>Copy all image prompts</span>
+    </button>
+    <div id="gcp-imgprompt-status" style="font-size:.78rem;opacity:.75;margin-top:6px;"></div>
+  </div>
+
   <!-- SCREEN RECORDER (all UI lives here) -->
   <div class="gcp-section" id="rec-root">
     <div class="gcp-section-title">🎥 Screen Recorder</div>
@@ -23631,6 +23646,490 @@ html:not(.lite-mode) .nav-panel-inner > .d-flex:first-child { border-bottom: 0; 
 }
 </style>
 
+
+<style id="copyImgPromptsStyle">
+#engineView .engine-topbar .right-top-actions > #copyImgPromptsBtn{
+  box-sizing:border-box !important; height:34px !important; min-height:0 !important; margin:0 !important;
+  padding:0 14px !important; font-size:13px !important; font-weight:700 !important; line-height:1 !important;
+  letter-spacing:.3px !important; border-radius:10px !important; white-space:nowrap !important; flex:0 0 auto;
+}
+@media (max-width:576px){
+  #engineView .engine-topbar .right-top-actions > #copyImgPromptsBtn{ height:28px !important; padding:0 10px !important; font-size:11px !important; border-radius:9px !important; }
+}
+/* toast + link panel: same box colours as the Control Panel (theme variables) */
+#cipToast, #cipPanel .cip-box{
+  background-color: var(--gp-box1, #0f172a) !important;
+  background-image: linear-gradient(135deg, var(--gp-box1-tint, rgba(15,23,42,.97)), var(--gp-box2-tint, rgba(15,23,42,.97))), var(--gp-box-img, none) !important;
+  background-size: cover, cover !important; background-position: center, center !important; background-attachment: fixed, fixed !important;
+  border: 1px solid var(--gp-boxb, rgba(255,255,255,.25)) !important;
+  color: var(--gp-text, #fff) !important;
+  box-shadow: 0 0 24px var(--gp-glow-22, rgba(0,0,0,.35)), 0 10px 30px rgba(0,0,0,.45) !important;
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+#cipToast{ position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); z-index:2147483000; max-width:92vw;
+  padding:10px 16px; border-radius:12px; font:600 13px/1.4 'Inter',system-ui,sans-serif; opacity:0; pointer-events:none; transition:.25s; }
+#cipToast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+#cipToast.err{ border-color:#ef4444 !important; }
+#cipPanel{ position:fixed; inset:0; z-index:2147483001; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; padding:14px; }
+#cipPanel .cip-box{ max-width:560px; width:100%; max-height:85vh; overflow:auto; padding:16px; border-radius:16px; font:500 14px/1.45 'Inter',system-ui,sans-serif; }
+#cipPanel .cip-box{ max-width:640px; }
+#cipPanel .cip-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px; }
+#cipPanel .cip-title{ font-weight:800; font-size:17px; }
+#cipPanel .cip-sub{ opacity:.8; font-size:13px; margin-top:2px; }
+#cipPanel .cip-x, #cipPanel .cip-close{ display:inline-flex; align-items:center; justify-content:center; gap:7px; cursor:pointer; font-weight:700;
+  background: var(--gp-tx-06, rgba(255,255,255,.08)) !important; border:1px solid var(--gp-tx-25, rgba(255,255,255,.3)) !important; color: var(--gp-text, #fff) !important; }
+#cipPanel .cip-x{ width:34px; height:34px; border-radius:50%; flex:0 0 auto; padding:0; }
+#cipPanel .cip-close{ padding:9px 20px; border-radius:12px; }
+#cipPanel .cip-x:hover, #cipPanel .cip-close:hover{ background:#ef4444 !important; border-color:#ef4444 !important; color:#fff !important; }
+#cipPanel .cip-x svg, #cipPanel .cip-close svg{ width:16px; height:16px; }
+#cipPanel .cip-x svg *, #cipPanel .cip-close svg *{ stroke: currentColor !important; fill:none !important; }
+#cipPanel .cip-prog{ display:flex; align-items:center; gap:10px; margin:6px 0 12px; font-weight:700; font-size:13px; }
+#cipPanel .cip-bar{ flex:1; height:8px; border-radius:99px; background: var(--gp-tx-12, rgba(255,255,255,.15)); overflow:hidden; }
+#cipPanel .cip-bar i{ display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,#22c55e,#16a34a); transition:width .3s ease; }
+#cipPanel .cip-row{ display:flex; align-items:stretch; gap:10px; margin:9px 0; padding:8px; border-radius:14px; transition:opacity .2s;
+  background: var(--gp-tx-06, rgba(255,255,255,.05)) !important; border:1px solid var(--gp-tx-12, rgba(255,255,255,.18)) !important; }
+#cipPanel .cip-row.done{ opacity:.5; }
+#cipPanel .cip-row.done .cip-text{ text-decoration:line-through; }
+#cipPanel .cip-check{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; width:62px; padding:6px 4px; cursor:pointer;
+  border-radius:11px; background:transparent !important; border:1px dashed var(--gp-tx-25, rgba(255,255,255,.35)) !important; color: var(--gp-text, #fff) !important; font:700 11px 'Inter',system-ui,sans-serif; }
+#cipPanel .cip-box-i{ width:26px; height:26px; border-radius:8px; border:2px solid currentColor; display:flex; align-items:center; justify-content:center; transition:.18s; }
+#cipPanel .cip-box-i svg{ width:17px; height:17px; opacity:0; transform:scale(.4); transition:.18s; }
+#cipPanel .cip-box-i svg *{ stroke:#fff !important; fill:none !important; }
+#cipPanel .cip-check:hover .cip-box-i{ border-color:#22c55e; }
+#cipPanel .cip-check[aria-pressed="true"]{ border-style:solid !important; border-color:#16a34a !important; }
+#cipPanel .cip-check[aria-pressed="true"] .cip-box-i{ background:linear-gradient(135deg,#22c55e,#15803d); border-color:#16a34a; box-shadow:0 0 12px rgba(34,197,94,.55); }
+#cipPanel .cip-check[aria-pressed="true"] .cip-box-i svg{ opacity:1; transform:scale(1); }
+#cipPanel .cip-main{ flex:1; min-width:0; display:flex; align-items:center; gap:10px; text-decoration:none; color: var(--gp-text, #fff) !important; }
+#cipPanel .cip-left{ flex:1; min-width:0; }
+#cipPanel .cip-meta{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:5px; }
+#cipPanel .cip-badge{ padding:3px 11px; border-radius:9px; font-weight:800; font-size:14px; letter-spacing:.2px; background:#2563eb !important; color:#fff !important; }
+#cipPanel .cip-badge.thumb{ background:#f59e0b !important; color:#111 !important; }
+#cipPanel .cip-chip{ padding:2px 9px; border-radius:99px; font-weight:700; font-size:11px; border:1px solid currentColor; opacity:.9; }
+#cipPanel .cip-chip.real{ color:#a855f7 !important; }
+#cipPanel .cip-chip.thumb{ color:#d97706 !important; }
+#cipPanel .cip-chip.ai{ color:#0e9f6e !important; }
+#cipPanel .cip-page{ font-size:12px; opacity:.75; font-weight:600; }
+#cipPanel .cip-text{ font-size:13px; line-height:1.4; opacity:.92; word-break:break-word; }
+#cipPanel .cip-go{ flex:0 0 auto; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#1fd08f,#10a37f 55%,#0b7a5e) !important; box-shadow:0 3px 10px rgba(16,163,127,.45); }
+#cipPanel .cip-go svg{ width:19px; height:19px; } #cipPanel .cip-go svg *{ stroke:#fff !important; fill:none !important; }
+#cipPanel .cip-main:hover .cip-go{ transform:scale(1.1); }
+#cipPanel .cip-foot{ display:flex; justify-content:flex-end; margin-top:12px; }
+@media (max-width:520px){ #cipPanel .cip-row{ flex-direction:column; } #cipPanel .cip-check{ flex-direction:row; width:auto; justify-content:flex-start; gap:8px; padding:6px 10px; } }
+html.lite-mode #cipToast, html.lite-mode #cipPanel .cip-box{ background:#fff !important; background-image:none !important; border:2px solid #000 !important; color:#000 !important; box-shadow:none !important; }
+html.lite-mode #cipPanel .cip-row, html.lite-mode #cipPanel .cip-x, html.lite-mode #cipPanel .cip-close, html.lite-mode #cipPanel .cip-check{ background:#fff !important; color:#000 !important; border:1.5px solid #000 !important; }
+html.lite-mode #cipPanel .cip-badge{ background:#000 !important; color:#fff !important; }
+html.lite-mode #cipPanel .cip-chip{ color:#000 !important; }
+html.lite-mode #cipPanel .cip-bar{ background:#ddd; } html.lite-mode #cipPanel .cip-bar i{ background:#000; }
+html.lite-mode #cipPanel .cip-check[aria-pressed="true"] .cip-box-i{ background:#000; border-color:#000; box-shadow:none; }
+/* ChatGPT icon inside each image-prompt box */
+.cip-gpt{ display:inline-flex !important; align-items:center; justify-content:center; width:36px; height:36px; margin-left:8px; padding:0 !important; vertical-align:middle;
+  flex:0 0 auto; border:0 !important; border-radius:50% !important; cursor:pointer;
+  background:linear-gradient(135deg,#1fd08f 0%,#10a37f 55%,#0b7a5e 100%) !important;
+  box-shadow:0 3px 12px rgba(16,163,127,.5), inset 0 1px 0 rgba(255,255,255,.4) !important;
+  transition:transform .16s ease, box-shadow .16s ease; }
+.cip-gpt:hover{ transform:translateY(-1px) scale(1.1); box-shadow:0 6px 18px rgba(16,163,127,.75), inset 0 1px 0 rgba(255,255,255,.5) !important; }
+.cip-gpt:active{ transform:scale(.94); }
+.cip-gpt svg{ width:20px; height:20px; display:block; pointer-events:none; }
+.cip-gpt svg *{ stroke:#fff !important; fill:none !important; }
+.cip-gpt.sent{ animation:cipPulse .9s ease; }
+@keyframes cipPulse{ 0%{ box-shadow:0 0 0 0 rgba(16,163,127,.8);} 100%{ box-shadow:0 0 0 14px rgba(16,163,127,0);} }
+html.lite-mode .cip-gpt{ background:#fff !important; border:1.5px solid #000 !important; box-shadow:none !important; }
+html.lite-mode .cip-gpt svg *{ stroke:#000 !important; }
+</style>
+<script id="copyImgPromptsScript">
+// Copy all image prompts -> one ChatGPT tab per prompt (each prompt ends with "Name this image <file>.").
+// Sources for the current test: (1) rebuilt-off-screen pages: every "Copy prompt" button is pressed and the copied text captured,
+// (2) the page on screen (incl. the thumbnail area), (3) data fields: *prompt* keys, data-prompt attributes, IMAGE PROMPT comments,
+// thumb / yt.extra prompts. Thumbnail prompt is named thumbnail.png; if a concept has a thumbnail but no prompt, one is generated.
+(function () {
+  'use strict';
+  var PREFIX  = 'Create an image: ';
+  var CHATGPT = 'https://chatgpt.com/?q=';
+  var ATTRS   = ['data-prompt', 'data-image-prompt', 'data-imgprompt', 'data-ai-prompt', 'prompt'];
+  var BTN_RE  = /copy\s*(the\s*)?(image\s*)?prompt/i;
+  var IMG_RE  = /([^\/\\\s"'()<>=]+\.(?:png|jpe?g|webp|gif|svg))(?![A-Za-z0-9])/i;
+
+  function say(msg, err) {
+    var t = document.getElementById('cipToast');
+    if (!t) { t = document.createElement('div'); t.id = 'cipToast'; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.toggle('err', !!err); t.classList.add('show');
+    clearTimeout(t._t); t._t = setTimeout(function () { t.classList.remove('show'); }, 6000);
+    var st = document.getElementById('gcp-imgprompt-status'); if (st) st.textContent = msg;
+  }
+  function baseName(v) { var m = String(v == null ? '' : v).match(IMG_RE); return m ? m[1] : ''; }
+  function plain(h) { try { var d = new DOMParser().parseFromString(String(h || ''), 'text/html'); return (d.body.textContent || '').replace(/\s+/g, ' ').trim(); } catch (e) { return String(h || ''); } }
+
+  /* ---------- file name of the image a button / element belongs to ---------- */
+  function leafButtons(root) {
+    var all = root.querySelectorAll('button, a, [role="button"], span, div, p'), hits = [];
+    all.forEach(function (el) { var t = el.textContent || ''; if (BTN_RE.test(t) && t.length < 60) hits.push(el); });
+    return hits.filter(function (el) { return !hits.some(function (o) { return o !== el && el.contains(o); }); });
+  }
+  function nameFor(node) {
+    var el = node, i;
+    for (i = 0; el && i < 7; i++, el = el.parentElement) {
+      var t = (el.innerHTML || '').replace(/<[^>]*>/g, ' ');      // tags -> spaces so "2.png" never glues onto the next word
+      if (t.length > 6000) break;
+      if (i > 0 && el.querySelectorAll && leafButtons(el).length > 1) break;      // reached a container of several placeholders
+      var n = baseName(t); if (n) return n;
+      var as = el.attributes || [];
+      for (var k = 0; k < as.length; k++) { n = baseName(as[k].value); if (n) return n; }
+      var im = el.querySelector && el.querySelector('img[src],[data-src]');
+      if (im) { n = baseName(im.getAttribute('src') || im.getAttribute('data-src')); if (n) return n; }
+    }
+    return '';
+  }
+
+  /* ---------- static extraction (data) ---------- */
+  function fromText(txt, out) {
+    if (typeof txt !== 'string' || !txt) return;
+    var m, re;
+    re = /<!--\s*(?:image|img)[\s_-]*prompt\s*:?([\s\S]*?)-->/gi;       while ((m = re.exec(txt))) out.push({ prompt: m[1], name: '' });
+    re = /\[\s*(?:image|img)[\s_-]*prompt\s*:?\s*([\s\S]*?)\]/gi;        while ((m = re.exec(txt))) out.push({ prompt: m[1], name: '' });
+  }
+  function fromHtmlStatic(html, out) {
+    if (typeof html !== 'string' || !html) return;
+    fromText(html, out);
+    if (html.indexOf('<') < 0) return;
+    var doc; try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { return; }
+    doc.querySelectorAll('*').forEach(function (el) {
+      ATTRS.forEach(function (a) {
+        var v = el.getAttribute(a);
+        if (v) out.push({ prompt: v, name: baseName(el.getAttribute('src') || el.getAttribute('data-src')) || nameFor(el) });
+      });
+    });
+  }
+  function imgNameOf(o) {
+    var keys = ['image', 'quesimage', 'expimage', 'src', 'file', 'filename', 'name', 'path'], i, n;
+    for (i = 0; i < keys.length; i++) if (typeof o[keys[i]] === 'string') { n = baseName(o[keys[i]]); if (n) return n; }
+    return '';
+  }
+  function walk(v, key, out, depth, nm) {
+    if (depth > 12) return;
+    if (typeof v === 'string') {
+      if (/prompt/i.test(key || '')) out.push({ prompt: v, name: nm || '' }); else fromHtmlStatic(v, out);
+    } else if (Array.isArray(v)) {
+      v.forEach(function (x) { walk(x, key, out, depth + 1, nm); });
+    } else if (v && typeof v === 'object') {
+      var local = imgNameOf(v) || nm || (/thumb/i.test(key || '') ? 'thumbnail.png' : '');
+      if (typeof v.label === 'string' && /prompt/i.test(v.label) && typeof v.text === 'string')       // yt.extra: [{label:'Thumbnail prompt', text:'…'}]
+        out.push({ prompt: v.text, name: /thumb/i.test(v.label) ? 'thumbnail.png' : local });
+      Object.keys(v).forEach(function (k) { walk(v[k], k, out, depth + 1, local); });
+    }
+  }
+  function isConcept(it) {
+    if (!it || typeof it !== 'object') return false;
+    var t = String(it.type || '').toLowerCase().replace(/[\s_-]/g, '');
+    return t === 'concept' || t === 'conceptpage' || it.conceptHtml !== undefined || it.concepthtml !== undefined;
+  }
+  function thumbName(it) {
+    var t = it.thumb || it.thumbnail;
+    return (typeof t === 'string' ? baseName(t) : (t && baseName(t.image))) || 'thumbnail.png';
+  }
+  function thumbPrompt(it) {                          // generated only when the test has no thumbnail prompt of its own
+    var t = it.thumb || it.thumbnail; t = (t && typeof t === 'object') ? t : {};
+    var title = plain(it.title) || 'Class overview', head = [t.line1, t.line2, t.line3].filter(Boolean).join(' ') || title.toUpperCase();
+    return 'Create a bold, eye-catching 16:9 YouTube thumbnail (1280x720) for an educational class video titled "' + title + '". ' +
+           'Show the main visual theme of the topic in a dramatic, high-contrast style with rich colours, a clean modern layout, and large readable headline text: "' + head + '". No watermark, no extra logos.';
+  }
+
+  /* ---------- clipboard capture ---------- */
+  var captured = null, restore = [];
+  function startCapture() {
+    captured = [];
+    var push = function (t) { if (captured && typeof t === 'string' && t.trim()) captured.push(t); };
+    try {
+      var nc = navigator.clipboard;
+      if (nc) {
+        var o = nc.writeText;
+        nc.writeText = function (t) { push(t); return Promise.resolve(); };
+        restore.push(function () { try { if (o) nc.writeText = o; else delete nc.writeText; } catch (e) {} });
+      }
+    } catch (e) {}
+    try {
+      var oe = document.execCommand;
+      document.execCommand = function (cmd) {
+        if (String(cmd).toLowerCase() === 'copy') {
+          var ae = document.activeElement, t = '';
+          if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT')) t = ae.value.substring(ae.selectionStart || 0, ae.selectionEnd || ae.value.length);
+          if (!t) t = String(window.getSelection ? window.getSelection() : '');
+          push(t); return true;
+        }
+        return oe.apply(document, arguments);
+      };
+      restore.push(function () { document.execCommand = oe; });
+    } catch (e) {}
+    var onCopy = function (e) { try { var d = e.clipboardData && e.clipboardData.getData('text/plain'); push(d || String(window.getSelection())); } catch (x) {} };
+    document.addEventListener('copy', onCopy, true);
+    restore.push(function () { document.removeEventListener('copy', onCopy, true); });
+  }
+  function stopCapture() { var r = restore; restore = []; r.forEach(function (f) { try { f(); } catch (e) {} }); var c = captured || []; captured = null; return c; }
+
+  function staticPromptFor(btn) {
+    var el = btn, i;
+    for (i = 0; el && i < 6; i++, el = el.parentElement) {
+      var attrs = el.attributes || [];
+      for (var k = 0; k < attrs.length; k++) {
+        var n = attrs[k].name.toLowerCase(), v = attrs[k].value;
+        if (/prompt|clipboard|copy/.test(n) && n !== 'onclick' && v.length > 8) return v;
+      }
+      var oc = el.getAttribute && el.getAttribute('onclick');
+      if (oc) {
+        var lits = oc.match(/(["'`])((?:\\.|(?!\1)[\s\S])*?)\1/g) || [], best = '';
+        lits.forEach(function (l) { l = l.slice(1, -1); if (l.length > best.length) best = l; });
+        if (best.length > 20) return best;
+      }
+      var hid = null; try { hid = el.querySelector && el.querySelector('textarea, template, [hidden], script[type="text/plain"]'); } catch (e) {}
+      if (hid && hid !== btn && !hid.contains(btn)) { var t = (hid.value || hid.textContent || '').trim(); if (t.length > 8) return t; }
+    }
+    return '';
+  }
+
+  function pagesHtml() {
+    var list = [], data = window.TEST_DATA, cNo = 0, qNo = 0;
+    if (!data) return list;
+    Object.keys(data).forEach(function (k) {
+      var parts = [], label;
+      if (isConcept(data[k])) { cNo++; var tt = plain(data[k].title || ''); label = 'Concept ' + cNo + (tt ? ' · ' + (tt.length > 38 ? tt.slice(0, 38) + '…' : tt) : ''); }
+      else { qNo++; label = 'Question ' + qNo; }
+      (function grab(v, d) {
+        if (d > 6) return;
+        if (typeof v === 'string') { if (v.indexOf('<') > -1 || BTN_RE.test(v)) parts.push(v); }
+        else if (Array.isArray(v)) v.forEach(function (x) { grab(x, d + 1); });
+        else if (v && typeof v === 'object') Object.keys(v).forEach(function (kk) { grab(v[kk], d + 1); });
+      })(data[k], 0);
+      if (parts.length) list.push({ html: parts.join('\n'), label: label });
+    });
+    return list;
+  }
+
+  function dynamicItems() {
+    return new Promise(function (resolve) {
+      var box = document.createElement('div');
+      box.id = 'cipSandbox';
+      box.style.cssText = 'position:fixed;left:-99999px;top:0;width:900px;height:10px;overflow:hidden;opacity:0;pointer-events:none';
+      var cells = pagesHtml().map(function (pg) { var c = document.createElement('div'); c.innerHTML = pg.html; box.appendChild(c); return { el: c, label: pg.label }; });
+      document.body.appendChild(box);
+      var live = document.getElementById('conceptBox') || document.getElementById('cpBody');   // what is on screen (incl. thumbnail area)
+      setTimeout(function () {                         // let onerror-made placeholders appear
+        var out = [];
+        startCapture();
+        try {
+          cells.concat(live ? [{ el: live, label: 'On screen now' }] : []).forEach(function (cellObj) {
+            var cell = cellObj.el, page = cellObj.label;
+            leafButtons(cell).forEach(function (btn) {
+              var nm = ''; try { nm = nameFor(btn); } catch (e) {}
+              var before = captured.length;
+              try { btn.click(); } catch (e) {}
+              if (captured.length > before) { for (var i = before; i < captured.length; i++) out.push({ prompt: captured[i], name: nm, page: page }); return; }
+              var sp = ''; try { sp = staticPromptFor(btn); } catch (e) {}
+              if (sp) out.push({ prompt: sp, name: nm, page: page });
+            });
+          });
+        } catch (e) { console.error(e); }
+        stopCapture();
+        box.remove();
+        resolve(out);
+      }, 900);
+    });
+  }
+
+  function tidy(p) {
+    return String(p).replace(/\\n/g, ' ').replace(/\s+/g, ' ').replace(/^["'`\s]+|["'`,;\s]+$/g, '')
+                    .replace(/\s*Name this image\s+\S+?\.(?:png|jpe?g|webp)\.?$/i, '').replace(/[\s.]+$/, '').trim();
+  }
+  function finalize(raw, extra) {
+    var seen = {}, items = [];
+    raw.concat(extra || []).forEach(function (it, idx) {
+      var p = tidy(it.prompt);
+      if (p.length < 9 || /^mkdir\b/i.test(p) || seen[p]) return;
+      seen[p] = 1; items.push({ prompt: p, name: it.name || '', page: it.page || '', idx: idx });
+    });
+    // thumbnail generated for concepts that have a thumb but no prompt of their own
+    var data = window.TEST_DATA || {};
+    Object.keys(data).forEach(function (k) {
+      var it = data[k];
+      if (!isConcept(it) || !(it.thumb || it.thumbnail)) return;
+      var tn = thumbName(it);
+      if (!items.some(function (x) { return x.name.toLowerCase() === tn.toLowerCase(); }))
+        items.push({ prompt: tidy(thumbPrompt(it)), name: tn, page: 'Thumbnail (generated prompt)', idx: -1, generated: true });
+    });
+    // unnamed -> next free 1.png, 2.png …
+    var used = {}; items.forEach(function (x) { if (x.name) used[x.name.toLowerCase()] = 1; });
+    var n = 0;
+    items.forEach(function (x) { if (!x.name) { do { n++; } while (used[n + '.png']); x.name = n + '.png'; used[x.name] = 1; } });
+    // order: thumbnail first, then 1,2,3… then the rest in found order
+    var rank = function (x) { if (/^thumb/i.test(x.name)) return -1; var m = x.name.match(/^(\d+)\./); return m ? +m[1] : 1e6 + x.idx; };
+    items.sort(function (a, b) { return rank(a) - rank(b); });
+    return items;
+  }
+  function promptText(x) { return x.prompt + '. Name this image ' + x.name + '.'; }
+  function urlFor(x) { return CHATGPT + encodeURIComponent((/^(create|generate|draw|make|design|produce|illustrate)\b/i.test(x.prompt) ? '' : PREFIX) + promptText(x)); }
+
+  function copyText(text) {
+    var ok = false;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).catch(function () { legacy(text); }); ok = true; } } catch (e) {}
+    if (!ok) legacy(text);
+  }
+  function legacy(text) {
+    try { var ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); } catch (e) {}
+  }
+
+  /* ---------- tick-off list (shown when the browser blocks the extra tabs) ---------- */
+  function hash(str) { var h = 5381, i; for (i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function doneKey(x) { return 'cipDone:' + hash(x.name + '|' + x.prompt); }
+  function getDone(x) { try { return localStorage.getItem(doneKey(x)) === '1'; } catch (e) { return !!x._done; } }
+  function setDone(x, v) { x._done = v; try { if (v) localStorage.setItem(doneKey(x), '1'); else localStorage.removeItem(doneKey(x)); } catch (e) {} }
+  function kindOf(x) {
+    if (/^thumb/i.test(x.name)) return { cls: 'thumb', txt: '🎬 Thumbnail' };
+    if (/REAL PHOTO NEEDED|do not generate with AI/i.test(x.prompt)) return { cls: 'real', txt: '📷 Real photo' };
+    return { cls: 'ai', txt: '🎨 AI image' };
+  }
+  var CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 12.5l4.3 4.3L18.5 7.8"/></svg>';
+  var X_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>';
+
+  function showPanel(list) {
+    var old = document.getElementById('cipPanel'); if (old) old.remove();
+    var d = document.createElement('div'); d.id = 'cipPanel';
+    var box = document.createElement('div'); box.className = 'cip-box';
+    var head = document.createElement('div'); head.className = 'cip-head';
+    head.innerHTML = '<div><div class="cip-title">Image prompts</div><div class="cip-sub">Tap a row to open it in ChatGPT · tick <b>Done</b> when the image is saved.</div></div>';
+    var x1 = document.createElement('button'); x1.type = 'button'; x1.className = 'cip-x'; x1.title = 'Close'; x1.innerHTML = X_SVG; x1.onclick = function () { d.remove(); };
+    head.appendChild(x1); box.appendChild(head);
+
+    var prog = document.createElement('div'); prog.className = 'cip-prog';
+    prog.innerHTML = '<span class="cip-count"></span><div class="cip-bar"><i></i></div>';
+    box.appendChild(prog);
+    function refresh() {
+      var n = list.filter(getDone).length;
+      prog.querySelector('.cip-count').textContent = n + ' / ' + list.length + ' done';
+      prog.querySelector('.cip-bar i').style.width = (list.length ? Math.round(100 * n / list.length) : 0) + '%';
+    }
+
+    list.forEach(function (x) {
+      var k = kindOf(x);
+      var row = document.createElement('div'); row.className = 'cip-row' + (getDone(x) ? ' done' : '');
+
+      var chk = document.createElement('button'); chk.type = 'button'; chk.className = 'cip-check';
+      chk.setAttribute('aria-pressed', getDone(x) ? 'true' : 'false'); chk.title = 'Mark ' + x.name + ' as done';
+      chk.innerHTML = '<span class="cip-box-i">' + CHECK_SVG + '</span><span class="cip-check-t">Done</span>';
+      chk.onclick = function () {
+        var v = chk.getAttribute('aria-pressed') !== 'true';
+        chk.setAttribute('aria-pressed', v ? 'true' : 'false'); row.classList.toggle('done', v); setDone(x, v); refresh();
+      };
+
+      var a = document.createElement('a'); a.className = 'cip-main'; a.href = urlFor(x); a.target = '_blank'; a.rel = 'noopener'; a.title = x.prompt;
+      var txt = x.prompt.length > 150 ? x.prompt.slice(0, 150) + '…' : x.prompt;
+      var meta = document.createElement('div'); meta.className = 'cip-meta';
+      var bd = document.createElement('span'); bd.className = 'cip-badge ' + k.cls; bd.textContent = x.name;
+      var ch = document.createElement('span'); ch.className = 'cip-chip ' + k.cls; ch.textContent = k.txt;
+      meta.appendChild(bd); meta.appendChild(ch);
+      if (x.page) { var pg = document.createElement('span'); pg.className = 'cip-page'; pg.textContent = x.page; meta.appendChild(pg); }
+      var tx = document.createElement('div'); tx.className = 'cip-text'; tx.textContent = txt;
+      var left = document.createElement('div'); left.className = 'cip-left'; left.appendChild(meta); left.appendChild(tx);
+      var go = document.createElement('span'); go.className = 'cip-go'; go.innerHTML = GPT_SVG;
+      a.appendChild(left); a.appendChild(go);
+
+      row.appendChild(chk); row.appendChild(a); box.appendChild(row);
+    });
+    refresh();
+
+    var foot = document.createElement('div'); foot.className = 'cip-foot';
+    var c = document.createElement('button'); c.type = 'button'; c.className = 'cip-close'; c.innerHTML = X_SVG + '<span>Close</span>'; c.onclick = function () { d.remove(); };
+    foot.appendChild(c); box.appendChild(foot);
+    d.appendChild(box); d.addEventListener('click', function (e) { if (e.target === d) d.remove(); });
+    document.body.appendChild(d);
+  }
+
+  function openAll(list) {
+    copyText(list.map(function (x) { return x.name + ' — ' + promptText(x); }).join('\n\n'));
+    var opened = 0;
+    list.forEach(function (x) {
+      var w = null; try { w = window.open(urlFor(x), '_blank'); } catch (e) {}
+      if (w) { opened++; try { w.opener = null; } catch (e) {} }
+    });
+    if (opened === list.length) say('Opened ' + opened + ' ChatGPT tab' + (opened > 1 ? 's' : '') + ' (prompts also copied).');
+    else { say('Browser blocked ' + (list.length - opened) + ' tab(s) – use the links.', true); showPanel(list); }
+  }
+
+  var busy = false;
+  function run() {
+    if (busy) return; busy = true;
+    if (!window.TEST_DATA) { busy = false; say('Open a test first – no test is loaded.', true); return; }
+    say('Collecting image prompts…');
+    var out = [];
+    try { Object.keys(window.TEST_DATA).forEach(function (k) { walk(window.TEST_DATA[k], '', out, 0, ''); }); } catch (e) { console.error(e); }
+    dynamicItems().then(function (dyn) {
+      busy = false;
+      var list = finalize(dyn, out);          // captured (named) prompts first, so their file names win over data guesses
+      if (!list.length) { say('No image prompts found in this test.', true); return; }
+      openAll(list);
+    }).catch(function (e) { busy = false; console.error(e); say('Error: ' + (e && e.message || e), true); });
+  }
+
+  /* ---------- 🟢 little ChatGPT icon inside every image-prompt box ---------- */
+  var GPT_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="translate(12 12)">' +
+    [0, 60, 120, 180, 240, 300].map(function (a) { return '<rect x="0.9" y="-9.7" width="4" height="10.9" rx="2" transform="rotate(' + a + ')"/>'; }).join('') + '</g></svg>';
+
+  function promptOf(copyBtn) {                       // synchronous, so the tab opens inside the user's click
+    startCapture();
+    try { copyBtn.click(); } catch (e) {}
+    var c = stopCapture();
+    if (c.length) return c[0];
+    try { return staticPromptFor(copyBtn); } catch (e) { return ''; }
+  }
+
+  function sendOne(copyBtn, icon) {
+    var prompt = tidy(promptOf(copyBtn));
+    if (prompt.length < 9) { say('Could not read the prompt of this box.', true); return; }
+    var name = ''; try { name = nameFor(copyBtn); } catch (e) {}
+    if (!name) {
+      var all = promptButtons(), ix = all.indexOf(copyBtn);
+      name = (ix > -1 ? ix + 1 : 1) + '.png';
+    }
+    var item = { prompt: prompt, name: name };
+    var w = null; try { w = window.open(urlFor(item), '_blank'); } catch (e) {}
+    if (w) { try { w.opener = null; } catch (e) {} say('Sent ' + name + ' to ChatGPT.'); icon.classList.add('sent'); setTimeout(function () { icon.classList.remove('sent'); }, 1200); }
+    else { say('Browser blocked the tab – use the link.', true); showPanel([item]); }
+  }
+
+  function promptButtons() {
+    var out = [];
+    document.querySelectorAll('button, a, [role="button"], [onclick]').forEach(function (el) {
+      var t = el.textContent || '';
+      if (!BTN_RE.test(t) || t.length > 60 || el.classList.contains('cip-gpt')) return;
+      if (el.closest('#cipSandbox, #gcp-panel, #cipPanel')) return;
+      out.push(el);
+    });
+    return out.filter(function (el) { return !out.some(function (o) { return o !== el && el.contains(o); }); });
+  }
+
+  function decorate() {
+    promptButtons().forEach(function (cb) {
+      var nx = cb.nextElementSibling;
+      if (nx && nx.classList && nx.classList.contains('cip-gpt')) return;
+      var ic = document.createElement('button');
+      ic.type = 'button'; ic.className = 'cip-gpt';
+      ic.title = 'Send this prompt to ChatGPT'; ic.setAttribute('aria-label', 'Send this prompt to ChatGPT');
+      ic.innerHTML = GPT_SVG;
+      ic.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); sendOne(cb, ic); });
+      cb.insertAdjacentElement('afterend', ic);
+    });
+  }
+  var decTimer = 0;
+  function scheduleDecorate() { clearTimeout(decTimer); decTimer = setTimeout(function () { try { decorate(); } catch (e) { console.error(e); } }, 250); }
+  try { new MutationObserver(scheduleDecorate).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+  scheduleDecorate();
+
+  window.copyAllImagePrompts = run;
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest && e.target.closest('#copyImgPromptsBtn, #gcp-imgprompt-btn');
+    if (b) { e.preventDefault(); e.stopPropagation(); run(); }
+  }, true);
+})();
+</script>
 </body>
 
 
