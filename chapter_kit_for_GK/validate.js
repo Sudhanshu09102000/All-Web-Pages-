@@ -10,8 +10,14 @@ if (!D) { console.log("window.TEST_DATA missing"); process.exit(1); }
 const keys = Object.keys(D).map(Number);
 keys.forEach((k, i) => k !== i + 1 && E("numbering breaks at " + k));
 const tag = /<[a-z!\/][^>]*>/i, used = new Set(), acc = {}, ans = { 1: 0, 2: 0, 3: 0, 4: 0 };
-const BAN = /\b(according to|as per|as given in|as mentioned in|as stated in|as written in|based on|by|from|in) (the |your |these |this )?(notes?|book|text ?book|study material|given text|passage)\b|\bthe (notes?|book) (say|says|state|states|mention|mentions)\b/i;
-const banCheck = (k, s) => { const m = typeof s === "string" && s.replace(/<[^>]+>/g, " ").match(BAN); if (m) E(k + ': banned phrase "' + m[0] + '" (never refer to notes or book)'); };
+const LEAD = "(?:according to|as per|as given in|as given|given in|as mentioned in|mentioned in|as stated in|stated in|as written in|written in|as described in|described in|as shown in|shown in|as listed in|listed in|as noted in|noted in|as taught in|taught in|as discussed in|discussed in|based on|derived from|taken from|from|in|by|per|as in)";
+const ART = "(?:(?:the|your|our|these|this|those|my|given)\\s+)?(?:(?:class|sir's|sir|lecture|study)\\s+)?";
+const NOUN = "(?:notes?|book|textbook|text book|study material|given text|handout|lecture)";
+const BAN = new RegExp("\\b" + LEAD + "\\s+" + ART + NOUN + "\\b"
+  + "|\\b(?:the|these|this|our|your)\\s+(?:(?:class|sir's)\\s+)?(?:notes?|book|textbook|handout)\\s+(?:say|says|said|state|states|mention|mentions|give|gives|show|shows|describe|describes|call|calls)\\b"
+  + "|\\bas\\s+per\\s+(?:sir|the teacher|teacher|madam|mam)\\b|\\bas\\s+sir\\s+(?:said|told|explained|taught)\\b|\\bas\\s+(?:discussed|taught|explained)\\s+in\\s+class\\b", "i");
+const banCheck = (k, s) => { const m = typeof s === "string" && s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").match(BAN); if (m) E(k + ': banned phrase "' + m[0] + '" (never refer to notes, book or teacher; state the fact directly)'); };
+const walk = (k, v) => typeof v === "string" ? banCheck(k, v) : v && typeof v === "object" ? Object.values(v).forEach((x) => walk(k, x)) : 0;
 let nc = 0, nq = 0;
 for (const k of keys) {
   const e = D[k];
@@ -21,7 +27,8 @@ for (const k of keys) {
     if (acc[e.accent]) E(k + ": accent repeats entry " + acc[e.accent]); acc[e.accent] = k;
     if (/cp-hl/.test(e.html)) E(k + ": cp-hl used");
     banCheck(k, e.title); banCheck(k, e.html);
-    const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 45) E(k + ": page too long");
+    if (k > 1 && !/<img\s/i.test(e.html)) E(k + ": concept page has no image (add 2-3 I: lines)");
+    const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 70) E(k + ": page too long");
     for (const m of e.html.matchAll(/src="([^"]+)"/g)) used.add(m[1]);
   } else {
     nq++;
@@ -41,12 +48,11 @@ else {
   else used.add(e1.thumb.image);
   const t = e1.yt && e1.yt.tags; if (!t || t.join(", ").length !== 500) E("yt.tags length " + (t ? t.join(", ").length : "missing") + " != 500");
   if (t && t.some((x) => x.length > 30)) E("a tag is over 30 chars");
-  banCheck(1, e1.lead); banCheck(1, e1.yt && e1.yt.description);
+  walk(1, e1.title); walk(1, e1.html); walk(1, e1.thumb); walk(1, e1.yt);
   ["title", "altTitles", "description", "hashtags", "thumbText", "pinnedComment", "communityPost", "chapters", "playlist"].forEach((f) => !(e1.yt || {})[f] && E("yt." + f + " missing"));
 }
 const ch = [...used].filter((p) => p.split("/").length >= 5);
 ch.forEach((p) => !P[p] && E("no IMG_PROMPTS for " + p));
 Object.keys(P).forEach((p) => !used.has(p) && E("IMG_PROMPTS not used: " + p));
-if (ch.length > 4) E("more than 3 chapter images + thumbnail");
 if (errs.length) { console.log("ERRORS (" + errs.length + "):\n" + errs.slice(0, 6).join("\n")); process.exit(1); }
-console.log(`OK  concept pages (incl. overview)=${nc} questions=${nq} answers[1-4]=${ans[1]}/${ans[2]}/${ans[3]}/${ans[4]}`);
+console.log(`OK  concept pages (incl. overview)=${nc} questions=${nq} images=${ch.length} answers[1-4]=${ans[1]}/${ans[2]}/${ans[3]}/${ans[4]}`);
