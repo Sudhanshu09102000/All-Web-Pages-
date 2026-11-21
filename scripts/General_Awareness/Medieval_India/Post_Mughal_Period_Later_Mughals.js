@@ -348,6 +348,49 @@
   sweep();
 })();
 
+/* ═══ SNIPPET 3 — put right after SNIPPET 2 ═══ */
+/* ── STATEMENT-LINES SNIPPET: in statement-based questions, every numbered statement (and the closing line) is shown on its own line ── */
+(function () {
+  var map = null, busy = false;
+  var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
+  function build() {
+    map = {};
+    var D = window.TEST_DATA || {};
+    Object.keys(D).forEach(function (k) {
+      var q = D[k] && D[k].questext;
+      if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
+    });
+  }
+  function fix() {
+    if (busy) return;
+    busy = true;
+    setTimeout(function () {
+      busy = false;
+      try {
+        if (!map) build();
+        var all = document.querySelectorAll("*");
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (!el.childNodes || (el.getAttribute && el.getAttribute("data-sq"))) continue;
+          for (var j = 0; j < el.childNodes.length; j++) {
+            var n = el.childNodes[j];
+            if (n.nodeType !== 3 || n.nodeValue.length < 25) continue;
+            var full = map[norm(n.nodeValue)];
+            if (!full) continue;
+            var sp = document.createElement("span");
+            sp.setAttribute("data-sq", "1");
+            sp.style.setProperty("white-space", "pre-line", "important");
+            sp.textContent = full;
+            el.replaceChild(sp, n);
+          }
+        }
+      } catch (e) {}
+    }, 30);
+  }
+  try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  fix();
+})();
+
 /* Field: General_Awareness · Subject: Medieval_India · Chapter: Post_Mughal_Period_Later_Mughals · 5 concept pages (+ overview) · 19 questions */
 
 window.TEST_DATA = {

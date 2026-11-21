@@ -348,6 +348,49 @@
   sweep();
 })();
 
+/* ═══ SNIPPET 3 — put right after SNIPPET 2 ═══ */
+/* ── STATEMENT-LINES SNIPPET: in statement-based questions, every numbered statement (and the closing line) is shown on its own line ── */
+(function () {
+  var map = null, busy = false;
+  var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
+  function build() {
+    map = {};
+    var D = window.TEST_DATA || {};
+    Object.keys(D).forEach(function (k) {
+      var q = D[k] && D[k].questext;
+      if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
+    });
+  }
+  function fix() {
+    if (busy) return;
+    busy = true;
+    setTimeout(function () {
+      busy = false;
+      try {
+        if (!map) build();
+        var all = document.querySelectorAll("*");
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (!el.childNodes || (el.getAttribute && el.getAttribute("data-sq"))) continue;
+          for (var j = 0; j < el.childNodes.length; j++) {
+            var n = el.childNodes[j];
+            if (n.nodeType !== 3 || n.nodeValue.length < 25) continue;
+            var full = map[norm(n.nodeValue)];
+            if (!full) continue;
+            var sp = document.createElement("span");
+            sp.setAttribute("data-sq", "1");
+            sp.style.setProperty("white-space", "pre-line", "important");
+            sp.textContent = full;
+            el.replaceChild(sp, n);
+          }
+        }
+      } catch (e) {}
+    }, 30);
+  }
+  try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  fix();
+})();
+
 /* Field: General_Awareness · Subject: Ancient_India · Chapter: Post_Gupta_Period_and_Rajput_Dynasties · 20 concept pages (+ overview) · 51 questions */
 
 window.TEST_DATA = {
@@ -471,7 +514,7 @@ window.TEST_DATA = {
     exptext: "✅ The Rajatarangini is not a source for Harsha, because it is a history of Kashmir written by Kalhana. 📌 Harsha's sources are the Harshacharita, the Si-yu-ki and his own inscriptions. ❌ Si-yu-ki is wrong because it is the travel account of Hiuen Tsang, who met Harsha."
   },
   10: {
-    questext: "Consider the statements. Statement 1: Hiuen Tsang left China in 629 and returned to China in 645. Statement 2: The Banskhera inscription carries the signature of Harsha himself. Which is correct?",
+    questext: "Consider the following statements:\n1. Hiuen Tsang left China in 629 and returned to China in 645.\n2. The Banskhera inscription carries the signature of Harsha himself.\nWhich of the statements given above is/are correct?",
     options: ["Only statement 1 is correct", "Only statement 2 is correct", "Both statements are correct", "Neither statement is correct"],
     correct: "3",
     exptext: "✅ Both are correct, as Hiuen Tsang left in 629 and returned in 645, and the Banskhera inscription has Harsha's own signature. 📌 Think of 629 for going and 645 for returning. ❌ Choosing only one statement is wrong because both match the facts."

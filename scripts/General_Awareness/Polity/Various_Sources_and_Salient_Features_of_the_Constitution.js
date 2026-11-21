@@ -1,3 +1,4 @@
+/* ═══ SNIPPET 1 — put first in every file ═══ */
 /* ── STYLE SNIPPET: hides the thumbnail box and the "Open Thumbnail & YouTube Kit" link on page 1 (the chapter icon still opens the studio) ── */
 (function () {
   function hide(el) {
@@ -25,7 +26,7 @@
     return "Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle gradient in the accent colour " + a + " and restrained champagne-gold highlights; soft cinematic lighting with a gentle glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette, very subtle fine grain, realistic shallow depth of field. Place only these elegant, realistic, softly blurred objects, mostly on the right and in the back: " + o + ", rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because a banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.";
   };
   var F = function (d) {
-    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide). No people, no logos, no watermarks. If it is geography, draw a schematic, not a realistic map.";
+    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide).";
   };
   function getPrompt(src) {
     var p = (window.IMG_PROMPTS || {})[src];
@@ -47,8 +48,9 @@
     ".cpm-txt{min-width:0}",
     ".cpm-title{display:block;font-size:14.5px;font-weight:800;line-height:1.25;color:#fff!important}",
     ".cpm-sub{display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:#a9b4d0!important}",
-    ".cpm-path{display:block;max-width:100%;padding:8px 11px;border-radius:11px;background:rgba(2,6,23,.6);border:1px dashed rgba(148,163,184,.5);color:#d6deef!important;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;font-size:11px;font-weight:500;line-height:1.5;overflow-wrap:anywhere;word-break:break-all;text-align:center;user-select:text;-webkit-user-select:text}",
+    ".cpm-path{display:block;max-width:100%;padding:8px 11px;border-radius:11px;background:rgba(2,6,23,.6);border:1px dashed rgba(148,163,184,.5);color:#d6deef!important;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;font-size:11px;font-weight:500;line-height:1.5;overflow-wrap:break-word;word-break:normal;text-align:center;user-select:text;-webkit-user-select:text}",
     ".cpm-path b{color:#f6dc95!important;font-weight:700}",
+    ".cpm-file{display:inline-block;max-width:100%;white-space:nowrap}",
     ".cpm-btn{position:relative;overflow:hidden;display:inline-flex!important;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 24px;border:0!important;border-radius:999px;cursor:pointer;color:#fff!important;font-family:inherit!important;font-size:13.5px;font-weight:700;line-height:1;white-space:nowrap;background:linear-gradient(135deg,#6366f1,#a855f7 55%,#ec4899)!important;box-shadow:0 12px 26px -8px rgba(168,85,247,.8),inset 0 0 0 1px rgba(255,255,255,.2)!important;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;outline:none}",
     ".cpm-btn::after{content:'';position:absolute;top:0;left:-70%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:cpm-shine 3.8s ease-in-out infinite;pointer-events:none}",
     "@keyframes cpm-shine{0%,62%{left:-70%}100%{left:140%}}",
@@ -66,6 +68,19 @@
     ".cpm:not(.cpm-tight) .cpm-short{display:none}",
     ".cpm-tight .cpm-ico{width:30px;height:30px;border-radius:10px}.cpm-tight .cpm-ico svg{width:16px;height:16px}",
     ".cpm-tight .cpm-btn{min-height:38px;padding:0 20px}",
+    ".cpm-cmd{display:flex;align-items:center;gap:8px;width:100%;max-width:100%;padding:6px 6px 6px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(2,6,23,.88),rgba(10,16,40,.88));border:1px solid rgba(246,220,149,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 18px -10px rgba(2,6,23,.9)}",
+    ".cpm-cmd-p{flex:none;color:#34d399!important;font-weight:800;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;user-select:none;-webkit-user-select:none}",
+    ".cpm-cmd-t{flex:1;min-width:0;text-align:left;color:#e6edf8!important;font-size:10.5px;line-height:1.45;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;background:transparent!important;border:0!important;padding:0!important}",
+    ".cpm-cmd-t b{color:#f6dc95!important;font-weight:700}",
+    ".cpm-cmd-b{flex:none;display:grid!important;place-items:center;width:32px;height:32px;padding:0!important;border-radius:9px;cursor:pointer;color:#f6dc95!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))!important;border:1px solid rgba(246,220,149,.45)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:transform .15s,filter .15s,background .15s}",
+    ".cpm-cmd-b svg{width:16px;height:16px;pointer-events:none}",
+    ".cpm-cmd-b *{pointer-events:none}",
+    ".cpm-cmd-b:hover{transform:translateY(-1px);filter:brightness(1.25)}",
+    ".cpm-cmd-b:active{transform:scale(.92)}",
+    ".cpm-cmd-b:focus-visible{outline:2px solid #f6dc95;outline-offset:2px}",
+    ".cpm-cmd-b.ok{color:#fff!important;background:linear-gradient(135deg,#059669,#34d399)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-cmd-b.err{color:#fff!important;background:linear-gradient(135deg,#d97706,#ef4444)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-tight .cpm-cmd{padding:4px 4px 4px 10px}.cpm-tight .cpm-cmd-b{width:28px;height:28px}",
     "/* ── LIGHT MODE: the portal forces black text inside the studio / concept page, which made the dark card unreadable. In Light Mode the card becomes a plain white card with black text and a black button. ── */",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm{background:#fff!important;background-image:none!important;border:2px solid #000!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:#000!important;-webkit-text-fill-color:#000!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm::before{display:none!important}",
@@ -83,7 +98,13 @@
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn:focus-visible{outline:3px solid #2563eb!important;outline-offset:2px}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-ta{background:#fff!important;background-color:#fff!important;border:1px solid #000!important}",
-    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd{background:#f3f4f6!important;background-color:#f3f4f6!important;border:1px solid #000!important;box-shadow:none!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-p{color:#166534!important;-webkit-text-fill-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b{background:#000!important;background-color:#000!important;border:1px solid #000!important;box-shadow:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b *{color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.ok{background:#166534!important;background-color:#166534!important;border-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
+    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}.cpm-cmd-t{font-size:10px}}",
     "@media (prefers-reduced-motion:reduce){.cpm-btn::after{animation:none}.cpm-btn{transition:none}}"
   ].join("");
   function addCss() {
@@ -114,6 +135,17 @@
     b.innerHTML = s[1] + '<span class="cpm-lbl">' + s[0] + "</span>";
     clearTimeout(b._t);
     if (st !== "idle") b._t = setTimeout(function () { setBtn(b, "idle"); }, st === "ok" ? 1800 : 4500);
+  }
+
+  var CMD_ST = { idle: [ICON_COPY, ""], ok: [ICON_OK, " ok"], err: [ICON_WARN, " err"] };
+  function setCmdBtn(b, st) {
+    var x = CMD_ST[st];
+    b.className = "cpm-cmd-b" + x[1];
+    b.innerHTML = x[0];
+    b.title = st === "ok" ? "Copied!" : "Copy command";
+    b.setAttribute("aria-label", b.title);
+    clearTimeout(b._t);
+    if (st !== "idle") b._t = setTimeout(function () { setCmdBtn(b, "idle"); }, st === "ok" ? 1800 : 3500);
   }
 
   /* Copy strategy (most reliable first):
@@ -184,6 +216,23 @@
     for (var i = 0; i < all.length; i++) fit(all[i]);
   }
 
+  /* Shows a path so it only wraps AFTER a "/" and the file name (e.g. thumbnail.png) never splits in the middle. */
+  function fillPath(el, text) {
+    var segs = String(text).split("/"), i, last;
+    for (i = 0; i < segs.length; i++) {
+      last = i === segs.length - 1;
+      if (last) {
+        var f = document.createElement("span");
+        f.className = "cpm-file";
+        f.textContent = segs[i];
+        el.appendChild(f);
+      } else {
+        el.appendChild(document.createTextNode(segs[i] + "/"));
+        el.appendChild(document.createElement("wbr"));
+      }
+    }
+  }
+
   function swap(img) {
     if (img.getAttribute("data-ph")) return;
     var src = img.getAttribute("src") || "";
@@ -201,9 +250,23 @@
       '<span class="cpm-txt"><span class="cpm-title">Image not added yet</span>' +
       '<span class="cpm-sub">Generate it with the prompt, then save it as:</span></span></div>' +
       '<code class="cpm-path"><span class="cpm-full"></span><span class="cpm-short"></span></code>';
-    box.querySelector(".cpm-full").textContent = src;
-    box.querySelector(".cpm-short").textContent = short;
+    fillPath(box.querySelector(".cpm-full"), src);
+    fillPath(box.querySelector(".cpm-short"), short);
     box.querySelector(".cpm-path").title = src;
+    var dir = parts.length > 1 ? parts.slice(0, -1).join("/") : "";
+    if (dir) {
+      var cmd = "mkdir -p " + dir;
+      var cb = document.createElement("div");
+      cb.className = "cpm-cmd";
+      cb.innerHTML = '<span class="cpm-cmd-p">$</span><code class="cpm-cmd-t"></code>';
+      cb.querySelector(".cpm-cmd-t").textContent = cmd;
+      var cbtn = document.createElement("button");
+      cbtn.type = "button";
+      cbtn.setAttribute("data-cmd", cmd);
+      setCmdBtn(cbtn, "idle");
+      cb.appendChild(cbtn);
+      box.appendChild(cb);
+    }
     var btn = document.createElement("button");
     btn.type = "button";
     btn.setAttribute("data-ph-src", src);
@@ -263,25 +326,70 @@
   /* Listens on window (capture) so the page's own handlers can't swallow the click. If a transparent overlay
      of the studio sits on top of the button, the button is still found by the click position. */
   window.addEventListener("click", function (e) {
-    var b = e.target && e.target.closest ? e.target.closest("[data-ph-src]") : null;
+    var SEL = "[data-ph-src],[data-cmd]";
+    var b = e.target && e.target.closest ? e.target.closest(SEL) : null;
     if (!b && e.clientX > 0 && document.elementsFromPoint) {
       var els = document.elementsFromPoint(e.clientX, e.clientY);
       for (var i = 0; i < els.length; i++) {
-        if (els[i].hasAttribute && els[i].hasAttribute("data-ph-src")) { b = els[i]; break; }
+        if (els[i].hasAttribute && (els[i].hasAttribute("data-ph-src") || els[i].hasAttribute("data-cmd"))) { b = els[i]; break; }
       }
     }
     if (!b) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    if (b.hasAttribute("data-cmd")) {
+      var c = b.getAttribute("data-cmd");
+      copy(c, function () { setCmdBtn(b, "ok"); }, function () { setCmdBtn(b, "err"); }, b.parentNode);
+      return;
+    }
     press(b);
   }, true);
   try { new MutationObserver(sweep).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
   sweep();
 })();
 
-/* Subject: Polity · Chapter: Various_Sources_and_Salient_Features_of_the_Constitution
-   17 concept pages (incl. overview) · 43 questions
-   Source: RBE Polity class notes, pages 11-14 */
+/* ═══ SNIPPET 3 — put right after SNIPPET 2 ═══ */
+/* ── STATEMENT-LINES SNIPPET: in statement-based questions, every numbered statement (and the closing line) is shown on its own line ── */
+(function () {
+  var map = null, busy = false;
+  var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
+  function build() {
+    map = {};
+    var D = window.TEST_DATA || {};
+    Object.keys(D).forEach(function (k) {
+      var q = D[k] && D[k].questext;
+      if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
+    });
+  }
+  function fix() {
+    if (busy) return;
+    busy = true;
+    setTimeout(function () {
+      busy = false;
+      try {
+        if (!map) build();
+        var all = document.querySelectorAll("*");
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (!el.childNodes || (el.getAttribute && el.getAttribute("data-sq"))) continue;
+          for (var j = 0; j < el.childNodes.length; j++) {
+            var n = el.childNodes[j];
+            if (n.nodeType !== 3 || n.nodeValue.length < 25) continue;
+            var full = map[norm(n.nodeValue)];
+            if (!full) continue;
+            var sp = document.createElement("span");
+            sp.setAttribute("data-sq", "1");
+            sp.style.setProperty("white-space", "pre-line", "important");
+            sp.textContent = full;
+            el.replaceChild(sp, n);
+          }
+        }
+      } catch (e) {}
+    }, 30);
+  }
+  try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  fix();
+})();
 
 window.TEST_DATA = {
 
@@ -446,7 +554,7 @@ window.TEST_DATA = {
 
   /* ─────────── 8 · QUESTION ─────────── */
   8: {
-    questext: "Consider: 1. Procedure established by law – Japan. 2. Suspension of Fundamental Rights during Emergency – Weimar Germany. 3. Joint sitting of the two Houses – Canada. Which are correct?",
+    questext: "Consider:\n1. Procedure established by law – Japan.\n2. Suspension of Fundamental Rights during Emergency – Weimar Germany.\n3. Joint sitting of the two Houses – Canada.\nWhich are correct?",
     options: ["1, 2 and 3", "2 and 3 only", "1 and 3 only", "1 and 2 only"],
     correct: "4",
     exptext: "✅ Statements 1 and 2 are correct. 📌 Joint sitting of Parliament is from Australia. ❌ Statement 3 gives the wrong country, so options with 3 fail."
@@ -470,7 +578,7 @@ window.TEST_DATA = {
 
   /* ─────────── 11 · QUESTION ─────────── */
   11: {
-    questext: "Which of these are borrowed from the US Constitution? 1. Judicial review. 2. Post of Vice-President. 3. Single citizenship. 4. Removal of High Court judges.",
+    questext: "Which of these are borrowed from the US Constitution?\n1. Judicial review.\n2. Post of Vice-President.\n3. Single citizenship.\n4. Removal of High Court judges.",
     options: ["1, 2 and 3 only", "1, 2 and 4 only", "2, 3 and 4 only", "1, 2, 3 and 4"],
     correct: "2",
     exptext: "✅ Judicial review, Vice-President and removal of HC judges are American. 📌 Single citizenship is British. ❌ Options including 3 wrongly add a British feature."
@@ -507,7 +615,7 @@ window.TEST_DATA = {
 
   /* ─────────── 14 · QUESTION ─────────── */
   14: {
-    questext: "Consider: 1. The Constitution is purely rigid. 2. Article 368 provides for two types of amendments. 3. Some provisions can be amended by a simple majority. Which are correct?",
+    questext: "Consider:\n1. The Constitution is purely rigid.\n2. Article 368 provides for two types of amendments.\n3. Some provisions can be amended by a simple majority.\nWhich are correct?",
     options: ["2 and 3 only", "1 and 2 only", "1 and 3 only", "1, 2 and 3"],
     correct: "1",
     exptext: "✅ Statements 2 and 3 are correct. 📌 The Constitution is a blend of rigid and flexible. ❌ Statement 1 is wrong because it is not purely rigid."
@@ -563,7 +671,7 @@ window.TEST_DATA = {
 
   /* ─────────── 19 · QUESTION ─────────── */
   19: {
-    questext: "Which of the following are unitary features? 1. Governors appointed by the Centre. 2. Bicameralism. 3. All-India services. 4. Integrated judiciary.",
+    questext: "Which of the following are unitary features?\n1. Governors appointed by the Centre.\n2. Bicameralism.\n3. All-India services.\n4. Integrated judiciary.",
     options: ["1, 2 and 3 only", "2, 3 and 4 only", "1, 3 and 4 only", "1, 2, 3 and 4"],
     correct: "3",
     exptext: "✅ Features 1, 3 and 4 are unitary. 📌 Bicameralism is a federal feature. ❌ Options with 2 wrongly include a federal feature."
@@ -675,7 +783,7 @@ window.TEST_DATA = {
 
   /* ─────────── 28 · QUESTION ─────────── */
   28: {
-    questext: "Which of these describe the Supreme Court of India? 1. Federal court. 2. Highest court of appeal. 3. Guarantor of Fundamental Rights. 4. Guardian of the Constitution.",
+    questext: "Which of these describe the Supreme Court of India?\n1. Federal court.\n2. Highest court of appeal.\n3. Guarantor of Fundamental Rights.\n4. Guardian of the Constitution.",
     options: ["1 and 2 only", "2 and 3 only", "1, 3 and 4 only", "1, 2, 3 and 4"],
     correct: "4",
     exptext: "✅ All four descriptions apply. 📌 It sits at the top of the integrated hierarchy. ❌ Options 1–3 leave out valid roles."
@@ -944,7 +1052,7 @@ window.TEST_DATA = {
 
   /* ─────────── 52 · QUESTION ─────────── */
   52: {
-    questext: "Consider: 1. National Emergency – Article 352. 2. Article 365 – non-compliance with the Centre's directions. 3. Article 360 – State Emergency. Which are correct?",
+    questext: "Consider:\n1. National Emergency – Article 352.\n2. Article 365 – non-compliance with the Centre's directions.\n3. Article 360 – State Emergency.\nWhich are correct?",
     options: ["1 and 3 only", "2 and 3 only", "3 only", "1 and 2 only"],
     correct: "4",
     exptext: "✅ Statements 1 and 2 are correct. 📌 Article 360 is Financial Emergency. ❌ Statement 3 mislabels Article 360."
