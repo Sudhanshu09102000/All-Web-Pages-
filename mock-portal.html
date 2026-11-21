@@ -5126,6 +5126,7 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
     <!-- ENGINE VIEW -->
     <div id="engineView" class="view">
       <!-- ✅ NAV ICON — outside the topbar, small, fixed top-right corner -->
+      <div id="svProgress" aria-hidden="true"><i></i></div>
       <div id="hudDock" class="hud-dock">
         <!-- 🎚 Mode switch (Exam / Practice / Concept) — lives in the dock so it is visible on question pages AND concept pages -->
         <div id="modeSwitch" class="mode-switch" role="radiogroup" aria-label="Test mode" data-mode="practice">
@@ -5146,6 +5147,11 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           <button id="timerHideBtn" title="Hide timer" onclick="(function(){document.getElementById('timerPill').style.display='none';var s=document.getElementById('timerShowBtn');if(s){s.style.display='flex';}})()">✕</button>
         </div>
         <span class="hud-sep hud-sep-timer" aria-hidden="true"></span>
+        <!-- 📜 Single-screen scroll view: every concept page + test page in one scrollable page -->
+        <button id="svToggleBtn" class="sv-toggle" type="button" aria-pressed="false" aria-label="Single-screen scroll view" data-tip="Single-screen view" title="Single-screen view — all concept & test pages in one scrollable page">
+          <svg class="sv-ic sv-ic-multi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="5" rx="1.6"/><rect x="5" y="10" width="14" height="5" rx="1.6"/><path d="M12 18v3m0 0-2-2m2 2 2-2"/></svg>
+          <svg class="sv-ic sv-ic-single" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.6"/><path d="M9 9h6M9 13h4"/></svg>
+        </button>
         <button id="navToggleIcon" class="nav-toggle-icon" aria-label="Open Navigator">
           <span></span><span></span><span></span>
         </button>
@@ -5370,6 +5376,9 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
                 <button id="cpNextBtn" class="btn btn-glass cp-primary">Next ▶</button>
               </div>
             </div><!-- end #conceptBox -->
+
+            <!-- 📜 Single-screen scroll view container (filled by JS) -->
+            <div id="svView" class="sv-view" aria-live="polite"></div>
           </div><!-- end col-lg-8 -->
 
           <!-- ✅ RIGHT SLIDE NAVIGATOR PANEL -->
@@ -21544,7 +21553,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
 <style id="hudDockCollapse">
 /* ☰ controls BOTH boxes: closed = only the timer + ☰ button show; open = full top pill + navigator panel */
 #engineView > #hudDock.hud-dock:not(.nav-open){ padding:0 4px 0 6px !important; }
-#hudDock:not(.nav-open) > :not(#navToggleIcon):not(#timerPill):not(#timerShowBtn):not(.hud-sep-timer){ display:none !important; }
+#hudDock:not(.nav-open) > :not(#navToggleIcon):not(#svToggleBtn):not(#timerPill):not(#timerShowBtn):not(.hud-sep-timer){ display:none !important; }
 </style>
 <script id="hudDockNavSync">
 /* Mirrors the navigator panel's open/closed state onto the menu icon (☰ ⇄ ✕). Works for every way the panel opens or closes. */
@@ -24814,6 +24823,716 @@ html.lite-mode .cip-gpt svg *{ stroke:#000 !important; }
     var b = e.target && e.target.closest && e.target.closest('#copyImgPromptsBtn, #gcp-imgprompt-btn');
     if (b) { e.preventDefault(); e.stopPropagation(); run(); }
   }, true);
+})();
+</script>
+<style id="svViewCss">
+/* ═══════════════════════════════════════════════════════════════
+   SINGLE-SCREEN SCROLL VIEW  (button in the top-right dock + stacked cards)
+═══════════════════════════════════════════════════════════════ */
+
+/* ── the toggle button ── */
+#hudDock #svToggleBtn.sv-toggle {
+  position: relative; flex: none; display: inline-grid; place-items: center;
+  width: 30px; height: 30px; min-height: 0; margin: 0 2px; padding: 0;
+  border: 0; border-radius: 50%; cursor: pointer; color: #fff;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 55%, #8b5cf6 100%);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, .45), inset 0 1px 0 rgba(255, 255, 255, .38);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+#hudDock #svToggleBtn.sv-toggle:hover { transform: translateY(-1px) scale(1.08); filter: brightness(1.12); box-shadow: 0 6px 16px rgba(6, 182, 212, .6), inset 0 1px 0 rgba(255, 255, 255, .45); }
+#hudDock #svToggleBtn.sv-toggle:active { transform: scale(.94); }
+#hudDock #svToggleBtn.sv-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+#svToggleBtn .sv-ic { width: 17px; height: 17px; display: block; transition: transform .25s ease, opacity .2s ease; }
+#svToggleBtn .sv-ic-single { display: none; }
+#svToggleBtn.on .sv-ic-multi { display: none; }
+#svToggleBtn.on .sv-ic-single { display: block; }
+#hudDock #svToggleBtn.sv-toggle.on {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 60%, #ec4899 100%);
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, .28), 0 4px 14px rgba(239, 68, 68, .5), inset 0 1px 0 rgba(255, 255, 255, .4);
+}
+/* little hover label */
+#svToggleBtn::after {
+  content: attr(data-tip); position: absolute; top: calc(100% + 10px); right: -6px; z-index: 5;
+  padding: 5px 10px; border-radius: 9px; white-space: nowrap; pointer-events: none;
+  font: 700 11.5px/1.2 'Inter', system-ui, sans-serif; letter-spacing: .02em; color: #e0f2fe;
+  background: rgba(8, 14, 32, .96); border: 1px solid rgba(34, 211, 238, .45); box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
+  opacity: 0; transform: translateY(-4px); transition: opacity .15s ease, transform .15s ease;
+}
+#svToggleBtn:hover::after { opacity: 1; transform: none; }
+/* inside the opened control deck: same size as the ✕ button, sits next to the mode switch */
+html:not(.lite-mode) #hudDock.nav-open #svToggleBtn.sv-toggle { order: 2; width: 40px; height: 40px; margin: 0; flex: 0 0 auto; }
+html:not(.lite-mode) #hudDock.nav-open #svToggleBtn .sv-ic { width: 19px; height: 19px; }
+html.lite-mode #hudDock #svToggleBtn.sv-toggle { background: #fff !important; color: #000 !important; border: 1px solid #000; box-shadow: none !important; }
+html.lite-mode #hudDock #svToggleBtn.sv-toggle.on { background: #000 !important; color: #fff !important; }
+@media (max-width: 576px) { #svToggleBtn::after { display: none; } }
+
+/* ── page switching ── */
+#svView { display: none; }
+body.sv-on #svView { display: block; }
+body.sv-on #questionBox, body.sv-on #conceptBox { display: none !important; }
+body.sv-on #engineView, body.sv-on #engineView .container-fluid, body.sv-on #engineView .engine-shell { contain: none !important; }
+body.sv-on #engineView .engine-shell { min-height: 0 !important; }
+.sv-view { width: 100%; padding-bottom: 48px; }
+
+/* reading-progress line at the very top */
+#svProgress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 9500; display: none; background: rgba(255, 255, 255, .06); pointer-events: none; }
+body.sv-on #svProgress { display: block; }
+#svProgress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6); transition: width .1s linear; }
+
+/* ── header ── */
+.sv-head { position: relative; overflow: hidden; display: flex; align-items: center; flex-wrap: wrap; gap: 12px 14px; padding: 16px 18px 14px; margin: 0 0 18px; border-radius: 18px; border: 1px solid rgba(34, 211, 238, .32); }
+.sv-head::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6); }
+.sv-head-ic { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; color: #fff; background: linear-gradient(135deg, #06b6d4, #3b82f6 60%, #8b5cf6); box-shadow: 0 8px 20px rgba(6, 182, 212, .35); }
+.sv-head-tx { min-width: 0; }
+.sv-head-t { font: 800 1.05rem 'Inter', system-ui, sans-serif; letter-spacing: -.1px; }
+.sv-head-s { font: 500 .8rem 'Inter', system-ui, sans-serif; opacity: .72; }
+.sv-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.sv-pill { padding: 3px 10px; border-radius: 999px; font: 700 .72rem 'Inter', system-ui, sans-serif; background: rgba(148, 163, 184, .12); border: 1px solid rgba(148, 163, 184, .28); }
+.sv-pill.ok { background: rgba(34, 197, 94, .14); border-color: rgba(34, 197, 94, .5); color: #86efac; }
+.sv-exit { margin-left: auto; font-weight: 700; }
+
+/* ── stacked cards ── */
+html body .sv-card {
+  position: relative; display: block; width: 100% !important; max-width: none !important; height: auto !important; min-height: 0 !important; max-height: none !important;
+  margin: 0 0 20px !important; overflow: visible; scroll-margin-top: 70px; border-radius: 18px;
+  padding: clamp(.8rem, 1.4vw, 1.3rem) clamp(.9rem, 1.7vw, 1.6rem) !important;
+}
+html body .sv-card.sv-c { display: flex !important; flex-direction: column; padding: 0 !important; overflow: hidden !important; }
+html body .sv-card.sv-q { display: block !important; }
+html body .sv-card.sv-c .cp-top { padding: 14px clamp(.9rem, 1.7vw, 1.6rem) 4px !important; }
+html body .sv-card.sv-c .cp-scroll { flex: none; overflow: visible; max-height: none; padding: 14px clamp(.9rem, 1.7vw, 1.6rem) 26px !important; }
+.sv-card .cp-thumbslot:empty { display: none; }
+
+/* question card */
+.sv-card.sv-q::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 16px; width: 4px; border-radius: 0 4px 4px 0; background: rgba(148, 163, 184, .35); transition: background .2s; }
+.sv-card.sv-q.sv-ans::before { background: #3b82f6; }
+.sv-card.sv-q.sv-rev::before { background: #facc15; }
+.sv-card.sv-q.sv-ok::before { background: #22c55e; }
+.sv-card.sv-q.sv-bad::before { background: #ef4444; }
+.sv-qhead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; min-height: 26px; }
+.sv-chip { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font: 700 .72rem 'Inter', system-ui, sans-serif; letter-spacing: .03em; color: #cbd5e1; background: rgba(148, 163, 184, .1); border: 1px solid rgba(148, 163, 184, .3); }
+.sv-chip.ans { color: #bfdbfe; background: rgba(59, 130, 246, .16); border-color: rgba(96, 165, 250, .55); }
+.sv-chip.rev { color: #fde68a; background: rgba(250, 204, 21, .14); border-color: rgba(250, 204, 21, .55); }
+.sv-chip.ok { color: #bbf7d0; background: rgba(34, 197, 94, .16); border-color: rgba(34, 197, 94, .6); }
+.sv-chip.bad { color: #fecaca; background: rgba(239, 68, 68, .16); border-color: rgba(239, 68, 68, .6); }
+.sv-q .qbox { padding: clamp(1rem, 2vw, 1.5rem); margin-bottom: 1.1rem !important; border: 1px solid rgba(148, 163, 184, .15); border-radius: 18px; background: linear-gradient(135deg, rgba(30, 41, 59, .62), rgba(15, 23, 42, .44)); box-shadow: inset 0 1px rgba(255, 255, 255, .035); }
+.sv-qtext { line-height: 1.8; overflow-wrap: anywhere; }
+.sv-qimg { display: block; max-width: 100%; max-height: 46vh; border-radius: 12px; }
+.sv-opts { gap: .7rem; }
+.sv-q .option { cursor: pointer; }
+.sv-opt-body { flex: 1 1 auto; min-width: 0; }
+.sv-q.sv-locked .option { cursor: default; }
+@media (min-width: 1100px) {
+  .sv-opts { display: grid !important; grid-template-columns: 1fr 1fr; gap: .9rem !important; align-items: stretch; }
+  .sv-opts .option { height: 100%; }
+}
+.sv-hr { border: 0; border-top: 1px solid rgba(148, 163, 184, .2); opacity: 1; margin: .9rem 0; }
+.sv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sv-act { border-radius: 11px; font-weight: 600; }
+.sv-act.on { color: #fde68a; border-color: rgba(250, 204, 21, .7); background: rgba(250, 204, 21, .14); }
+.sv-spacer { margin-left: auto; }
+.sv-google { display: inline-flex; align-items: center; justify-content: center; width: 2.4em; padding: 0 !important; }
+.sv-q .cp-tl { margin: .45em 0 0; padding-left: .8em; border-left: 3px solid rgba(96, 165, 250, .65); color: #bfdbfe; font-weight: 500; }
+body.tl-only .sv-q .cp-tl { border-left: 0; padding-left: 0; margin-top: 0; }
+body.tl-only .sv-card .en-src { display: none !important; }
+
+/* end card */
+.sv-end { text-align: center; padding: 26px 20px 28px; margin: 6px 0 0; border-radius: 18px; border: 1px dashed rgba(148, 163, 184, .4); scroll-margin-top: 70px; }
+.sv-end-ic { font-size: 2.2rem; line-height: 1; margin-bottom: 8px; }
+.sv-end-t { font: 800 1.2rem 'Inter', system-ui, sans-serif; }
+.sv-end-s { margin: 4px 0 16px; font: 500 .9rem 'Inter', system-ui, sans-serif; opacity: .75; }
+.sv-end-b { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.sv-primary { padding: .6rem 1.4rem; font-weight: 800; border-radius: 12px; }
+
+@media (max-width: 576px) {
+  .sv-head { padding: 14px 14px 12px; }
+  .sv-exit { margin-left: 0; width: 100%; }
+}
+html.lite-mode .sv-card, html.lite-mode .sv-head, html.lite-mode .sv-end { background: #fff !important; color: #000 !important; border: 2px solid #000 !important; box-shadow: none !important; }
+html.lite-mode .sv-card.sv-q .qbox { background: #fff !important; border-color: #000 !important; }
+html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; color: #000 !important; border-color: #000 !important; }
+</style>
+<script id="svViewJs">
+(function () {
+  'use strict';
+  /* ═══════════════════════════════════════════════════════════════
+     SINGLE-SCREEN SCROLL VIEW
+     Shows every concept page + every test question stacked in ONE scrollable
+     page.  It does not replace the engine – it sits on top of it and talks to
+     the very same `state`, so answers, review marks, hints, timer, navigator,
+     modes, translate, submit & summary all keep working exactly as before.
+  ═══════════════════════════════════════════════════════════════ */
+  var SV = { on: false, cards: [], cur: null, vIO: null, tIO: null, tok: 0, lang: null, raf: 0, rafR: 0,
+             cloned: false, vt: new Map(), mode: null, langTimer: 0, rbT: 0 };
+  var $ = function (id) { return document.getElementById(id); };
+  var S = function () { return window.state; };
+  function engineActive() { var v = $('engineView'); return !!(v && v.classList.contains('active')); }
+  function toast(m) { try { if (typeof showModeToast === 'function') showModeToast(m); } catch (e) { } }
+  function hexRgb(h) { try { return cpHexToRgb(h); } catch (e) { return [59, 130, 246]; } }
+  function jump(el, smooth) {
+    var y = el.getBoundingClientRect().top + window.pageYOffset - 70;
+    try { window.scrollTo({ top: Math.max(0, y), behavior: smooth ? 'smooth' : 'instant' }); }
+    catch (e) { window.scrollTo(0, Math.max(0, y)); }
+  }
+
+  /* ── 1. re-use the existing page styles for the stacked cards ──
+        Every CSS rule written for #conceptBox / #questionBox / #optionsArea … is copied to
+        the matching class used by the cards, so they look identical to the one-by-one pages. */
+  var MAP = [['#conceptBox', '.sv-card.sv-c'], ['#questionBox', '.sv-card.sv-q'], ['#questionText', '.sv-qtext'],
+             ['#optionsArea', '.sv-opts'], ['#questionImageWrap', '.sv-qimgwrap'], ['#questionImage', '.sv-qimg'],
+             ['#cpTitle', '.cp-title'], ['#cpSub', '.cp-sub'], ['#cpBody', '.cp-body'], ['#cpIcon', '.cp-icon']];
+  var RX = /#(conceptBox|questionBox|questionText|optionsArea|questionImageWrap|questionImage|cpTitle|cpSub|cpBody|cpIcon)\b/;
+  function swap(t) { MAP.forEach(function (m) { t = t.replace(new RegExp(m[0] + '\\b', 'g'), m[1]); }); return t; }
+  function conv(rule) {
+    try {
+      if (rule.type === 1) return RX.test(rule.selectorText) ? swap(rule.cssText) : '';
+      if (rule.type === 4 || rule.type === 12) {
+        var inner = Array.prototype.map.call(rule.cssRules, conv).filter(Boolean).join('\n');
+        if (!inner) return '';
+        return (rule.type === 4 ? '@media ' + rule.media.mediaText : '@supports ' + rule.conditionText) + '{' + inner + '}';
+      }
+    } catch (e) { }
+    return '';
+  }
+  function cloneCss() {
+    if (SV.cloned) return; SV.cloned = true;
+    var out = [];
+    Array.prototype.forEach.call(document.styleSheets, function (sh) {
+      var rules; try { rules = sh.cssRules; } catch (e) { return; }      // cross-origin sheet
+      if (!rules || (sh.ownerNode && sh.ownerNode.id === 'svViewCss')) return;
+      Array.prototype.forEach.call(rules, function (r) { var t = conv(r); if (t) out.push(t); });
+    });
+    var st = document.createElement('style'); st.id = 'svClonedCss'; st.textContent = out.join('\n');
+    var mine = $('svViewCss'); mine.parentNode.insertBefore(st, mine);
+  }
+
+  /* ── 2. building the cards ── */
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var G_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 33 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.300-.1-2.600-.4-3.900z"/><path fill="#FF3D00" d="M6.300 14.700l6.600 4.800C14.700 16.100 19 12 24 12c3.100 0 5.800 1.200 8 3l5.700-5.700C34 6.100 29.300 4 24 4 16.300 4 9.700 8.300 6.300 14.700z"/><path fill="#4CAF50" d="M24 44c5.200 0 9.900-2 13.400-5.200l-6.200-5.200C29.200 35.100 26.700 36 24 36c-5.200 0-9.600-3-11.300-7.300l-6.500 5C9.500 39.600 16.200 44 24 44z"/><path fill="#1976D2" d="M43.600 20.100H42V20H24v8h11.300a12 12 0 0 1-4.100 5.600l6.200 5.200C37 39.200 44 34 44 24c0-1.300-.1-2.600-.4-3.900z"/></svg>';
+
+  function qCard(idx, pos) {
+    var st = S(), qid = st.qIds[idx], q = st.questionsMap[qid];
+    if (!q) return null;
+    var sh = getOrBuildShuffle(qid);
+    var opts = sh.order.map(function (i) { return q.options[i]; });
+    var hasReal = opts.some(function (o) {
+      return o != null && String(o).replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, '').trim() !== '';
+    });
+    var card = document.createElement('section');
+    card.className = 'sv-card sv-q glass';
+    card.id = 'svq-' + idx; card.setAttribute('data-idx', idx);
+    var h = '<div class="sv-qhead"><span class="sv-chip sv-qstat"></span></div>' +
+      '<div class="qbox mb-3"><div class="sv-qtext fs-5 fw-semibold"><span class="badge bg-dark me-2">Q' + (idx + 1) + '/' +
+      st.qIds.length + '</span> <span class="sv-qstem">' + q.text + '</span></div>' +
+      (q.image ? '<div class="mt-2 sv-qimgwrap"><img class="qimg sv-qimg" alt="question image"></div>' : '') + '</div>';
+    if (hasReal) {
+      h += '<div class="sv-opts d-grid gap-2">';
+      opts.forEach(function (o, i) {
+        h += '<div class="option" data-meta="' + (i + 1) + '" role="button" tabindex="0"><span class="kbd">' + (i + 1) +
+          '</span><div class="sv-opt-body"><span class="opt-text">' + (o == null ? '' : o) + '</span></div></div>';
+      });
+      h += '</div>';
+    }
+    h += '<hr class="sv-hr"><div class="sv-actions">' +
+      '<button type="button" class="btn btn-glass sv-act sv-review" data-a="review">⚑ Mark for review</button>' +
+      '<button type="button" class="btn btn-glass sv-act sv-clear" data-a="clear">✕ Clear response</button>' +
+      '<span class="sv-spacer"></span>' +
+      '<button type="button" class="btn btn-glass btn-sm sv-act sv-hint" data-a="hint" title="Answer & Explanation">&nbsp;Hint?&nbsp;</button>' +
+      '<button type="button" class="btn btn-glass btn-sm sv-act sv-google" data-a="google" title="Search this question on Google">' + G_SVG + '</button>' +
+      '</div>';
+    card.innerHTML = h;
+    var im = card.querySelector('img.sv-qimg');
+    if (im) {
+      im.onerror = function () { var w = card.querySelector('.sv-qimgwrap'); if (w) w.style.display = 'none'; };
+      im.src = q.image;
+    }
+    return card;
+  }
+
+  function enhance(body) {                      // same extras the concept page gives its body
+    body.querySelectorAll('table').forEach(function (t) {
+      if (t.parentElement && t.parentElement.classList.contains('cp-tablewrap')) return;
+      var w = document.createElement('div'); w.className = 'cp-tablewrap cp-scroll-x';
+      t.parentNode.insertBefore(w, t); w.appendChild(t);
+    });
+    var generic = /^\s*((image|img|figure|fig|photo|picture|diagram)\s*\d*|[\w\- ]+\.(jpe?g|png|webp|gif|svg))\s*$/i, n = 0;
+    body.querySelectorAll('img').forEach(function (img) {
+      if (img.classList.contains('cp-inline')) return;
+      n++;
+      var fig = img.closest('figure');
+      if (fig && fig.querySelector('figcaption')) return;
+      var nx = img.nextElementSibling;
+      if (nx && nx.classList.contains('cp-imgcap')) return;
+      var t = '';
+      ['data-caption', 'alt', 'title'].some(function (k) {
+        var v = (img.getAttribute(k) || '').trim();
+        if (v && !generic.test(v)) { t = v; return true; } return false;
+      });
+      if (!t) t = 'Figure ' + n;
+      var cap = document.createElement('span'); cap.className = 'cp-imgcap'; cap.textContent = t;
+      img.insertAdjacentElement('afterend', cap);
+    });
+    body.querySelectorAll('img').forEach(function (img) {
+      img.addEventListener('click', function () { try { cpOpenLightbox(img.currentSrc || img.src, img.alt); } catch (e) { } });
+      img.addEventListener('error', function () {
+        img.classList.add('cp-broken'); img.alt = '⚠ image not found: ' + img.getAttribute('src');
+      });
+    });
+  }
+
+  function cCard(ci, pos) {
+    var st = S(), c = st.concepts[ci]; if (!c) return null;
+    var rgb = hexRgb(c.accent);
+    var card = document.createElement('section');
+    card.className = 'sv-card sv-c glass'; card.id = 'svc-' + ci;
+    card.style.setProperty('--cp-accent', c.accent);
+    card.style.setProperty('--cp-rgb', rgb[0] + ',' + rgb[1] + ',' + rgb[2]);
+    card.style.setProperty('--cp-on', (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) > 170 ? '#0b1220' : '#ffffff');
+    var no = st.seq.slice(0, pos + 1).filter(function (s) { return s.t === 'c'; }).length;
+    card.innerHTML = '<div class="cp-top"><span class="cp-tag">📖 CONCEPT ' + no + '/' + st.concepts.length + '</span></div>' +
+      '<div class="cp-scroll"><div class="cp-hero"><div class="cp-icon"></div><div class="cp-hero-text">' +
+      '<div class="cp-title"></div><div class="cp-sub"></div></div></div><div class="cp-thumbslot"></div><div class="cp-body"></div></div>';
+    var icon = card.querySelector('.cp-icon'), title = card.querySelector('.cp-title'),
+        sub = card.querySelector('.cp-sub'), body = card.querySelector('.cp-body');
+    icon.textContent = c.icon; title.innerHTML = c.title;
+    sub.innerHTML = c.subtitle || ''; sub.style.display = c.subtitle ? '' : 'none';
+    body.innerHTML = c.html;
+    enhance(body);
+    /* YouTube thumbnail / kit (icon + thumbnail open the same studio as on the normal concept page) */
+    try {
+      if ((c.thumb || c.yt) && window.ytStudioBind) {
+        window.ytStudioBind(c);
+        var oi = $('cpIcon'), ow = $('cpThumbWrap'), oim = $('cpThumbImg');
+        if (oi && oi.onclick) {
+          icon.classList.add('cp-icon-click'); icon.setAttribute('role', 'button'); icon.setAttribute('tabindex', '0');
+          icon.title = 'Tap: YouTube thumbnail + title/tags kit'; icon.onclick = oi.onclick; icon.onkeydown = oi.onkeydown;
+        }
+        if (ow && ow.classList.contains('show') && oim && oim.getAttribute('src')) {
+          var w = document.createElement('div'); w.className = 'cp-thumbwrap show';
+          w.innerHTML = '<img class="cp-thumb-img" alt="Class thumbnail"><div class="cp-thumb-miss"></div>' +
+            '<button type="button" class="cp-thumb-cta">🎬 Open Thumbnail &amp; YouTube Kit</button>';
+          var ti = w.querySelector('img'); ti.src = oim.getAttribute('src');
+          ti.onerror = function () { w.classList.add('missing'); };
+          w.querySelector('.cp-thumb-miss').textContent = $('cpThumbMiss') ? $('cpThumbMiss').textContent : '';
+          w.onclick = ow.onclick;
+          card.querySelector('.cp-thumbslot').appendChild(w);
+        }
+      }
+    } catch (e) { console.error('sv thumb', e); }
+    return card;
+  }
+
+  function head() {
+    var el = document.createElement('div'); el.className = 'sv-head glass'; el.id = 'svHead';
+    el.innerHTML = '<div class="sv-head-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="5" rx="1.6"/><rect x="5" y="10" width="14" height="5" rx="1.6"/><path d="M12 18v3m0 0-2-2m2 2 2-2"/></svg></div>' +
+      '<div class="sv-head-tx"><div class="sv-head-t">Single-screen view</div><div class="sv-head-s" id="svHeadSub"></div></div>' +
+      '<div class="sv-pills" id="svPills"></div>' +
+      '<button type="button" class="btn btn-glass btn-sm sv-exit" data-a="exit">⟲ Page-by-page view</button>';
+    return el;
+  }
+  function endCard() {
+    var el = document.createElement('section'); el.className = 'sv-end glass'; el.id = 'svEnd';
+    el.innerHTML = '<div class="sv-end-ic">🏁</div><div class="sv-end-t"></div><div class="sv-end-s"></div><div class="sv-end-b"></div>';
+    return el;
+  }
+
+  function build() {
+    var st = S(), host = $('svView'); if (!host || !st) return;
+    cloneCss();
+    host.innerHTML = ''; SV.cards = [];
+    try { $('cpBody').innerHTML = ''; } catch (e) { }      // hidden single-page copy must not keep duplicate ids
+    host.appendChild(head());
+    (st.seq || []).forEach(function (it, pos) {
+      var el = it.t === 'q' ? (it.idx >= 0 ? qCard(it.idx, pos) : null) : cCard(it.ci, pos);
+      if (!el) return;
+      var rec = { el: el, t: it.t, idx: it.idx, ci: it.ci, pos: pos };
+      el._rec = rec; host.appendChild(el); SV.cards.push(rec);
+    });
+    host.appendChild(endCard());
+    SV.mode = st.mode || 'practice';
+    SV.lang = st.dualLang || null;
+    observe(); refreshAll();
+  }
+
+  /* ── 3. mirroring the engine state onto the cards ── */
+  function refreshQ(rec) {
+    var st = S(), qid = st.qIds[rec.idx], qs = st.qState[qid], el = rec.el; if (!qs) return;
+    var sh = getOrBuildShuffle(qid), sel = qs.selectedMetaId || null;
+    var sub = !!st.submitted, practice = !st.cluelessMode && !st.examMode;
+    var showSol = sub || (practice && !!sel);
+    el.querySelectorAll('.option').forEach(function (o) {
+      var m = o.getAttribute('data-meta');
+      o.classList.toggle('selected', m === sel);
+      o.classList.toggle('correct', showSol && m === sh.correctMetaId);
+      o.classList.toggle('wrong', showSol && !!sel && m === sel && m !== sh.correctMetaId);
+    });
+    var locked = sub || !!qs.locked;
+    el.classList.toggle('sv-locked', locked);
+    var chip = el.querySelector('.sv-qstat'), cls = '', txt = '';
+    if (sub) {
+      if (sel && sel === sh.correctMetaId) { cls = 'ok'; txt = '✔ Correct'; }
+      else if (sel) { cls = 'bad'; txt = '✘ Wrong'; }
+      else { cls = ''; txt = '○ Unattempted'; }
+    } else if (qs.review && sel) { cls = 'rev'; txt = '⚑ Marked · answered'; }
+    else if (qs.review) { cls = 'rev'; txt = '⚑ Marked for review'; }
+    else if (sel) { cls = 'ans'; txt = '● Answered'; }
+    else if (qs.visited) { txt = '○ Not answered'; }
+    else { txt = 'Not visited'; }
+    chip.className = 'sv-chip sv-qstat' + (cls ? ' ' + cls : ''); chip.textContent = txt;
+    el.classList.remove('sv-ok', 'sv-bad', 'sv-ans', 'sv-rev');
+    if (cls) el.classList.add('sv-' + cls);
+    var rv = el.querySelector('.sv-review'), cl = el.querySelector('.sv-clear');
+    rv.classList.toggle('on', !!qs.review); rv.textContent = qs.review ? '⚑ Marked for review' : '⚑ Mark for review';
+    rv.style.display = cl.style.display = sub ? 'none' : '';
+    var hint = el.querySelector('.sv-hint'), g = el.querySelector('.sv-google');
+    hint.style.display = g.style.display = st.examMode ? 'none' : '';
+  }
+  function refreshEnd() {
+    var st = S(), el = $('svEnd'); if (!el) return;
+    var t = el.querySelector('.sv-end-t'), s = el.querySelector('.sv-end-s'), b = el.querySelector('.sv-end-b');
+    var nq = st.qCount || 0, ans = 0, rev = 0;
+    (st.qIds || []).forEach(function (id) { var q = st.qState[id]; if (q.selectedMetaId) ans++; if (q.review) rev++; });
+    if (st.submitted) {
+      var x = null; try { x = computeStats(); } catch (e) { }
+      t.textContent = 'Test submitted';
+      s.textContent = x ? 'Score ' + x.score + '  ·  ✔ ' + x.correct + ' correct  ·  ✘ ' + x.wrong + ' wrong  ·  ○ ' + x.unattempted + ' unattempted' : 'Scroll up to review every answer.';
+      b.innerHTML = '<button type="button" class="btn btn-glass" data-a="summary">📊 Show summary</button>' +
+        '<button type="button" class="btn btn-glass" data-a="pdf">⬇ Download response PDF</button>';
+    } else if (st.conceptOnly && nq > 0) {
+      t.textContent = 'End of the concept pages';
+      s.textContent = 'Ready to test yourself?';
+      b.innerHTML = '<button type="button" class="btn btn-glass sv-primary" data-a="practice">✏️ Start practice ▶</button>';
+    } else {
+      t.textContent = 'End of the test';
+      s.textContent = ans + ' of ' + nq + ' answered' + (rev ? '  ·  ' + rev + ' marked for review' : '');
+      b.innerHTML = '<button type="button" class="btn btn-danger sv-primary" data-a="submit">Submit test ✔</button>';
+    }
+  }
+  function refreshHead() {
+    var st = S(), nq = 0, nc = 0, ans = 0;
+    SV.cards.forEach(function (r) { if (r.t === 'q') nq++; else nc++; });
+    (st.qIds || []).forEach(function (id) { if (st.qState[id].selectedMetaId) ans++; });
+    var sub = $('svHeadSub'), p = $('svPills'); if (!sub || !p) return;
+    sub.textContent = 'Scroll to move through the whole test — everything works as usual.';
+    p.innerHTML = (nc ? '<span class="sv-pill">📖 ' + nc + ' concept' + (nc > 1 ? 's' : '') + '</span>' : '') +
+      (nq ? '<span class="sv-pill">❓ ' + nq + ' questions</span>' : '') +
+      (nq && !st.conceptOnly ? '<span class="sv-pill ok"><b>' + ans + '</b>/' + (st.qCount || 0) + ' answered</span>' : '');
+  }
+  function markCurDot() {
+    var nav = $('qNav'), cur = SV.cur; if (!nav) return;
+    nav.querySelectorAll('.cdot').forEach(function (d) { d.classList.toggle('current', !!cur && cur.t === 'c' && d._pos === cur.pos); });
+    if (cur && cur.t === 'c') nav.querySelectorAll('.qdot:not(.cdot).current').forEach(function (d) { d.classList.remove('current'); });
+  }
+  function refreshAll() {
+    SV.cards.forEach(function (r) { if (r.t === 'q') refreshQ(r); });
+    refreshEnd(); refreshHead(); markCurDot();
+  }
+  function schedule() {
+    if (SV.rafR) return;
+    SV.rafR = requestAnimationFrame(function () { SV.rafR = 0; if (SV.on) refreshAll(); });
+  }
+
+  /* ── 4. scrolling bookkeeping: current page, visited marks, lazy translation ── */
+  function setCurrent(rec) {
+    var st = S(); SV.cur = rec; st.conceptView = false; st.seqPos = rec.pos;
+    if (rec.t === 'q') {
+      st.currentIndex = rec.idx;
+      var b = $('qCounterBadge'); if (b) b.textContent = 'Q ' + (rec.idx + 1) + '/' + st.qCount;
+    } else {
+      var c = st.concepts[rec.ci];
+      st.currentIndex = (c && c.nextQ >= 0) ? c.nextQ : Math.max(0, st.qCount - 1);
+    }
+    try { updateNavigator(); } catch (e) { }
+  }
+  function markSeen(el) {
+    var rec = el._rec, st = S(); if (!rec || !SV.on) return;
+    if (rec.t === 'q') { var qs = st.qState[st.qIds[rec.idx]]; if (qs && !qs.visited) { qs.visited = true; updateNavigator(); } }
+    else { var c = st.concepts[rec.ci]; if (c && !c.seen) { c.seen = true; updateNavigator(); } }
+  }
+  function observe() {
+    if (SV.vIO) SV.vIO.disconnect(); if (SV.tIO) SV.tIO.disconnect();
+    SV.vt.forEach(function (t) { clearTimeout(t); }); SV.vt.clear();
+    var th = []; for (var i = 0; i <= 10; i++) th.push(i / 10);
+    SV.vIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var el = e.target;
+        var enough = e.isIntersecting && (e.intersectionRatio >= 0.5 || e.intersectionRect.height >= window.innerHeight * 0.45);
+        if (enough) {
+          if (!SV.vt.has(el)) SV.vt.set(el, setTimeout(function () { SV.vt.delete(el); markSeen(el); }, 650));
+        } else {
+          var t = SV.vt.get(el); if (t) { clearTimeout(t); SV.vt.delete(el); }
+        }
+      });
+    }, { threshold: th });
+    SV.tIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) translateCard(e.target); });
+    }, { rootMargin: '900px 0px 900px 0px' });
+    SV.cards.forEach(function (r) { SV.vIO.observe(r.el); SV.tIO.observe(r.el); });
+  }
+  function onScroll() {
+    if (SV.raf) return;
+    SV.raf = requestAnimationFrame(function () {
+      SV.raf = 0; if (!SV.on || !SV.cards.length) return;
+      var vh = window.innerHeight, pick = null;
+      for (var i = 0; i < SV.cards.length; i++) {
+        if (SV.cards[i].el.getBoundingClientRect().bottom > vh * 0.35) { pick = SV.cards[i]; break; }
+      }
+      if (!pick) pick = SV.cards[SV.cards.length - 1];
+      if (pick !== SV.cur) setCurrent(pick);
+      var bar = $('svProgress'), de = document.documentElement, max = de.scrollHeight - vh;
+      if (bar && bar.firstElementChild) bar.firstElementChild.style.width = (max > 0 ? Math.min(100, Math.max(0, window.pageYOffset / max * 100)) : 100) + '%';
+    });
+  }
+
+  /* ── 5. translation (same engine as the concept page, applied lazily to the cards near the screen) ── */
+  function clearTl() { var h = $('svView'); if (h) h.querySelectorAll('.cp-tl, .cp-tl-status').forEach(function (n) { n.remove(); }); }
+  function translateCard(el) {
+    var st = S(), lang = st.dualLang;
+    if (!lang || !el || el._tlLang === lang) return;
+    el._tlLang = lang;
+    var sel = el.classList.contains('sv-c') ? '.cp-title,.cp-sub,.cp-body' : '.sv-qstem,.sv-opt-body';
+    var jobs = [];
+    Array.prototype.forEach.call(el.querySelectorAll(sel), function (root) {
+      if (root.style.display === 'none') return;
+      cpTlCollect(root).forEach(function (run) {
+        var s = cpTlSerialize(run.nodes);
+        if (s.text && cpTlWorthIt(s.text)) jobs.push({ parent: run.parent, nodes: run.nodes, text: s.text, saved: s.saved });
+      });
+    });
+    if (!jobs.length) return;
+    var tok = SV.tok, i = 0;
+    var worker = async function () {
+      while (i < jobs.length) {
+        if (tok !== SV.tok || !SV.on) return;
+        var j = jobs[i++];
+        try { var tr = await tlFetch(j.text, lang); if (tok !== SV.tok) return; if (tr) cpTlInsert(j, tr, lang); } catch (_) { }
+      }
+    };
+    Promise.all([worker(), worker(), worker()]).then(function () { if (document.body.classList.contains('tl-only')) markEn(); });
+  }
+  /* “Hide English” button support */
+  function wrapPrev(tl) {
+    var nodes = [], n = tl.previousSibling;
+    while (n) {
+      if (n.nodeType === 1 && (n.classList.contains('cp-tl') || n.classList.contains('en-src') || /^(P|H[1-6]|UL|OL|TABLE|DIV|BLOCKQUOTE|DETAILS)$/.test(n.tagName))) break;
+      nodes.unshift(n); n = n.previousSibling;
+    }
+    nodes = nodes.filter(function (x) { return x.nodeType === 1 || (x.nodeType === 3 && x.nodeValue.trim()); });
+    if (!nodes.length) return;
+    var sp = document.createElement('span'); sp.className = 'en-src';
+    nodes[0].parentNode.insertBefore(sp, nodes[0]); nodes.forEach(function (x) { sp.appendChild(x); });
+  }
+  function markEn() {
+    var h = $('svView'); if (!h) return;
+    h.querySelectorAll('.cp-tl').forEach(function (tl) {
+      if (tl.classList.contains('cp-tl-sib')) { var pv = tl.previousElementSibling; if (pv && !pv.classList.contains('cp-tl')) pv.classList.add('en-src'); }
+      else {
+        var q = tl.previousSibling; while (q && q.nodeType === 3 && !q.nodeValue.trim()) q = q.previousSibling;
+        if (!(q && q.nodeType === 1 && q.classList.contains('en-src'))) wrapPrev(tl);
+      }
+    });
+  }
+  function langTick() {
+    if (!SV.on) return;
+    var l = S().dualLang || null;
+    if (l !== SV.lang) {
+      SV.lang = l; SV.tok++; clearTl();
+      SV.cards.forEach(function (r) { r.el._tlLang = null; });
+      if (l && SV.tIO) { SV.tIO.disconnect(); SV.cards.forEach(function (r) { SV.tIO.observe(r.el); }); }
+    }
+    if (document.body.classList.contains('tl-only')) markEn();
+  }
+
+  /* ── 6. user actions on the cards ── */
+  function pick(idx, meta) {
+    var st = S(); if (st.submitted) return;
+    var qs = st.qState[st.qIds[idx]]; if (!qs || qs.locked) return;
+    st.conceptView = false; st.currentIndex = idx;
+    selectOption(meta);                         // the engine's own logic: feedback flash, sound, status, navigator
+  }
+  function onClick(e) {
+    var st = S(), t = e.target; if (!t || !t.closest) return;
+    var opt = t.closest('.sv-q .option');
+    if (opt) { pick(+opt.closest('.sv-q').getAttribute('data-idx'), opt.getAttribute('data-meta')); return; }
+    var a = t.closest('[data-a]'); if (!a) return;
+    var card = a.closest('.sv-q'), idx = card ? +card.getAttribute('data-idx') : -1;
+    switch (a.getAttribute('data-a')) {
+      case 'review':
+        if (st.submitted || idx < 0) break;
+        var qs = st.qState[st.qIds[idx]]; qs.review = !qs.review; updateNavigator(); break;
+      case 'clear':
+        if (idx < 0) break; st.conceptView = false; st.currentIndex = idx; clearResponse(); break;
+      case 'hint':
+        if (idx < 0) break; st.conceptView = false; st.currentIndex = idx; openCenterHelpModal(); break;
+      case 'google':
+        if (idx < 0) break; st.conceptView = false; st.currentIndex = idx; googleSearchCurrentQuestion(); break;
+      case 'submit': $('submitBtn').click(); break;
+      case 'summary': $('showSummaryBtn').click(); break;
+      case 'pdf': $('downloadPdfBtn').click(); break;
+      case 'practice':
+        setTestMode('practice');
+        setTimeout(function () { var r = SV.cards.filter(function (c) { return c.t === 'q'; })[0]; if (r) jump(r.el, true); }, 80);
+        break;
+      case 'exit': disable(); break;
+    }
+  }
+
+  /* ── 7. switching on / off ── */
+  function recFor(key) {
+    var st = S(), r = null;
+    if (!key) return null;
+    if (key.t === 'q') r = SV.cards.filter(function (c) { return c.t === 'q' && c.idx === key.idx; })[0];
+    else {
+      r = SV.cards.filter(function (c) { return c.t === 'c' && (key.ci != null ? c.ci === key.ci : c.pos === key.pos); })[0];
+      if (!r && key.ci != null) {                      // concept pages hidden (exam mode) -> the question it leads to
+        var c = st.concepts[key.ci];
+        if (c && c.nextQ >= 0) r = SV.cards.filter(function (x) { return x.t === 'q' && x.idx === c.nextQ; })[0];
+      }
+    }
+    if (!r && key.t === 'q') {                         // questions hidden (concept mode) -> nearest concept page before it
+      try { var p = conceptPosFor(key.idx); r = SV.cards.filter(function (x) { return x.pos === p; })[0]; } catch (e) { }
+    }
+    return r || null;
+  }
+  function keyOf(rec) { return rec ? (rec.t === 'q' ? { t: 'q', idx: rec.idx } : { t: 'c', ci: rec.ci, pos: rec.pos }) : null; }
+  function setPause() {
+    var st = S(); st.timerPaused = !!(st.conceptOnly && !st.submitted);
+    var tp = $('timerPill'); if (tp) tp.classList.toggle('cp-paused', !!st.timerPaused);
+  }
+  function btnState(on) {
+    var b = $('svToggleBtn'); if (!b) return;
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('data-tip', on ? 'Back to page-by-page view' : 'Single-screen view');
+    b.title = on ? 'Back to page-by-page view' : 'Single-screen view — all concept & test pages in one scrollable page';
+  }
+  function enable() {
+    var st = S();
+    if (!st || !engineActive()) return;
+    if (!(st.seq && st.seq.length)) { toast('Nothing to show yet — start a test first.'); return; }
+    var startKey = st.conceptView ? { t: 'c', pos: st.seqPos } : { t: 'q', idx: st.currentIndex };
+    SV.on = true; document.body.classList.add('sv-on'); btnState(true);
+    st.conceptView = false; setPause();
+    build();
+    var rec = recFor(startKey) || SV.cards[0];
+    SV.cur = null;
+    if (rec) { jump(rec.el, false); setCurrent(rec); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    clearInterval(SV.langTimer); SV.langTimer = setInterval(langTick, 600);
+    onScroll();
+    toast('Single-screen view ON — scroll through all pages. Tap ⟲ to go back.');
+  }
+  function teardown() {
+    SV.on = false; SV.tok++;
+    document.body.classList.remove('sv-on'); btnState(false);
+    window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll);
+    clearInterval(SV.langTimer);
+    if (SV.vIO) SV.vIO.disconnect(); if (SV.tIO) SV.tIO.disconnect();
+    SV.vt.forEach(function (t) { clearTimeout(t); }); SV.vt.clear();
+    var h = $('svView'); if (h) h.innerHTML = '';
+    var bar = $('svProgress'); if (bar && bar.firstElementChild) bar.firstElementChild.style.width = '0%';
+  }
+  function disable(silent) {
+    if (!SV.on) return;
+    var cur = SV.cur; teardown();
+    if (silent === true) return;                    // left the test altogether
+    var st = S();
+    try {
+      if (cur && cur.t === 'c') {
+        var p = st.seq.findIndex(function (s) { return s.t === 'c' && s.ci === cur.ci; });
+        openSeq(p < 0 ? 0 : p);
+      } else if (cur && cur.t === 'q') renderQuestion(cur.idx);
+      else openSeq(0);
+    } catch (e) { console.error('sv exit', e); }
+    window.scrollTo(0, 0);
+  }
+  function toggle() { SV.on ? disable() : enable(); }
+  function rebuild() {                              // mode (Exam / Practice / Concept) changed while the view is open
+    if (!SV.on) return;
+    var st = S(), keep = keyOf(SV.cur);
+    st.conceptView = false; setPause();
+    build();
+    var rec = recFor(keep) || SV.cards[0]; SV.cur = null;
+    if (rec) { jump(rec.el, false); setCurrent(rec); }
+    onScroll();
+  }
+  function step(dir) {
+    var i = SV.cards.indexOf(SV.cur); if (i < 0) i = 0;
+    var n = SV.cards[i + dir];
+    if (n) jump(n.el, true);
+    else if (dir > 0) { var e = $('svEnd'); if (e) jump(e, true); }
+  }
+
+  /* ── 8. wiring ── */
+  function init() {
+    var host = $('svView'), btn = $('svToggleBtn'); if (!host || !btn) return;
+    host.addEventListener('click', onClick);
+    host.addEventListener('keydown', function (e) {
+      var o = e.target.closest && e.target.closest('.sv-q .option');
+      if (o && (e.key === ' ' || e.key === 'Enter')) {
+        e.preventDefault(); e.stopPropagation();
+        pick(+o.closest('.sv-q').getAttribute('data-idx'), o.getAttribute('data-meta'));
+      }
+    });
+    btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); toggle(); });
+
+    /* keep the cards in step whenever the engine refreshes its navigator (answer, review, submit, visit …) */
+    var _un = window.updateNavigator;
+    if (typeof _un === 'function') {
+      window.updateNavigator = function () { var r = _un.apply(this, arguments); if (SV.on) schedule(); return r; };
+    }
+
+    /* navigator dots scroll to the page instead of opening it */
+    var nav = $('qNav');
+    if (nav) nav.addEventListener('click', function (e) {
+      if (!SV.on) return;
+      var d = e.target.closest && e.target.closest('.qdot'); if (!d) return;
+      e.stopImmediatePropagation(); e.preventDefault();
+      var rec = null;
+      if (d.classList.contains('cdot')) rec = SV.cards.filter(function (c) { return c.t === 'c' && c.pos === d._pos; })[0];
+      else {
+        var dots = Array.prototype.filter.call(nav.children, function (x) { return !x.classList.contains('cdot'); });
+        var qItems = S().seq.filter(function (s) { return s.t === 'q'; });
+        var it = qItems[dots.indexOf(d)];
+        if (it) rec = SV.cards.filter(function (c) { return c.t === 'q' && c.idx === it.idx; })[0];
+      }
+      if (rec) jump(rec.el, true);
+    }, true);
+
+    /* keyboard: ←/→ move between pages; 1-4, 0 act on the page in view; Enter never jumps the engine */
+    window.addEventListener('keydown', function (e) {
+      if (!SV.on || !engineActive()) return;
+      var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (['input', 'textarea', 'select'].indexOf(tag) >= 0) return;
+      var lb = $('cpLightbox'); if (lb && lb.classList.contains('open')) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault(); e.stopImmediatePropagation(); step(e.key === 'ArrowRight' ? 1 : -1); return;
+      }
+      if (e.key === 'Enter') { e.stopImmediatePropagation(); return; }
+      if ((e.key >= '1' && e.key <= '4') || e.key === '0') {
+        if (!SV.cur || SV.cur.t !== 'q') { e.stopImmediatePropagation(); return; }
+        var st = S(); st.conceptView = false; st.currentIndex = SV.cur.idx;
+      }
+    }, true);
+
+    /* PDF tutor replaces the page area, so leave the scroll view first */
+    var pt = $('pdfTutorToggleBtn');
+    if (pt) pt.addEventListener('click', function () { if (SV.on) disable(); }, true);
+
+    /* mode switch (Exam / Practice / Concept) -> rebuild the stack */
+    var ms = $('modeSwitch');
+    if (ms) new MutationObserver(function () {
+      if (!SV.on) return;
+      clearTimeout(SV.rbT);
+      SV.rbT = setTimeout(function () { if (SV.on && (S().mode || 'practice') !== SV.mode) rebuild(); }, 30);
+    }).observe(ms, { attributes: true, attributeFilter: ['data-mode'] });
+
+    /* leaving the test (← Portal) switches the view off */
+    var ev = $('engineView');
+    if (ev) new MutationObserver(function () { if (SV.on && !engineActive()) disable(true); }).observe(ev, { attributes: true, attributeFilter: ['class'] });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.singleScreenView = { enable: enable, disable: disable, toggle: toggle, isOn: function () { return SV.on; } };
 })();
 </script>
 </body>
