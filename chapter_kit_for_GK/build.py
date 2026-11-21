@@ -65,20 +65,30 @@ img = "images/%s/%s/%s/" % (field, subject, chap)
 
 # ---- images: "I:" lines are numbered automatically (1.png, 2.png ...) and registered ----
 AUTO = {}
-FIG = ('<div class="cp-fig"><img src="%s" alt="%s" style="display:block;width:100%%;max-width:420px;max-height:240px;'
+FIG = ('<div class="cp-fig"><img src="%s" alt="%s" data-caption="%s" style="display:block;width:100%%;max-width:420px;max-height:240px;'
        'height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>')
 def figure(spec, where):
     p = [x.strip() for x in spec.split("|")]
     kind = p[0].lower()
-    if kind == "fig" and len(p) >= 2 and p[1]: v, alt = {"t": "fig", "about": p[1]}, p[1]
+    cap = ""
+    if kind == "fig" and len(p) >= 2 and p[1]:
+        v, alt = {"t": "fig", "about": p[1]}, p[1]
+        if len(p) >= 3 and p[2]: cap = p[2]                      # I: fig | what to draw | caption
+        else: cap = re.split(r"(?<=[.!?])\s", p[1])[0][:140]      # fallback: first sentence of the drawing brief
     elif kind == "real" and len(p) >= 2 and p[1]:
         v, alt = {"t": "real", "search": p[1]}, p[1]
         if len(p) >= 3 and p[2]: v["note"] = p[2]
-    else: raise SystemExit("Bad I: line in '%s' (use  I: fig | what it shows  or  I: real | search text | note): %s" % (where, spec[:60]))
+        if len(p) >= 4 and p[3]: cap = p[3]                      # I: real | search | note | caption
+        else: cap = (p[2] if len(p) >= 3 and p[2] else p[1])[:140]
+    else: raise SystemExit("Bad I: line in '%s' (use  I: fig | what it shows | caption  or  I: real | search text | note | caption): %s" % (where, spec[:60]))
+    cap = re.sub(r"\s+", " ", cap).strip()
+    cap = cap[:1].upper() + cap[1:]
+    if cap and cap[-1] not in ".!?)": cap += "."
+    cap = ENT.sub("&amp;", re.sub(r'["<>]', "", cap))
     n = 1
     while ("%d.png" % n) in M.get("images", {}) or ("%d.png" % n) in AUTO: n += 1
     name = "%d.png" % n; AUTO[name] = v
-    return FIG % (img + name, re.sub(r'["<>&]', "", alt)[:90])
+    return FIG % (img + name, re.sub(r'["<>&]', "", alt)[:90], cap)
 
 # ---- shorthand parser ----
 def concept(head, body, n):

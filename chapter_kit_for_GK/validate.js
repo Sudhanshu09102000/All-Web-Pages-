@@ -28,6 +28,11 @@ for (const k of keys) {
     if (/cp-hl/.test(e.html)) E(k + ": cp-hl used");
     banCheck(k, e.title); banCheck(k, e.html);
     if (k > 1 && !/<img\s/i.test(e.html)) E(k + ": concept page has no image (add 2-3 I: lines)");
+    for (const m of e.html.matchAll(/<img\b[^>]*>/gi)) {   // every image needs a short caption (shown under the image in the portal)
+      const c = (m[0].match(/data-caption="([^"]*)"/i) || [])[1];
+      if (!c) E(k + ": image without data-caption");
+      else if (c.length < 12 || c.length > 160 || /^(figure|fig|image|img|diagram|photo|picture)\s*\d*\.?$/i.test(c.trim())) E(k + ": weak caption \"" + c.slice(0, 40) + "\" (12-160 chars, say what the picture shows)");
+    }
     const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 70) E(k + ": page too long");
     for (const m of e.html.matchAll(/src="([^"]+)"/g)) used.add(m[1]);
   } else {

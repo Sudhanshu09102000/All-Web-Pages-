@@ -4167,6 +4167,12 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
 .cp-body img.cp-broken { min-height: 44px; padding: 10px; border: 1px dashed #ef4444; color: #fca5a5; font: 600 .8rem 'Inter', sans-serif; }
 .cp-fig { margin: 16px 0; text-align: center; }
 .cp-fig figcaption { margin-top: 6px; font: 500 .82rem 'Inter', system-ui, sans-serif; opacity: .7; }
+/* 🏷 auto caption shown under every concept-page image (text comes from data-caption / alt / title) */
+.cp-body .cp-imgcap {
+  display: block; max-width: min(92%, 640px); margin: -6px auto 18px; padding: 0 6px; text-align: center;
+  font: 600 .86rem/1.45 'Inter', system-ui, sans-serif; font-style: italic; opacity: .82;
+}
+.cp-body .cp-imgcap::before { content: '📷 '; font-style: normal; }
 
 /* ── CARDS ── <div class="cp-card [blue|green|amber|red|violet|teal|pink]"> */
 .cp-body .cp-card {
@@ -8026,6 +8032,30 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           t.parentNode.insertBefore(w, t);
           w.appendChild(t);
         });
+        /* 🏷 caption under every image: what the picture actually shows.
+           Text priority: data-caption > alt > title > "Figure N" (generic alts like "image" / "3.jpg" are ignored). */
+        (function () {
+          const generic = /^\s*((image|img|figure|fig|photo|picture|diagram)\s*\d*|[\w\- ]+\.(jpe?g|png|webp|gif|svg))\s*$/i;
+          let n = 0;
+          body.querySelectorAll('img').forEach(img => {
+            if (img.classList.contains('cp-inline')) return;                      // tiny inline icons are not figures
+            n++;
+            const fig = img.closest('figure');
+            if (fig && fig.querySelector('figcaption')) return;                    // already captioned by the author
+            const nx = img.nextElementSibling;
+            if (nx && nx.classList.contains('cp-imgcap')) return;                  // never add twice
+            let t = '';
+            for (const k of ['data-caption', 'alt', 'title']) {
+              const v = (img.getAttribute(k) || '').trim();
+              if (v && !generic.test(v)) { t = v; break; }
+            }
+            if (!t) t = 'Figure ' + n;
+            const cap = document.createElement('span');
+            cap.className = 'cp-imgcap';
+            cap.textContent = t;
+            img.insertAdjacentElement('afterend', cap);
+          });
+        })();
         body.querySelectorAll('img').forEach(img => {
           img.addEventListener('click', () => cpOpenLightbox(img.currentSrc || img.src, img.alt));
           img.addEventListener('error', () => {

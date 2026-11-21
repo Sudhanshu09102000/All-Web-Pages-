@@ -20,8 +20,8 @@ L: lead sentence
 N trap|exam|tip|trick|remember: note
 M: mnemonic
 T: head1|head2 ;; r1c1|r1c2 ;; r2c1|r2c2
-I: fig | what the image shows + exact short labels          (AI-generated image; numbered and registered automatically)
-I: real | exact Google Images search text | optional note   (real photo I download; numbered and registered automatically)
+I: fig | what the image shows + exact short labels | caption          (AI-generated image; numbered and registered automatically)
+I: real | exact Google Images search text | note | caption            (real photo I download; numbered and registered automatically)
 H: any raw html line (formulas, cards)
 @@Q question text (for a statement question: only the lead-in, for example "Consider the following statements:")
 S: statement one            (statement questions only; one S: line per statement, numbered 1, 2, 3 automatically, each on its own line)
@@ -43,7 +43,7 @@ meta.json (entry 1 - overview; stats are counted automatically):
 
 PATH RULES
 <Field> and <Subject> exactly as I wrote them (spaces -> underscores, e.g. General_Awareness / Ancient_History). <Chapter_Name> = chapter name with underscores, same spelling everywhere.
-build.py creates the image paths itself: images/<Field>/<Subject>/<Chapter_Name>/<n>.png (thumbnail.png, then 1.png, 2.png ... in page order). Never type image paths or <img> html; use I: lines only. Shared files (images/person.png, images/logo.png) may still be written with H: and are not registered.
+build.py creates the image paths itself: images/<Field>/<Subject>/<Chapter_Name>/<n>.png (thumbnail.png, then 1.png, 2.png ... in page order). Never type image paths or <img> html; use I: lines only (with captions). If you ever write an <img> by hand with H:, add data-caption="..." to it. Shared files (images/person.png, images/logo.png) may still be written with H: and are not registered.
 
 IMAGES (I want LOTS of images)
 Every concept page must have 2-3 images (never 0; validate.js rejects a page without an image). Use 3 on rich pages and 2 on short ones. Place them where they help: one right after the lead or the first explanation, one beside the table or cards, one near the worked example or trap note. Every image must help the learner see or remember something; no decoration, no two images showing the same thing, no image repeated on another page. Never draw images yourself (no SVG, no ASCII art).
@@ -51,6 +51,7 @@ Two kinds (choose by topic; I will generate or download them all and save them u
  - "I: fig | ..." (AI image): made-up diagrams, charts, flows, timelines, family trees, comparison pictures, mind-maps, formula pictures, schematics, memory pictures. Describe exactly what to show and write the exact short labels. For geography write "schematic, not a map".
  - "I: real | search text | note" (real photo): use whenever the image must show something that actually exists or happened: rivers, mountains, lakes, glaciers, landforms, monuments, temples, forts, archaeological sites, coins, inscriptions, historical events or persons, museums, species, rocks, satellites, missions, weapons, and every Current Affairs item (events, summits, launches, awards, schemes, people in the news). Never write an AI prompt for these. The search is a precise 4-10 word Google Images text (for example "Harappa Great Bath Mohenjo-daro photo", "Chandrayaan-3 Vikram lander landing site photo"); the note says what the photo must show.
 Mix both kinds on a page when it fits (for example one real photo of the place plus one AI diagram of the idea).
+CAPTIONS (every image): the last field of every I: line is a caption, shown in small text directly under the image. It tells the learner what the picture is: one short, plain sentence of 6-20 words, written as a fact, for example "The Great Bath at Mohenjo-daro, used for ritual bathing." It names the thing shown (not "this image" or "figure"), differs from the drawing brief or search text, uses no abbreviations, and never mentions a source. build.py copies it into the page; validate.js rejects a missing or weak caption.
 
 SCOPE
 Cover ONLY my named topic and ALL its subtopics, in the book's order. Skip anything outside it. If the first content has no heading, give it a short sensible title.
