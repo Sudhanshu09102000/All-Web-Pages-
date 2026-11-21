@@ -1,0 +1,27 @@
+@@C 📊 | #22c55e | Percentage — Successive Change
+L: A percentage tells us how many parts we have out of <b>100</b>. <u>Do not calculate every time. Learn to see the pattern.</u>
+I: real | price tag discount sale board shop photo | a shop window with a discount tag, to show a price going down | A shop window with a discount tag: the price goes down by a percentage.
+N tip: "Successive change" simply means a number changes once, and then it changes again. For example, a price goes up and then comes down.
+H: <div class="cp-formula" translate="no"><small>Successive change</small>Net percent change = a + b + <span class="cp-frac"><i>a × b</i><i>100</i></span></div>
+L: Here, a is the first change and b is the second change. Write an increase as a plus number and a decrease as a minus number.
+I: fig | Three bars: 100 (blue), 120 (green), 108 (amber), arrows labelled +20 percent and -10 percent, label Net = +8 percent. | Start at 100, rise 20 percent to 120, fall 10 percent to 108: a net gain of 8 percent.
+T: Step | Value | Change ;; Start | 100 | No change yet ;; After a 20 percent increase | 120 | Up by 20 ;; After a 10 percent decrease | 108 | Down by 12
+L: The second change is taken on 120, not on 100. That is why the final answer is 108, which is a net increase of 8 percent.
+N trap: You cannot add two percentages directly when they are taken on different starting values. The second percentage is always taken on the new value.
+I: fig | Simple flow: Start 100 -> x1.20 -> 120 -> x0.90 -> 108, each step in a rounded box with its label. | The same change as a flow: multiply by 1.20, then by 0.90, to get 108.
+M: Add both changes, then add the product of both divided by one hundred.
+@@Q A number is increased by 20 percent and then decreased by 10 percent. What is the net change?
+1) 6 percent increase  2) 8 percent increase  3) 10 percent increase  4) 12 percent increase
+ANS: 2
+EXP: ✅ The answer is 8 percent. Use 20 − 10 + (20 × −10) ÷ 100 = 8. 📌 Check by starting with 100: it becomes 120 and then 108. ❌ 10 percent is wrong because it forgets the last part of the formula.
+@@Q The price of sugar goes up by 25 percent. By how much percent should a family reduce its use of sugar so that the money spent stays the same?
+1) 20 percent  2) 25 percent  3) 15 percent  4) 30 percent
+ANS: 1
+EXP: ✅ The answer is 20 percent. Divide the rise by the new price: 25 ÷ 125 × 100. 📌 If the price goes up by one fourth, the use must come down by one fifth. ❌ 25 percent is wrong because it ignores the new, higher price.
+@@Q Consider the following statements about successive percentage change:
+S: An increase of 20 percent followed by a decrease of 20 percent gives no net change.
+S: An increase of 10 percent followed by an increase of 10 percent gives a net increase of 21 percent.
+W: Which of the statements given above is correct?
+1) Only 1  2) Both 1 and 2  3) Only 2  4) Neither 1 nor 2
+ANS: 3
+EXP: ✅ Only statement 2 is correct, because 10 + 10 + (10 × 10) ÷ 100 = 21. 📌 Equal rise and fall never cancel; the second change is taken on a new value. ❌ Statement 1 is wrong because the net change is a decrease of 4 percent.
