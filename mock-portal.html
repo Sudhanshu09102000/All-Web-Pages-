@@ -4172,6 +4172,7 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
   display: block; max-width: min(92%, 640px); margin: -6px auto 18px; padding: 0 6px; text-align: center;
   font: 600 .86rem/1.45 'Inter', system-ui, sans-serif; font-style: italic; opacity: .82;
 }
+.cp-body .cp-imgcap, .sv-card .cp-imgcap { display: none !important; }
 .cp-body .cp-imgcap::before { content: '📷 '; font-style: normal; }
 
 /* ── CARDS ── <div class="cp-card [blue|green|amber|red|violet|teal|pink]"> */
@@ -8043,18 +8044,7 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
             n++;
             const fig = img.closest('figure');
             if (fig && fig.querySelector('figcaption')) return;                    // already captioned by the author
-            const nx = img.nextElementSibling;
-            if (nx && nx.classList.contains('cp-imgcap')) return;                  // never add twice
-            let t = '';
-            for (const k of ['data-caption', 'alt', 'title']) {
-              const v = (img.getAttribute(k) || '').trim();
-              if (v && !generic.test(v)) { t = v; break; }
-            }
-            if (!t) t = 'Figure ' + n;
-            const cap = document.createElement('span');
-            cap.className = 'cp-imgcap';
-            cap.textContent = t;
-            img.insertAdjacentElement('afterend', cap);
+            /* auto caption ("Picture for the word ...") removed on purpose - only captions the author wrote are shown */
           });
         })();
         body.querySelectorAll('img').forEach(img => {
@@ -24500,16 +24490,7 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
       n++;
       var fig = img.closest('figure');
       if (fig && fig.querySelector('figcaption')) return;
-      var nx = img.nextElementSibling;
-      if (nx && nx.classList.contains('cp-imgcap')) return;
-      var t = '';
-      ['data-caption', 'alt', 'title'].some(function (k) {
-        var v = (img.getAttribute(k) || '').trim();
-        if (v && !generic.test(v)) { t = v; return true; } return false;
-      });
-      if (!t) t = 'Figure ' + n;
-      var cap = document.createElement('span'); cap.className = 'cp-imgcap'; cap.textContent = t;
-      img.insertAdjacentElement('afterend', cap);
+      /* auto caption removed on purpose */
     });
     body.querySelectorAll('img').forEach(function (img) {
       img.addEventListener('click', function () { try { cpOpenLightbox(img.currentSrc || img.src, img.alt); } catch (e) { } });
