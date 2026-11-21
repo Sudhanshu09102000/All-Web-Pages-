@@ -136,8 +136,8 @@ def question(head, body):
 
 # ---- snippets (verbatim from snippets.txt) ----
 sn = open(os.path.join(HERE, "snippets.txt"), encoding="utf-8").read()
-a, b, c = sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ END SNIPPETS")
-snip = sn[a:b].rstrip() + "\n\n" + sn[b:c].rstrip() + "\n"
+a, b, d, c = (sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ SNIPPET 3"), sn.index("/* ═══ END SNIPPETS"))
+snip = sn[a:b].rstrip() + "\n\n" + sn[b:d].rstrip() + "\n\n" + sn[d:c].rstrip() + "\n"
 
 entries = []
 for f in sorted(glob.glob(os.path.join(pdir, "p*.txt")), key=lambda p: int(re.sub(r"\D", "", os.path.basename(p)) or 0)):

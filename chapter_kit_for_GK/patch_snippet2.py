@@ -4,7 +4,7 @@ Replaces the old SNIPPET 2 inside already-built chapter files with the fixed one
 import sys, os
 H = os.path.dirname(os.path.abspath(__file__))
 sn = open(os.path.join(H, "snippets.txt"), encoding="utf-8").read()
-new = sn[sn.index("/* ═══ SNIPPET 2"):sn.index("/* ═══ END SNIPPETS")].rstrip()
+new = sn[sn.index("/* ═══ SNIPPET 2"):sn.index("/* ═══ SNIPPET 3")].rstrip()
 for f in sys.argv[1:]:
     t = open(f, encoding="utf-8").read(); nl = "\r\n" if "\r\n" in t else "\n"; t = t.replace("\r\n", "\n")
     a, td = t.find("/* ═══ SNIPPET 2"), t.find("window.TEST_DATA")
