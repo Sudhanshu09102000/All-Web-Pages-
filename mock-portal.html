@@ -4955,22 +4955,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           </div>
         </div>
 
-        <!-- 🎯 CUSTOM TEST BUILDER — entry banner -->
-        <div id="ctbOpenCard" class="ctb-cta" role="button" tabindex="0" aria-label="Open Custom Test Builder">
-          <div class="ctb-cta-icon" aria-hidden="true">🎯</div>
-          <div class="ctb-cta-body">
-            <div class="ctb-eyebrow">✨ NEW · CUSTOM TEST BUILDER</div>
-            <h2 class="ctb-cta-title">Build your own test from any chapters</h2>
-            <div class="ctb-cta-sub">Tick any mix of subjects, topics and chapters, choose how many questions you want, and get a freshly shuffled test every time.</div>
-            <div class="ctb-cta-tags">
-              <span class="ctb-mini">🧩 Any combination</span>
-              <span class="ctb-mini">🎲 Random every time</span>
-              <span class="ctb-mini">🔢 You set the length</span>
-            </div>
-          </div>
-          <button type="button" id="ctbOpenBtn" class="ctb-btn">Build a Test →</button>
-        </div>
-
         <div class="glass p-3 p-md-4 mb-4">
           <div class="row g-3 align-items-center">
             <div class="col-12 col-lg-6">
@@ -4998,6 +4982,22 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
         </div>
 
         <div id="subjectsGrid" class="row g-3 g-md-4"></div>
+
+        <!-- 🎯 CUSTOM TEST BUILDER — entry banner -->
+        <div id="ctbOpenCard" class="ctb-cta" role="button" tabindex="0" aria-label="Open Custom Test Builder">
+          <div class="ctb-cta-icon" aria-hidden="true">🎯</div>
+          <div class="ctb-cta-body">
+            <div class="ctb-eyebrow">✨ NEW · CUSTOM TEST BUILDER</div>
+            <h2 class="ctb-cta-title">Build your own test from any chapters</h2>
+            <div class="ctb-cta-sub">Tick any mix of subjects, topics and chapters, choose how many questions you want, and get a freshly shuffled test every time.</div>
+            <div class="ctb-cta-tags">
+              <span class="ctb-mini">🧩 Any combination</span>
+              <span class="ctb-mini">🎲 Random every time</span>
+              <span class="ctb-mini">🔢 You set the length</span>
+            </div>
+          </div>
+          <button type="button" id="ctbOpenBtn" class="ctb-btn">Build a Test →</button>
+        </div>
       </div>
     </div>
 
@@ -24870,6 +24870,15 @@ html #modeToast {
   color: var(--gp-text, #fff) !important;
   border-color: color-mix(in srgb, var(--gp-text, #fff) 35%, transparent) !important;
 }
+/* ── Light theme fixes: icon always visible in the dock toggle; header never hides under the fixed dock ── */
+html.lite-mode #hudDock #svToggleBtn.sv-toggle { width: 30px; height: 30px; flex: none; }
+html.lite-mode #hudDock #svToggleBtn .sv-ic { width: 17px; height: 17px; color: #000 !important; stroke: #000 !important; }
+html.lite-mode #hudDock #svToggleBtn .sv-ic * { stroke: #000 !important; fill: none !important; }
+html.lite-mode #hudDock #svToggleBtn.on .sv-ic { color: #fff !important; stroke: #fff !important; }
+html.lite-mode #hudDock #svToggleBtn.on .sv-ic * { stroke: #fff !important; }
+.sv-head { padding-right: 230px; }
+#ctbOpenCard { margin-top: 1.6rem; }
+@media (max-width: 576px) { .sv-head { padding-right: 14px; padding-top: 46px; } }
 /* inside the opened control deck: same size as the ✕ button, sits next to the mode switch */
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn.sv-toggle { order: 2; width: 40px; height: 40px; margin: 0; flex: 0 0 auto; }
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn .sv-ic { width: 19px; height: 19px; }
