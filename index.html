@@ -120,6 +120,43 @@ body[data-mode="light"] .spot{display:none}
   .card .main{flex:1;min-width:0}
 }
 @media (prefers-reduced-motion:reduce){ .card{animation:none;opacity:1} .card,.spot{transition:none} }
+
+/* ================= Page viewer (hosts every page so the guard covers all of them) ================= */
+html,body{overscroll-behavior-y:contain}
+body.viewing{overflow:hidden}
+#viewer{position:fixed;inset:0;z-index:200;display:none;background:var(--bg)}
+#viewer.open{display:block}
+#viewer iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+
+/* ================= Premium confirmation box (refresh / leave) ================= */
+#pgOverlay{display:none;position:fixed;inset:0;z-index:100050;align-items:center;justify-content:center;padding:20px;
+  background:rgba(3,6,16,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#pgOverlay.show{display:flex;animation:pgFade .2s ease both}
+@keyframes pgFade{from{opacity:0}to{opacity:1}}
+#pgBox{position:relative;width:100%;max-width:390px;padding:34px 26px 24px;text-align:center;overflow:hidden;border-radius:26px;
+  color:#f1f5f9;background:linear-gradient(160deg,rgba(20,26,48,.98),rgba(9,12,26,.98));
+  border:1px solid rgba(212,175,55,.4);
+  box-shadow:0 36px 90px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05) inset,0 0 60px rgba(212,175,55,.12);
+  animation:pgPop .28s cubic-bezier(.22,1.2,.36,1) both}
+@keyframes pgPop{from{transform:translateY(14px) scale(.94);opacity:0}to{transform:none;opacity:1}}
+#pgBox::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#d4af37,#f3dc92,#d4af37,transparent)}
+#pgBox::after{content:"";position:absolute;left:50%;top:-70px;width:240px;height:160px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(212,175,55,.22),transparent);pointer-events:none}
+#pgBox .pg-icon{position:relative;z-index:1;width:68px;height:68px;margin:0 auto 16px;display:grid;place-items:center;border-radius:50%;font-size:1.9rem;
+  background:radial-gradient(circle at 30% 25%,rgba(243,220,146,.28),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.55);box-shadow:0 0 26px rgba(212,175,55,.3)}
+#pgBox .pg-title{position:relative;z-index:1;font:700 1.2rem 'Cinzel',Georgia,serif;letter-spacing:.6px;margin-bottom:8px;
+  background:linear-gradient(180deg,#fff3c4,#d4af37);-webkit-background-clip:text;background-clip:text;color:transparent}
+#pgBox .pg-sub{position:relative;z-index:1;font:500 .88rem/1.6 'Inter',system-ui,sans-serif;color:rgba(241,245,249,.7);margin-bottom:22px}
+#pgBox .pg-btns{position:relative;z-index:1;display:flex;gap:10px}
+#pgBox button{flex:1;padding:13px 10px;border-radius:14px;font:800 .9rem 'Inter',system-ui,sans-serif;cursor:pointer;
+  transition:transform .15s ease,filter .15s ease,background .15s ease;-webkit-tap-highlight-color:transparent}
+#pgBox button:active{transform:scale(.97)}
+#pgStay{border:0;color:#1b1505;background:linear-gradient(180deg,#f3dc92,#c9a23a);box-shadow:0 8px 22px rgba(212,175,55,.3)}
+#pgStay:hover{filter:brightness(1.06)}
+#pgGo{border:1px solid rgba(255,255,255,.18);color:rgba(241,245,249,.8);background:rgba(255,255,255,.06)}
+#pgGo:hover{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.5);color:#fecaca}
+#pgBox .pg-hint{position:relative;z-index:1;margin-top:14px;font:600 .7rem 'Inter',sans-serif;letter-spacing:.4px;color:rgba(241,245,249,.38)}
+@media (prefers-reduced-motion:reduce){#pgOverlay.show,#pgBox{animation:none}}
 </style>
 </head>
 <body data-mode="dark">
@@ -142,7 +179,24 @@ body[data-mode="light"] .spot{display:none}
   <div class="sec">ALL PAGES</div>
   <main class="grid" id="grid"></main>
 
-  <div class="foot">Keep all the pages in the same folder so every button opens correctly.</div>
+  <div class="foot">Keep all the pages in the same folder so every button opens correctly. Pages open inside this window, and refreshing any of them asks for confirmation.</div>
+</div>
+
+<div id="viewer" aria-label="Open page">
+  <iframe id="frame" title="Page" allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay; geolocation" allowfullscreen></iframe>
+</div>
+
+<div id="pgOverlay" role="alertdialog" aria-modal="true" aria-labelledby="pgTitle">
+  <div id="pgBox">
+    <div class="pg-icon" id="pgIcon">&#8635;</div>
+    <div class="pg-title" id="pgTitle">Refresh this page?</div>
+    <div class="pg-sub" id="pgSub">Anything in progress on this page, such as a running test, your answers, a timer or unsaved edits, will be lost if you refresh now.</div>
+    <div class="pg-btns">
+      <button id="pgStay" type="button">Stay here</button>
+      <button id="pgGo" type="button">Refresh anyway</button>
+    </div>
+    <div class="pg-hint">Press Esc to stay</div>
+  </div>
 </div>
 
 <script>
@@ -168,6 +222,71 @@ PAGES.forEach(function(p, i){
   a.querySelector('.name').textContent = p.name;
   a.querySelector('.desc').textContent = p.desc;
   grid.appendChild(a);
+});
+
+
+/* ---------- Page viewer: every page opens inside this shell, so the guard below covers all of them ---------- */
+var viewer = document.getElementById('viewer'), frame = document.getElementById('frame');
+var guardOn = false, leaving = false;
+function openPage(url){
+  guardOn = true; leaving = false;
+  frame.src = encodeURI(url);
+  viewer.classList.add('open'); document.body.classList.add('viewing');
+}
+function closePage(){
+  guardOn = false;
+  frame.src = 'about:blank';
+  viewer.classList.remove('open'); document.body.classList.remove('viewing');
+}
+grid.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a.card');
+  if(!a || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button) return;
+  e.preventDefault();
+  openPage(a.getAttribute('href'));
+});
+
+/* ---------- Premium confirmation box ---------- */
+var ov = document.getElementById('pgOverlay'), pgStay = document.getElementById('pgStay'), pgGo = document.getElementById('pgGo');
+var onGo = null;
+function askBox(o, go){
+  document.getElementById('pgIcon').textContent = o.icon;
+  document.getElementById('pgTitle').textContent = o.title;
+  document.getElementById('pgSub').textContent = o.sub;
+  pgStay.textContent = o.stay; pgGo.textContent = o.go;
+  onGo = go; ov.classList.add('show'); setTimeout(function(){ pgStay.focus(); }, 30);
+}
+function closeBox(){ ov.classList.remove('show'); onGo = null; }
+function askRefresh(){
+  askBox({icon:'\u21BB', title:'Refresh this page?',
+    sub:'Anything in progress on this page, such as a running test, your answers, a timer or unsaved edits, will be lost if you refresh now.',
+    stay:'Stay here', go:'Refresh anyway'}, function(){ leaving = true; location.reload(); });
+}
+pgStay.addEventListener('click', closeBox);
+pgGo.addEventListener('click', function(){ var f = onGo; closeBox(); if(f) f(); });
+ov.addEventListener('click', function(e){ if(e.target === ov) closeBox(); });
+
+function onKey(e){
+  if(ov.classList.contains('show')){
+    var k = (e.key || '').toLowerCase();
+    if(e.key === 'Escape'){ e.preventDefault(); closeBox(); }
+    else if(e.key === 'Tab'){ e.preventDefault(); (document.activeElement === pgStay ? pgGo : pgStay).focus(); }
+    else if(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && k === 'r')){ e.preventDefault(); }
+    return;
+  }
+  var key = (e.key || '').toLowerCase();
+  if(guardOn && (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && key === 'r'))){
+    e.preventDefault(); e.stopPropagation(); askRefresh();
+  }
+}
+document.addEventListener('keydown', onKey, true);
+/* keys pressed while focus is inside the page: works whenever the browser lets this shell reach the page (same origin / web server) */
+frame.addEventListener('load', function(){
+  try{ frame.contentWindow.addEventListener('keydown', onKey, true); }catch(e){}
+});
+/* browser's own refresh button / pull-to-refresh: browsers only allow their native prompt here */
+window.addEventListener('beforeunload', function(e){
+  if(leaving || !guardOn) return;
+  e.preventDefault(); e.returnValue = '';
 });
 
 /* ---------- Tilt + cursor spotlight ---------- */
