@@ -26,7 +26,7 @@
     return "Create a 16:9 landscape background image for a YouTube thumbnail, 1920×1080 px, ultra-sharp, in a premium, classic, refined editorial style (NOT cartoonish: no cartoon, toy-like, clip-art, comic or glossy cartoon-3D look). Deep midnight-navy and near-black base with a smooth, subtle gradient in the accent colour " + a + " and restrained champagne-gold highlights; soft cinematic lighting with a gentle glow behind the right-centre of the frame, where a teacher's photo will be placed later; fine dark vignette, very subtle fine grain, realistic shallow depth of field. Place only these elegant, realistic, softly blurred objects, mostly on the right and in the back: " + o + ", rendered matte or brushed-metal with natural reflections. Do NOT add any star, starburst or explosion sticker. Add ONE blank premium emblem: a refined, classic round seal with a thin champagne-gold rim, fine engraved double border and a smooth, completely EMPTY dark centre with a faint glow, realistic brushed-metal / enamel finish, about 20% of the frame height, placed near the lower centre (about 60% from the left and 72% from the top) so I can write my own text inside it later. Keep the LEFT 62% of the frame calm, dark and uncluttered because a banner and big title lines will be overlaid there later. Absolutely no text, letters, numbers, logos, watermarks, channel names or human faces anywhere (the emblem stays blank). Sophisticated, balanced, high-contrast, professional composition.";
   };
   var F = function (d) {
-    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide). no logos, no watermarks. If it is geography, draw a schematic, not a realistic map.";
+    return "Create a 16:9 image, 1200×675 px: a clean flat vector diagram on a dark navy background. " + d + " Use very few labels in exact short English, VERY LARGE bold text, thick lines and simple shapes, so it stays readable when shown small (about 420 px wide).";
   };
   function getPrompt(src) {
     var p = (window.IMG_PROMPTS || {})[src];
@@ -68,6 +68,19 @@
     ".cpm:not(.cpm-tight) .cpm-short{display:none}",
     ".cpm-tight .cpm-ico{width:30px;height:30px;border-radius:10px}.cpm-tight .cpm-ico svg{width:16px;height:16px}",
     ".cpm-tight .cpm-btn{min-height:38px;padding:0 20px}",
+    ".cpm-cmd{display:flex;align-items:center;gap:8px;width:100%;max-width:100%;padding:6px 6px 6px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(2,6,23,.88),rgba(10,16,40,.88));border:1px solid rgba(246,220,149,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 18px -10px rgba(2,6,23,.9)}",
+    ".cpm-cmd-p{flex:none;color:#34d399!important;font-weight:800;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;user-select:none;-webkit-user-select:none}",
+    ".cpm-cmd-t{flex:1;min-width:0;text-align:left;color:#e6edf8!important;font-size:10.5px;line-height:1.45;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;background:transparent!important;border:0!important;padding:0!important}",
+    ".cpm-cmd-t b{color:#f6dc95!important;font-weight:700}",
+    ".cpm-cmd-b{flex:none;display:grid!important;place-items:center;width:32px;height:32px;padding:0!important;border-radius:9px;cursor:pointer;color:#f6dc95!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))!important;border:1px solid rgba(246,220,149,.45)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:transform .15s,filter .15s,background .15s}",
+    ".cpm-cmd-b svg{width:16px;height:16px;pointer-events:none}",
+    ".cpm-cmd-b *{pointer-events:none}",
+    ".cpm-cmd-b:hover{transform:translateY(-1px);filter:brightness(1.25)}",
+    ".cpm-cmd-b:active{transform:scale(.92)}",
+    ".cpm-cmd-b:focus-visible{outline:2px solid #f6dc95;outline-offset:2px}",
+    ".cpm-cmd-b.ok{color:#fff!important;background:linear-gradient(135deg,#059669,#34d399)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-cmd-b.err{color:#fff!important;background:linear-gradient(135deg,#d97706,#ef4444)!important;border-color:rgba(255,255,255,.35)!important}",
+    ".cpm-tight .cpm-cmd{padding:4px 4px 4px 10px}.cpm-tight .cpm-cmd-b{width:28px;height:28px}",
     "/* ── LIGHT MODE: the portal forces black text inside the studio / concept page, which made the dark card unreadable. In Light Mode the card becomes a plain white card with black text and a black button. ── */",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm{background:#fff!important;background-image:none!important;border:2px solid #000!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:#000!important;-webkit-text-fill-color:#000!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm::before{display:none!important}",
@@ -85,7 +98,13 @@
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-btn:focus-visible{outline:3px solid #2563eb!important;outline-offset:2px}",
     "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-ta{background:#fff!important;background-color:#fff!important;border:1px solid #000!important}",
-    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd{background:#f3f4f6!important;background-color:#f3f4f6!important;border:1px solid #000!important;box-shadow:none!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-p{color:#166534!important;-webkit-text-fill-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b{background:#000!important;background-color:#000!important;border:1px solid #000!important;box-shadow:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b *{color:#fff!important;-webkit-text-fill-color:#fff!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.ok{background:#166534!important;background-color:#166534!important;border-color:#166534!important}",
+    "html.lite-mode :is(#conceptBox,#ytStudio,body) .cpm .cpm-cmd-b.err{background:#b91c1c!important;background-color:#b91c1c!important;border-color:#b91c1c!important}",
+    "@media (max-width:480px){.cpm{width:calc(100% - 16px);padding:14px 12px 13px;border-radius:18px}.cpm-title{font-size:13.5px}.cpm-path{font-size:10.5px}.cpm-cmd-t{font-size:10px}}",
     "@media (prefers-reduced-motion:reduce){.cpm-btn::after{animation:none}.cpm-btn{transition:none}}"
   ].join("");
   function addCss() {
@@ -116,6 +135,17 @@
     b.innerHTML = s[1] + '<span class="cpm-lbl">' + s[0] + "</span>";
     clearTimeout(b._t);
     if (st !== "idle") b._t = setTimeout(function () { setBtn(b, "idle"); }, st === "ok" ? 1800 : 4500);
+  }
+
+  var CMD_ST = { idle: [ICON_COPY, ""], ok: [ICON_OK, " ok"], err: [ICON_WARN, " err"] };
+  function setCmdBtn(b, st) {
+    var x = CMD_ST[st];
+    b.className = "cpm-cmd-b" + x[1];
+    b.innerHTML = x[0];
+    b.title = st === "ok" ? "Copied!" : "Copy command";
+    b.setAttribute("aria-label", b.title);
+    clearTimeout(b._t);
+    if (st !== "idle") b._t = setTimeout(function () { setCmdBtn(b, "idle"); }, st === "ok" ? 1800 : 3500);
   }
 
   /* Copy strategy (most reliable first):
@@ -223,6 +253,20 @@
     fillPath(box.querySelector(".cpm-full"), src);
     fillPath(box.querySelector(".cpm-short"), short);
     box.querySelector(".cpm-path").title = src;
+    var dir = parts.length > 1 ? parts.slice(0, -1).join("/") : "";
+    if (dir) {
+      var cmd = "mkdir -p " + dir;
+      var cb = document.createElement("div");
+      cb.className = "cpm-cmd";
+      cb.innerHTML = '<span class="cpm-cmd-p">$</span><code class="cpm-cmd-t"></code>';
+      cb.querySelector(".cpm-cmd-t").textContent = cmd;
+      var cbtn = document.createElement("button");
+      cbtn.type = "button";
+      cbtn.setAttribute("data-cmd", cmd);
+      setCmdBtn(cbtn, "idle");
+      cb.appendChild(cbtn);
+      box.appendChild(cb);
+    }
     var btn = document.createElement("button");
     btn.type = "button";
     btn.setAttribute("data-ph-src", src);
@@ -282,16 +326,22 @@
   /* Listens on window (capture) so the page's own handlers can't swallow the click. If a transparent overlay
      of the studio sits on top of the button, the button is still found by the click position. */
   window.addEventListener("click", function (e) {
-    var b = e.target && e.target.closest ? e.target.closest("[data-ph-src]") : null;
+    var SEL = "[data-ph-src],[data-cmd]";
+    var b = e.target && e.target.closest ? e.target.closest(SEL) : null;
     if (!b && e.clientX > 0 && document.elementsFromPoint) {
       var els = document.elementsFromPoint(e.clientX, e.clientY);
       for (var i = 0; i < els.length; i++) {
-        if (els[i].hasAttribute && els[i].hasAttribute("data-ph-src")) { b = els[i]; break; }
+        if (els[i].hasAttribute && (els[i].hasAttribute("data-ph-src") || els[i].hasAttribute("data-cmd"))) { b = els[i]; break; }
       }
     }
     if (!b) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    if (b.hasAttribute("data-cmd")) {
+      var c = b.getAttribute("data-cmd");
+      copy(c, function () { setCmdBtn(b, "ok"); }, function () { setCmdBtn(b, "err"); }, b.parentNode);
+      return;
+    }
     press(b);
   }, true);
   try { new MutationObserver(sweep).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
@@ -299,1633 +349,2566 @@
 })();
 
 /* ═══ SNIPPET 3 — put right after SNIPPET 2 ═══ */
-/* ── SPEAKER SNIPPET: a premium speaker button sits right beside the word on every vocabulary page; click it to hear the word pronounced ── */
+/* ── STATEMENT-LINES SNIPPET: in statement-based questions, every numbered statement (and the closing line) is shown on its own line ── */
 (function () {
-  if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
-  var synth = window.speechSynthesis;
-  var MARK = "data-speak-btn";
-
-  var css = [
-    ".spk-btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;",
-    "width:46px;height:46px;margin-left:16px;border-radius:50%;cursor:pointer;position:relative;flex:none;",
-    "background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.55) 0,rgba(255,255,255,0) 46%),linear-gradient(145deg,var(--spk-a,#6366f1),var(--spk-b,#3730a3));",
-    "box-shadow:0 10px 22px -8px var(--spk-a,#6366f1),0 2px 4px rgba(0,0,0,.22),inset 0 1px 1px rgba(255,255,255,.65),inset 0 -3px 6px rgba(0,0,0,.22);",
-    "border:1px solid rgba(255,255,255,.35);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent}",
-    ".spk-btn:hover{transform:translateY(-2px) scale(1.06);filter:brightness(1.08)}",
-    ".spk-btn:active{transform:scale(.94)}",
-    ".spk-btn:focus-visible{outline:3px solid #2563eb;outline-offset:3px}",
-    ".spk-btn svg{width:24px;height:24px;display:block;overflow:visible;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}",
-    ".spk-btn svg *{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}",
-    ".spk-btn svg .spk-body{fill:#fff}",
-    ".spk-btn .spk-w2{opacity:.55}",
-    ".spk-btn.spk-on{animation:spkPulse 1.3s ease-out infinite}",
-    ".spk-btn.spk-on .spk-w1{animation:spkWave 0.9s ease-in-out infinite}",
-    ".spk-btn.spk-on .spk-w2{animation:spkWave 0.9s ease-in-out .2s infinite}",
-    "@keyframes spkWave{0%,100%{opacity:.25}50%{opacity:1}}",
-    "@keyframes spkPulse{0%{box-shadow:0 10px 22px -8px var(--spk-a,#6366f1),0 0 0 0 var(--spk-a,#6366f1),inset 0 1px 1px rgba(255,255,255,.65),inset 0 -3px 6px rgba(0,0,0,.22)}",
-    "100%{box-shadow:0 10px 22px -8px var(--spk-a,#6366f1),0 0 0 16px rgba(255,255,255,0),inset 0 1px 1px rgba(255,255,255,.65),inset 0 -3px 6px rgba(0,0,0,.22)}}",
-    "html.lite-mode .spk-btn{background:#000!important;border:2px solid #000!important;box-shadow:none!important}",
-    "html.lite-mode .spk-btn:hover{background:#262626!important}",
-    "@media (max-width:520px){.spk-btn{width:40px;height:40px;margin-left:12px}.spk-btn svg{width:21px;height:21px}}"
-  ].join("");
-  var st = document.createElement("style");
-  st.textContent = css;
-  (document.head || document.documentElement).appendChild(st);
-
-  var SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-    '<path class="spk-body" d="M4 9.5v5h3.4l4.6 3.8V5.7L7.4 9.5H4z"/>' +
-    '<path class="spk-w1" d="M15.2 9.2a4 4 0 0 1 0 5.6"/>' +
-    '<path class="spk-w2" d="M17.9 6.6a7.7 7.7 0 0 1 0 10.8"/></svg>';
-
-  /* ── voice: prefer a natural-sounding English voice ── */
-  var voice = null;
-  function pickVoice() {
-    var vs = synth.getVoices() || [], best = null, bestScore = -1;
-    vs.forEach(function (v) {
-      if (!/^en[-_]/i.test(v.lang)) return;
-      var s = 1, n = v.name || "";
-      if (/en[-_](US|GB|IN)/i.test(v.lang)) s += 2;
-      if (/natural|neural|online/i.test(n)) s += 6;
-      if (/google|samantha|daniel|karen|aria|jenny|guy|ryan|libby/i.test(n)) s += 4;
-      if (/female|zira|david/i.test(n)) s += 1;
-      if (s > bestScore) { bestScore = s; best = v; }
+  var map = null, busy = false;
+  var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
+  function build() {
+    map = {};
+    var D = window.TEST_DATA || {};
+    Object.keys(D).forEach(function (k) {
+      var q = D[k] && D[k].questext;
+      if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
     });
-    voice = best;
   }
-  pickVoice();
-  if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
-
-  /* ── which texts count as concept titles ── */
-  function titles() {
-    var map = {}, d = window.TEST_DATA, k, t;
-    if (!d) return map;
-    for (k in d) {
-      if (d[k] && d[k].type === "concept" && d[k].title && d[k].title.length < 40 && /cp-vocab/.test(d[k].html || "")) {
-        t = d[k].title.trim();
-        map[t.toLowerCase()] = t;
-      }
-    }
-    return map;
-  }
-
-  function accentOf(host) {
-    var scope = host.closest("#conceptBox") || document.body, c = "";
-    var pill = scope.querySelector(".cp-vocab .cp-pos") || scope.querySelector(".cp-vocab span");
-    if (pill) c = getComputedStyle(pill).backgroundColor;
-    if (!c || /rgba\(0, 0, 0, 0\)|transparent/.test(c)) c = "#6366f1";
-    return c;
-  }
-  function darker(css) {
-    var m = css.match(/(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
-    if (!m) return "#3730a3";
-    return "rgb(" + Math.round(m[1] * .62) + "," + Math.round(m[2] * .62) + "," + Math.round(m[3] * .62) + ")";
-  }
-
-  var current = null;
-  function stop() {
-    try { synth.cancel(); } catch (e) {}
-    if (current) { current.classList.remove("spk-on"); current = null; }
-  }
-  function speak(btn) {
-    var word = btn.getAttribute("data-word") || "";
-    if (!word) return;
-    if (current === btn) { stop(); return; }
-    stop();
-    var u = new SpeechSynthesisUtterance(word);
-    u.lang = (voice && voice.lang) || "en-US";
-    if (voice) u.voice = voice;
-    u.rate = 0.85;
-    u.pitch = 1;
-    function done() { btn.classList.remove("spk-on"); if (current === btn) current = null; }
-    u.onend = done;
-    u.onerror = done;
-    current = btn;
-    btn.classList.add("spk-on");
-    synth.speak(u);
-  }
-
-  /* ── find the big title of the word page that is ON SCREEN and place the button right after it ──
-     Only the visible vocabulary page counts (never a question's answer options, never a hidden copy of the title). ── */
-  function visible(el) {
-    if (!el || !el.getClientRects || !el.getClientRects().length) return false;
-    var r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0;
-  }
-  function activePage() {
-    var all = document.querySelectorAll(".cp-vocab"), i;
-    for (i = 0; i < all.length; i++) if (visible(all[i])) return all[i];
-    return null;
-  }
-  function wordOf(v, map) {
-    var im = v.querySelector("img[alt]"), m = im && /^Picture for the word\s+(.+)$/i.exec(im.getAttribute("alt") || "");
-    if (m) return m[1].trim();
-    var bd = v.querySelector(".vp-t b"), t = bd && (bd.textContent || "").trim().toLowerCase();
-    return t && map[t] ? map[t] : "";
-  }
-  var queued = false;
-  function sweep() {
-    if (!document.body) return;
-    var map = titles(), v = activePage(), host = null, word = "";
-    if (v) {
-      word = wordOf(v, map);
-      if (word) {
-        var low = word.toLowerCase(), top = v.getBoundingClientRect().top;
-        var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n;
-        while ((n = w.nextNode())) {
-          if ((n.nodeValue || "").trim().toLowerCase() !== low) continue;
-          var el = n.parentElement;
-          if (!el || el.closest(".cp-vocab,.cpm,[" + MARK + "],button,option,label,.cp-footer")) continue;
-          if (!visible(el) || parseFloat(getComputedStyle(el).fontSize) < 22) continue;
-          if (el.getBoundingClientRect().top > top) continue;          /* the title card sits above the word card */
-          host = el; break;
+  function fix() {
+    if (busy) return;
+    busy = true;
+    setTimeout(function () {
+      busy = false;
+      try {
+        if (!map) build();
+        var all = document.querySelectorAll("*");
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (!el.childNodes || (el.getAttribute && el.getAttribute("data-sq"))) continue;
+          for (var j = 0; j < el.childNodes.length; j++) {
+            var n = el.childNodes[j];
+            if (n.nodeType !== 3 || n.nodeValue.length < 25) continue;
+            var full = map[norm(n.nodeValue)];
+            if (!full) continue;
+            var sp = document.createElement("span");
+            sp.setAttribute("data-sq", "1");
+            sp.style.setProperty("white-space", "pre-line", "important");
+            sp.textContent = full;
+            el.replaceChild(sp, n);
+          }
         }
-      }
-    }
-    var existing = document.querySelectorAll("[" + MARK + "]");
-    Array.prototype.forEach.call(existing, function (b) {
-      if (!host || b.parentElement !== host || b.getAttribute("data-word") !== word) {
-        if (current === b) stop();
-        b.remove();
-      }
-    });
-    if (!host || host.querySelector("[" + MARK + "]")) return;
-    var scopeAcc = accentOf(host);
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "spk-btn";
-    b.setAttribute(MARK, "1");
-    b.setAttribute("data-word", word);
-    b.setAttribute("translate", "no");
-    b.setAttribute("aria-label", "Listen to the pronunciation of " + word);
-    b.title = "Listen";
-    b.style.setProperty("--spk-a", scopeAcc);
-    b.style.setProperty("--spk-b", darker(scopeAcc));
-    b.innerHTML = SVG;
-    host.appendChild(b);
+      } catch (e) {}
+    }, 30);
   }
-  function queue() {
-    if (queued) return;
-    queued = true;
-    (window.requestAnimationFrame || setTimeout)(function () { queued = false; try { sweep(); } catch (e) {} });
-  }
-
-  /* window-level capture listener, so the page's own handlers can't swallow the click */
-  window.addEventListener("click", function (e) {
-    var b = e.target && e.target.closest ? e.target.closest("[" + MARK + "]") : null;
-    if (!b) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    speak(b);
-  }, true);
-  try { new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "hidden"] }); } catch (e) {}
-  window.addEventListener("resize", queue);
-  if (typeof setInterval === "function") setInterval(queue, 700);   /* safety net: re-check where the title is */
-  window.addEventListener("beforeunload", stop);
-  queue();
+  try { new MutationObserver(fix).observe(document.documentElement, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  fix();
 })();
 
-/* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
-/* ── PREMIUM FIT-TO-SCREEN LAYOUT (v2): every vocabulary page is one balanced two-column card that fits a laptop screen
-   without scrolling. Text size FOLLOWS the Control Panel font-size slider (all sizes are em-based and inherit it).
-   Fonts, colours and light/dark themes from the panel are respected. The big title card above is shrunk automatically,
-   and at the default font size the card is auto-fitted to the free height of the screen. ── */
+/* ═══ SNIPPET 4 — put right after SNIPPET 3 (vocabulary files only; build.py adds it automatically) ═══ */
+/* ── VOCABULARY-PAGE STYLE SNIPPET: premium, responsive word cards (meaning, Hindi meaning, synonyms, antonyms, usage, picture).
+   Every size is in "em", so the whole page grows and shrinks with the portal's font-size control, and the layout reacts to the
+   WIDTH OF THE PAGE BOX (container query), not only to the screen. Works in every portal theme and in Light Mode. ── */
 (function () {
-  var css = [
-    ".cp-vocab.vp{--a:#6366f1;--on:#fff;--k:1;font-size:calc(1em * var(--k));line-height:1.4;margin:0;padding:.15em .1em .3em;display:block;color:inherit}",
-    ".cp-vocab.vp *{box-sizing:border-box}",
-    ".cp-vocab.vp .vp-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:1.5em;align-items:stretch}",
-    ".cp-vocab.vp .vp-left{display:flex;flex-direction:column;gap:.85em;min-width:0}",
-    ".cp-vocab.vp .vp-meta{display:flex;align-items:center;gap:.9em;padding:.05em 0}",
-    ".cp-vocab.vp .vp-pos{display:inline-block;padding:.35em 1.25em;border-radius:999px;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 70%,#000));color:var(--on);font-size:.72em;font-weight:800;letter-spacing:.13em;text-transform:uppercase;box-shadow:0 .5em 1.1em -.5em var(--a),inset 0 1px 0 rgba(255,255,255,.4)}",
-    ".cp-vocab.vp .vp-ipa{font-style:italic;font-size:.9375em;opacity:.85;letter-spacing:.02em}",
-    ".cp-vocab.vp .vp-two{display:grid;grid-template-columns:1fr 1fr;gap:.85em}",
-    ".cp-vocab.vp .vp-def,.cp-vocab.vp .vp-pane,.cp-vocab.vp .vp-use{position:relative;min-width:0;border-radius:1.1em;padding:.95em 1.15em}",
-    ".cp-vocab.vp .vp-def{padding-left:1.5em;background:linear-gradient(135deg,color-mix(in srgb,var(--a) 20%,transparent),color-mix(in srgb,var(--a) 5%,transparent));border:1px solid color-mix(in srgb,var(--a) 45%,transparent);box-shadow:inset .32em 0 0 var(--a),0 .9em 1.8em -1.2em rgba(0,0,0,.55)}",
-    ".cp-vocab.vp .vp-pane{padding:1.15em 1.4em 1.25em;background:rgba(127,127,127,.09);border:1px solid rgba(127,127,127,.42);box-shadow:0 .9em 1.8em -1.3em rgba(0,0,0,.5)}",
-    ".cp-vocab.vp .vp-use{flex:1;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 10%,transparent),color-mix(in srgb,var(--a) 2%,transparent));border:1px solid color-mix(in srgb,var(--a) 45%,transparent);box-shadow:0 .9em 1.8em -1.3em rgba(0,0,0,.5)}",
-    ".cp-vocab.vp .vp-lbl{margin:0 0 .6em;font-size:.66em;font-weight:800;letter-spacing:.17em;text-transform:uppercase;opacity:.8}",
-    ".cp-vocab.vp .vp-lbl.syn{color:#15803d;opacity:1}",
-    ".cp-vocab.vp .vp-lbl.ant{color:#b91c1c;opacity:1}",
-    ".cp-vocab.vp[data-tone=dark] .vp-lbl.syn{color:#86efac}",
-    ".cp-vocab.vp[data-tone=dark] .vp-lbl.ant{color:#fca5a5}",
-    ".cp-vocab.vp .vp-en{margin:0;font-size:.9375em;font-weight:600;line-height:1.25}",
-    ".cp-vocab.vp .vp-hi{margin:0;font-size:.9375em;font-weight:800;line-height:1.25}",
-    ".cp-vocab.vp .vp-tags{display:flex;flex-wrap:wrap;gap:.6em .65em;padding:.15em 0 0;border:0;background:none;box-shadow:none;outline:0}",
-    ".cp-vocab.vp .vp-tag{display:inline-block;padding:.3em .95em;border-radius:999px;font-size:.875em;font-weight:700;border:1px solid}",
-    ".cp-vocab.vp .vp-tag.syn{background:rgba(22,163,74,.15);color:#15803d;border-color:rgba(22,163,74,.55)}",
-    ".cp-vocab.vp .vp-tag.ant{background:rgba(220,38,38,.13);color:#b91c1c;border-color:rgba(220,38,38,.55)}",
-    ".cp-vocab.vp[data-tone=dark] .vp-tag.syn{color:#86efac;background:rgba(74,222,128,.14);border-color:rgba(74,222,128,.5)}",
-    ".cp-vocab.vp[data-tone=dark] .vp-tag.ant{color:#fca5a5;background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.5)}",
-    ".cp-vocab.vp .vp-none{opacity:.5;font-weight:700;font-size:.875em}",
-    ".cp-vocab.vp .vp-s{display:flex;gap:.8em;align-items:flex-start;padding:.5em 0;border-top:1px solid color-mix(in srgb,var(--a) 30%,transparent);font-size:.8125em;line-height:1.4}",
-    ".cp-vocab.vp .vp-lbl + .vp-s{border-top:0;padding-top:.15em}",
-    ".cp-vocab.vp .vp-n{flex:none;display:grid;place-items:center;width:1.7em;height:1.7em;margin-top:.02em;border-radius:50%;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 70%,#000));color:var(--on);font-size:.82em;font-weight:800;line-height:1;box-shadow:0 .3em .7em -.3em var(--a)}",
-    ".cp-vocab.vp .vp-mark{margin-left:.35em;font-size:.95em}",
-    ".cp-vocab.vp .vp-frame{position:relative;align-self:stretch;aspect-ratio:16/9;width:100%;min-height:0;border-radius:1.6em;padding:0;background:none;border:0;box-shadow:none;overflow:hidden}",
-    /* ── image column: picture pinned to the TOP (no empty space above it) + premium caption box below it ── */
-    ".cp-vocab.vp .vp-right{display:flex;flex-direction:column;gap:.9em;align-self:start;min-width:0}",
-    ".cp-vocab.vp .vp-cap{position:relative;overflow:hidden;border-radius:1.2em;padding:.95em 1.2em 1.05em 1.55em;background:linear-gradient(135deg,color-mix(in srgb,var(--a) 24%,transparent),color-mix(in srgb,var(--a) 6%,transparent) 70%);border:1px solid color-mix(in srgb,var(--a) 55%,transparent);box-shadow:inset .34em 0 0 var(--a),0 1.1em 2.2em -1.3em rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.18)}",
-    ".cp-vocab.vp .vp-cap::after{content:'\\201D';position:absolute;right:.35em;bottom:-.38em;font-family:Georgia,'Times New Roman',serif;font-size:4.6em!important;line-height:1;color:var(--a);opacity:.16;pointer-events:none}",
-    ".cp-vocab.vp .vp-cap-lbl{display:flex;align-items:center;gap:.55em;margin:0 0 .5em;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--a)}",
-    ".cp-vocab.vp .vp-cap-ico{display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 65%,#000));box-shadow:0 .3em .7em -.3em var(--a)}",
-    ".cp-vocab.vp .vp-cap-txt{position:relative;margin:0;font-weight:600;font-style:italic;line-height:1.5}",
-    ".cp-vocab.vp .vp-cap-txt b{font-style:normal;font-weight:800;padding:0 .3em;border-radius:.4em;background:color-mix(in srgb,var(--a) 30%,transparent)}",
-    ".cp-vocab.vp[data-tone=dark] .vp-cap-lbl{color:color-mix(in srgb,var(--a) 55%,#fff)}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-cap{background:color-mix(in srgb,var(--a) 14%,#fff)!important;border:1.5px solid #000!important;box-shadow:inset .34em 0 0 #000!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-cap-lbl{color:#000!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-cap-ico{background:var(--a)!important;border:1.5px solid #000;box-shadow:none}",
-    /* ── FONT RULE: heading word = x px  →  every other text on the card = x/2 px (--hf is set by the script below) ── */
-    ".cp-vocab.vp{font-size:var(--hf,calc(1em * var(--k)))!important}",
-    ".cp-vocab.vp :not(.cpm):not(.cpm *):not(img):not(svg):not(svg *){font-size:1em!important}",
-    ".cp-vocab.vp .vp-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:1.6em;border:0!important;box-shadow:none!important;display:block;background:color-mix(in srgb,var(--a) 10%,transparent)}",
-    ".cp-vocab.vp .vp-frame .cpm{position:absolute!important;top:50%;left:50%;transform:translate(-50%,-50%);margin:0!important;width:min(430px,88%)!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-tags,html :is(#conceptBox,body) .cp-vocab.vp .vp-lbl,html :is(#conceptBox,body) .cp-vocab.vp .vp-grid,html :is(#conceptBox,body) .cp-vocab.vp .vp-left,html :is(#conceptBox,body) .cp-vocab.vp .vp-two,html :is(#conceptBox,body) .cp-vocab.vp .vp-meta{border:0!important;box-shadow:none!important;background:none!important;outline:0!important;border-radius:0!important}",
-    ".vp-titlecard{zoom:.7!important}",
-    "@media (max-height:700px){.vp-titlecard{zoom:.55!important}}",
-    /* light mode: keep the portal's crisp black-outline look */
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-def,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-use{border:1.5px solid #000!important;box-shadow:none}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-def{box-shadow:inset .34em 0 0 #000!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-frame{background:none!important;border:0!important;box-shadow:none!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pos,html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-n{background:var(--a)!important;color:var(--on)!important;-webkit-text-fill-color:var(--on)!important;border:1.5px solid #000;box-shadow:none}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-tag.syn{color:#14532d!important;-webkit-text-fill-color:#14532d!important;border-color:#14532d}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-tag.ant{color:#7f1d1d!important;-webkit-text-fill-color:#7f1d1d!important;border-color:#7f1d1d}",
-    /* narrow screens / phones: stack and allow normal scrolling */
-    "@media (max-width:767px){",
-    "#engineView:has(.cp-vocab.vp)>.container-fluid{padding-left:2px!important;padding-right:2px!important}",
-    "#engineView:has(.cp-vocab.vp) .engine-shell>.col-12{padding-left:0!important;padding-right:0!important}",
-    "#conceptBox:has(.cp-vocab.vp){border-radius:12px!important;padding:0!important}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-scroll{padding:8px 3px 12px!important}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-top{padding:8px 6px 4px!important}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-footer{padding:8px 6px!important}",
-    ".cp-vocab.vp{padding:0!important}",
-    ".cp-vocab.vp .vp-grid{gap:.8em}",
-    ".cp-vocab.vp .vp-def,.cp-vocab.vp .vp-use{padding:.7em .8em!important}",
-    ".cp-vocab.vp .vp-def{padding-left:1.1em!important}",
-    ".cp-vocab.vp .vp-pane{padding:.75em .85em!important}",
-    "}",
-    "@media (max-width:900px){.cp-vocab.vp .vp-grid{grid-template-columns:1fr}.cp-vocab.vp .vp-right{order:-1}.cp-vocab.vp .vp-frame{min-height:0;aspect-ratio:16/9}.cp-vocab.vp .vp-two{grid-template-columns:1fr}.vp-titlecard{zoom:.8!important}}",
-    "/* ═ PREMIUM MOBILE v3 (phones only): uses the full width — meaning+Hindi side by side, synonyms+antonyms side by side, IPA pinned to the right, refined cards, picture with soft ring ═ */",
-    "@media (max-width:767px){",
-    ".vp-titlecard{zoom:.66!important;margin-bottom:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:14px!important}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-scroll{padding:6px 6px 14px!important}",
-    ".cp-vocab.vp .vp-grid{gap:.7em}",
-    ".cp-vocab.vp .vp-left{gap:.65em}",
-    ".cp-vocab.vp .vp-frame{border-radius:1.25em;margin:0 0 .1em}",
-    ".cp-vocab.vp .vp-frame img{border-radius:1.25em}",
-    ".cp-vocab.vp .vp-frame::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 -3.2em 2.6em -2.6em rgba(0,0,0,.38)}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:.8em;padding:.38em .5em .38em .38em!important;border-radius:999px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--a) 26%,transparent),color-mix(in srgb,var(--a) 5%,transparent))!important;border:1px solid color-mix(in srgb,var(--a) 50%,transparent)!important}",
-    ".cp-vocab.vp .vp-pos{font-size:.7em;padding:.38em 1.1em}",
-    ".cp-vocab.vp .vp-ipa{margin-left:auto;margin-right:.55em;font-size:1em;font-weight:600;opacity:.95;letter-spacing:.03em}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-meta{background:color-mix(in srgb,var(--a) 16%,#fff)!important;border:1.5px solid #000!important}",
-    ".cp-vocab.vp .vp-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.6em}",
-    ".cp-vocab.vp .vp-meta + .vp-two{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}",
-    ".cp-vocab.vp .vp-def,.cp-vocab.vp .vp-pane,.cp-vocab.vp .vp-use{border-radius:1.15em}",
-    ".cp-vocab.vp .vp-def{padding:.7em .75em .75em 1.05em!important;display:flex;flex-direction:column;justify-content:center}",
-    ".cp-vocab.vp .vp-pane{padding:.7em .7em .8em!important}",
-    ".cp-vocab.vp .vp-lbl{margin:0 0 .45em;font-size:.62em;letter-spacing:.15em}",
-    ".cp-vocab.vp .vp-en,.cp-vocab.vp .vp-hi{font-size:.9em;line-height:1.3}",
-    ".cp-vocab.vp .vp-tags{gap:.4em .4em}",
-    ".cp-vocab.vp .vp-tag{font-size:.8em;padding:.26em .7em;line-height:1.25}",
-    ".cp-vocab.vp .vp-use{padding:.75em .85em .6em!important;justify-content:flex-start}",
-    ".cp-vocab.vp .vp-s{font-size:.82em;line-height:1.45;gap:.65em;padding:.55em 0}",
-    ".cp-vocab.vp .vp-n{width:1.6em;height:1.6em}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-footer{gap:8px!important}",
-    "#conceptBox:has(.cp-vocab.vp) .cp-footer button{font-size:clamp(14px,4.1vw,17px)!important;padding-top:.6em!important;padding-bottom:.6em!important;border-radius:16px!important}",
-    "}",
-    "/* ═ PREMIUM MOBILE v4 (phones only, PC untouched): picture + caption fused into ONE hero card on top; meaning card; Hindi in a solid accent card; synonyms / antonyms side by side with green / red tops; usage list with the picture sentence highlighted ═ */",
-    "@media (max-width:767px){",
-    "html :is(#conceptBox,body) .cp-vocab.vp{padding:0!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-grid{gap:.85em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left{gap:.65em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-right{gap:0!important;border-radius:1.3em;overflow:hidden;border:1px solid color-mix(in srgb,var(--a) 55%,transparent);background:color-mix(in srgb,var(--a) 8%,transparent);box-shadow:0 1.3em 2.4em -1.5em rgba(0,0,0,.65),0 0 0 .22em color-mix(in srgb,var(--a) 14%,transparent)}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-frame{border-radius:0!important;margin:0!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-frame img{border-radius:0!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-frame::after{border-radius:0!important;box-shadow:inset 0 -3.4em 2.6em -2.6em rgba(0,0,0,.45)!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-cap{border:0!important;border-top:.22em solid var(--a)!important;border-radius:0!important;box-shadow:none!important;padding:.8em 1em .9em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-cap-lbl{margin-bottom:.4em}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.55em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-def{display:block!important;padding:.8em 1em .85em 1.3em!important;border-radius:1.1em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-en{font-weight:700;line-height:1.45}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-two > .vp-def:last-child{background:linear-gradient(135deg,var(--a),color-mix(in srgb,var(--a) 68%,#000))!important;color:var(--on)!important;border-color:transparent!important;box-shadow:0 .9em 1.6em -1.1em var(--a)!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-two > .vp-def:last-child .vp-lbl{color:var(--on)!important;opacity:.8}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-two > .vp-def:last-child .vp-hi{color:var(--on)!important;font-weight:800;line-height:1.4}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two + .vp-two{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:.55em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane{padding:.7em .75em .8em!important;border-radius:1.1em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.syn){border-top:.24em solid #16a34a!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.ant){border-top:.24em solid #dc2626!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp[data-tone=dark] .vp-pane:has(> .vp-lbl.syn){border-top-color:#4ade80!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp[data-tone=dark] .vp-pane:has(> .vp-lbl.ant){border-top-color:#f87171!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-tag{padding:.22em .65em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-use{padding:.8em .75em .45em!important;border-radius:1.2em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-s{padding:.6em .55em!important;border-radius:.85em;border-top:1px dashed color-mix(in srgb,var(--a) 38%,transparent)!important;gap:.65em!important;line-height:1.5!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-lbl + .vp-s{border-top:0!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-s:has(.vp-mark){background:linear-gradient(90deg,color-mix(in srgb,var(--a) 24%,transparent),color-mix(in srgb,var(--a) 6%,transparent));border-top-color:transparent!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a) 50%,transparent)}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-n{width:1.75em;height:1.75em}",
-    "@keyframes vpRise{from{opacity:0;transform:translateY(.8em)}to{opacity:1;transform:none}}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-right{animation:vpRise .45s cubic-bezier(.2,.7,.2,1) both}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left > *{animation:vpRise .45s cubic-bezier(.2,.7,.2,1) both}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left > :nth-child(1){animation-delay:.05s}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left > :nth-child(2){animation-delay:.1s}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left > :nth-child(3){animation-delay:.15s}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-left > :nth-child(4){animation-delay:.2s}",
-    "@media (prefers-reduced-motion:reduce){html :is(#conceptBox,body) .cp-vocab.vp .vp-right,html :is(#conceptBox,body) .cp-vocab.vp .vp-left > *{animation:none!important}}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-right{border:1.5px solid #000!important;box-shadow:none!important;background:none!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-cap{border-top:.22em solid #000!important;background:color-mix(in srgb,var(--a) 14%,#fff)!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-two > .vp-def:last-child{background:var(--a)!important;color:var(--on)!important;border:1.5px solid #000!important;box-shadow:none!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.syn){border-top:.24em solid #14532d!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(> .vp-lbl.ant){border-top:.24em solid #7f1d1d!important}",
-    "html.lite-mode :is(#conceptBox,body) .cp-vocab.vp .vp-s:has(.vp-mark){background:color-mix(in srgb,var(--a) 22%,#fff)!important;box-shadow:inset 0 0 0 1.5px #000!important}",
-    "/* ═ MOBILE FIX v5: no empty white space beside / below synonyms-antonyms ═ */",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two + .vp-two{align-items:start!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-meta + .vp-two + .vp-two:has(.vp-none){grid-template-columns:minmax(0,1fr)!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none){display:flex!important;flex-direction:row!important;align-items:center!important;gap:.8em!important;padding:.55em .8em!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-lbl{margin:0!important;white-space:nowrap}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-pane:has(.vp-none) .vp-tags{margin:0!important;min-height:0!important}",
-    "}",
-    "/* ═ DESKTOP BALANCE FIX v6: the picture column always stretches to the SAME height as the text column, so there is no empty vertical gap on the right under the caption. The picture grows a little (never beyond 4:3), the caption box takes up the rest and keeps its text centred ═ */",
-    "@media (min-width:901px){",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-grid{align-items:stretch!important}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-right{align-self:stretch!important;display:flex!important;flex-direction:column!important;container-type:inline-size}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-frame{align-self:stretch!important;flex:3 1 auto!important;min-height:0!important;max-height:75cqw}",
-    "html :is(#conceptBox,body) .cp-vocab.vp .vp-cap{flex:2 1 auto!important;display:flex!important;flex-direction:column!important;justify-content:center!important}",
-    "}"
+  var WIDE = ".vc{grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);align-items:start;gap:1.2em 1.6em}" +
+    ".vc-main{display:flex;flex-direction:column;gap:1em;min-width:0}" +
+    ".vc-side{position:sticky;top:.4em;max-width:none;margin:0;justify-self:stretch}";
+  var CSS = [
+    ".vc-wrap{container-name:vc;container-type:inline-size;width:100%;max-width:110em;margin:0 auto;font-size:1em;line-height:1.5;-webkit-text-size-adjust:100%;text-size-adjust:100%}",
+    ".vc,.vc *{box-sizing:border-box}",
+    ".vc{--ar:99,102,241;--a:rgb(var(--ar));--ink:#fff;display:grid;grid-template-columns:minmax(0,1fr);gap:1em;padding:.15em 0 1.2em;color:inherit;font-family:inherit}",
+    ".vc :where(p,ol,ul,figure){margin:0;padding:0}",
+    ".vc-main{display:contents}",
+    ".vc-top{order:0}.vc-p1{order:1}.vc-side{order:2}.vc-p2{order:3}.vc-use{order:4}.vc-mem{order:5}",
+    ".vc-top{display:flex;align-items:center;flex-wrap:wrap;gap:.7em}",
+    ".vc-pos{display:inline-flex;align-items:center;padding:.4em 1.2em;border-radius:999px;font-size:.95em;font-weight:800;letter-spacing:.17em;text-transform:uppercase;line-height:1.2;color:var(--ink);background:linear-gradient(135deg,var(--a),rgba(var(--ar),.72));box-shadow:0 .55em 1.1em -.55em rgba(var(--ar),.95),inset 0 1px 0 rgba(255,255,255,.45)}",
+    ".vc-pron{font-style:italic;font-weight:600;opacity:.8;font-size:1.02em}",
+    ".vc-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15em),1fr));gap:1em}",
+    ".vc-card{position:relative;min-width:0;overflow:hidden;border-radius:1.1em;padding:1em 1.15em 1.1em 1.4em;border:1px solid rgba(127,127,127,.32);background:linear-gradient(155deg,rgba(var(--ar),.12),rgba(127,127,127,.06) 62%);box-shadow:0 .8em 1.6em -1.2em rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.16)}",
+    ".vc-card::before,.vc-cap::before{content:'';position:absolute;left:0;top:0;bottom:0;width:.32em;background:linear-gradient(180deg,var(--a),rgba(var(--ar),.35))}",
+    ".vc-syn::before{background:linear-gradient(180deg,#22c55e,rgba(34,197,94,.35))}",
+    ".vc-ant::before{background:linear-gradient(180deg,#ef4444,rgba(239,68,68,.35))}",
+    ".vc-lab{display:flex;align-items:center;gap:.55em;margin:0 0 .65em;font-size:.76em;font-weight:800;letter-spacing:.17em;text-transform:uppercase;line-height:1.3;opacity:.85}",
+    ".vc-lab i{font-style:normal;font-size:1.3em;letter-spacing:0;line-height:1}",
+    ".vc-t{margin:0;font-size:1.14em;font-weight:700;line-height:1.45;overflow-wrap:anywhere}",
+    ".vc-hi .vc-t{font-size:1.18em;line-height:1.55}",
+    ".vc-chips{display:flex;flex-wrap:wrap;gap:.55em;margin:0;padding:0;list-style:none}",
+    ".vc-chip{display:inline-block;max-width:100%;padding:.3em .95em;border-radius:999px;border:1px solid;font-size:1em;font-weight:600;line-height:1.35;color:inherit;overflow-wrap:anywhere}",
+    ".vc-syn .vc-chip{border-color:rgba(34,197,94,.75);background:linear-gradient(180deg,rgba(34,197,94,.22),rgba(34,197,94,.09))}",
+    ".vc-ant .vc-chip{border-color:rgba(239,68,68,.7);background:linear-gradient(180deg,rgba(239,68,68,.2),rgba(239,68,68,.08))}",
+    ".vc-use ol{list-style:none;margin:0;padding:0}",
+    ".vc-use li{display:flex;align-items:flex-start;gap:.85em;padding:.7em 0;border-top:1px solid rgba(127,127,127,.3)}",
+    ".vc-use li:first-child{border-top:0;padding-top:.1em}.vc-use li:last-child{padding-bottom:0}",
+    ".vc-n{flex:none;display:grid;place-items:center;width:1.9em;height:1.9em;margin-top:.05em;border-radius:50%;font-size:.9em;font-weight:800;line-height:1;color:var(--ink);background:linear-gradient(145deg,var(--a),rgba(var(--ar),.7));box-shadow:0 .35em .8em -.35em rgba(var(--ar),.9),inset 0 1px 0 rgba(255,255,255,.4)}",
+    ".vc-s{margin:0;min-width:0;font-size:1.07em;line-height:1.55;overflow-wrap:anywhere}",
+    ".vc-s b{font-weight:800}",
+    ".vc-pic{margin-left:.35em;font-size:.95em;white-space:nowrap}",
+    ".vc-mem .vc-t{font-size:1.03em;font-weight:600}",
+    ".vc-side{display:flex;flex-direction:column;gap:1em;min-width:0;width:100%;max-width:44em;margin:0 auto;justify-self:center}",
+    ".vc-fig{position:relative;margin:0;padding:.28em;border-radius:1.55em;background:linear-gradient(135deg,var(--a),#f6dc95 52%,rgba(var(--ar),.55));box-shadow:0 1.5em 2.8em -1.5em rgba(var(--ar),.8),0 .6em 1.3em -.7em rgba(0,0,0,.55)}",
+    ".vc-fig img.vc-img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:1.3em;background:rgba(127,127,127,.16)}",
+    ".vc-fig .cpm{max-width:none;width:100%;margin:0 auto!important;border-radius:1.3em;min-height:12em}",
+    ".vc-cap{position:relative;overflow:hidden;border-radius:1.1em;padding:1em 1.3em 1.15em 1.5em;border:1px solid rgba(var(--ar),.55);background:linear-gradient(150deg,rgba(var(--ar),.18),rgba(var(--ar),.05));box-shadow:0 .8em 1.6em -1.2em rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.16)}",
+    ".vc-cap::after{content:'\\201D';position:absolute;right:.45em;bottom:-.3em;font:700 4.2em/1 Georgia,'Times New Roman',serif;opacity:.16;pointer-events:none}",
+    ".vc-q{position:relative;margin:0;padding-right:1.4em;font-size:1.1em;font-style:italic;font-weight:600;line-height:1.55;overflow-wrap:anywhere}",
+    ".vc-hl{padding:.03em .4em;border-radius:.45em;font-style:normal;font-weight:800;color:inherit;background:rgba(var(--ar),.34)}",
+    "@keyframes vc-in{from{opacity:0;transform:translateY(.7em)}to{opacity:1;transform:none}}",
+    ".vc-top,.vc-card,.vc-fig,.vc-cap{animation:vc-in .55s cubic-bezier(.2,.7,.2,1) both}",
+    ".vc-fig{animation-delay:.08s}.vc-p2 .vc-card{animation-delay:.1s}.vc-cap{animation-delay:.16s}.vc-use{animation-delay:.18s}",
+    "@media (prefers-reduced-motion:reduce){.vc *{animation:none!important}}",
+    "@container vc (min-width:58em){" + WIDE + "}",
+    "@container vc (max-width:28em){.vc{gap:.85em}.vc-card,.vc-cap{padding:.85em .9em .95em 1.15em}.vc-t{font-size:1.06em}.vc-s{font-size:1.03em}}",
+    "@supports not (container-type:inline-size){@media (min-width:58em){" + WIDE + "}}",
+    /* Light Mode of the portal: white cards, black text and borders (like the plain portal pages), accent colour kept on the side bar, pill and numbers */
+    "html.lite-mode .vc,html.lite-mode .vc *{color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important}",
+    "html.lite-mode .vc-card,html.lite-mode .vc-cap{background:#fff!important;background-image:none!important;border:2px solid #000!important;box-shadow:none!important}",
+    "html.lite-mode .vc-fig{background:#000!important;box-shadow:none!important}",
+    "html.lite-mode .vc .vc-pos,html.lite-mode .vc .vc-n{color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;background:var(--a)!important;background-image:none!important;border:2px solid #000!important;box-shadow:none!important}",
+    "html.lite-mode .vc .vc-hl{background:rgba(var(--ar),.4)!important}",
+    "html.lite-mode .vc-syn .vc-chip{background:#dcfce7!important;border-color:#166534!important}",
+    "html.lite-mode .vc-ant .vc-chip{background:#fee2e2!important;border-color:#991b1b!important}",
+    "html.lite-mode .vc-syn .vc-chip,html.lite-mode .vc-syn .vc-chip *{color:#14532d!important;-webkit-text-fill-color:#14532d!important}",
+    "html.lite-mode .vc-ant .vc-chip,html.lite-mode .vc-ant .vc-chip *{color:#7f1d1d!important;-webkit-text-fill-color:#7f1d1d!important}"
   ].join("\n");
-  var st = document.createElement("style");
-  st.id = "vp-style";
-  st.textContent = css;
-  (document.head || document.documentElement).appendChild(st);
-
-  function px(el) { return parseFloat(getComputedStyle(el).fontSize) || 17; }
-  function lum(c) {
-    var m = String(c).match(/[\d.]+/g);
-    if (!m || m.length < 3) return 0;
-    return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
-  }
-  function scroller(v) {
-    var a = v.parentElement;
-    while (a && a !== document.body && a !== document.documentElement) {
-      var o = getComputedStyle(a).overflowY;
-      if ((o === "auto" || o === "scroll") && a.clientHeight > 0) return a;
-      a = a.parentElement;
-    }
-    return null;
-  }
-
-  /* the portal's big title card: a wide, rounded block just above the word card, 90–300px tall */
-  function markTitle(v) {
-    var cur = document.querySelector(".vp-titlecard");
-    if (cur && cur.isConnected && !cur.contains(v)) return;
-    var vr = v.getBoundingClientRect(), best = [], els = document.querySelectorAll("div,section,header,article"), i, j;
-    for (i = 0; i < els.length; i++) {
-      var e = els[i];
-      if (e.contains(v) || v.contains(e) || e.closest(".cpm,.cp-vocab")) continue;
-      var r = e.getBoundingClientRect();
-      if (r.width < window.innerWidth * 0.45 || r.height < 90 || r.height > 300 || r.bottom > vr.top + 6 || r.bottom < 0) continue;
-      if (parseFloat(getComputedStyle(e).borderTopLeftRadius) < 10) continue;
-      if ((e.textContent || "").trim().length > 90) continue;
-      for (j = best.length - 1; j >= 0; j--) { if (e.contains(best[j])) best.splice(j, 1); }
-      var inside = false;
-      for (j = 0; j < best.length; j++) { if (best[j].contains(e)) { inside = true; break; } }
-      if (!inside) best.push(e);
-    }
-    if (best.length) best[best.length - 1].classList.add("vp-titlecard");
-  }
-
-  /* heading word = x px  →  all other card text = x/2 px (zoom of the shrunk title card is taken into account) */
-  function applyHalf(v) {
-    var tc = document.querySelector(".vp-titlecard");
-    if (!tc) return;
-    var z = parseFloat(getComputedStyle(tc).zoom) || 1, best = 0, els = tc.querySelectorAll("*"), i, e, j, own;
-    for (i = -1; i < els.length; i++) {
-      e = i < 0 ? tc : els[i];
-      if (e.closest && e.closest(".spk-btn")) continue;
-      own = false;
-      for (j = 0; j < e.childNodes.length; j++) { if (e.childNodes[j].nodeType === 3 && e.childNodes[j].nodeValue.trim()) { own = true; break; } }
-      if (!own) continue;
-      var fs = parseFloat(getComputedStyle(e).fontSize) || 0;
-      if (fs > best) best = fs;
-    }
-    if (best > 0) {
-      var val = (best * z / 2).toFixed(2) + "px";
-      if (v.style.getPropertyValue("--hf") !== val) v.style.setProperty("--hf", val);
-    }
-  }
-  var DEFAULT_PX = 17.6;
-  function layout() {
-    if (!document.body) return;
-    var v = document.querySelector(".cp-vocab.vp");
-    if (!v) {
-      Array.prototype.forEach.call(document.querySelectorAll(".vp-titlecard"), function (e) { e.classList.remove("vp-titlecard"); });
-      return;
-    }
-    var base = px(v.parentElement);              /* the Control Panel font size: the card text is exactly proportional to it */
-    v.setAttribute("data-tone", lum(getComputedStyle(v).color) > 0.55 ? "dark" : "light");
-    markTitle(v);
-    var k = Math.max(0.6, Math.min(1.12, Math.min(window.innerHeight / 910, window.innerWidth / 1850)));
-    v.style.setProperty("--k", k.toFixed(3));
-    applyHalf(v);
-  }
-  var queued = false, lastBase = 0;
-  function queue() {
-    if (queued) return;
-    queued = true;
-    (window.requestAnimationFrame || setTimeout)(function () { queued = false; try { layout(); } catch (e) {} });
-  }
-  try { new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
-  window.addEventListener("resize", queue);
-  window.addEventListener("load", queue);
-  document.addEventListener("load", queue, true);   /* images finishing */
-  /* follow the Control Panel font-size slider */
-  if (typeof setInterval === "function") setInterval(function () {
-    var v = document.querySelector(".cp-vocab.vp");
-    if (!v || !v.parentElement) return;
-    var b = px(v.parentElement);
-    if (b !== lastBase) { lastBase = b; queue(); }
-    try { applyHalf(v); } catch (e) {}
-  }, 300);
-  queue();
+  if (document.getElementById("vc-style")) return;
+  var s = document.createElement("style");
+  s.id = "vc-style";
+  s.textContent = CSS;
+  (document.head || document.documentElement).appendChild(s);
 })();
 
-/* Field: English · Subject: Vocabulary · Chapter: Vocab_Set_1 · 80 concept pages (+ overview) · 80 questions */
+/* Field: English_Comprehension · Subject: Vocabulary · Chapter: Set_1 · 80 concept pages (+ overview) · 160 questions */
 
 window.TEST_DATA = {
   1: {
     type: "concept", icon: "📚", accent: "#6366f1", pauseTimer: true,
-    title: "Vocabulary Set 1 — One Word Substitution, Confusing Words & Word Power",
+    title: "Vocabulary Class — Word Power for Competitive Exams",
     thumb: {
       image: "images/English_Comprehension/Vocabulary/Set_1/thumbnail.png",
       banner: "COMPETITIVE EXAMS 2026",
-      line1: "VOCAB",
-      line2: "SET 1",
-      line3: "80 WORDS WITH PICTURES",
+      line1: "WORD POWER",
+      line2: "VOCABULARY",
+      line3: "SET 1 WITH PICTURES",
       badge: "FULL CLASS",
-      ribbon: "MEANING • HINDI • SYNONYMS • ANTONYMS",
+      ribbon: "MEANING • SYNONYMS • PRACTICE",
       burst: "",
       mode: "creator"
     },
     yt: {
-      title: "Vocabulary Set 1 | 80 Words with Meaning, Hindi, Synonyms, Antonyms | One Word Substitution",
-      altTitles: ["80 Important English Vocabulary Words With Pictures", "One Word Substitution + Confusing Words for SSC Banking UPSC"],
-      description: "Learn exam vocabulary the smart way: 80 words, each with meaning, Hindi meaning, part of speech, synonyms, antonyms, 3 example sentences and a picture to remember it.\n\n📌 IN THIS CLASS\n✅ calligrapher, philatelist, numismatist, phobias, lexicographer, etymology\n✅ orator, demagogue, pedagogue, eloquent, harbinger, herald\n✅ jargon, argot, dialect, tautology, epitaph, epitome\n✅ stoic, sanguine, recluse, ascetic, mystic, charlatan\n✅ imminent, eminent, allusion, illusion, elude, reverie, euphoria\n✅ 1 practice question per word\n\n#Vocabulary #SSCCGL #English",
-      tags: ["english vocabulary", "vocabulary for all exams", "one word substitution", "synonyms and antonyms", "hindi meaning", "vocab with pictures", "confusing words", "SSC CGL vocabulary", "banking vocabulary", "UPSC vocabulary", "phobias list", "imminent eminent", "allusion illusion", "word meaning in hindi", "daily vocabulary", "vocabulary tricks", "SSC CGL", "UPSC", "Banking", "Railways", "Defence", "competitive exams", "full class", "tricks", "questions", "MCQ", "previous year questions", "vocabulary", "word meaning", "synonyms antonyms", "important questions"],
-      hashtags: ["Vocabulary", "SSCCGL", "English"],
-      thumbText: "VOCAB SET 1",
-      pinnedComment: "📌 Which word was new for you? Comment below 👇",
-      communityPost: "📚 New vocab class is live: 80 words with pictures. Try the questions! 🎯",
-      chapters: "00:00 Class overview\n00:00 Words 1-16\n00:00 Words 17-32\n00:00 Words 33-48\n00:00 Words 49-64\n00:00 Words 65-80",
-      playlist: "Daily Vocabulary — Competitive Exams"
+      title: "Vocabulary Set 1 with Pictures | One Word Substitution, Synonyms, Antonyms | SSC CGL English",
+      altTitles: ["Important Vocabulary with Pictures and Hindi Meaning for SSC CGL", "Phobias, Professions and Language Words for SSC CGL English"],
+      description: "Build your English vocabulary the easy way. Every word comes with its meaning, Hindi meaning, synonyms, antonyms, three example sentences and a picture clue, followed by two exam-style questions.\n\n📌 IN THIS CLASS\n✅ Meaning and Hindi meaning of every word\n✅ Synonyms and antonyms\n✅ Example sentences with a picture\n✅ Two exam questions for every word\n\n⏱️ CHAPTERS\n00:00 Class overview\n00:00 Calligrapher\n00:00 Cacography\n00:00 Cartographer\n00:00 Philatelist\n00:00 Archivist\n00:00 Numismatist\n00:00 Mint\n00:00 Nyctophobia\n00:00 Agoraphobia\n00:00 Xenophobia\n00:00 Gynophobia\n00:00 Digamist\n00:00 Claustrophobia\n00:00 Lexicographer\n00:00 Etymology\n00:00 Entomology\n00:00 Philologist\n00:00 Neology\n00:00 Paleographer\n00:00 Coinage\n00:00 Orator\n00:00 Demagogue\n00:00 Pedagogue\n00:00 Synagogue\n00:00 Eloquent\n00:00 Harbinger\n00:00 Herald\n00:00 Emissary\n00:00 Archaism\n00:00 Jargon\n00:00 Argot\n00:00 Neologism\n00:00 Colloquialism\n00:00 Dialect\n00:00 Non sequitur\n00:00 Equivocation\n00:00 Tautology\n00:00 Almanac\n00:00 Chronicle\n00:00 Ledger\n00:00 Epigrapher\n00:00 Epitaph\n00:00 Epitome\n00:00 Epilogue\n00:00 Stoic\n00:00 Sanguine\n00:00 Anchorite\n00:00 Recluse\n00:00 Ascetic\n00:00 Recline\n00:00 Mystic\n00:00 Charlatan\n00:00 Masquerade\n00:00 Omniscient\n00:00 Ubiquitous\n00:00 Immanent\n00:00 Imminent\n00:00 Eminent\n00:00 Impasse\n00:00 Quagmire\n00:00 Pyrrhic\n00:00 Impromptu\n00:00 Extempore\n00:00 Pedant\n00:00 Surrealism\n00:00 Verism\n00:00 Veracity\n00:00 Masochist\n00:00 Sadist\n00:00 Savant\n00:00 Virtuoso\n00:00 Allusion\n00:00 Elusion\n00:00 Illusion\n00:00 Elude\n00:00 Anarchist\n00:00 Realist\n00:00 Jingoistic\n00:00 Reverie\n00:00 Euphoria\n\n👍 Like, share, subscribe.\n\n#SSCCGL #Vocabulary #English",
+      tags: ["english vocabulary", "vocabulary for ssc cgl", "one word substitution", "synonyms and antonyms", "vocabulary with hindi meaning", "word power", "ssc cgl english", "vocabulary with pictures", "phobia words", "important vocabulary", "english for competitive exams", "ssc english vocabulary", "vocabulary tricks", "fill in the blanks", "spoken english words", "english word meaning", "learn english words", "vocabulary set 1", "ssc chsl english", "banking english vocabulary", "SSC CGL", "UPSC", "Banking", "Railways", "Defence", "Set 1 Vocabulary class"],
+      hashtags: ["SSCCGL", "Vocabulary", "English"],
+      thumbText: "VOCABULARY SET 1",
+      pinnedComment: "📌 Solve the questions and write your score below 👇",
+      communityPost: "📚 New vocabulary class is live: learn every word with a picture! Try the questions and tell me your score 🎯",
+      chapters: "00:00 Class overview\n00:00 Calligrapher\n00:00 Cacography\n00:00 Cartographer\n00:00 Philatelist\n00:00 Archivist\n00:00 Numismatist\n00:00 Mint\n00:00 Nyctophobia\n00:00 Agoraphobia\n00:00 Xenophobia\n00:00 Gynophobia\n00:00 Digamist\n00:00 Claustrophobia\n00:00 Lexicographer\n00:00 Etymology\n00:00 Entomology\n00:00 Philologist\n00:00 Neology\n00:00 Paleographer\n00:00 Coinage\n00:00 Orator\n00:00 Demagogue\n00:00 Pedagogue\n00:00 Synagogue\n00:00 Eloquent\n00:00 Harbinger\n00:00 Herald\n00:00 Emissary\n00:00 Archaism\n00:00 Jargon\n00:00 Argot\n00:00 Neologism\n00:00 Colloquialism\n00:00 Dialect\n00:00 Non sequitur\n00:00 Equivocation\n00:00 Tautology\n00:00 Almanac\n00:00 Chronicle\n00:00 Ledger\n00:00 Epigrapher\n00:00 Epitaph\n00:00 Epitome\n00:00 Epilogue\n00:00 Stoic\n00:00 Sanguine\n00:00 Anchorite\n00:00 Recluse\n00:00 Ascetic\n00:00 Recline\n00:00 Mystic\n00:00 Charlatan\n00:00 Masquerade\n00:00 Omniscient\n00:00 Ubiquitous\n00:00 Immanent\n00:00 Imminent\n00:00 Eminent\n00:00 Impasse\n00:00 Quagmire\n00:00 Pyrrhic\n00:00 Impromptu\n00:00 Extempore\n00:00 Pedant\n00:00 Surrealism\n00:00 Verism\n00:00 Veracity\n00:00 Masochist\n00:00 Sadist\n00:00 Savant\n00:00 Virtuoso\n00:00 Allusion\n00:00 Elusion\n00:00 Illusion\n00:00 Elude\n00:00 Anarchist\n00:00 Realist\n00:00 Jingoistic\n00:00 Reverie\n00:00 Euphoria",
+      playlist: "English Vocabulary — Fast Track Classes"
     },
     html: `
-      <p class="cp-lead">A <u>picture-based vocabulary class</u> of 80 exam favourites — each word comes with meaning, Hindi meaning, synonyms, antonyms and 3 sentences.</p>
+      <p class="cp-lead">A <u>simple, picture-based vocabulary class</u>. For every word you will see the meaning, the Hindi meaning, synonyms, antonyms, three example sentences and one picture that makes the word easy to remember.</p>
       <div class="cp-stats">
         <div class="cp-stat"><b>80</b><span>Words</span></div>
-        <div class="cp-stat"><b>80</b><span>Questions</span></div>
-        <div class="cp-stat"><b>~240 min</b><span>Time needed</span></div>
+        <div class="cp-stat"><b>160</b><span>Questions</span></div>
+        <div class="cp-stat"><b>~200 min</b><span>Time needed</span></div>
       </div>
       <div class="cp-divider">Your roadmap</div>
       <ul class="cp-timeline">
-        <li><b>Words 1–8</b><br>calligrapher, cacography, cartographer, philatelist, archivist, numismatist, mint, nyctophobia</li>
-        <li><b>Words 9–16</b><br>agoraphobia, xenophobia, gynophobia, digamist, claustrophobia, lexicographer, etymology, entomology</li>
-        <li><b>Words 17–24</b><br>philologist, neology, paleographer, coinage, orator, demagogue, pedagogue, synagogue</li>
-        <li><b>Words 25–32</b><br>eloquent, harbinger, herald, emissary, archaism, jargon, argot, neologism</li>
-        <li><b>Words 33–40</b><br>colloquialism, dialect, non sequitur, equivocation, tautology, almanac, chronicle, ledger</li>
-        <li><b>Words 41–48</b><br>epigrapher, epitaph, epitome, epilogue, stoic, sanguine, anchorite, recluse</li>
-        <li><b>Words 49–56</b><br>ascetic, recline, mystic, charlatan, masquerade, omniscient, ubiquitous, immanent</li>
-        <li><b>Words 57–64</b><br>imminent, eminent, impasse, quagmire, pyrrhic, impromptu, extempore, pedant</li>
-        <li><b>Words 65–72</b><br>surrealism, verism, veracity, masochist, sadist, savant, virtuoso, allusion</li>
-        <li><b>Words 73–80</b><br>elusion, illusion, elude, anarchist, realist, jingoistic, reverie, euphoria</li>
-        <li><b>Practice</b><br>1 question after every word.</li>
+        <li><b>Words 1 to 5</b><br>Calligrapher, Cacography, Cartographer, Philatelist, Archivist. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 6 to 10</b><br>Numismatist, Mint, Nyctophobia, Agoraphobia, Xenophobia. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 11 to 15</b><br>Gynophobia, Digamist, Claustrophobia, Lexicographer, Etymology. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 16 to 20</b><br>Entomology, Philologist, Neology, Paleographer, Coinage. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 21 to 25</b><br>Orator, Demagogue, Pedagogue, Synagogue, Eloquent. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 26 to 30</b><br>Harbinger, Herald, Emissary, Archaism, Jargon. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 31 to 35</b><br>Argot, Neologism, Colloquialism, Dialect, Non sequitur. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 36 to 40</b><br>Equivocation, Tautology, Almanac, Chronicle, Ledger. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 41 to 45</b><br>Epigrapher, Epitaph, Epitome, Epilogue, Stoic. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 46 to 50</b><br>Sanguine, Anchorite, Recluse, Ascetic, Recline. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 51 to 55</b><br>Mystic, Charlatan, Masquerade, Omniscient, Ubiquitous. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 56 to 60</b><br>Immanent, Imminent, Eminent, Impasse, Quagmire. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 61 to 65</b><br>Pyrrhic, Impromptu, Extempore, Pedant, Surrealism. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 66 to 70</b><br>Verism, Veracity, Masochist, Sadist, Savant. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 71 to 75</b><br>Virtuoso, Allusion, Elusion, Illusion, Elude. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
+        <li><b>Words 76 to 80</b><br>Anarchist, Realist, Jingoistic, Reverie, Euphoria. For every word you learn the meaning, the Hindi meaning, synonyms, antonyms and three example sentences with a picture, and then you solve two exam questions.</li>
       </ul>
-      <div class="cp-note exam"><b>Why it matters:</b> one-word substitution, synonym, antonym and confusing-word questions (imminent/eminent, allusion/illusion) appear in every English paper.</div>
+      <div class="cp-note exam"><b>Why it matters:</b> synonym, antonym, one-word substitution and fill-in-the-blank questions carry a steady number of marks in every Staff Selection Commission Combined Graduate Level paper, so each word you learn well is a mark you can win.</div>
     `
   },
   2: {
-    type: "concept", icon: "✒️", accent: "#3162d8", pauseTimer: true,
+    type: "concept", icon: "🖋️", accent: "#2353c7", pauseTimer: true,
     title: "Calligrapher",
     html: `
-      <div class="cp-vocab vp" style="--a:#3162d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who is skilled in beautiful, artistic handwriting</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">सुलेखक, सुंदर लिखने वाला</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">penman</span><span class="vp-tag syn">scribe</span><span class="vp-tag syn">letterer</span><span class="vp-tag syn">handwriting artist</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>calligrapher</b> dipped her pen carefully and wrote the invitation in flowing letters. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The museum hired a <b>calligrapher</b> to copy the old poem onto a scroll.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">A gifted <b>calligrapher</b>, he turned every word into a small work of art.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/1.png" alt="Picture for the word calligrapher"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>calligrapher</b> dipped her pen carefully and wrote the invitation in flowing letters.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,83,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/kəˈlɪɡrəfə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person skilled in beautiful, artistic handwriting</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">सुलेखक, सुंदर लिखने वाला</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">penman</li><li class="vc-chip">handwriting artist</li><li class="vc-chip">scribe</li><li class="vc-chip">letterer</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>calligrapher</b> dipped her pen carefully and wrote the invitation in flowing letters. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Our school hired a <b>calligrapher</b> to write every name on the certificates.</p></li><li><span class="vc-n">3</span><p class="vc-s">The museum displays a letter written by a famous <b>calligrapher</b> of the royal court.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Calli" comes from the Greek word for beauty, so a calligrapher is a writer of beautiful letters.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/1.png" alt="Illustration of the word calligrapher: A calm young woman in a simple kurta sits at a wooden desk, dipping a long pen into an ink pot and wr" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">calligrapher</mark> dipped her pen carefully and wrote the invitation in flowing letters.</p></div></div>
+      </div></div>
     `
   },
   3: {
-    questext: "A person famous for beautiful handwriting is called a ______.",
-    options: ["cartographer", "calligrapher", "archivist", "lexicographer"],
+    questext: "Select the most appropriate synonym of the given word.\nCalligrapher",
+    options: ["Scribbler", "Penman", "Mapmaker", "Coin collector"],
     correct: "2",
-    exptext: "✅ Calligrapher means an artist of beautiful handwriting. 📌 Calli = beauty, graph = write. ❌ A cartographer draws maps."
+    exptext: "✅ A calligrapher is a person who writes in beautiful handwriting, so penman is the closest word. 📌 \"Calli\" means beauty. ❌ Scribbler is wrong because it means someone who writes in a careless, messy way."
   },
   4: {
-    type: "concept", icon: "📝", accent: "#a0dd4b", pauseTimer: true,
-    title: "Cacography",
-    html: `
-      <div class="cp-vocab vp" style="--a:#a0dd4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">bad handwriting or bad spelling</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">बुरी लिखावट, गलत वर्तनी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">bad handwriting</span><span class="vp-tag syn">scrawl</span><span class="vp-tag syn">illegible writing</span><span class="vp-tag syn">poor spelling</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">calligraphy</span><span class="vp-tag ant">neat writing</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The doctor's <b>cacography</b> made the prescription impossible for the chemist to read. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Teachers marked down his essay for constant <b>cacography</b> and spelling errors.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her early letters show a childish <b>cacography</b> that later became elegant.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/2.png" alt="Picture for the word cacography"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The doctor's <b>cacography</b> made the prescription impossible for the chemist to read.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe wedding card looked like a work of art because it was written by a skilled ______.",
+    options: ["cartographer", "archivist", "philatelist", "calligrapher"],
+    correct: "4",
+    exptext: "✅ Calligrapher fits because a beautifully written card needs an expert in artistic handwriting. 📌 Beautiful letters point to a calligrapher. ❌ Cartographer is wrong because a cartographer draws maps, not cards."
   },
   5: {
-    questext: "Choose the OPPOSITE of \"cacography\".",
-    options: ["scrawl", "scribble", "cartography", "calligraphy"],
-    correct: "4",
-    exptext: "✅ Calligraphy is beautiful writing, the opposite of bad writing. 📌 Caco = bad. ❌ Scrawl is a synonym."
-  },
-  6: {
-    type: "concept", icon: "🗺️", accent: "#c526b1", pauseTimer: true,
-    title: "Cartographer",
+    type: "concept", icon: "📝", accent: "#23c7ac", pauseTimer: true,
+    title: "Cacography",
     html: `
-      <div class="cp-vocab vp" style="--a:#c526b1;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who draws or makes maps</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">मानचित्रकार, नक्शा बनाने वाला</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">mapmaker</span><span class="vp-tag syn">chart maker</span><span class="vp-tag syn">map designer</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>cartographer</b> carefully marked every river and mountain on the new district map.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Satellite images help a modern <b>cartographer</b> update city maps within days. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Old sailors trusted the <b>cartographer</b> whose charts had guided many ships across the ocean.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/3.png" alt="Picture for the word cartographer"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Satellite images help a modern <b>cartographer</b> update city maps within days.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,172;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/kəˈkɒɡrəfi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">bad handwriting or bad spelling</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">बुरी लिखावट, गलत वर्तनी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">bad handwriting</li><li class="vc-chip">scrawl</li><li class="vc-chip">illegible writing</li><li class="vc-chip">poor spelling</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">calligraphy</li><li class="vc-chip">neat writing</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The doctor's <b>cacography</b> made the prescription impossible for the chemist to read. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Teachers marked down his essay for constant <b>cacography</b> and spelling errors.</p></li><li><span class="vc-n">3</span><p class="vc-s">Her early letters show a childish <b>cacography</b> that later became elegant.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Think "caco" = bad (like a cacophony is a bad sound) and "graphy" = writing, so cacography is bad writing.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/2.png" alt="Illustration of the word cacography: A worried chemist in a white coat holds a doctor's prescription full of messy, unreadable scribbles, sc" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The doctor's <mark class="vc-hl">cacography</mark> made the prescription impossible for the chemist to read.</p></div></div>
+      </div></div>
     `
   },
-  7: {
-    questext: "The ______ spent months drawing an accurate map of the new coastline.",
-    options: ["cartographer", "philatelist", "numismatist", "archivist"],
+  6: {
+    questext: "Select the most appropriate antonym of the given word.\nCacography",
+    options: ["Calligraphy", "Scrawl", "Shorthand", "Dictation"],
     correct: "1",
-    exptext: "✅ A cartographer makes maps. 📌 Carto = map. ❌ A philatelist collects stamps, not maps."
+    exptext: "✅ Cacography means bad handwriting, so calligraphy, which means beautiful handwriting, is the opposite. 📌 \"Caco\" is bad and \"calli\" is beautiful. ❌ Scrawl is wrong because it is a synonym, not an antonym."
+  },
+  7: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe student's ______ was so poor that the examiner could not read a single answer.",
+    options: ["calligraphy", "autograph", "cacography", "biography"],
+    correct: "3",
+    exptext: "✅ Cacography fits because the examiner could not read the answers, which points to very bad handwriting. 📌 Unreadable writing means cacography. ❌ Calligraphy is wrong because it means beautiful writing and would not cause that problem."
   },
   8: {
-    type: "concept", icon: "📮", accent: "#31d8bc", pauseTimer: true,
-    title: "Philatelist",
+    type: "concept", icon: "🗺️", accent: "#2ac723", pauseTimer: true,
+    title: "Cartographer",
     html: `
-      <div class="cp-vocab vp" style="--a:#31d8bc;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who collects or studies postage stamps</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">डाक टिकट संग्राहक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">stamp collector</span><span class="vp-tag syn">stamp hobbyist</span><span class="vp-tag syn">stamp enthusiast</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">My grandfather, a keen <b>philatelist</b>, kept thousands of stamps in neat albums.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The <b>philatelist</b> paid a huge sum for a rare stamp at the auction. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Every <b>philatelist</b> knows that a tiny printing error can make a stamp priceless.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/4.png" alt="Picture for the word philatelist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>philatelist</b> paid a huge sum for a rare stamp at the auction.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:42,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/kɑːˈtɒɡrəfə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who draws or makes maps</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">मानचित्रकार, नक्शा बनाने वाला</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">mapmaker</li><li class="vc-chip">map drawer</li><li class="vc-chip">chart maker</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Satellite images help a modern <b>cartographer</b> update city maps within days. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The young <b>cartographer</b> marked every river and hill on the new district map.</p></li><li><span class="vc-n">3</span><p class="vc-s">Early <b>cartographers</b> sailed with explorers to draw the coastlines they discovered.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Think "carto" = map and "grapher" = one who draws, so a cartographer draws maps.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/3.png" alt="Illustration of the word cartographer: A focused man sits at a big table covered with a half-drawn map, holding a ruler and fine pen; a sate" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Satellite images help a modern <mark class="vc-hl">cartographer</mark> update city maps within days.</p></div></div>
+      </div></div>
     `
   },
   9: {
-    questext: "What do you call someone who collects postage stamps?",
-    options: ["numismatist", "archivist", "philatelist", "calligrapher"],
-    correct: "3",
-    exptext: "✅ Philatelist collects stamps. 📌 Phila-TELL-ist: tell the post. ❌ A numismatist collects coins."
+    questext: "Select the most appropriate synonym of the given word.\nCartographer",
+    options: ["Navigator", "Mapmaker", "Calligrapher", "Archivist"],
+    correct: "2",
+    exptext: "✅ A cartographer makes maps, so mapmaker is the closest word. 📌 \"Carto\" is map. ❌ Navigator is wrong because a navigator uses maps to find the way and does not draw them."
   },
   10: {
-    type: "concept", icon: "🗄️", accent: "#dd9a4b", pauseTimer: true,
-    title: "Archivist",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd9a4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who looks after old records and important documents</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अभिलेखपाल, दस्तावेज़ संरक्षक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">record keeper</span><span class="vp-tag syn">curator</span><span class="vp-tag syn">custodian</span><span class="vp-tag syn">registrar</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>archivist</b> found a letter from 1857 hidden inside an old government file.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">As the city <b>archivist</b>, she protects thousands of records from damp and insects.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">No historian can work without the patient help of a good <b>archivist</b>. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/5.png" alt="Picture for the word archivist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">No historian can work without the patient help of a good <b>archivist</b>.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who draws or makes maps",
+    options: ["Lexicographer", "Epigrapher", "Stenographer", "Cartographer"],
+    correct: "4",
+    exptext: "✅ Cartographer means a person who makes maps. 📌 \"Carto\" is map. ❌ Lexicographer is wrong because that person compiles dictionaries, not maps."
   },
   11: {
-    questext: "Which sentence uses \"archivist\" correctly?",
-    options: ["The archivist painted a map of the sea.", "The archivist drew new stamps for the post office.", "The archivist wrote wedding cards in fancy letters.", "The archivist stored old records safely in the library."],
-    correct: "4",
-    exptext: "✅ An archivist keeps old records safe. 📌 Archive = record room. ❌ Writing fancy letters is a calligrapher's work."
-  },
-  12: {
-    type: "concept", icon: "🪙", accent: "#4d26c5", pauseTimer: true,
-    title: "Numismatist",
+    type: "concept", icon: "💌", accent: "#bac723", pauseTimer: true,
+    title: "Philatelist",
     html: `
-      <div class="cp-vocab vp" style="--a:#4d26c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who collects or studies coins and medals</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">सिक्का संग्राहक, मुद्राशास्त्री</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">coin collector</span><span class="vp-tag syn">coin expert</span><span class="vp-tag syn">coin hobbyist</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>numismatist</b> examined the ancient silver coin under a bright lamp. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A museum invited the <b>numismatist</b> to date the coins found at the excavation site.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The young <b>numismatist</b> proudly showed his collection of coins from many nations.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/6.png" alt="Picture for the word numismatist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>numismatist</b> examined the ancient silver coin under a bright lamp.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:186,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/fɪˈlætəlɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who collects or studies postage stamps</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">डाक टिकट संग्राहक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">stamp collector</li><li class="vc-chip">stamp hobbyist</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>philatelist</b> paid a huge sum for a rare stamp at the auction. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">As a young <b>philatelist</b>, he kept every stamp from his pen friends in an album.</p></li><li><span class="vc-n">3</span><p class="vc-s">The <b>philatelist</b> checked the tiny edges of the stamp with a magnifying glass.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/4.png" alt="Illustration of the word philatelist: A delighted collector in an auction hall raises a numbered paddle to bid for a tiny rare postage stamp" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">philatelist</mark> paid a huge sum for a rare stamp at the auction.</p></div></div>
+      </div></div>
     `
   },
+  12: {
+    questext: "Select the most appropriate synonym of the given word.\nPhilatelist",
+    options: ["Stamp collector", "Coin collector", "Map maker", "Book seller"],
+    correct: "1",
+    exptext: "✅ A philatelist collects postage stamps, so stamp collector is the closest meaning. 📌 Philately is the hobby of stamps. ❌ Coin collector is wrong because that person is a numismatist."
+  },
   13: {
-    questext: "Which word means a person who collects coins?",
-    options: ["philatelist", "numismatist", "archivist", "cartographer"],
-    correct: "2",
-    exptext: "✅ Numismatist collects coins. 📌 Numis = coin (like \"numismatic\"). ❌ Philatelist collects stamps."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who collects postage stamps",
+    options: ["Philanthropist", "Philologist", "Philatelist", "Numismatist"],
+    correct: "3",
+    exptext: "✅ Philatelist means a collector of postage stamps. 📌 Think of \"stamp\" and \"philately\" together. ❌ Philanthropist is wrong because it looks similar but means a person who gives money to help others."
   },
   14: {
-    type: "concept", icon: "🏭", accent: "#38d831", pauseTimer: true,
-    title: "Mint",
+    type: "concept", icon: "🗄️", accent: "#c74523", pauseTimer: true,
+    title: "Archivist",
     html: `
-      <div class="cp-vocab vp" style="--a:#38d831;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a place where the government makes coins</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">टकसाल</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">coin factory</span><span class="vp-tag syn">coin works</span><span class="vp-tag syn">coining house</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Machines at the <b>mint</b> stamp thousands of shiny new coins every hour.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The finance minister visited the <b>mint</b> to see how new coins are made. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Visitors to the <b>mint</b> watched gleaming metal discs turn into currency before their eyes.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/7.png" alt="Picture for the word mint"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The finance minister visited the <b>mint</b> to see how new coins are made.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,69,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɑːkɪvɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who looks after old records and important documents</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अभिलेखपाल, दस्तावेज़ संरक्षक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">record keeper</li><li class="vc-chip">custodian of records</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">No historian can work without the patient help of a good <b>archivist</b>. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>archivist</b> wore white gloves to handle the fragile papers from the old court.</p></li><li><span class="vc-n">3</span><p class="vc-s">An <b>archivist</b> must keep old files safe from damp, insects and fire.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/5.png" alt="Illustration of the word archivist: A careful woman in white cotton gloves lifts a fragile old document from a labelled box in a quiet archi" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">No historian can work without the patient help of a good <mark class="vc-hl">archivist</mark>.</p></div></div>
+      </div></div>
     `
   },
   15: {
-    questext: "Coins are produced at the government ______.",
-    options: ["mint", "ledger", "almanac", "chronicle"],
-    correct: "1",
-    exptext: "✅ A mint is where coins are made. 📌 Mint = money factory. ❌ A ledger is a book of accounts."
+    questext: "Select the most appropriate synonym of the given word.\nArchivist",
+    options: ["Historian", "Record keeper", "Translator", "Auditor"],
+    correct: "2",
+    exptext: "✅ An archivist looks after old records, so record keeper is the closest word. 📌 Archive means a store of old records. ❌ Historian is wrong because a historian studies the past and does not necessarily guard the documents."
   },
   16: {
-    type: "concept", icon: "🌑", accent: "#dd4b7c", pauseTimer: true,
-    title: "Nyctophobia",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd4b7c;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an extreme fear of darkness or night</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अंधेरे का डर, रात का भय</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fear of darkness</span><span class="vp-tag syn">scotophobia</span><span class="vp-tag syn">fear of night</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Because of her <b>nyctophobia</b>, Riya always sleeps with a small lamp switched on. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The doctor said his <b>nyctophobia</b> began after a long power cut in childhood.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t"><b>Nyctophobia</b> gripped the traveller as the forest path faded into total blackness.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/8.png" alt="Picture for the word nyctophobia"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Because of her <b>nyctophobia</b>, Riya always sleeps with a small lamp switched on.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nTo trace the history of the old mill, the researcher asked the ______ to bring the century-old files from the vault.",
+    options: ["numismatist", "cartographer", "philatelist", "archivist"],
+    correct: "4",
+    exptext: "✅ Archivist fits because the person who looks after old files can bring them from the vault. 📌 Old records mean archivist. ❌ Numismatist is wrong because that person studies coins, not files."
   },
   17: {
-    questext: "Fear of darkness is called ______.",
-    options: ["agoraphobia", "claustrophobia", "nyctophobia", "xenophobia"],
-    correct: "3",
-    exptext: "✅ Nyctophobia is fear of the dark. 📌 Nyct = night. ❌ Claustrophobia is fear of closed spaces."
-  },
-  18: {
-    type: "concept", icon: "🏙️", accent: "#2689c5", pauseTimer: true,
-    title: "Agoraphobia",
+    type: "concept", icon: "🪙", accent: "#c72391", pauseTimer: true,
+    title: "Numismatist",
     html: `
-      <div class="cp-vocab vp" style="--a:#2689c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an extreme fear of open or crowded public places</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">खुली जगह का डर, भीड़ का डर</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fear of open spaces</span><span class="vp-tag syn">fear of crowds</span><span class="vp-tag syn">fear of public places</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">His <b>agoraphobia</b> made even a short walk to the busy market feel terrifying.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The counsellor treated her <b>agoraphobia</b> by slowly increasing the time she spent outdoors.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Suffering from <b>agoraphobia</b>, the poet rarely left his small room for years. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/9.png" alt="Picture for the word agoraphobia"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Suffering from <b>agoraphobia</b>, the poet rarely left his small room for years.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,145;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/njuːˈmɪzmətɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who collects or studies coins and medals</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">सिक्का संग्राहक, मुद्राशास्त्री</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">coin collector</li><li class="vc-chip">coin expert</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>numismatist</b> examined the ancient silver coin under a bright lamp. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A rare gold coin of the Gupta age made the <b>numismatist</b> shout with joy.</p></li><li><span class="vc-n">3</span><p class="vc-s">The <b>numismatist</b> explained how old coins tell the story of lost kingdoms.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Numisma" is the Latin word for coin, so a numismatist is a coin person.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/6.png" alt="Illustration of the word numismatist: An elderly collector with round glasses studies a shiny ancient silver coin with a magnifying glass un" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">numismatist</mark> examined the ancient silver coin under a bright lamp.</p></div></div>
+      </div></div>
     `
   },
+  18: {
+    questext: "Select the most appropriate synonym of the given word.\nNumismatist",
+    options: ["Coin collector", "Money lender", "Banker", "Stamp collector"],
+    correct: "1",
+    exptext: "✅ A numismatist collects and studies coins, so coin collector is the closest meaning. 📌 \"Numisma\" means coin. ❌ Stamp collector is wrong because that person is a philatelist."
+  },
   19: {
-    questext: "He avoided markets and crowded streets because of his ______.",
-    options: ["nyctophobia", "agoraphobia", "claustrophobia", "gynophobia"],
-    correct: "2",
-    exptext: "✅ Agoraphobia is fear of open, crowded places. 📌 Agora = marketplace. ❌ Claustrophobia is fear of closed spaces."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who collects or studies coins and medals",
+    options: ["Archivist", "Epigrapher", "Numismatist", "Philatelist"],
+    correct: "3",
+    exptext: "✅ Numismatist means a collector or student of coins and medals. 📌 \"Numisma\" is coin. ❌ Philatelist is wrong because that person collects stamps."
   },
   20: {
-    type: "concept", icon: "🌍", accent: "#cad831", pauseTimer: true,
-    title: "Xenophobia",
+    type: "concept", icon: "🏭", accent: "#6e23c7", pauseTimer: true,
+    title: "Mint",
     html: `
-      <div class="cp-vocab vp" style="--a:#cad831;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a strong dislike or fear of foreigners and strangers</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">विदेशियों से घृणा, विदेशी-भय</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fear of foreigners</span><span class="vp-tag syn">intolerance</span><span class="vp-tag syn">bigotry</span><span class="vp-tag syn">prejudice</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">tolerance</span><span class="vp-tag ant">acceptance</span><span class="vp-tag ant">friendliness</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Leaders must stand firmly against <b>xenophobia</b> whenever migrants are blamed for every problem.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The film shows how <b>xenophobia</b> slowly poisoned a once-friendly town. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her kindness towards new neighbours showed that she had no trace of <b>xenophobia</b>.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/10.png" alt="Picture for the word xenophobia"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The film shows how <b>xenophobia</b> slowly poisoned a once-friendly town.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:110,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/mɪnt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a place where the government makes coins</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">टकसाल</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">coin factory</li><li class="vc-chip">coin-making house</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The finance minister visited the <b>mint</b> to see how new coins are made. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Workers at the <b>mint</b> stamp the design on each shiny metal disc.</p></li><li><span class="vc-n">3</span><p class="vc-s">Old coins were once struck by hand at the royal <b>mint</b> in the fort.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/7.png" alt="Illustration of the word mint: Inside a government coin factory, workers in safety gear watch a machine stamping shiny round metal discs int" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The finance minister visited the <mark class="vc-hl">mint</mark> to see how new coins are made.</p></div></div>
+      </div></div>
     `
   },
   21: {
-    questext: "Choose the OPPOSITE of \"xenophobia\".",
-    options: ["tolerance", "prejudice", "bigotry", "hostility"],
-    correct: "1",
-    exptext: "✅ Tolerance means accepting others. 📌 Xeno = stranger. ❌ Prejudice and bigotry are close to xenophobia, not opposite."
+    questext: "Select the most appropriate synonym of the given word.\nMint",
+    options: ["Stamp office", "Coin factory", "Grain store", "Money lender"],
+    correct: "2",
+    exptext: "✅ A mint is the place where coins are made, so coin factory is the closest meaning. 📌 Mint means money made here. ❌ Stamp office is wrong because it deals with postage stamps, not coins."
   },
   22: {
-    type: "concept", icon: "👩", accent: "#be4bdd", pauseTimer: true,
-    title: "Gynophobia",
-    html: `
-      <div class="cp-vocab vp" style="--a:#be4bdd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an extreme fear of women</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">महिलाओं का डर, स्त्री-भय</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fear of women</span><span class="vp-tag syn">dread of women</span><span class="vp-tag syn">fear of females</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">His <b>gynophobia</b> made him nervous even when a woman simply asked him for directions. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The psychologist explained that <b>gynophobia</b> is a real fear, not just shyness.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In the novel, the lonely hero's <b>gynophobia</b> keeps him away from every ball and dance.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/11.png" alt="Picture for the word gynophobia"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">His <b>gynophobia</b> made him nervous even when a woman simply asked him for directions.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nNotes are printed at a press, but all new coins are struck at the government ______.",
+    options: ["chronicle", "ledger", "almanac", "mint"],
+    correct: "4",
+    exptext: "✅ Mint fits because coins are made at a mint. 📌 Coins come from the mint. ❌ Ledger is wrong because it is a book of accounts, not a factory."
   },
   23: {
-    questext: "The fear of women is called ______.",
-    options: ["agoraphobia", "nyctophobia", "xenophobia", "gynophobia"],
-    correct: "4",
-    exptext: "✅ Gynophobia is fear of women. 📌 Gyno = woman. ❌ Xenophobia is fear of foreigners."
-  },
-  24: {
-    type: "concept", icon: "💍", accent: "#26c575", pauseTimer: true,
-    title: "Digamist",
+    type: "concept", icon: "🌙", accent: "#2368c7", pauseTimer: true,
+    title: "Nyctophobia",
     html: `
-      <div class="cp-vocab vp" style="--a:#26c575;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who marries for the second time</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">दूसरा विवाह करने वाला</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">remarried person</span><span class="vp-tag syn">twice-wed person</span><span class="vp-tag syn">second-time spouse</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">After his wife passed away, he became a <b>digamist</b> by marrying a kind neighbour.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The register listed him as a <b>digamist</b>, since this was his second marriage.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In the old story, the king, a <b>digamist</b>, brought a new queen to the palace. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/12.png" alt="Picture for the word digamist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">In the old story, the king, a <b>digamist</b>, brought a new queen to the palace.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,104,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌnɪktəˈfəʊbiə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an extreme fear of darkness or night</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अंधेरे का डर, रात का भय</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">fear of darkness</li><li class="vc-chip">fear of night</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Because of her <b>nyctophobia</b>, Riya always sleeps with a small lamp switched on. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Doctors helped the child overcome <b>nyctophobia</b> with gentle talks and a night light.</p></li><li><span class="vc-n">3</span><p class="vc-s">Many children outgrow <b>nyctophobia</b> once they learn there is nothing to fear in the dark.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Nykt" is the Greek word for night and "phobia" means fear.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/8.png" alt="Illustration of the word nyctophobia: A young girl sits up in bed at night with a blanket pulled to her chin and wide frightened eyes, while" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Because of her <mark class="vc-hl">nyctophobia</mark>, Riya always sleeps with a small lamp switched on.</p></div></div>
+      </div></div>
     `
   },
+  24: {
+    questext: "Select the most appropriate synonym of the given word.\nNyctophobia",
+    options: ["Fear of darkness", "Fear of heights", "Fear of water", "Fear of crowds"],
+    correct: "1",
+    exptext: "✅ Nyctophobia is an extreme fear of darkness. 📌 \"Nykt\" means night. ❌ Fear of crowds is wrong because that is linked to agoraphobia."
+  },
   25: {
-    questext: "One who marries for the second time is called a ______.",
-    options: ["numismatist", "orator", "digamist", "calligrapher"],
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nAn extreme fear of darkness",
+    options: ["Xenophobia", "Claustrophobia", "Nyctophobia", "Agoraphobia"],
     correct: "3",
-    exptext: "✅ A digamist marries a second time. 📌 Di = two, gamy = marriage. ❌ A numismatist collects coins."
+    exptext: "✅ Nyctophobia means an extreme fear of darkness or night. 📌 Night and fear together make nyctophobia. ❌ Claustrophobia is wrong because it is the fear of small, closed spaces."
   },
   26: {
-    type: "concept", icon: "🚪", accent: "#d85431", pauseTimer: true,
-    title: "Claustrophobia",
+    type: "concept", icon: "🏙️", accent: "#23c797", pauseTimer: true,
+    title: "Agoraphobia",
     html: `
-      <div class="cp-vocab vp" style="--a:#d85431;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an extreme fear of small or closed spaces</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">बंद जगह का डर</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fear of enclosed places</span><span class="vp-tag syn">fear of tight spaces</span><span class="vp-tag syn">dread of confinement</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t"><b>Claustrophobia</b> made her take the stairs instead of the crowded, narrow lift. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The diver's <b>claustrophobia</b> returned when he squeezed into the tiny underwater cave.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Patients with <b>claustrophobia</b> often panic inside the narrow tube of an MRI scanner.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/13.png" alt="Picture for the word claustrophobia"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt"><b>Claustrophobia</b> made her take the stairs instead of the crowded, narrow lift.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,151;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌæɡərəˈfəʊbiə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an extreme fear of open or crowded public places</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">खुली जगह का डर, भीड़ का डर</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">fear of open spaces</li><li class="vc-chip">fear of crowds</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Suffering from <b>agoraphobia</b>, the poet rarely left his small room for years. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">His <b>agoraphobia</b> made even a short walk to the market feel frightening.</p></li><li><span class="vc-n">3</span><p class="vc-s">With patient treatment, she slowly overcame her <b>agoraphobia</b> and returned to work.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Agora" is the Greek word for a market place, which is a wide, busy, open space.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/9.png" alt="Illustration of the word agoraphobia: A nervous man stands in a doorway looking out at a wide, busy town square full of people; he grips the" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Suffering from <mark class="vc-hl">agoraphobia</mark>, the poet rarely left his small room for years.</p></div></div>
+      </div></div>
     `
   },
   27: {
-    questext: "Her fear of lifts and small locked rooms is a sign of ______.",
-    options: ["claustrophobia", "agoraphobia", "nyctophobia", "xenophobia"],
-    correct: "1",
-    exptext: "✅ Claustrophobia is fear of closed spaces. 📌 Claustro = closed room. ❌ Agoraphobia is fear of open places."
+    questext: "Select the most appropriate synonym of the given word.\nAgoraphobia",
+    options: ["Fear of closed rooms", "Fear of open spaces", "Fear of darkness", "Fear of strangers"],
+    correct: "2",
+    exptext: "✅ Agoraphobia is the fear of open or crowded public places, so fear of open spaces fits. 📌 \"Agora\" is a market place. ❌ Fear of closed rooms is wrong because that is claustrophobia."
   },
   28: {
-    type: "concept", icon: "📖", accent: "#4b57dd", pauseTimer: true,
-    title: "Lexicographer",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4b57dd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who writes or compiles dictionaries</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">कोशकार, शब्दकोश निर्माता</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">dictionary writer</span><span class="vp-tag syn">dictionary maker</span><span class="vp-tag syn">dictionary compiler</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>lexicographer</b> spent ten years collecting meanings for the new Hindi dictionary. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Every <b>lexicographer</b> tracks how everyday speech adds new words each year.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The old <b>lexicographer</b> weighed each definition as carefully as a jeweller weighs gold.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/14.png" alt="Picture for the word lexicographer"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>lexicographer</b> spent ten years collecting meanings for the new Hindi dictionary.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe sight of a wide, open marketplace filled him with panic, a sign of his ______.",
+    options: ["claustrophobia", "nyctophobia", "xenophobia", "agoraphobia"],
+    correct: "4",
+    exptext: "✅ Agoraphobia fits because the fear comes from a wide, open public place. 📌 Market place means agora. ❌ Claustrophobia is wrong because it is the fear of small, closed spaces."
   },
   29: {
-    questext: "Which word means a writer of dictionaries?",
-    options: ["calligrapher", "cartographer", "philologist", "lexicographer"],
-    correct: "4",
-    exptext: "✅ Lexicographer compiles dictionaries. 📌 Lexicon = dictionary. ❌ A philologist studies language history, not dictionary-making."
-  },
-  30: {
-    type: "concept", icon: "🌱", accent: "#62c526", pauseTimer: true,
-    title: "Etymology",
+    type: "concept", icon: "🛂", accent: "#3fc723", pauseTimer: true,
+    title: "Xenophobia",
     html: `
-      <div class="cp-vocab vp" style="--a:#62c526;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the study of where words come from and how they changed</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">व्युत्पत्ति, शब्द-उत्पत्ति</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">word origins</span><span class="vp-tag syn">word history</span><span class="vp-tag syn">derivation</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>etymology</b> of "salary" goes back to the Latin word for salt. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A short note on the <b>etymology</b> of each term made the glossary more interesting.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Scholars trace the <b>etymology</b> of the word across centuries and many languages.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/15.png" alt="Picture for the word etymology"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>etymology</b> of "salary" goes back to the Latin word for salt.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:63,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌzenəˈfəʊbiə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a strong dislike or fear of foreigners and strangers</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">विदेशियों से घृणा, विदेशी-भय</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">dislike of foreigners</li><li class="vc-chip">prejudice</li><li class="vc-chip">intolerance</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">hospitality</li><li class="vc-chip">tolerance</li><li class="vc-chip">friendliness</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The film shows how <b>xenophobia</b> slowly poisoned a once-friendly town. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Leaders must speak against <b>xenophobia</b> when people turn hostile towards newcomers.</p></li><li><span class="vc-n">3</span><p class="vc-s">Her book argues that <b>xenophobia</b> grows when people fear what they do not know.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Xeno" is the Greek word for stranger, and "phobia" means fear.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/10.png" alt="Illustration of the word xenophobia: In a town street, a group of worried locals stand with crossed arms and angry faces, glaring at a famil" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The film shows how <mark class="vc-hl">xenophobia</mark> slowly poisoned a once-friendly town.</p></div></div>
+      </div></div>
     `
   },
+  30: {
+    questext: "Select the most appropriate antonym of the given word.\nXenophobia",
+    options: ["Hospitality", "Intolerance", "Prejudice", "Suspicion"],
+    correct: "1",
+    exptext: "✅ Xenophobia is dislike of strangers, so hospitality, which means a warm welcome, is the opposite. 📌 \"Xeno\" is stranger. ❌ Prejudice is wrong because it is close in meaning, not opposite."
+  },
   31: {
-    questext: "Etymology is the study of ______.",
-    options: ["insects", "word origins", "old handwriting", "coins"],
-    correct: "2",
-    exptext: "✅ Etymology traces word origins. 📌 Etymology = words; entomology = insects. ❌ Insect study is entomology."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA strong dislike or fear of foreigners",
+    options: ["Gynophobia", "Agoraphobia", "Xenophobia", "Nyctophobia"],
+    correct: "3",
+    exptext: "✅ Xenophobia means a strong dislike or fear of foreigners. 📌 \"Xeno\" is stranger. ❌ Gynophobia is wrong because it is the fear of women."
   },
   32: {
-    type: "concept", icon: "🦋", accent: "#d831a1", pauseTimer: true,
-    title: "Entomology",
+    type: "concept", icon: "😰", accent: "#c7c023", pauseTimer: true,
+    title: "Gynophobia",
     html: `
-      <div class="cp-vocab vp" style="--a:#d831a1;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the scientific study of insects</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">कीट विज्ञान</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">insect study</span><span class="vp-tag syn">study of insects</span><span class="vp-tag syn">insect science</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">She chose <b>entomology</b> because she loved watching ants and butterflies.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The university's <b>entomology</b> department tracks insects that damage the wheat crop. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In <b>entomology</b> class, students pinned beetles and labelled them with Latin names.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/16.png" alt="Picture for the word entomology"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The university's <b>entomology</b> department tracks insects that damage the wheat crop.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,192,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌɡaɪnəˈfəʊbiə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an extreme fear of women</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">महिलाओं का डर, स्त्री-भय</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">fear of women</li><li class="vc-chip">fear of females</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">His <b>gynophobia</b> made him nervous even when a woman simply asked him for directions. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Therapy helped the shy young man understand that his <b>gynophobia</b> was only a fear, not a fact.</p></li><li><span class="vc-n">3</span><p class="vc-s"><b>Gynophobia</b> is a rare condition and is very different from ordinary shyness.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Gyne" is the Greek word for woman, and "phobia" means fear.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/11.png" alt="Illustration of the word gynophobia: On a street corner a nervous young man steps back with wide eyes and raised hands, sweating, while a po" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">His <mark class="vc-hl">gynophobia</mark> made him nervous even when a woman simply asked him for directions.</p></div></div>
+      </div></div>
     `
   },
   33: {
-    questext: "What is the study of insects called?",
-    options: ["etymology", "ecology", "entomology", "philology"],
-    correct: "3",
-    exptext: "✅ Entomology is the study of insects. 📌 Entomo = insect. ❌ Etymology is the study of word origins."
+    questext: "Select the most appropriate synonym of the given word.\nGynophobia",
+    options: ["Fear of men", "Fear of women", "Fear of heights", "Fear of insects"],
+    correct: "2",
+    exptext: "✅ Gynophobia is an extreme fear of women. 📌 \"Gyne\" means woman. ❌ Fear of men is wrong because it reverses the meaning of the word."
   },
   34: {
-    type: "concept", icon: "🎓", accent: "#4bd7dd", pauseTimer: true,
-    title: "Philologist",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bd7dd;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a scholar who studies languages and how they changed over time</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">भाषाशास्त्री, भाषाविद्</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">linguist</span><span class="vp-tag syn">language scholar</span><span class="vp-tag syn">word scholar</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">A <b>philologist</b> compared old Sanskrit and Greek words to show how languages are related.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The <b>philologist</b> spent years decoding the grammar of a forgotten tribal language. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Though a famous <b>philologist</b>, he never lost his joy in a well-turned phrase.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/17.png" alt="Picture for the word philologist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>philologist</b> spent years decoding the grammar of a forgotten tribal language.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nA man who trembles every time a woman speaks to him may be suffering from ______.",
+    options: ["claustrophobia", "agoraphobia", "nyctophobia", "gynophobia"],
+    correct: "4",
+    exptext: "✅ Gynophobia fits because the fear is linked to women. 📌 Woman means gyne. ❌ Nyctophobia is wrong because it is the fear of darkness."
   },
   35: {
-    questext: "The ______ compared ancient Sanskrit and Greek to show how the languages were related.",
-    options: ["philologist", "cartographer", "philatelist", "numismatist"],
-    correct: "1",
-    exptext: "✅ A philologist studies the history and links of languages. 📌 Philo = love, logos = word. ❌ A philatelist collects stamps."
-  },
-  36: {
-    type: "concept", icon: "🆕", accent: "#c59d26", pauseTimer: true,
-    title: "Neology",
+    type: "concept", icon: "💍", accent: "#c73023", pauseTimer: true,
+    title: "Digamist",
     html: `
-      <div class="cp-vocab vp" style="--a:#c59d26;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the practice of inventing and using new words</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">नवशब्द-प्रयोग</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">word coining</span><span class="vp-tag syn">new wording</span><span class="vp-tag syn">language innovation</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">archaism</span><span class="vp-tag ant">obsolescence</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The poet's love of <b>neology</b> gave readers many fresh words to enjoy.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Text messaging has speeded up <b>neology</b>, creating new words almost every month. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Critics praised his <b>neology</b>, but older readers found the invented terms hard to follow.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/18.png" alt="Picture for the word neology"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Text messaging has speeded up <b>neology</b>, creating new words almost every month.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,48,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈdɪɡəmɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who marries for the second time</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">दूसरा विवाह करने वाला</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">remarried person</li><li class="vc-chip">second-time spouse</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">In the old story, the king, a <b>digamist</b>, brought a new queen to the palace. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The widower became a <b>digamist</b> when he wed a kind teacher ten years later.</p></li><li><span class="vc-n">3</span><p class="vc-s">A <b>digamist</b> is not the same as a bigamist, who has two spouses at the same time.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Di" means two and "gamos" means marriage, so a digamist has married twice.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/12.png" alt="Illustration of the word digamist: A smiling middle-aged king in royal robes stands with a gentle new queen at the palace gate while courtie" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">In the old story, the king, a <mark class="vc-hl">digamist</mark>, brought a new queen to the palace.</p></div></div>
+      </div></div>
     `
   },
+  36: {
+    questext: "Select the most appropriate synonym of the given word.\nDigamist",
+    options: ["Remarried person", "Divorcee", "Bachelor", "Monk"],
+    correct: "1",
+    exptext: "✅ A digamist marries for the second time, so remarried person is the closest meaning. 📌 \"Di\" means two. ❌ Divorcee is wrong because it names someone whose marriage has ended, not someone who has married again."
+  },
   37: {
-    questext: "Choose the OPPOSITE of \"neology\".",
-    options: ["coinage", "invention", "novelty", "archaism"],
-    correct: "4",
-    exptext: "✅ Archaism is the use of old, outdated words. 📌 Neo = new, archaic = old. ❌ Coinage means newly made words."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who marries for the second time",
+    options: ["Bigamist", "Misogamist", "Digamist", "Monogamist"],
+    correct: "3",
+    exptext: "✅ Digamist means a person who marries a second time. 📌 \"Di\" is two marriages one after the other. ❌ Bigamist is wrong because it means a person with two spouses at the same time, which is against the law."
   },
   38: {
-    type: "concept", icon: "📜", accent: "#7d31d8", pauseTimer: true,
-    title: "Paleographer",
+    type: "concept", icon: "🛗", accent: "#c723a6", pauseTimer: true,
+    title: "Claustrophobia",
     html: `
-      <div class="cp-vocab vp" style="--a:#7d31d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an expert who reads and studies ancient handwriting and old manuscripts</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">प्राचीन लिपि विशेषज्ञ</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">manuscript expert</span><span class="vp-tag syn">ancient-script reader</span><span class="vp-tag syn">handwriting historian</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>paleographer</b> slowly read the faded writing on the medieval parchment. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Historians asked a <b>paleographer</b> to date the manuscript by its style of handwriting.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Only a trained <b>paleographer</b> can decode the cramped letters of a centuries-old scroll.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/19.png" alt="Picture for the word paleographer"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>paleographer</b> slowly read the faded writing on the medieval parchment.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,166;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌklɔːstrəˈfəʊbiə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an extreme fear of small or closed spaces</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">बंद जगह का डर</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">fear of closed spaces</li><li class="vc-chip">fear of confinement</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s"><b>Claustrophobia</b> made her take the stairs instead of the crowded, narrow lift. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">He gets <b>claustrophobia</b> inside tiny, windowless rooms.</p></li><li><span class="vc-n">3</span><p class="vc-s">The patient with <b>claustrophobia</b> felt panic inside the narrow scanning machine.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Claustrum" is the Latin word for a closed place.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/13.png" alt="Illustration of the word claustrophobia: A frightened woman stands at the door of a small, crowded lift with her hand on her chest and a wor" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q"><mark class="vc-hl">Claustrophobia</mark> made her take the stairs instead of the crowded, narrow lift.</p></div></div>
+      </div></div>
     `
   },
   39: {
-    questext: "A person who studies ancient handwriting and old manuscripts is a ______.",
-    options: ["calligrapher", "paleographer", "lexicographer", "cartographer"],
+    questext: "Select the most appropriate synonym of the given word.\nClaustrophobia",
+    options: ["Fear of open fields", "Fear of confined spaces", "Fear of strangers", "Fear of darkness"],
     correct: "2",
-    exptext: "✅ A paleographer reads old scripts. 📌 Paleo = ancient. ❌ A calligrapher writes beautifully, not reads ancient scripts."
+    exptext: "✅ Claustrophobia is the extreme fear of small, closed spaces. 📌 \"Claustrum\" means a closed place. ❌ Fear of open fields is wrong because that belongs to agoraphobia."
   },
   40: {
-    type: "concept", icon: "💡", accent: "#4bdd63", pauseTimer: true,
-    title: "Coinage",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bdd63;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a new word or phrase that someone invents</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">नया गढ़ा शब्द</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">new word</span><span class="vp-tag syn">invented term</span><span class="vp-tag syn">neologism</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">archaism</span><span class="vp-tag ant">old word</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The newspaper's clever <b>coinage</b> 'staycation' soon appeared in many dictionaries. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Teenagers love slang, and every season brings some witty <b>coinage</b> to the playground.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The author's <b>coinage</b> for her strange machine delighted readers and reviewers alike.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/20.png" alt="Picture for the word coinage"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The newspaper's clever <b>coinage</b> 'staycation' soon appeared in many dictionaries.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nStuck in the tiny lift, Meera felt trapped, and her ______ made her gasp for air.",
+    options: ["agoraphobia", "xenophobia", "gynophobia", "claustrophobia"],
+    correct: "4",
+    exptext: "✅ Claustrophobia fits because Meera was trapped in a tiny space. 📌 Closed space means claustrum. ❌ Agoraphobia is wrong because it is the fear of wide, open places."
   },
   41: {
-    questext: "The word \"podcast\" is a clever ______ of recent years.",
-    options: ["archaism", "epitaph", "coinage", "ledger"],
-    correct: "3",
-    exptext: "✅ A coinage is a newly invented word. 📌 Coin a word = make it new. ❌ An archaism is an old word."
-  },
-  42: {
-    type: "concept", icon: "🎤", accent: "#c5263a", pauseTimer: true,
-    title: "Orator",
+    type: "concept", icon: "📖", accent: "#5923c7", pauseTimer: true,
+    title: "Lexicographer",
     html: `
-      <div class="cp-vocab vp" style="--a:#c5263a;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who is skilled at giving public speeches</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">वक्ता, भाषणकर्ता</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">speaker</span><span class="vp-tag syn">lecturer</span><span class="vp-tag syn">rhetorician</span><span class="vp-tag syn">public speaker</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The young <b>orator</b> held the whole hall silent with his powerful opening line. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A great <b>orator</b> can move thousands of people without a single note.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In ancient Rome, a famous <b>orator</b> was admired as much as a general.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/21.png" alt="Picture for the word orator"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The young <b>orator</b> held the whole hall silent with his powerful opening line.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:89,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌleksɪˈkɒɡrəfə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who writes or compiles dictionaries</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">कोशकार, शब्दकोश निर्माता</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">dictionary writer</li><li class="vc-chip">dictionary compiler</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>lexicographer</b> spent ten years collecting meanings for the new Hindi dictionary. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A <b>lexicographer</b> checks how people really use a word before writing its meaning.</p></li><li><span class="vc-n">3</span><p class="vc-s">The famous <b>lexicographer</b> added thousands of new words to the latest dictionary.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Lexicon" means a dictionary or the words of a language.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/14.png" alt="Illustration of the word lexicographer: A patient scholar sits at a desk piled with open dictionaries and index cards, writing a word meanin" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">lexicographer</mark> spent ten years collecting meanings for the new Hindi dictionary.</p></div></div>
+      </div></div>
     `
   },
+  42: {
+    questext: "Select the most appropriate synonym of the given word.\nLexicographer",
+    options: ["Dictionary compiler", "Coin expert", "Map drawer", "Stamp seller"],
+    correct: "1",
+    exptext: "✅ A lexicographer compiles dictionaries, so dictionary compiler is the closest meaning. 📌 \"Lexicon\" is a word-book. ❌ Map drawer is wrong because that is a cartographer."
+  },
   43: {
-    questext: "What do you call a skilled speaker?",
-    options: ["pedagogue", "demagogue", "archivist", "orator"],
-    correct: "4",
-    exptext: "✅ Orator is a skilled public speaker. 📌 Oral = spoken. ❌ A demagogue rouses crowds for power, not just speaks well."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who writes or compiles dictionaries",
+    options: ["Philologist", "Epigrapher", "Lexicographer", "Cartographer"],
+    correct: "3",
+    exptext: "✅ Lexicographer means a person who writes dictionaries. 📌 \"Lexicon\" is dictionary. ❌ Philologist is wrong because that scholar studies how languages grow and change, not dictionaries alone."
   },
   44: {
-    type: "concept", icon: "🔥", accent: "#3177d8", pauseTimer: true,
-    title: "Demagogue",
+    type: "concept", icon: "🔎", accent: "#237dc7", pauseTimer: true,
+    title: "Etymology",
     html: `
-      <div class="cp-vocab vp" style="--a:#3177d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a leader who excites people's fears and feelings to win power</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">भीड़ भड़काने वाला नेता</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">agitator</span><span class="vp-tag syn">rabble-rouser</span><span class="vp-tag syn">firebrand</span><span class="vp-tag syn">instigator</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">statesman</span><span class="vp-tag ant">peacemaker</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>demagogue</b> promised free everything and blamed outsiders for every problem in town. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">History warns that a <b>demagogue</b> can rise quickly when people are angry and afraid.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Calling the minister a <b>demagogue</b>, the editorial said he cared only for applause.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/22.png" alt="Picture for the word demagogue"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>demagogue</b> promised free everything and blamed outsiders for every problem in town.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,125,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌetɪˈmɒlədʒi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the study of where words come from and how they changed</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">व्युत्पत्ति, शब्द-उत्पत्ति</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">word origin</li><li class="vc-chip">word history</li><li class="vc-chip">derivation</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>etymology</b> of "salary" goes back to the Latin word for salt. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A good dictionary gives the <b>etymology</b> of each word, from its first use to today.</p></li><li><span class="vc-n">3</span><p class="vc-s">Studying <b>etymology</b> helps students guess the meaning of new words.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Etymon" is the Greek word for the true meaning of a word.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/15.png" alt="Illustration of the word etymology: A teacher points to a chalkboard where a word is drawn as a tree, its roots labelled with old languages " loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">etymology</mark> of "salary" goes back to the Latin word for salt.</p></div></div>
+      </div></div>
     `
   },
   45: {
-    questext: "Which word is closest in meaning to \"demagogue\"?",
-    options: ["rabble-rouser", "teacher", "messenger", "scholar"],
-    correct: "1",
-    exptext: "✅ A rabble-rouser stirs crowds with emotion. 📌 Demos = people, agogos = leader of the mob. ❌ A teacher is a pedagogue."
+    questext: "Select the most appropriate synonym of the given word.\nEtymology",
+    options: ["Word meaning", "Word origin", "Word spelling", "Word sound"],
+    correct: "2",
+    exptext: "✅ Etymology is the study of the origin of words, so word origin is the closest meaning. 📌 Etymology is a word's family history. ❌ Word meaning is wrong because the study traces origin, not only meaning."
   },
   46: {
-    type: "concept", icon: "🧑‍🏫", accent: "#b3dd4b", pauseTimer: true,
-    title: "Pedagogue",
-    html: `
-      <div class="cp-vocab vp" style="--a:#b3dd4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a teacher, especially a strict or old-fashioned one</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">शिक्षक, अध्यापक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">teacher</span><span class="vp-tag syn">educator</span><span class="vp-tag syn">instructor</span><span class="vp-tag syn">schoolmaster</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">student</span><span class="vp-tag ant">pupil</span><span class="vp-tag ant">learner</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The strict <b>pedagogue</b> never allowed students to speak without raising a hand.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A good <b>pedagogue</b> knows that curiosity teaches more than fear.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The village <b>pedagogue</b> taught three generations from one dusty classroom. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/23.png" alt="Picture for the word pedagogue"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The village <b>pedagogue</b> taught three generations from one dusty classroom.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe teacher explained the ______ of the word \"sandwich\", which comes from the name of an English noble.",
+    options: ["entomology", "epilogue", "epitaph", "etymology"],
+    correct: "4",
+    exptext: "✅ Etymology fits because the teacher explains where the word came from. 📌 Origin of words means etymology. ❌ Entomology is wrong because it looks similar but means the study of insects."
   },
   47: {
-    questext: "Choose the OPPOSITE of \"pedagogue\".",
-    options: ["instructor", "pupil", "educator", "tutor"],
-    correct: "2",
-    exptext: "✅ A pupil learns; a pedagogue teaches. 📌 Pedagogue = teacher. ❌ Instructor, educator and tutor are synonyms."
-  },
-  48: {
-    type: "concept", icon: "🕍", accent: "#c526c5", pauseTimer: true,
-    title: "Synagogue",
+    type: "concept", icon: "🐞", accent: "#23c782", pauseTimer: true,
+    title: "Entomology",
     html: `
-      <div class="cp-vocab vp" style="--a:#c526c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a Jewish place of worship</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">यहूदी उपासनागृह</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">Jewish temple</span><span class="vp-tag syn">Jewish house of worship</span><span class="vp-tag syn">place of worship</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Families gathered at the <b>synagogue</b> every Saturday morning to pray together.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The old <b>synagogue</b> in the city is known for its stained glass windows. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Visitors must cover their heads before entering the quiet <b>synagogue</b>.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/24.png" alt="Picture for the word synagogue"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The old <b>synagogue</b> in the city is known for its stained glass windows.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,130;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌentəˈmɒlədʒi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the scientific study of insects</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">कीट विज्ञान</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">study of insects</li><li class="vc-chip">insect science</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The university's <b>entomology</b> department tracks insects that damage the wheat crop. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">She chose <b>entomology</b> for her degree because she loved bees and butterflies.</p></li><li><span class="vc-n">3</span><p class="vc-s">The farmer asked an expert in <b>entomology</b> how to stop the locusts.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Entomon" is the Greek word for insect, so entomology is the study of insects.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/16.png" alt="Illustration of the word entomology: A scientist in a lab coat studies a beetle through a large microscope; pinned butterflies in glass case" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The university's <mark class="vc-hl">entomology</mark> department tracks insects that damage the wheat crop.</p></div></div>
+      </div></div>
     `
   },
+  48: {
+    questext: "Select the most appropriate synonym of the given word.\nEntomology",
+    options: ["Study of insects", "Study of birds", "Study of words", "Study of stones"],
+    correct: "1",
+    exptext: "✅ Entomology is the scientific study of insects. 📌 \"Entomon\" means insect. ❌ Study of words is wrong because that is etymology, a look-alike term."
+  },
   49: {
-    questext: "A Jewish place of worship is called a ______.",
-    options: ["mosque", "monastery", "synagogue", "cathedral"],
+    questext: "Select the most appropriate option to fill in the blank.\nHer love for beetles and butterflies led her to study ______ at university.",
+    options: ["etymology", "epigraphy", "entomology", "neology"],
     correct: "3",
-    exptext: "✅ A synagogue is a Jewish place of worship. 📌 Syn-agogue = gathering together. ❌ A mosque is a Muslim place of worship."
+    exptext: "✅ Entomology fits because the student loves beetles and butterflies, which are insects. 📌 Insects mean entomology. ❌ Etymology is wrong because it is the study of word origins."
   },
   50: {
-    type: "concept", icon: "🗣️", accent: "#31d8a7", pauseTimer: true,
-    title: "Eloquent",
+    type: "concept", icon: "🈂️", accent: "#54c723", pauseTimer: true,
+    title: "Philologist",
     html: `
-      <div class="cp-vocab vp" style="--a:#31d8a7;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">able to speak or write in a clear, strong and persuasive way</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">वाक्पटु, प्रभावशाली</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">articulate</span><span class="vp-tag syn">fluent</span><span class="vp-tag syn">expressive</span><span class="vp-tag syn">persuasive</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">inarticulate</span><span class="vp-tag ant">tongue-tied</span><span class="vp-tag ant">hesitant</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Her <b>eloquent</b> speech about saving the lake moved even the strongest critics. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">An <b>eloquent</b> lawyer can explain a complex law in plain, powerful words.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The poet's <b>eloquent</b> silence said more than a thousand words ever could.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/25.png" alt="Picture for the word eloquent"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Her <b>eloquent</b> speech about saving the lake moved even the strongest critics.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:84,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/fɪˈlɒlədʒɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a scholar who studies languages and how they changed over time</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">भाषाशास्त्री, भाषाविद्</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">language scholar</li><li class="vc-chip">linguist</li><li class="vc-chip">language expert</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>philologist</b> spent years decoding the grammar of a forgotten tribal language. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">As a <b>philologist</b>, she compared old Sanskrit writings with later languages.</p></li><li><span class="vc-n">3</span><p class="vc-s">The <b>philologist</b> showed how the English word "father" is linked to the Sanskrit word "pitar".</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Philo" means love and "logos" means word, so a philologist is a lover of words.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/17.png" alt="Illustration of the word philologist: A scholar with a grey beard studies two old manuscripts in different scripts at a lamp-lit table, writ" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">philologist</mark> spent years decoding the grammar of a forgotten tribal language.</p></div></div>
+      </div></div>
     `
   },
   51: {
-    questext: "Choose the word closest in meaning to \"eloquent\".",
-    options: ["articulate", "timid", "clumsy", "tongue-tied"],
-    correct: "1",
-    exptext: "✅ Articulate means clear and fluent in speech. 📌 E-loqu = speak out. ❌ Tongue-tied is the opposite."
+    questext: "Select the most appropriate synonym of the given word.\nPhilologist",
+    options: ["Stamp collector", "Language scholar", "Map maker", "Insect expert"],
+    correct: "2",
+    exptext: "✅ A philologist studies languages, so language scholar is the closest meaning. 📌 \"Philo\" is love and \"logos\" is word. ❌ Stamp collector is wrong because that is a philatelist, a look-alike word."
   },
   52: {
-    type: "concept", icon: "🌸", accent: "#dd874b", pauseTimer: true,
-    title: "Harbinger",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd874b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a sign that shows something is about to come</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अग्रदूत, पूर्वसूचक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">forerunner</span><span class="vp-tag syn">precursor</span><span class="vp-tag syn">omen</span><span class="vp-tag syn">sign</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The first cuckoo's call is a <b>harbinger</b> of spring in the countryside. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Falling sales proved to be a <b>harbinger</b> of deeper trouble for the company.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Like a silent <b>harbinger</b>, the cold wind announced the coming winter.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/26.png" alt="Picture for the word harbinger"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The first cuckoo's call is a <b>harbinger</b> of spring in the countryside.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA scholar who studies languages and how they changed",
+    options: ["Philatelist", "Philanthropist", "Numismatist", "Philologist"],
+    correct: "4",
+    exptext: "✅ Philologist is a scholar of languages and their history. 📌 Words are logos. ❌ Philanthropist is wrong because it means a person who gives money to help others."
   },
   53: {
-    questext: "Dark clouds are often a ______ of rain.",
-    options: ["ledger", "epitaph", "almanac", "harbinger"],
-    correct: "4",
-    exptext: "✅ A harbinger is an early sign of what is coming. 📌 Harbinger = early warning. ❌ An almanac is a yearly calendar book."
-  },
-  54: {
-    type: "concept", icon: "📯", accent: "#3926c5", pauseTimer: true,
-    title: "Herald",
+    type: "concept", icon: "🆕", accent: "#c7ab23", pauseTimer: true,
+    title: "Neology",
     html: `
-      <div class="cp-vocab vp" style="--a:#3926c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who announces important news or messages</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">संदेशवाहक, उद्घोषक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">messenger</span><span class="vp-tag syn">announcer</span><span class="vp-tag syn">crier</span><span class="vp-tag syn">forerunner</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The royal <b>herald</b> blew his trumpet and read the king's order aloud. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A bright dawn is the <b>herald</b> of a new day.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The paper acts as a <b>herald</b> of change by publishing fresh ideas every morning.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/27.png" alt="Picture for the word herald"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The royal <b>herald</b> blew his trumpet and read the king's order aloud.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,171,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/niˈɒlədʒi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the practice of inventing and using new words</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">नवशब्द-प्रयोग</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">coining of words</li><li class="vc-chip">word invention</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">archaism</li><li class="vc-chip">old-fashioned usage</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Text messaging has speeded up <b>neology</b>, creating new words almost every month. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The poet loved <b>neology</b> and often made up playful words.</p></li><li><span class="vc-n">3</span><p class="vc-s">Online chat has made <b>neology</b> a daily habit for young people.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Neo" means new and "logos" means word, so neology is the use of new words.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/18.png" alt="Illustration of the word neology: A group of cheerful teenagers sit in a cafe looking at their phones, and glowing new made-up words float a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Text messaging has speeded up <mark class="vc-hl">neology</mark>, creating new words almost every month.</p></div></div>
+      </div></div>
     `
   },
+  54: {
+    questext: "Select the most appropriate antonym of the given word.\nNeology",
+    options: ["Archaism", "Invention", "Coinage", "Novelty"],
+    correct: "1",
+    exptext: "✅ Neology is using new words, so archaism, which is using old words, is the opposite. 📌 \"Neo\" means new. ❌ Coinage is wrong because it is close in meaning to neology."
+  },
   55: {
-    questext: "Which is NOT a synonym of \"herald\"?",
-    options: ["announcer", "listener", "messenger", "crier"],
-    correct: "2",
-    exptext: "✅ A listener receives news; a herald announces it. 📌 Herald = loud announcer. ❌ Announcer, messenger and crier all carry news."
+    questext: "Select the most appropriate option to fill in the blank.\nThe author's love of ______ gave the book many fresh, invented words.",
+    options: ["etymology", "entomology", "neology", "epilogue"],
+    correct: "3",
+    exptext: "✅ Neology fits because the book is full of invented words. 📌 New words mean neology. ❌ Etymology is wrong because it studies where old words came from."
   },
   56: {
-    type: "concept", icon: "🕊️", accent: "#4ed831", pauseTimer: true,
-    title: "Emissary",
+    type: "concept", icon: "📜", accent: "#c7232b", pauseTimer: true,
+    title: "Paleographer",
     html: `
-      <div class="cp-vocab vp" style="--a:#4ed831;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person sent on a special mission to represent someone</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">दूत, प्रतिनिधि</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">envoy</span><span class="vp-tag syn">ambassador</span><span class="vp-tag syn">messenger</span><span class="vp-tag syn">delegate</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The king sent an <b>emissary</b> with gifts to the rival court.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The president's <b>emissary</b> met local leaders to prepare for peace talks.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">As a trusted <b>emissary</b>, he carried secret letters across the mountain border. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/28.png" alt="Picture for the word emissary"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">As a trusted <b>emissary</b>, he carried secret letters across the mountain border.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,43;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌpæliˈɒɡrəfə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an expert who reads and studies ancient handwriting and old manuscripts</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">प्राचीन लिपि विशेषज्ञ</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">expert in ancient writing</li><li class="vc-chip">manuscript expert</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>paleographer</b> slowly read the faded writing on the medieval parchment. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>paleographer</b> worked out the age of the manuscript from the style of its letters.</p></li><li><span class="vc-n">3</span><p class="vc-s">Only a trained <b>paleographer</b> can read the faded script on old palm leaves.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Palaios" is the Greek word for old, so a paleographer studies old writing.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/19.png" alt="Illustration of the word paleographer: A scholar with a magnifying glass bends over a fragile old parchment with faded writing under a brigh" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">paleographer</mark> slowly read the faded writing on the medieval parchment.</p></div></div>
+      </div></div>
     `
   },
   57: {
-    questext: "The president sent a special ______ to carry a peace message to the neighbouring country.",
-    options: ["pedagogue", "demagogue", "emissary", "archivist"],
-    correct: "3",
-    exptext: "✅ An emissary is sent on a mission as a representative. 📌 Emit = send out. ❌ A demagogue stirs crowds."
+    questext: "Select the most appropriate synonym of the given word.\nPaleographer",
+    options: ["Expert in stones", "Expert in ancient writing", "Expert in coins", "Expert in maps"],
+    correct: "2",
+    exptext: "✅ A paleographer reads and studies ancient handwriting. 📌 \"Palaios\" means old. ❌ Expert in coins is wrong because that is a numismatist."
   },
   58: {
-    type: "concept", icon: "🏺", accent: "#dd4b8e", pauseTimer: true,
-    title: "Archaism",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd4b8e;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an old word or phrase that people no longer use</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">पुराना शब्द, अप्रचलित प्रयोग</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">obsolete word</span><span class="vp-tag syn">old expression</span><span class="vp-tag syn">outdated term</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">neologism</span><span class="vp-tag ant">coinage</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The word "thee" is an <b>archaism</b> that now appears only in old poems.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Using an <b>archaism</b> in a business email makes the writer sound outdated.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Shakespeare's plays contain an <b>archaism</b> on almost every page, so students keep glossaries beside them. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/29.png" alt="Picture for the word archaism"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Shakespeare's plays contain an <b>archaism</b> on almost every page, so students keep glossaries beside them.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nAn expert who reads and studies ancient handwriting",
+    options: ["Epigrapher", "Calligrapher", "Cartographer", "Paleographer"],
+    correct: "4",
+    exptext: "✅ Paleographer means an expert in old handwriting and manuscripts. 📌 \"Palaios\" is old. ❌ Epigrapher is wrong because that expert studies writing carved on stone or metal, not handwriting."
   },
   59: {
-    questext: "Which of these is an archaism in modern English?",
-    options: ["thou", "you", "we", "they"],
-    correct: "1",
-    exptext: "✅ Thou is an old form of you. 📌 Archaic = ancient. ❌ You, we and they are used every day."
-  },
-  60: {
-    type: "concept", icon: "🔧", accent: "#269ec5", pauseTimer: true,
-    title: "Jargon",
+    type: "concept", icon: "💡", accent: "#c723bb", pauseTimer: true,
+    title: "Coinage",
     html: `
-      <div class="cp-vocab vp" style="--a:#269ec5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">special words of a profession that other people find hard to understand</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">तकनीकी शब्दावली, पेशेवर बोली</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">technical language</span><span class="vp-tag syn">lingo</span><span class="vp-tag syn">terminology</span><span class="vp-tag syn">cant</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">plain speech</span><span class="vp-tag ant">simple words</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The mechanic's <b>jargon</b> left me completely confused about what was wrong with my scooter. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Legal <b>jargon</b> in the contract made it hard for ordinary people to understand.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Scientists are urged to avoid <b>jargon</b> when they speak to the public.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/30.png" alt="Picture for the word jargon"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The mechanic's <b>jargon</b> left me completely confused about what was wrong with my scooter.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,187;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈkɔɪnɪdʒ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a new word or phrase that someone invents</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">नया गढ़ा शब्द</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">invented word</li><li class="vc-chip">new word</li><li class="vc-chip">newly made term</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The newspaper's clever <b>coinage</b> "staycation" soon appeared in many dictionaries. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">"Brunch" is a clever <b>coinage</b> made from the words "breakfast" and "lunch".</p></li><li><span class="vc-n">3</span><p class="vc-s">The writer's latest <b>coinage</b> spread quickly across social media.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/20.png" alt="Illustration of the word coinage: A smiling journalist in a newsroom holds up a poster with a funny new made-up word written in big letters," loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The newspaper's clever <mark class="vc-hl">coinage</mark> "staycation" soon appeared in many dictionaries.</p></div></div>
+      </div></div>
     `
   },
+  60: {
+    questext: "Select the most appropriate synonym of the given word.\nCoinage",
+    options: ["Invented word", "Old word", "Foreign word", "Borrowed phrase"],
+    correct: "1",
+    exptext: "✅ A coinage is a new word that someone invents. 📌 To coin a word is to make a word. ❌ Old word is wrong because a coinage is new."
+  },
   61: {
-    questext: "The doctor's report was full of medical ______ that patients could not follow.",
-    options: ["epitaph", "chronicle", "almanac", "jargon"],
-    correct: "4",
-    exptext: "✅ Jargon is special technical language of a profession. 📌 Jargon = job talk. ❌ A chronicle is a record of events."
+    questext: "Select the most appropriate option to fill in the blank.\nThe advertiser's catchy ______ for the new drink was soon repeated by everyone.",
+    options: ["tautology", "epitaph", "coinage", "almanac"],
+    correct: "3",
+    exptext: "✅ Coinage fits because a catchy invented word spreads quickly. 📌 New word means coinage. ❌ Tautology is wrong because it means saying the same thing twice."
   },
   62: {
-    type: "concept", icon: "🤫", accent: "#d8d031", pauseTimer: true,
-    title: "Argot",
+    type: "concept", icon: "🎤", accent: "#4423c7", pauseTimer: true,
+    title: "Orator",
     html: `
-      <div class="cp-vocab vp" style="--a:#d8d031;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the secret slang used by a group such as thieves</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">गुप्त बोली, समूह की गुप्त भाषा</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">slang</span><span class="vp-tag syn">cant</span><span class="vp-tag syn">secret language</span><span class="vp-tag syn">lingo</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Pickpockets in the old city spoke a secret <b>argot</b> to hide their plans. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The film uses prison <b>argot</b> so well that viewers need subtitles.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Every gang had its own <b>argot</b>, and outsiders could not follow a single word.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/31.png" alt="Picture for the word argot"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Pickpockets in the old city spoke a secret <b>argot</b> to hide their plans.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:68,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɒrətə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who is skilled at giving public speeches</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">वक्ता, भाषणकर्ता</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">public speaker</li><li class="vc-chip">speaker</li><li class="vc-chip">rhetorician</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The young <b>orator</b> held the whole hall silent with his powerful opening line. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">People travelled for miles to hear the famous <b>orator</b> speak at the town fair.</p></li><li><span class="vc-n">3</span><p class="vc-s">A fine <b>orator</b> knows when to pause and when to raise his voice.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Orator comes from the Latin word for speaking, so an orator is a speaker.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/21.png" alt="Illustration of the word orator: A confident young man stands at a podium on a stage, one hand raised in a strong gesture, while a packed ha" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The young <mark class="vc-hl">orator</mark> held the whole hall silent with his powerful opening line.</p></div></div>
+      </div></div>
     `
   },
   63: {
-    questext: "Which word means the secret slang of thieves and criminals?",
-    options: ["dialect", "argot", "jargon", "archaism"],
+    questext: "Select the most appropriate synonym of the given word.\nOrator",
+    options: ["Silent listener", "Public speaker", "Writer", "Singer"],
     correct: "2",
-    exptext: "✅ Argot is secret slang of a hidden group. 📌 Argot = gang talk. ❌ Jargon is a profession's technical language."
+    exptext: "✅ An orator is a skilled public speaker. 📌 Orator and oration both come from speaking. ❌ Silent listener is wrong because it describes the audience, not the speaker."
   },
   64: {
-    type: "concept", icon: "✨", accent: "#ac4bdd", pauseTimer: true,
-    title: "Neologism",
-    html: `
-      <div class="cp-vocab vp" style="--a:#ac4bdd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a newly invented word or phrase</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">नया शब्द, नवशब्द</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">coinage</span><span class="vp-tag syn">invented word</span><span class="vp-tag syn">new word</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">archaism</span><span class="vp-tag ant">obsolete word</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The word "selfie" was once a <b>neologism</b>, but now everyone uses it. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Critics called the term a mere <b>neologism</b> that would not last long.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The novelist's <b>neologism</b> for the strange machine entered the dictionary within ten years.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/32.png" alt="Picture for the word neologism"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The word "selfie" was once a <b>neologism</b>, but now everyone uses it.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe crowd cheered because the ______ spoke with great power and passion about the rights of farmers.",
+    options: ["recluse", "philatelist", "lexicographer", "orator"],
+    correct: "4",
+    exptext: "✅ Orator fits because a person who speaks powerfully to a crowd is an orator. 📌 Speech means orator. ❌ Recluse is wrong because a recluse avoids people and does not give speeches."
   },
   65: {
-    questext: "Odd one out among these words:",
-    options: ["coinage", "new word", "archaism", "invented term"],
-    correct: "3",
-    exptext: "✅ Archaism is an old word; the others mean newly made words. 📌 Neo = new. ❌ Coinage means a newly invented word."
-  },
-  66: {
-    type: "concept", icon: "💬", accent: "#26c561", pauseTimer: true,
-    title: "Colloquialism",
+    type: "concept", icon: "📢", accent: "#2392c7", pauseTimer: true,
+    title: "Demagogue",
     html: `
-      <div class="cp-vocab vp" style="--a:#26c561;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an informal word or phrase used in everyday talk</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">बोलचाल का शब्द, आम बोली</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">informal expression</span><span class="vp-tag syn">everyday phrase</span><span class="vp-tag syn">common speech</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">formal expression</span><span class="vp-tag ant">formal language</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Saying "gonna" instead of "going to" is a common <b>colloquialism</b>.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The editor removed every <b>colloquialism</b> from the formal research paper.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her speech was full of friendly <b>colloquialisms</b>, which made the crowd feel at home. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/33.png" alt="Picture for the word colloquialism"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Her speech was full of friendly <b>colloquialisms</b>, which made the crowd feel at home.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,146,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈdeməɡɒɡ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a leader who excites people's fears and feelings to win power</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">भीड़ भड़काने वाला नेता</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">rabble-rouser</li><li class="vc-chip">agitator</li><li class="vc-chip">firebrand</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">statesman</li><li class="vc-chip">honest leader</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>demagogue</b> promised free everything and blamed outsiders for every problem in town. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A true leader solves problems, but a <b>demagogue</b> only stirs up anger.</p></li><li><span class="vc-n">3</span><p class="vc-s">History warns us about every <b>demagogue</b> who wins votes by spreading fear.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Demos" means people and "agogos" means leader, but a demagogue leads people by stirring their feelings, not by honest plans.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/22.png" alt="Illustration of the word demagogue: A loud man in a fancy jacket stands on a wooden box in a town square, waving his fist and shouting, whil" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">demagogue</mark> promised free everything and blamed outsiders for every problem in town.</p></div></div>
+      </div></div>
     `
   },
+  66: {
+    questext: "Select the most appropriate antonym of the given word.\nDemagogue",
+    options: ["Statesman", "Rabble-rouser", "Firebrand", "Agitator"],
+    correct: "1",
+    exptext: "✅ A demagogue wins power by stirring fear, so statesman, a wise and honest leader, is the opposite. 📌 Demagogue misleads the crowd; statesman guides it. ❌ Agitator is wrong because it is a synonym."
+  },
   67: {
-    questext: "In a formal essay, avoid everyday ______ like \"gonna\" and \"wanna\".",
-    options: ["archaisms", "tautologies", "colloquialisms", "epitaphs"],
+    questext: "Select the most appropriate option to fill in the blank.\nInstead of offering real plans, the ______ shouted angry slogans to win over the crowd.",
+    options: ["pedagogue", "synagogue", "demagogue", "orator"],
     correct: "3",
-    exptext: "✅ Colloquialisms are informal everyday words. 📌 Colloquial = casual chat. ❌ Archaisms are old, outdated words."
+    exptext: "✅ Demagogue fits because the leader used angry slogans and no real plans. 📌 Crowd-pleasing without plans means demagogue. ❌ Pedagogue is wrong because it means a teacher."
   },
   68: {
-    type: "concept", icon: "🗨️", accent: "#d83f31", pauseTimer: true,
-    title: "Dialect",
+    type: "concept", icon: "🧑‍🏫", accent: "#23c76d", pauseTimer: true,
+    title: "Pedagogue",
     html: `
-      <div class="cp-vocab vp" style="--a:#d83f31;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a form of a language spoken in one region or group</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">बोली, उपभाषा</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">regional speech</span><span class="vp-tag syn">vernacular</span><span class="vp-tag syn">patois</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">standard language</span><span class="vp-tag ant">official language</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The farmer spoke in a rural <b>dialect</b> that city visitors found hard to follow. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Each district of the state has its own <b>dialect</b>, with special words and accents.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The novelist wrote the villagers' conversations in their local <b>dialect</b> to sound real.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/34.png" alt="Picture for the word dialect"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The farmer spoke in a rural <b>dialect</b> that city visitors found hard to follow.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,109;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈpedəɡɒɡ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a teacher, especially a strict or old-fashioned one</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">शिक्षक, अध्यापक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">teacher</li><li class="vc-chip">educator</li><li class="vc-chip">schoolmaster</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The village <b>pedagogue</b> taught three generations from one dusty classroom. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The strict <b>pedagogue</b> made students copy each lesson three times.</p></li><li><span class="vc-n">3</span><p class="vc-s">A modern <b>pedagogue</b> uses pictures and games to make lessons fun.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Think "ped" for child and "agogue" for leader, so a pedagogue leads children in learning.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/23.png" alt="Illustration of the word pedagogue: An elderly teacher with round glasses and a long wooden pointer stands beside a blackboard in a small du" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The village <mark class="vc-hl">pedagogue</mark> taught three generations from one dusty classroom.</p></div></div>
+      </div></div>
     `
   },
   69: {
-    questext: "Which word means the form of a language spoken in a particular region?",
-    options: ["dialect", "jargon", "argot", "archaism"],
-    correct: "1",
-    exptext: "✅ Dialect is a regional form of a language. 📌 Dialect = local style of speech. ❌ Jargon is a profession's technical language."
+    questext: "Select the most appropriate synonym of the given word.\nPedagogue",
+    options: ["Mob leader", "Teacher", "Priest", "Judge"],
+    correct: "2",
+    exptext: "✅ A pedagogue is a teacher. 📌 \"Ped\" is child. ❌ Mob leader is wrong because that is a demagogue, a look-alike word."
   },
   70: {
-    type: "concept", icon: "🤷", accent: "#4b6add", pauseTimer: true,
-    title: "Non sequitur",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4b6add;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a statement that does not logically follow from what came before</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">असंगत बात, बेतुका निष्कर्ष</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">illogical remark</span><span class="vp-tag syn">irrelevant statement</span><span class="vp-tag syn">illogical conclusion</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">logical inference</span><span class="vp-tag ant">relevant remark</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">When asked about the budget, his reply about cricket was a complete <b>non sequitur</b>. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">"He is rich, so he must be honest" is a <b>non sequitur</b>.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The comedian's jokes worked because each new line was a surprising <b>non sequitur</b>.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/35.png" alt="Picture for the word non sequitur"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">When asked about the budget, his reply about cricket was a complete <b>non sequitur</b>.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA teacher, especially a strict one",
+    options: ["Demagogue", "Epilogue", "Synagogue", "Pedagogue"],
+    correct: "4",
+    exptext: "✅ Pedagogue means a teacher, often a strict one. 📌 \"Ped\" is child. ❌ Demagogue is wrong because it means a leader who stirs up a crowd."
   },
   71: {
-    questext: "What do you call a conclusion that does not follow logically from what preceded it?",
-    options: ["tautology", "epitome", "equivocation", "non sequitur"],
-    correct: "4",
-    exptext: "✅ Non sequitur means \"it does not follow\". 📌 Non = not, sequitur = follows. ❌ Tautology repeats the same idea."
-  },
-  72: {
-    type: "concept", icon: "🌀", accent: "#76c526", pauseTimer: true,
-    title: "Equivocation",
+    type: "concept", icon: "🕍", accent: "#69c723", pauseTimer: true,
+    title: "Synagogue",
     html: `
-      <div class="cp-vocab vp" style="--a:#76c526;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">using unclear or double-meaning words to avoid telling the plain truth</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">टालमटोल, गोलमोल बात</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">evasion</span><span class="vp-tag syn">ambiguity</span><span class="vp-tag syn">hedging</span><span class="vp-tag syn">double talk</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">frankness</span><span class="vp-tag ant">candour</span><span class="vp-tag ant">directness</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The minister's <b>equivocation</b> on the tax question made reporters even more suspicious. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Stop your <b>equivocation</b> and give me a straight yes or no.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Politicians often use <b>equivocation</b> to avoid blame while sounding polite and helpful.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/36.png" alt="Picture for the word equivocation"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The minister's <b>equivocation</b> on the tax question made reporters even more suspicious.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:105,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈsɪnəɡɒɡ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a Jewish place of worship</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">यहूदी उपासनागृह</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">Jewish place of worship</li><li class="vc-chip">Jewish house of prayer</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The old <b>synagogue</b> in the city is known for its stained glass windows. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Worshippers gathered at the <b>synagogue</b> every Saturday morning.</p></li><li><span class="vc-n">3</span><p class="vc-s">Tourists admired the carved wooden doors of the ancient <b>synagogue</b>.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Synagogue comes from a Greek word meaning "a gathering together".</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/24.png" alt="Illustration of the word synagogue: A peaceful old stone building with tall arched windows of coloured stained glass stands on a quiet city " loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The old <mark class="vc-hl">synagogue</mark> in the city is known for its stained glass windows.</p></div></div>
+      </div></div>
     `
   },
+  72: {
+    questext: "Select the most appropriate synonym of the given word.\nSynagogue",
+    options: ["Jewish house of prayer", "Buddhist monastery", "Christian church", "Muslim place of worship"],
+    correct: "1",
+    exptext: "✅ A synagogue is a Jewish place of worship. 📌 A gathering place for prayer. ❌ Christian church is wrong because a church belongs to Christians."
+  },
   73: {
-    questext: "Choose the OPPOSITE of \"equivocation\".",
-    options: ["evasion", "frankness", "hedging", "ambiguity"],
-    correct: "2",
-    exptext: "✅ Frankness means speaking plainly and openly. 📌 Equi-vocal = two voices. ❌ Evasion and hedging are similar to equivocation."
+    questext: "Select the most appropriate option to fill in the blank.\nJust as Muslims pray in a mosque, Jewish people pray in a ______.",
+    options: ["monologue", "demagogue", "synagogue", "pedagogue"],
+    correct: "3",
+    exptext: "✅ Synagogue fits because it is the Jewish place of worship. 📌 Mosque for Muslims, synagogue for Jews. ❌ Pedagogue is wrong because it ends in a similar sound but means a teacher."
   },
   74: {
-    type: "concept", icon: "🔁", accent: "#d831b6", pauseTimer: true,
-    title: "Tautology",
+    type: "concept", icon: "🗣️", accent: "#c79623", pauseTimer: true,
+    title: "Eloquent",
     html: `
-      <div class="cp-vocab vp" style="--a:#d831b6;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">saying the same thing twice in different words</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">पुनरुक्ति, शब्द-दोहराव</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">repetition</span><span class="vp-tag syn">redundancy</span><span class="vp-tag syn">repeated wording</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">brevity</span><span class="vp-tag ant">conciseness</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">"Free gift" and "past history" are common examples of <b>tautology</b>.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The editor cut the <b>tautology</b> from the report to make it shorter. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Saying "a sad tragedy" is pure <b>tautology</b>, since tragedies are always sad.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/37.png" alt="Picture for the word tautology"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The editor cut the <b>tautology</b> from the report to make it shorter.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,150,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈeləkwənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">able to speak or write in a clear, strong and persuasive way</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">वाक्पटु, प्रभावशाली</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">articulate</li><li class="vc-chip">fluent</li><li class="vc-chip">persuasive</li><li class="vc-chip">expressive</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">inarticulate</li><li class="vc-chip">tongue-tied</li><li class="vc-chip">hesitant</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Her <b>eloquent</b> speech about saving the lake moved even the strongest critics. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The lawyer gave an <b>eloquent</b> defence that left the jury in tears.</p></li><li><span class="vc-n">3</span><p class="vc-s">Even without words, her <b>eloquent</b> smile said everything.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Eloquent comes from Latin words meaning "to speak out".</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/25.png" alt="Illustration of the word eloquent: A passionate young woman stands at a lakeside meeting and speaks with an open hand, while a crowd of vill" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Her <mark class="vc-hl">eloquent</mark> speech about saving the lake moved even the strongest critics.</p></div></div>
+      </div></div>
     `
   },
   75: {
-    questext: "Which phrase is an example of tautology?",
-    options: ["return back", "quick walk", "tall tower", "fresh bread"],
-    correct: "1",
-    exptext: "✅ \"Return back\" says \"back\" twice. 📌 Tauto = same. ❌ The other phrases add new information."
+    questext: "Select the most appropriate synonym of the given word.\nEloquent",
+    options: ["Hesitant", "Articulate", "Silent", "Clumsy"],
+    correct: "2",
+    exptext: "✅ Eloquent means speaking clearly and strongly, so articulate is the closest word. 📌 Eloquent people speak out well. ❌ Hesitant is wrong because it means unsure and slow, the opposite idea."
   },
   76: {
-    type: "concept", icon: "📅", accent: "#4bddd0", pauseTimer: true,
-    title: "Almanac",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bddd0;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a yearly book with a calendar, weather notes and useful facts</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">पंचांग, वार्षिक पत्रिका</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">yearbook</span><span class="vp-tag syn">annual calendar</span><span class="vp-tag syn">calendar book</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Farmers once planted crops by checking the weather notes in the village <b>almanac</b>. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The <b>almanac</b> lists sunrise times, tides and festival dates for every day.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">He kept an old <b>almanac</b> on his desk for quick facts about the year.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/38.png" alt="Picture for the word almanac"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Farmers once planted crops by checking the weather notes in the village <b>almanac</b>.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe president's ______ address, full of clear and moving words, won praise from everyone.",
+    options: ["imminent", "stoic", "sanguine", "eloquent"],
+    correct: "4",
+    exptext: "✅ Eloquent fits because the address used clear, moving words. 📌 Speaking well means eloquent. ❌ Stoic is wrong because it describes a person who shows no feelings."
   },
   77: {
-    questext: "A yearly book giving the calendar, weather and astronomical facts is an ______.",
-    options: ["ledger", "chronicle", "almanac", "epitaph"],
-    correct: "3",
-    exptext: "✅ An almanac is a yearly book of calendar facts. 📌 Almanac = annual guide. ❌ A ledger records money accounts."
-  },
-  78: {
-    type: "concept", icon: "🏛️", accent: "#c58826", pauseTimer: true,
-    title: "Chronicle",
+    type: "concept", icon: "🌦️", accent: "#c72340", pauseTimer: true,
+    title: "Harbinger",
     html: `
-      <div class="cp-vocab vp" style="--a:#c58826;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a written record of events in the order they happened</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">इतिवृत्त, वृत्तांत</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">record</span><span class="vp-tag syn">history</span><span class="vp-tag syn">annals</span><span class="vp-tag syn">account</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The monk kept a <b>chronicle</b> of every flood and famine in the kingdom. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">This <b>chronicle</b> of the freedom struggle lists events year by year.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her diary became a <b>chronicle</b> of a changing town.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/39.png" alt="Picture for the word chronicle"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The monk kept a <b>chronicle</b> of every flood and famine in the kingdom.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,64;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈhɑːbɪndʒə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a sign that shows something is about to come</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अग्रदूत, पूर्वसूचक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">forerunner</li><li class="vc-chip">sign</li><li class="vc-chip">omen</li><li class="vc-chip">herald</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The first cuckoo's call is a <b>harbinger</b> of spring in the countryside. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Dark clouds on the horizon are often the <b>harbinger</b> of the monsoon.</p></li><li><span class="vc-n">3</span><p class="vc-s">Experts see rising prices as a <b>harbinger</b> of tougher times.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/26.png" alt="Illustration of the word harbinger: A farmer stands in a green field and looks up with a smile at a cuckoo bird sitting on a branch of a blo" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The first cuckoo's call is a <mark class="vc-hl">harbinger</mark> of spring in the countryside.</p></div></div>
+      </div></div>
     `
   },
+  78: {
+    questext: "Select the most appropriate synonym of the given word.\nHarbinger",
+    options: ["Forerunner", "Aftermath", "Memory", "Ending"],
+    correct: "1",
+    exptext: "✅ A harbinger comes before something and warns of it, so forerunner is the closest word. 📌 Harbinger comes first. ❌ Aftermath is wrong because it means what follows an event."
+  },
   79: {
-    questext: "Which word means a record of events in the order of time?",
-    options: ["almanac", "chronicle", "ledger", "epilogue"],
-    correct: "2",
-    exptext: "✅ Chronicle records events in time order. 📌 Chrono = time. ❌ A ledger records money accounts."
+    questext: "Select the most appropriate option to fill in the blank.\nThe early blossoms on the mango trees are a ______ of the coming summer.",
+    options: ["epitaph", "ledger", "harbinger", "chronicle"],
+    correct: "3",
+    exptext: "✅ Harbinger fits because blossoms give a sign that summer is coming. 📌 A sign before an event is a harbinger. ❌ Epitaph is wrong because it is a line written in memory of the dead."
   },
   80: {
-    type: "concept", icon: "📒", accent: "#6831d8", pauseTimer: true,
-    title: "Ledger",
+    type: "concept", icon: "🎺", accent: "#bf23c7", pauseTimer: true,
+    title: "Herald",
     html: `
-      <div class="cp-vocab vp" style="--a:#6831d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a book in which a business records its money accounts</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">बही-खाता, लेखा-बही</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">account book</span><span class="vp-tag syn">register</span><span class="vp-tag syn">record book</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The shopkeeper noted every sale in his big <b>ledger</b> before closing the shop. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The auditor found a mistake in the company's <b>ledger</b>.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Each evening the clerk balanced the <b>ledger</b> by the light of a lamp.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/40.png" alt="Picture for the word ledger"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The shopkeeper noted every sale in his big <b>ledger</b> before closing the shop.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:191,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈherəld/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who announces important news or messages</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">संदेशवाहक, उद्घोषक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">messenger</li><li class="vc-chip">announcer</li><li class="vc-chip">crier</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The royal <b>herald</b> blew his trumpet and read the king's order aloud. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The town <b>herald</b> shouted the news of the festival through the market.</p></li><li><span class="vc-n">3</span><p class="vc-s">The <b>herald</b> rode ahead to announce the coming of the prince.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/27.png" alt="Illustration of the word herald: A royal messenger in a bright coat stands in a busy market blowing a long trumpet and holding an unrolled s" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The royal <mark class="vc-hl">herald</mark> blew his trumpet and read the king's order aloud.</p></div></div>
+      </div></div>
     `
   },
   81: {
-    questext: "The accountant checked each entry in the ______ to find the missing amount.",
-    options: ["almanac", "chronicle", "epitaph", "ledger"],
-    correct: "4",
-    exptext: "✅ A ledger is an account book. 📌 Ledger = money diary. ❌ An epitaph is words on a tomb."
+    questext: "Select the most appropriate synonym of the given word.\nHerald",
+    options: ["Soldier", "Messenger", "Beggar", "Judge"],
+    correct: "2",
+    exptext: "✅ A herald announces important news, so messenger is the closest word. 📌 Herald brings the news. ❌ Soldier is wrong because a soldier fights and does not carry announcements."
   },
   82: {
-    type: "concept", icon: "🪨", accent: "#4bdd50", pauseTimer: true,
-    title: "Epigrapher",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bdd50;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an expert who studies old writing carved on stone or metal</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">शिलालेख विशेषज्ञ, अभिलेखशास्त्री</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">inscription expert</span><span class="vp-tag syn">inscription reader</span><span class="vp-tag syn">stone-writing scholar</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>epigrapher</b> read the ancient king's orders carved on a rock pillar. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">An <b>epigrapher</b> can tell the age of a stone inscription from its letter style.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The <b>epigrapher</b> spent weeks cleaning moss from the temple wall to read its message.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/41.png" alt="Picture for the word epigrapher"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>epigrapher</b> read the ancient king's orders carved on a rock pillar.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nBefore the prince arrived, the royal ______ rode through the town to announce the news.",
+    options: ["anchorite", "archivist", "recluse", "herald"],
+    correct: "4",
+    exptext: "✅ Herald fits because a herald rides ahead to announce news. 📌 Announces means herald. ❌ Recluse is wrong because a recluse avoids people and would not announce anything."
   },
   83: {
-    questext: "One who studies inscriptions carved on stone is a ______.",
-    options: ["paleographer", "calligrapher", "lexicographer", "epigrapher"],
-    correct: "4",
-    exptext: "✅ An epigrapher studies carved inscriptions. 📌 Epi-graph = writing upon stone. ❌ A paleographer studies old handwriting on parchment."
-  },
-  84: {
-    type: "concept", icon: "⚰️", accent: "#c5264e", pauseTimer: true,
-    title: "Epitaph",
+    type: "concept", icon: "🕊️", accent: "#2f23c7", pauseTimer: true,
+    title: "Emissary",
     html: `
-      <div class="cp-vocab vp" style="--a:#c5264e;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">words written on a tomb in memory of the dead</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">समाधि-लेख</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">tombstone inscription</span><span class="vp-tag syn">grave inscription</span><span class="vp-tag syn">memorial words</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>epitaph</b> on his grave said simply, "He loved the mountains." <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">She wrote a short <b>epitaph</b> for her grandmother's tombstone.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Time had worn the stone, but the <b>epitaph</b> was still faintly readable.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/42.png" alt="Picture for the word epitaph"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>epitaph</b> on his grave said simply, "He loved the mountains."</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:47,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈemɪsəri/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person sent on a special mission to represent someone</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">दूत, प्रतिनिधि</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">envoy</li><li class="vc-chip">messenger</li><li class="vc-chip">delegate</li><li class="vc-chip">ambassador</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">As a trusted <b>emissary</b>, he carried secret letters across the mountain border. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The president sent a special <b>emissary</b> to settle the border dispute.</p></li><li><span class="vc-n">3</span><p class="vc-s">As the king's <b>emissary</b>, he spoke with the neighbouring ruler about peace.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Emissary comes from the Latin word "to send out".</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/28.png" alt="Illustration of the word emissary: A tired traveller in a long coat rides a horse along a mountain road holding a sealed letter, with a guar" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">As a trusted <mark class="vc-hl">emissary</mark>, he carried secret letters across the mountain border.</p></div></div>
+      </div></div>
     `
   },
+  84: {
+    questext: "Select the most appropriate synonym of the given word.\nEmissary",
+    options: ["Envoy", "Prisoner", "Merchant", "Rival"],
+    correct: "1",
+    exptext: "✅ An emissary is sent to represent someone, so envoy is the closest word. 📌 Emissary is someone sent out. ❌ Rival is wrong because a rival competes against someone instead of representing them."
+  },
   85: {
-    questext: "समाधि पर लिखे शब्दों को क्या कहते हैं?",
-    options: ["epilogue", "epitaph", "epitome", "chronicle"],
-    correct: "2",
-    exptext: "✅ Epitaph is the inscription on a tomb. 📌 Epi-taph = on the tomb. ❌ Epilogue is the end section of a book."
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person sent on a special mission to represent someone",
+    options: ["Recluse", "Savant", "Emissary", "Pedant"],
+    correct: "3",
+    exptext: "✅ Emissary means a person sent to represent someone on a special mission. 📌 Sent out means emissary. ❌ Recluse is wrong because a recluse lives alone and avoids others."
   },
   86: {
-    type: "concept", icon: "🏅", accent: "#318cd8", pauseTimer: true,
-    title: "Epitome",
+    type: "concept", icon: "🏺", accent: "#23a7c7", pauseTimer: true,
+    title: "Archaism",
     html: `
-      <div class="cp-vocab vp" style="--a:#318cd8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a perfect example of a quality or type</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">आदर्श उदाहरण, मूर्त रूप</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">embodiment</span><span class="vp-tag syn">essence</span><span class="vp-tag syn">perfect example</span><span class="vp-tag syn">model</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">antithesis</span><span class="vp-tag ant">contrast</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The village doctor was the <b>epitome</b> of kindness, treating the poor without any fee. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The new stadium is the <b>epitome</b> of modern design.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In the poem, the old oak stands as the <b>epitome</b> of patience.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/43.png" alt="Picture for the word epitome"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The village doctor was the <b>epitome</b> of kindness, treating the poor without any fee.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,167,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɑːkeɪɪzəm/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an old word or phrase that people no longer use</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">पुराना शब्द, अप्रचलित प्रयोग</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">obsolete word</li><li class="vc-chip">old word</li><li class="vc-chip">outdated expression</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">neologism</li><li class="vc-chip">modern word</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Shakespeare's plays contain an <b>archaism</b> on almost every page, so students keep glossaries beside them. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The word "thou" is an <b>archaism</b> that people no longer use in daily speech.</p></li><li><span class="vc-n">3</span><p class="vc-s">Using an <b>archaism</b> in an essay can make modern writing sound strange.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Archaios" is the Greek word for ancient.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/29.png" alt="Illustration of the word archaism: A student sits at a desk with an old open play book, looking puzzled at a faded old-fashioned word on the" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Shakespeare's plays contain an <mark class="vc-hl">archaism</mark> on almost every page, so students keep glossaries beside them.</p></div></div>
+      </div></div>
     `
   },
   87: {
-    questext: "He is the ______ of honesty; no one has ever doubted his word.",
-    options: ["epilogue", "epitaph", "epitome", "ledger"],
-    correct: "3",
-    exptext: "✅ Epitome means a perfect example. 📌 Epitome = the best sample. ❌ Epitaph is a tomb inscription."
+    questext: "Select the most appropriate synonym of the given word.\nArchaism",
+    options: ["Modern word", "Outdated word", "Slang word", "New phrase"],
+    correct: "2",
+    exptext: "✅ An archaism is an old word no longer in use, so outdated word is the closest meaning. 📌 \"Archaios\" means ancient. ❌ Modern word is wrong because it is the opposite idea."
   },
   88: {
-    type: "concept", icon: "🎬", accent: "#c5dd4b", pauseTimer: true,
-    title: "Epilogue",
-    html: `
-      <div class="cp-vocab vp" style="--a:#c5dd4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a short section at the end of a book or play</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">उपसंहार, उत्तरवाक्</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">afterword</span><span class="vp-tag syn">conclusion</span><span class="vp-tag syn">postscript</span><span class="vp-tag syn">closing section</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">prologue</span><span class="vp-tag ant">preface</span><span class="vp-tag ant">introduction</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">In the <b>epilogue</b>, the author tells us what happened to the hero years later.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The play ended with an <b>epilogue</b> spoken by the main actor. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Readers often skip the <b>epilogue</b>, but it ties up every loose thread.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/44.png" alt="Picture for the word epilogue"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The play ended with an <b>epilogue</b> spoken by the main actor.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe word \"whence\" sounds like an ______ today because very few people still use it.",
+    options: ["coinage", "dialect", "jargon", "archaism"],
+    correct: "4",
+    exptext: "✅ Archaism fits because the word is old and rarely used now. 📌 Old word means archaism. ❌ Coinage is wrong because it is a new word that someone invents."
   },
   89: {
-    questext: "Choose the OPPOSITE of \"epilogue\".",
-    options: ["prologue", "afterword", "conclusion", "postscript"],
-    correct: "1",
-    exptext: "✅ A prologue opens a work; an epilogue closes it. 📌 Epi = after, pro = before. ❌ Afterword and postscript are synonyms."
-  },
-  90: {
-    type: "concept", icon: "🧘", accent: "#b026c5", pauseTimer: true,
-    title: "Stoic",
+    type: "concept", icon: "🧩", accent: "#23c758", pauseTimer: true,
+    title: "Jargon",
     html: `
-      <div class="cp-vocab vp" style="--a:#b026c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">not showing feelings and calmly accepting pain or trouble</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">संयमी, सहनशील</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">unemotional</span><span class="vp-tag syn">impassive</span><span class="vp-tag syn">long-suffering</span><span class="vp-tag syn">calm</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">emotional</span><span class="vp-tag ant">excitable</span><span class="vp-tag ant">sensitive</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">He stayed <b>stoic</b> while the doctor stitched the deep cut on his arm.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The <b>stoic</b> old farmer accepted the failed harvest without a single complaint. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her <b>stoic</b> face hid the grief she felt during the long ceremony.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/45.png" alt="Picture for the word stoic"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>stoic</b> old farmer accepted the failed harvest without a single complaint.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,88;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈdʒɑːɡən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">special words of a profession that other people find hard to understand</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">तकनीकी शब्दावली, पेशेवर बोली</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">technical language</li><li class="vc-chip">cant</li><li class="vc-chip">lingo</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">plain language</li><li class="vc-chip">simple speech</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The mechanic's <b>jargon</b> left me completely confused about what was wrong with my scooter. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The legal <b>jargon</b> in the contract was too hard for ordinary readers.</p></li><li><span class="vc-n">3</span><p class="vc-s">Good teachers avoid <b>jargon</b> and explain ideas in simple words.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/30.png" alt="Illustration of the word jargon: A confused young man stands at a repair shop counter scratching his head, while a mechanic in overalls spea" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The mechanic's <mark class="vc-hl">jargon</mark> left me completely confused about what was wrong with my scooter.</p></div></div>
+      </div></div>
     `
   },
+  90: {
+    questext: "Select the most appropriate antonym of the given word.\nJargon",
+    options: ["Plain language", "Lingo", "Technical terms", "Cant"],
+    correct: "1",
+    exptext: "✅ Jargon is hard professional language, so plain language is the opposite. 📌 Jargon confuses; plain talk clears. ❌ Technical terms is wrong because it is a synonym."
+  },
   91: {
-    questext: "Which word is closest in meaning to \"stoic\"?",
-    options: ["emotional", "impassive", "excitable", "tearful"],
-    correct: "2",
-    exptext: "✅ Impassive means showing no emotion. 📌 Stoic = stone-faced. ❌ Emotional is the opposite."
+    questext: "Select the most appropriate option to fill in the blank.\nThe doctor's talk was full of medical ______, so the patient understood almost nothing.",
+    options: ["epilogue", "ledger", "jargon", "harbinger"],
+    correct: "3",
+    exptext: "✅ Jargon fits because hard professional words left the patient confused. 📌 Hard trade words mean jargon. ❌ Epilogue is wrong because it is a closing section of a book or play."
   },
   92: {
-    type: "concept", icon: "😊", accent: "#31d891", pauseTimer: true,
-    title: "Sanguine",
+    type: "concept", icon: "🕵️", accent: "#7ec723", pauseTimer: true,
+    title: "Argot",
     html: `
-      <div class="cp-vocab vp" style="--a:#31d891;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">cheerful and hopeful, especially in a difficult situation</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">आशावादी, आशान्वित</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">optimistic</span><span class="vp-tag syn">hopeful</span><span class="vp-tag syn">confident</span><span class="vp-tag syn">cheerful</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">pessimistic</span><span class="vp-tag ant">gloomy</span><span class="vp-tag ant">despondent</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Despite the poor results, the coach remained <b>sanguine</b> about the next match. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Investors were <b>sanguine</b> about the market after the bank cut interest rates.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">She felt <b>sanguine</b> that the long journey would end in good news.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/46.png" alt="Picture for the word sanguine"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Despite the poor results, the coach remained <b>sanguine</b> about the next match.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:126,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɑːɡəʊ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the secret slang used by a group such as thieves</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">गुप्त बोली, समूह की गुप्त भाषा</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">secret slang</li><li class="vc-chip">cant</li><li class="vc-chip">thieves' slang</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Pickpockets in the old city spoke a secret <b>argot</b> to hide their plans. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Prisoners in the old jail developed their own <b>argot</b> so the guards could not follow.</p></li><li><span class="vc-n">3</span><p class="vc-s">The detective learned the gang's <b>argot</b> to understand their secret messages.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/31.png" alt="Illustration of the word argot: In a dim alley at night, three men in caps whisper close together, one making a quiet hand signal, while a s" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Pickpockets in the old city spoke a secret <mark class="vc-hl">argot</mark> to hide their plans.</p></div></div>
+      </div></div>
     `
   },
   93: {
-    questext: "Choose the OPPOSITE of \"sanguine\".",
-    options: ["hopeful", "cheerful", "confident", "despondent"],
-    correct: "4",
-    exptext: "✅ Despondent means hopeless and sad. 📌 Sanguine = rosy-cheeked and hopeful. ❌ Hopeful is a synonym."
+    questext: "Select the most appropriate synonym of the given word.\nArgot",
+    options: ["Formal speech", "Secret slang", "Poetry", "Plain talk"],
+    correct: "2",
+    exptext: "✅ Argot is the secret slang of a group, so secret slang is the closest meaning. 📌 Argot hides meaning from outsiders. ❌ Plain talk is wrong because it is open and easy to understand."
   },
   94: {
-    type: "concept", icon: "🏔️", accent: "#dd754b", pauseTimer: true,
-    title: "Anchorite",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd754b;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who lives alone, away from society, for religious reasons</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">संन्यासी, एकांतवासी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">hermit</span><span class="vp-tag syn">recluse</span><span class="vp-tag syn">ascetic</span><span class="vp-tag syn">solitary</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">socialite</span><span class="vp-tag ant">extrovert</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>anchorite</b> lived in a mountain cave and prayed for most of the day. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Villagers brought food to the <b>anchorite</b> but never stayed to talk.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Like an <b>anchorite</b>, he gave up wealth, company and comfort for silent study.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/47.png" alt="Picture for the word anchorite"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>anchorite</b> lived in a mountain cave and prayed for most of the day.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe gang members spoke in a secret ______ that outsiders could not follow.",
+    options: ["epilogue", "ledger", "almanac", "argot"],
+    correct: "4",
+    exptext: "✅ Argot fits because it is the secret slang of a group. 📌 Secret group talk means argot. ❌ Ledger is wrong because it is a book of money accounts."
   },
   95: {
-    questext: "Which word means a person who withdraws from society for a religious life?",
-    options: ["anchorite", "orator", "emissary", "herald"],
-    correct: "1",
-    exptext: "✅ An anchorite lives apart for religion. 📌 Anchorite = anchored alone. ❌ An orator gives speeches."
-  },
-  96: {
-    type: "concept", icon: "🏚️", accent: "#2627c5", pauseTimer: true,
-    title: "Recluse",
+    type: "concept", icon: "🆕", accent: "#c78123", pauseTimer: true,
+    title: "Neologism",
     html: `
-      <div class="cp-vocab vp" style="--a:#2627c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who lives alone and avoids other people</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">एकांतप्रिय, एकांतवासी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">hermit</span><span class="vp-tag syn">loner</span><span class="vp-tag syn">solitary person</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">socialite</span><span class="vp-tag ant">extrovert</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>recluse</b> rarely opened his door, even for his own neighbours.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">After her loss, she became a <b>recluse</b> and stopped answering calls.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The famous writer lived as a <b>recluse</b> in a house hidden by tall trees. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/48.png" alt="Picture for the word recluse"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The famous writer lived as a <b>recluse</b> in a house hidden by tall trees.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,129,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/niˈɒlədʒɪzəm/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a newly invented word or phrase</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">नया शब्द, नवशब्द</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">new word</li><li class="vc-chip">coinage</li><li class="vc-chip">newly coined term</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">archaism</li><li class="vc-chip">old word</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The word "selfie" was once a <b>neologism</b>, but now everyone uses it. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">"Podcast" began as a <b>neologism</b> and is now an everyday word.</p></li><li><span class="vc-n">3</span><p class="vc-s">Every new gadget brings a fresh <b>neologism</b> into our language.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Neo" means new, so a neologism is a new word.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/32.png" alt="Illustration of the word neologism: A cheerful teenager takes a picture of herself with a phone held at arm's length, smiling, while a glowi" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The word "selfie" was once a <mark class="vc-hl">neologism</mark>, but now everyone uses it.</p></div></div>
+      </div></div>
     `
   },
+  96: {
+    questext: "Select the most appropriate antonym of the given word.\nNeologism",
+    options: ["Archaism", "Slang", "Coinage", "Jargon"],
+    correct: "1",
+    exptext: "✅ A neologism is a new word, so archaism, an old word no longer used, is the opposite. 📌 \"Neo\" is new; \"archaios\" is old. ❌ Coinage is wrong because it is a synonym."
+  },
   97: {
-    questext: "Odd one out among these words:",
-    options: ["hermit", "loner", "socialite", "solitary"],
+    questext: "Select the most appropriate option to fill in the blank.\n\"Hashtag\" was once a ______ but is now listed in standard dictionaries.",
+    options: ["quagmire", "epitaph", "neologism", "tautology"],
     correct: "3",
-    exptext: "✅ A socialite loves company; the rest live alone. 📌 Recluse = locked away. ❌ Hermit, loner and solitary mean alone."
+    exptext: "✅ Neologism fits because \"hashtag\" was a new word before it became common. 📌 New word means neologism. ❌ Tautology is wrong because it means saying the same thing twice."
   },
   98: {
-    type: "concept", icon: "🕉️", accent: "#63d831", pauseTimer: true,
-    title: "Ascetic",
+    type: "concept", icon: "💬", accent: "#c72355", pauseTimer: true,
+    title: "Colloquialism",
     html: `
-      <div class="cp-vocab vp" style="--a:#63d831;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who gives up comforts and lives very simply for spiritual reasons</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">तपस्वी, संयमी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">monk</span><span class="vp-tag syn">abstainer</span><span class="vp-tag syn">renunciant</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">hedonist</span><span class="vp-tag ant">epicure</span><span class="vp-tag ant">sensualist</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>ascetic</b> slept on the bare floor and ate only one simple meal a day. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Though rich, he lived like an <b>ascetic</b>, owning almost nothing.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The village revered the <b>ascetic</b> who had given up all comforts for meditation.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/49.png" alt="Picture for the word ascetic"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>ascetic</b> slept on the bare floor and ate only one simple meal a day.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,85;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/kəˈləʊkwiəlɪzəm/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an informal word or phrase used in everyday talk</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">बोलचाल का शब्द, आम बोली</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">informal expression</li><li class="vc-chip">casual phrase</li><li class="vc-chip">everyday phrase</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">formal language</li><li class="vc-chip">formal expression</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Her speech was full of friendly <b>colloquialisms</b>, which made the crowd feel at home. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">"Piece of cake" is a <b>colloquialism</b> meaning that something is very easy.</p></li><li><span class="vc-n">3</span><p class="vc-s">A <b>colloquialism</b> suits friendly talk, but not a formal letter.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">A "colloquy" is a talk, so a colloquialism is a word of casual talk.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/33.png" alt="Illustration of the word colloquialism: Two friends sit on a park bench laughing and chatting casually with relaxed hands; a speech bubble a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Her speech was full of friendly <mark class="vc-hl">colloquialisms</mark>, which made the crowd feel at home.</p></div></div>
+      </div></div>
     `
   },
   99: {
-    questext: "Choose the OPPOSITE of \"ascetic\".",
-    options: ["hedonist", "monk", "hermit", "abstainer"],
-    correct: "1",
-    exptext: "✅ A hedonist lives for pleasure; an ascetic denies it. 📌 Ascetic = austere. ❌ Monk, hermit and abstainer are similar to ascetic."
+    questext: "Select the most appropriate synonym of the given word.\nColloquialism",
+    options: ["Formal phrase", "Informal expression", "Ancient word", "Legal term"],
+    correct: "2",
+    exptext: "✅ A colloquialism is an informal expression used in daily talk. 📌 Colloquy means a chat. ❌ Formal phrase is wrong because it is the opposite idea."
   },
   100: {
-    type: "concept", icon: "🛋️", accent: "#dd4ba1", pauseTimer: true,
-    title: "Recline",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd4ba1;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">verb</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">to lean or lie back in a relaxed position</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">लेटना, पीछे झुकना</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">lie back</span><span class="vp-tag syn">lean back</span><span class="vp-tag syn">repose</span><span class="vp-tag syn">rest</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">sit up</span><span class="vp-tag ant">stand</span><span class="vp-tag ant">rise</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">After lunch, grandfather loved to <b>recline</b> on the cane chair and read. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Passengers may <b>recline</b> their seats once the plane has taken off.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The painter asked his model to <b>recline</b> gracefully on the velvet sofa.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/50.png" alt="Picture for the word recline"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">After lunch, grandfather loved to <b>recline</b> on the cane chair and read.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nSaying \"hang on\" instead of \"please wait\" is a ______ common in everyday talk.",
+    options: ["archaism", "jargon", "epitaph", "colloquialism"],
+    correct: "4",
+    exptext: "✅ Colloquialism fits because \"hang on\" is an informal phrase of everyday speech. 📌 Chat words mean colloquialism. ❌ Archaism is wrong because it is an old word no longer used."
   },
   101: {
-    questext: "The tired traveller wished to ______ on the soft sofa and rest.",
-    options: ["elude", "conceal", "recline", "hasten"],
-    correct: "3",
-    exptext: "✅ Recline means to lean or lie back. 📌 Re-cline = lean back. ❌ Elude means to escape cleverly."
-  },
-  102: {
-    type: "concept", icon: "🔮", accent: "#26b2c5", pauseTimer: true,
-    title: "Mystic",
+    type: "concept", icon: "🏘️", accent: "#aa23c7", pauseTimer: true,
+    title: "Dialect",
     html: `
-      <div class="cp-vocab vp" style="--a:#26b2c5;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who seeks deep spiritual truth through prayer and meditation</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">रहस्यवादी, अध्यात्म-साधक</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">seer</span><span class="vp-tag syn">visionary</span><span class="vp-tag syn">spiritualist</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">sceptic</span><span class="vp-tag ant">materialist</span><span class="vp-tag ant">rationalist</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>mystic</b> sat by the river for hours, lost in silent prayer. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Kabir, a famous poet and <b>mystic</b>, taught that God lives within every heart.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The <b>mystic</b> claimed to feel a peace that no words could explain.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/51.png" alt="Picture for the word mystic"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>mystic</b> sat by the river for hours, lost in silent prayer.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:170,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈdaɪəlekt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a form of a language spoken in one region or group</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">बोली, उपभाषा</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">regional speech</li><li class="vc-chip">local tongue</li><li class="vc-chip">vernacular</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">standard language</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The farmer spoke in a rural <b>dialect</b> that city visitors found hard to follow. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">People in the hills speak a <b>dialect</b> that sounds very different from city speech.</p></li><li><span class="vc-n">3</span><p class="vc-s">The novel uses a rural <b>dialect</b> to show how its characters really talk.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/34.png" alt="Illustration of the word dialect: A smiling farmer in a turban speaks with a village woman in a green field while a puzzled city visitor wit" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The farmer spoke in a rural <mark class="vc-hl">dialect</mark> that city visitors found hard to follow.</p></div></div>
+      </div></div>
     `
   },
+  102: {
+    questext: "Select the most appropriate antonym of the given word.\nDialect",
+    options: ["Standard language", "Local tongue", "Regional speech", "Village talk"],
+    correct: "1",
+    exptext: "✅ A dialect is a regional form of speech, so standard language, which is the same everywhere, is the opposite. 📌 Dialect is local; standard is national. ❌ Regional speech is wrong because it is a synonym."
+  },
   103: {
-    questext: "Which word means a person who seeks spiritual truth through meditation?",
-    options: ["charlatan", "mystic", "pedant", "sceptic"],
-    correct: "2",
-    exptext: "✅ A mystic seeks spiritual truth. 📌 Mystic = mystery seeker. ❌ A sceptic doubts everything."
+    questext: "Select the most appropriate option to fill in the blank.\nThough both villages speak the same language, each has its own ______ with different local words.",
+    options: ["epilogue", "coinage", "dialect", "impasse"],
+    correct: "3",
+    exptext: "✅ Dialect fits because it is a local form of one language. 📌 Same language, local style means dialect. ❌ Coinage is wrong because it is a newly invented word."
   },
   104: {
-    type: "concept", icon: "🎭", accent: "#d8bb31", pauseTimer: true,
-    title: "Charlatan",
+    type: "concept", icon: "❓", accent: "#232cc7", pauseTimer: true,
+    title: "Non sequitur",
     html: `
-      <div class="cp-vocab vp" style="--a:#d8bb31;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who falsely claims to have special skill or knowledge</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">ढोंगी, नीमहकीम</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fraud</span><span class="vp-tag syn">quack</span><span class="vp-tag syn">impostor</span><span class="vp-tag syn">fake</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">expert</span><span class="vp-tag ant">authority</span><span class="vp-tag ant">professional</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>charlatan</b> sold coloured water as a cure for every disease. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Experts warned that the self-styled guru was a <b>charlatan</b> who cheated simple villagers.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">No <b>charlatan</b> can fool a trained doctor for long.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/52.png" alt="Picture for the word charlatan"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>charlatan</b> sold coloured water as a cure for every disease.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,44,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌnɒn ˈsekwɪtə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a statement that does not logically follow from what came before</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">असंगत बात, बेतुका निष्कर्ष</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">illogical remark</li><li class="vc-chip">irrelevant statement</li><li class="vc-chip">false conclusion</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">logical conclusion</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">When asked about the budget, his reply about cricket was a complete <b>non sequitur</b>. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Saying "It is raining, so the exam was hard" is a <b>non sequitur</b>.</p></li><li><span class="vc-n">3</span><p class="vc-s">The speaker's last point was a <b>non sequitur</b> that left the audience puzzled.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">It is Latin for "it does not follow".</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/35.png" alt="Illustration of the word non sequitur: At a press conference, a reporter asks a serious question with a budget chart behind the stage, while" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">When asked about the budget, his reply about cricket was a complete <mark class="vc-hl">non sequitur</mark>.</p></div></div>
+      </div></div>
     `
   },
   105: {
-    questext: "Which word is closest in meaning to \"charlatan\"?",
-    options: ["expert", "scholar", "authority", "quack"],
-    correct: "4",
-    exptext: "✅ A quack falsely claims skill. 📌 Charlatan = fake expert. ❌ Expert is the opposite."
+    questext: "Select the most appropriate synonym of the given word.\nNon sequitur",
+    options: ["Sound argument", "Illogical remark", "Clear proof", "Wise saying"],
+    correct: "2",
+    exptext: "✅ A non sequitur does not follow from what came before, so illogical remark is the closest meaning. 📌 Latin for \"it does not follow\". ❌ Sound argument is wrong because it is the opposite idea."
   },
   106: {
-    type: "concept", icon: "🎪", accent: "#994bdd", pauseTimer: true,
-    title: "Masquerade",
-    html: `
-      <div class="cp-vocab vp" style="--a:#994bdd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">verb</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">to pretend to be someone or something you are not</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">ढोंग करना, भेष बदलना</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">pose</span><span class="vp-tag syn">pretend</span><span class="vp-tag syn">impersonate</span><span class="vp-tag syn">disguise</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">reveal</span><span class="vp-tag ant">unmask</span><span class="vp-tag ant">expose</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The thief tried to <b>masquerade</b> as a postman to enter the building. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Fake news can <b>masquerade</b> as real news and mislead thousands of readers.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">At the ball, guests <b>masquerade</b> as kings, birds and pirates until midnight.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/53.png" alt="Picture for the word masquerade"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The thief tried to <b>masquerade</b> as a postman to enter the building.</p></div></div></div></div>
-    `
+    questext: "Select the option that best expresses the meaning of the given idiom/phrase.\nNon sequitur",
+    options: ["A very polite request", "A clever joke", "A repeated question", "A statement that does not follow from what came before"],
+    correct: "4",
+    exptext: "✅ A non sequitur is a statement that has no logical link to what came before. 📌 Latin for \"it does not follow\". ❌ A repeated question is wrong because the phrase is about a missing link in logic, not repetition."
   },
   107: {
-    questext: "Choose the OPPOSITE of \"masquerade\".",
-    options: ["pose", "pretend", "unmask", "disguise"],
-    correct: "3",
-    exptext: "✅ Unmask means to reveal the truth. 📌 Mask-erade = wear a mask. ❌ Pose, pretend and disguise are similar."
-  },
-  108: {
-    type: "concept", icon: "🧠", accent: "#26c54c", pauseTimer: true,
-    title: "Omniscient",
+    type: "concept", icon: "🌫️", accent: "#23bcc7", pauseTimer: true,
+    title: "Equivocation",
     html: `
-      <div class="cp-vocab vp" style="--a:#26c54c;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">knowing everything</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">सर्वज्ञ</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">all-knowing</span><span class="vp-tag syn">all-wise</span><span class="vp-tag syn">infinitely wise</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">ignorant</span><span class="vp-tag ant">unaware</span><span class="vp-tag ant">uninformed</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Many people believe God is <b>omniscient</b> and knows every thought.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">No teacher is <b>omniscient</b>, so it is fine to say "I will find out."</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The <b>omniscient</b> narrator of the novel knows what every character secretly thinks. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/54.png" alt="Picture for the word omniscient"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>omniscient</b> narrator of the novel knows what every character secretly thinks.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,188,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ɪˌkwɪvəˈkeɪʃən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">using unclear or double-meaning words to avoid telling the plain truth</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">टालमटोल, गोलमोल बात</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">evasion</li><li class="vc-chip">ambiguity</li><li class="vc-chip">hedging</li><li class="vc-chip">double talk</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">frankness</li><li class="vc-chip">plain speaking</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The minister's <b>equivocation</b> on the tax question made reporters even more suspicious. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Stop your <b>equivocation</b> and tell the court exactly what you saw.</p></li><li><span class="vc-n">3</span><p class="vc-s">Voters grew tired of the leader's <b>equivocation</b> on every serious question.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Equi" means equal and "vocare" means to call, so a word with two equal meanings.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/36.png" alt="Illustration of the word equivocation: A nervous official stands at a podium with a slippery smile and a raised hand, while thin foggy swirl" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The minister's <mark class="vc-hl">equivocation</mark> on the tax question made reporters even more suspicious.</p></div></div>
+      </div></div>
     `
   },
-  109: {
-    questext: "Which word describes someone who knows everything?",
-    options: ["omniscient", "eloquent", "sanguine", "stoic"],
+  108: {
+    questext: "Select the most appropriate antonym of the given word.\nEquivocation",
+    options: ["Frankness", "Evasion", "Hedging", "Ambiguity"],
     correct: "1",
-    exptext: "✅ Omniscient means all-knowing. 📌 Omni = all, sci = know. ❌ Eloquent means fluent in speech."
+    exptext: "✅ Equivocation is vague, evasive talk, so frankness, which is open and honest speech, is the opposite. 📌 Equivocation hides; frankness shows. ❌ Evasion is wrong because it is a synonym."
+  },
+  109: {
+    questext: "Select the most appropriate option to fill in the blank.\nInstead of a direct yes or no, the official offered only ______ about the new rule.",
+    options: ["almanac", "epilogue", "equivocation", "ledger"],
+    correct: "3",
+    exptext: "✅ Equivocation fits because the official avoided a plain answer with vague words. 📌 No straight answer means equivocation. ❌ Epilogue is wrong because it is the closing section of a book or play."
   },
   110: {
-    type: "concept", icon: "🌐", accent: "#d83139", pauseTimer: true,
-    title: "Ubiquitous",
+    type: "concept", icon: "🔁", accent: "#23c743", pauseTimer: true,
+    title: "Tautology",
     html: `
-      <div class="cp-vocab vp" style="--a:#d83139;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">seeming to be present everywhere at the same time</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">सर्वव्यापी, हर जगह मौजूद</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">omnipresent</span><span class="vp-tag syn">everywhere</span><span class="vp-tag syn">pervasive</span><span class="vp-tag syn">universal</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">rare</span><span class="vp-tag ant">scarce</span><span class="vp-tag ant">absent</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Mobile phones are <b>ubiquitous</b>; you see them in almost every hand. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The <b>ubiquitous</b> smell of fresh tea filled every lane of the old market.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Fast food chains have become <b>ubiquitous</b> in cities and small towns alike.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/55.png" alt="Picture for the word ubiquitous"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Mobile phones are <b>ubiquitous</b>; you see them in almost every hand.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,67;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/tɔːˈtɒlədʒi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">saying the same thing twice in different words</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">पुनरुक्ति, शब्द-दोहराव</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">repetition</li><li class="vc-chip">redundancy</li><li class="vc-chip">needless repetition</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">conciseness</li><li class="vc-chip">brevity</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The editor cut the <b>tautology</b> from the report to make it shorter. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">"A free gift" is a <b>tautology</b> because every gift is already free.</p></li><li><span class="vc-n">3</span><p class="vc-s">Avoid <b>tautology</b> in your essay and say each point only once.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Tauto" is the Greek word for same, so a tautology says the same thing again.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/37.png" alt="Illustration of the word tautology: An editor with a red pen sits at a desk and crosses out a repeated phrase on a printed page, where the s" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The editor cut the <mark class="vc-hl">tautology</mark> from the report to make it shorter.</p></div></div>
+      </div></div>
     `
   },
   111: {
-    questext: "Choose the OPPOSITE of \"ubiquitous\".",
-    options: ["universal", "pervasive", "omnipresent", "scarce"],
-    correct: "4",
-    exptext: "✅ Scarce means hard to find. 📌 Ubi = where; found everywhere. ❌ Universal, pervasive and omnipresent are synonyms."
+    questext: "Select the most appropriate synonym of the given word.\nTautology",
+    options: ["Brief summary", "Needless repetition", "Clear proof", "Hidden meaning"],
+    correct: "2",
+    exptext: "✅ A tautology says the same thing twice, so needless repetition is the closest meaning. 📌 \"Tauto\" means same. ❌ Brief summary is wrong because a summary is short and not repetitive."
   },
   112: {
-    type: "concept", icon: "🌿", accent: "#4b7ddd", pauseTimer: true,
-    title: "Immanent",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4b7ddd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">present inside something as a natural part of it</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अंतर्निहित, भीतर व्याप्त</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">inherent</span><span class="vp-tag syn">intrinsic</span><span class="vp-tag syn">indwelling</span><span class="vp-tag syn">innate</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">external</span><span class="vp-tag ant">extrinsic</span><span class="vp-tag ant">outer</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Some thinkers say God is <b>immanent</b> in nature, not far away from it.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A sense of fairness is <b>immanent</b> in every child.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The poet felt a quiet beauty <b>immanent</b> in even the smallest pebble. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/56.png" alt="Picture for the word immanent"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The poet felt a quiet beauty <b>immanent</b> in even the smallest pebble.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\n\"Return back\" is a ______ because \"return\" already means to come back.",
+    options: ["jargon", "dialect", "argot", "tautology"],
+    correct: "4",
+    exptext: "✅ Tautology fits because \"back\" repeats the idea already in \"return\". 📌 Same idea twice means tautology. ❌ Jargon is wrong because it means hard professional words."
   },
   113: {
-    questext: "Which word means \"existing within; inherent\"?",
-    options: ["imminent", "immanent", "eminent", "impromptu"],
-    correct: "2",
-    exptext: "✅ Immanent means existing within. 📌 im-MAN-ent: the man is within. ❌ Imminent means about to happen."
-  },
-  114: {
-    type: "concept", icon: "⏳", accent: "#8ac526", pauseTimer: true,
-    title: "Imminent",
+    type: "concept", icon: "📅", accent: "#93c723", pauseTimer: true,
+    title: "Almanac",
     html: `
-      <div class="cp-vocab vp" style="--a:#8ac526;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">about to happen very soon</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">निकट, आसन्न</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">impending</span><span class="vp-tag syn">approaching</span><span class="vp-tag syn">looming</span><span class="vp-tag syn">forthcoming</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">distant</span><span class="vp-tag ant">remote</span><span class="vp-tag ant">far-off</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Black clouds warned that a heavy storm was <b>imminent</b>. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The company announced that an <b>imminent</b> merger would change the way it works.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">With exams <b>imminent</b>, the library was full from morning till midnight.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/57.png" alt="Picture for the word imminent"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Black clouds warned that a heavy storm was <b>imminent</b>.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:147,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɔːlmənæk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a yearly book with a calendar, weather notes and useful facts</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">पंचांग, वार्षिक पत्रिका</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">yearbook</li><li class="vc-chip">yearly calendar</li><li class="vc-chip">calendar book</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Farmers once planted crops by checking the weather notes in the village <b>almanac</b>. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The old <b>almanac</b> listed the days of the festivals and the best time for sowing.</p></li><li><span class="vc-n">3</span><p class="vc-s">Dad bought a new <b>almanac</b> every January to check the holidays and tides.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/38.png" alt="Illustration of the word almanac: A farmer in a field holds up a thick yearly book open to a page with a calendar and a small sun and rain s" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Farmers once planted crops by checking the weather notes in the village <mark class="vc-hl">almanac</mark>.</p></div></div>
+      </div></div>
     `
   },
+  114: {
+    questext: "Select the most appropriate synonym of the given word.\nAlmanac",
+    options: ["Yearbook", "Novel", "Dictionary", "Diary"],
+    correct: "1",
+    exptext: "✅ An almanac is a yearly book with a calendar and facts, so yearbook is the closest word. 📌 Almanac is a book for the whole year. ❌ Diary is wrong because it is a private daily record kept by one person."
+  },
   115: {
-    questext: "Dark clouds show that rain is ______.",
-    options: ["eminent", "imminent", "immanent", "impromptu"],
-    correct: "2",
-    exptext: "✅ Imminent means about to happen. 📌 imMINent = coming in a MINute. ❌ Eminent means famous."
+    questext: "Select the most appropriate option to fill in the blank.\nThe farmer checked the ______ for the days of the festivals and the weather notes for the season.",
+    options: ["ledger", "epitaph", "almanac", "chronicle"],
+    correct: "3",
+    exptext: "✅ Almanac fits because it lists festival days and weather notes for the year. 📌 Yearly facts mean almanac. ❌ Ledger is wrong because it records money accounts."
   },
   116: {
-    type: "concept", icon: "🌟", accent: "#d831cb", pauseTimer: true,
-    title: "Eminent",
+    type: "concept", icon: "📜", accent: "#c76c23", pauseTimer: true,
+    title: "Chronicle",
     html: `
-      <div class="cp-vocab vp" style="--a:#d831cb;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">famous and respected, especially in a profession</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">प्रतिष्ठित, विख्यात</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">distinguished</span><span class="vp-tag syn">renowned</span><span class="vp-tag syn">illustrious</span><span class="vp-tag syn">prominent</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">unknown</span><span class="vp-tag ant">obscure</span><span class="vp-tag ant">insignificant</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The college invited an <b>eminent</b> scientist to open its new laboratory. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">She is an <b>eminent</b> surgeon admired across the country.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The <b>eminent</b> poet received the award with humble words.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/58.png" alt="Picture for the word eminent"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The college invited an <b>eminent</b> scientist to open its new laboratory.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,108,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈkrɒnɪkl/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a written record of events in the order they happened</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">इतिवृत्त, वृत्तांत</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">historical record</li><li class="vc-chip">account</li><li class="vc-chip">annals</li><li class="vc-chip">history</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The monk kept a <b>chronicle</b> of every flood and famine in the kingdom. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The court poet wrote a <b>chronicle</b> of the king's victories year by year.</p></li><li><span class="vc-n">3</span><p class="vc-s">The writer's <b>chronicle</b> of the war years is read in many schools.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Chronos" is the Greek word for time, so a chronicle lists events in time order.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/39.png" alt="Illustration of the word chronicle: A monk in a simple robe sits in a stone room writing in a large old book with a quill by candlelight; be" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The monk kept a <mark class="vc-hl">chronicle</mark> of every flood and famine in the kingdom.</p></div></div>
+      </div></div>
     `
   },
   117: {
-    questext: "Choose the OPPOSITE of \"eminent\".",
-    options: ["renowned", "distinguished", "prominent", "obscure"],
-    correct: "4",
-    exptext: "✅ Obscure means unknown. 📌 Eminent = on top, famous. ❌ Renowned and distinguished are synonyms."
+    questext: "Select the most appropriate synonym of the given word.\nChronicle",
+    options: ["Weather forecast", "Historical record", "Shop bill", "Short poem"],
+    correct: "2",
+    exptext: "✅ A chronicle is a record of events in time order, so historical record is the closest meaning. 📌 \"Chronos\" means time. ❌ Weather forecast is wrong because it predicts the future and does not record the past."
   },
   118: {
-    type: "concept", icon: "🚧", accent: "#4bddbd", pauseTimer: true,
-    title: "Impasse",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bddbd;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a situation in which no progress can be made</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">गतिरोध, अवरोध</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">deadlock</span><span class="vp-tag syn">stalemate</span><span class="vp-tag syn">standoff</span><span class="vp-tag syn">dead end</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">breakthrough</span><span class="vp-tag ant">agreement</span><span class="vp-tag ant">progress</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The talks ended in an <b>impasse</b> when neither side would change its demand. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The union and the management reached an <b>impasse</b> over wages.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Stuck at an <b>impasse</b>, the two neighbours finally asked an elder to help.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/59.png" alt="Picture for the word impasse"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The talks ended in an <b>impasse</b> when neither side would change its demand.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe scholar studied a medieval ______ that listed the main events of each year in order.",
+    options: ["ledger", "epilogue", "jargon", "chronicle"],
+    correct: "4",
+    exptext: "✅ Chronicle fits because it lists events in the order they happened. 📌 Time-ordered events mean chronicle. ❌ Ledger is wrong because it records money accounts, not events."
   },
   119: {
-    questext: "Which word is closest in meaning to \"impasse\"?",
-    options: ["deadlock", "agreement", "progress", "breakthrough"],
-    correct: "1",
-    exptext: "✅ Deadlock means no way forward. 📌 Im-passe = no pass. ❌ Breakthrough is the opposite."
-  },
-  120: {
-    type: "concept", icon: "🐊", accent: "#c57426", pauseTimer: true,
-    title: "Quagmire",
+    type: "concept", icon: "📒", accent: "#c7236a", pauseTimer: true,
+    title: "Ledger",
     html: `
-      <div class="cp-vocab vp" style="--a:#c57426;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a difficult situation that is hard to get out of</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">दलदल, कठिन स्थिति</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">swamp</span><span class="vp-tag syn">morass</span><span class="vp-tag syn">predicament</span><span class="vp-tag syn">mess</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">dry land</span><span class="vp-tag ant">ease</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The heavy rain turned the village road into a <b>quagmire</b> of sticky mud. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The company slipped into a financial <b>quagmire</b> after three bad years.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Each new rule only pulled the project deeper into a bureaucratic <b>quagmire</b>.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/60.png" alt="Picture for the word quagmire"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The heavy rain turned the village road into a <b>quagmire</b> of sticky mud.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,106;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈledʒə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a book in which a business records its money accounts</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">बही-खाता, लेखा-बही</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">account book</li><li class="vc-chip">register</li><li class="vc-chip">record of accounts</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The shopkeeper noted every sale in his big <b>ledger</b> before closing the shop. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The accountant checked every line of the <b>ledger</b> to find the missing money.</p></li><li><span class="vc-n">3</span><p class="vc-s">An old <b>ledger</b> showed that the shop once sold milk for two coins.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/40.png" alt="Illustration of the word ledger: A shopkeeper with a pen sits at a wooden counter in the evening writing sales in a big thick account book w" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The shopkeeper noted every sale in his big <mark class="vc-hl">ledger</mark> before closing the shop.</p></div></div>
+      </div></div>
     `
   },
+  120: {
+    questext: "Select the most appropriate synonym of the given word.\nLedger",
+    options: ["Account book", "Prayer book", "Story book", "Map book"],
+    correct: "1",
+    exptext: "✅ A ledger is a book of money accounts, so account book is the closest meaning. 📌 Ledger holds the numbers. ❌ Story book is wrong because it holds tales, not accounts."
+  },
   121: {
-    questext: "The war became a ______ from which the army could not escape.",
-    options: ["epilogue", "epitome", "quagmire", "almanac"],
+    questext: "Select the most appropriate option to fill in the blank.\nThe clerk wrote every payment in the shop's ______ at the end of the day.",
+    options: ["epilogue", "almanac", "ledger", "epitaph"],
     correct: "3",
-    exptext: "✅ A quagmire is a swamp-like hard situation. 📌 Quag = bog, mire = mud. ❌ An epilogue is the end of a book."
+    exptext: "✅ Ledger fits because payments are recorded in a book of accounts. 📌 Money entries mean ledger. ❌ Almanac is wrong because it is a yearly book of calendar facts."
   },
   122: {
-    type: "concept", icon: "🏆", accent: "#5331d8", pauseTimer: true,
-    title: "Pyrrhic",
+    type: "concept", icon: "🪨", accent: "#9523c7", pauseTimer: true,
+    title: "Epigrapher",
     html: `
-      <div class="cp-vocab vp" style="--a:#5331d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a win gained at such a heavy cost that it feels like a loss</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">महँगी जीत</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">costly</span><span class="vp-tag syn">ruinous</span><span class="vp-tag syn">hollow</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">easy</span><span class="vp-tag ant">painless</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The team won the final, but with three injured stars it was a <b>Pyrrhic</b> victory. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Winning the case cost him his savings, so it felt like a <b>Pyrrhic</b> success.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The general knew the battle was a <b>Pyrrhic</b> triumph, for his army was nearly destroyed.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/61.png" alt="Picture for the word Pyrrhic"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The team won the final, but with three injured stars it was a <b>Pyrrhic</b> victory.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:149,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ɪˈpɪɡrəfə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an expert who studies old writing carved on stone or metal</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">शिलालेख विशेषज्ञ, अभिलेखशास्त्री</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">inscription expert</li><li class="vc-chip">stone-writing expert</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>epigrapher</b> read the ancient king's orders carved on a rock pillar. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>epigrapher</b> copied every letter of the cave inscription onto paper.</p></li><li><span class="vc-n">3</span><p class="vc-s">An <b>epigrapher</b> helps historians read the orders of ancient emperors such as Ashoka.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Epi" means upon and "graphein" means to write, so epigraphy is the study of writing upon stone.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/41.png" alt="Illustration of the word epigrapher: An expert kneels beside a tall stone pillar covered in carved ancient letters, pressing a sheet of pape" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">epigrapher</mark> read the ancient king's orders carved on a rock pillar.</p></div></div>
+      </div></div>
     `
   },
   123: {
-    questext: "Which is a Pyrrhic victory?",
-    options: ["A team wins easily without any injury.", "A student passes with joy and a gift.", "A farmer harvests a bumper crop at low cost.", "A company wins a case but loses all its money."],
-    correct: "4",
-    exptext: "✅ Winning at a ruinous cost is a Pyrrhic victory. 📌 King Pyrrhus won but lost most of his army. ❌ Easy wins cost nothing."
+    questext: "Select the most appropriate synonym of the given word.\nEpigrapher",
+    options: ["Manuscript expert", "Inscription expert", "Map expert", "Coin expert"],
+    correct: "2",
+    exptext: "✅ An epigrapher studies writing carved on stone or metal, so inscription expert is the closest meaning. 📌 \"Epi\" is upon. ❌ Manuscript expert is wrong because that is a paleographer, who studies handwriting on paper or parchment."
   },
   124: {
-    type: "concept", icon: "🎸", accent: "#58dd4b", pauseTimer: true,
-    title: "Impromptu",
-    html: `
-      <div class="cp-vocab vp" style="--a:#58dd4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">done without planning or preparation</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">तत्काल, बिना तैयारी का</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">unplanned</span><span class="vp-tag syn">spontaneous</span><span class="vp-tag syn">improvised</span><span class="vp-tag syn">off-the-cuff</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">planned</span><span class="vp-tag ant">rehearsed</span><span class="vp-tag ant">prepared</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Friends gave an <b>impromptu</b> concert on the beach when the evening turned cool. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">She made an <b>impromptu</b> speech when the chief guest did not arrive.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The <b>impromptu</b> picnic was the best part of the long trip.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/62.png" alt="Picture for the word impromptu"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Friends gave an <b>impromptu</b> concert on the beach when the evening turned cool.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nAn expert who studies old writing carved on stone or metal",
+    options: ["Paleographer", "Archivist", "Lexicographer", "Epigrapher"],
+    correct: "4",
+    exptext: "✅ Epigrapher means an expert in writing carved on stone or metal. 📌 Writing upon stone. ❌ Paleographer is wrong because it means an expert in ancient handwriting."
   },
   125: {
-    questext: "Choose the word closest in meaning to \"impromptu\".",
-    options: ["spontaneous", "rehearsed", "formal", "prepared"],
-    correct: "1",
-    exptext: "✅ Spontaneous means done without planning. 📌 Impromptu = on the spot. ❌ Rehearsed is the opposite."
-  },
-  126: {
-    type: "concept", icon: "⏱️", accent: "#c52663", pauseTimer: true,
-    title: "Extempore",
+    type: "concept", icon: "⚰️", accent: "#2341c7", pauseTimer: true,
+    title: "Epitaph",
     html: `
-      <div class="cp-vocab vp" style="--a:#c52663;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">spoken or done without any preparation</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">तुरंत, बिना तैयारी का</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">impromptu</span><span class="vp-tag syn">unrehearsed</span><span class="vp-tag syn">offhand</span><span class="vp-tag syn">spontaneous</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">prepared</span><span class="vp-tag ant">rehearsed</span><span class="vp-tag ant">planned</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The minister gave an <b>extempore</b> reply without looking at his notes.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Students enjoyed the <b>extempore</b> speaking contest, where topics were handed out on the spot. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">He was able to speak <b>extempore</b> for twenty minutes on any topic.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/63.png" alt="Picture for the word extempore"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Students enjoyed the <b>extempore</b> speaking contest, where topics were handed out on the spot.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,65,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈepɪtɑːf/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">words written on a tomb in memory of the dead</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">समाधि-लेख</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">grave inscription</li><li class="vc-chip">tomb inscription</li><li class="vc-chip">memorial words</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>epitaph</b> on his grave said simply, "He loved the mountains." <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The family chose a short, loving <b>epitaph</b> to carve on the stone.</p></li><li><span class="vc-n">3</span><p class="vc-s">Visitors paused to read the moving <b>epitaph</b> on the soldier's grave.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Epi" means upon and "taphos" means tomb, so an epitaph is writing upon a tomb.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/42.png" alt="Illustration of the word epitaph: A quiet old graveyard at sunset where a visitor with folded hands stands before a simple stone grave carve" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">epitaph</mark> on his grave said simply, "He loved the mountains."</p></div></div>
+      </div></div>
     `
   },
+  126: {
+    questext: "Select the most appropriate synonym of the given word.\nEpitaph",
+    options: ["Grave inscription", "Birthday wish", "Wedding vow", "Opening line"],
+    correct: "1",
+    exptext: "✅ An epitaph is the writing on a grave, so grave inscription is the closest meaning. 📌 \"Taphos\" means tomb. ❌ Opening line is wrong because an epitaph comes at the end of life, not at the start of a text."
+  },
   127: {
-    questext: "Odd one out among these words:",
-    options: ["impromptu", "unrehearsed", "prepared", "spontaneous"],
+    questext: "Select the most appropriate option to fill in the blank.\nA line of poetry was carved as an ______ on the poet's grave.",
+    options: ["epitome", "epilogue", "epitaph", "ledger"],
     correct: "3",
-    exptext: "✅ Prepared means planned beforehand; the rest mean unplanned. 📌 Ex-tempore = out of the moment. ❌ Impromptu is a synonym."
+    exptext: "✅ Epitaph fits because the line was carved on a grave. 📌 Grave words mean epitaph. ❌ Epilogue is wrong because it is the closing part of a book or play."
   },
   128: {
-    type: "concept", icon: "🔎", accent: "#31a2d8", pauseTimer: true,
-    title: "Pedant",
+    type: "concept", icon: "🏅", accent: "#23c7be", pauseTimer: true,
+    title: "Epitome",
     html: `
-      <div class="cp-vocab vp" style="--a:#31a2d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who cares too much about small details and rules</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">किताबी विद्वान, बारीकी पसंद</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">nitpicker</span><span class="vp-tag syn">stickler</span><span class="vp-tag syn">quibbler</span><span class="vp-tag syn">hair-splitter</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>pedant</b> corrected the speaker's grammar even in the middle of the party.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Our teacher is no <b>pedant</b>; she values ideas more than tiny details.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Only a <b>pedant</b> would argue about a comma while the building was on fire. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/64.png" alt="Picture for the word pedant"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Only a <b>pedant</b> would argue about a comma while the building was on fire.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,190;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ɪˈpɪtəmi/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a perfect example of a quality or type</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">आदर्श उदाहरण, मूर्त रूप</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">perfect example</li><li class="vc-chip">embodiment</li><li class="vc-chip">essence</li><li class="vc-chip">model</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The village doctor was the <b>epitome</b> of kindness, treating the poor without any fee. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">With her honesty and courage, she is the <b>epitome</b> of a true leader.</p></li><li><span class="vc-n">3</span><p class="vc-s">That old palace is the <b>epitome</b> of royal grandeur.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/43.png" alt="Illustration of the word epitome: A kind village doctor with a stethoscope sits in a small clinic and gently treats a poor old man, with a h" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The village doctor was the <mark class="vc-hl">epitome</mark> of kindness, treating the poor without any fee.</p></div></div>
+      </div></div>
     `
   },
   129: {
-    questext: "A person who fusses over minor details and rules is a ______.",
-    options: ["savant", "pedant", "pedagogue", "orator"],
+    questext: "Select the most appropriate synonym of the given word.\nEpitome",
+    options: ["Poor imitation", "Perfect example", "Hidden flaw", "Minor detail"],
     correct: "2",
-    exptext: "✅ A pedant fusses over small details. 📌 Pedant = petty details. ❌ A pedagogue is a teacher."
+    exptext: "✅ An epitome is a perfect example of something. 📌 Epitome means \"the best sample\". ❌ Poor imitation is wrong because it is the opposite idea."
   },
   130: {
-    type: "concept", icon: "🎨", accent: "#d8dd4b", pauseTimer: true,
-    title: "Surrealism",
-    html: `
-      <div class="cp-vocab vp" style="--a:#d8dd4b;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an art style that shows dreams and strange, impossible images</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अतियथार्थवाद, स्वप्निल कला</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">fantasy art</span><span class="vp-tag syn">dream art</span><span class="vp-tag syn">fantastic art</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">realism</span><span class="vp-tag ant">naturalism</span><span class="vp-tag ant">verism</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">A painting of melting clocks in a desert is a classic work of <b>surrealism</b>. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The film's <b>surrealism</b> made viewers feel they were walking inside a dream.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Poets of <b>surrealism</b> wrote strange images straight from the dreaming mind.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/65.png" alt="Picture for the word surrealism"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">A painting of melting clocks in a desert is a classic work of <b>surrealism</b>.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe simple, honest shopkeeper was the ______ of kindness in the whole village.",
+    options: ["epilogue", "tautology", "epitaph", "epitome"],
+    correct: "4",
+    exptext: "✅ Epitome fits because the shopkeeper is a perfect example of kindness. 📌 Perfect example means epitome. ❌ Epitaph is wrong because it is the writing on a grave."
   },
   131: {
-    questext: "Which art style shows dreams and impossible scenes?",
-    options: ["realism", "verism", "surrealism", "classicism"],
-    correct: "3",
-    exptext: "✅ Surrealism paints dream-like scenes. 📌 Sur-real = beyond real. ❌ Realism shows life as it is."
-  },
-  132: {
-    type: "concept", icon: "📷", accent: "#9c26c5", pauseTimer: true,
-    title: "Verism",
+    type: "concept", icon: "🎬", accent: "#23c72e", pauseTimer: true,
+    title: "Epilogue",
     html: `
-      <div class="cp-vocab vp" style="--a:#9c26c5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the use of real, everyday life in art, even when it is ugly</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">यथार्थवाद, सत्यवाद</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">realism</span><span class="vp-tag syn">naturalism</span><span class="vp-tag syn">true-to-life style</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">idealism</span><span class="vp-tag ant">romanticism</span><span class="vp-tag ant">surrealism</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The writer's <b>verism</b> showed the poor workers' lives exactly as they were.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Critics admired the film's <b>verism</b>, from its dusty streets to its tired faces. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In an age of fantasy, her paintings stood out for their stern <b>verism</b>.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/66.png" alt="Picture for the word verism"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Critics admired the film's <b>verism</b>, from its dusty streets to its tired faces.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,46;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈepɪlɒɡ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a short section at the end of a book or play</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">उपसंहार, उत्तरवाक्</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">afterword</li><li class="vc-chip">conclusion</li><li class="vc-chip">closing section</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">prologue</li><li class="vc-chip">preface</li><li class="vc-chip">introduction</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The play ended with an <b>epilogue</b> spoken by the main actor. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The book's <b>epilogue</b> told us what happened to every character years later.</p></li><li><span class="vc-n">3</span><p class="vc-s">In the <b>epilogue</b>, the narrator thanks all the people who helped him.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Epi" means upon and "logos" means word, so an epilogue is words added at the end.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/44.png" alt="Illustration of the word epilogue: On a theatre stage, the main actor in costume stands alone in a single spotlight speaking to the audience" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The play ended with an <mark class="vc-hl">epilogue</mark> spoken by the main actor.</p></div></div>
+      </div></div>
     `
   },
+  132: {
+    questext: "Select the most appropriate antonym of the given word.\nEpilogue",
+    options: ["Prologue", "Conclusion", "Ending", "Afterword"],
+    correct: "1",
+    exptext: "✅ An epilogue comes at the end, so prologue, which comes at the start, is the opposite. 📌 Pro means before; epi means after. ❌ Afterword is wrong because it is a synonym."
+  },
   133: {
-    questext: "Choose the OPPOSITE of \"verism\".",
-    options: ["realism", "idealism", "naturalism", "truthfulness"],
-    correct: "2",
-    exptext: "✅ Idealism shows life as perfect, the opposite of verism. 📌 Ver = true. ❌ Realism and naturalism are close synonyms."
+    questext: "Select the most appropriate option to fill in the blank.\nThe novel began with a short prologue and closed with a thoughtful ______.",
+    options: ["epitaph", "epitome", "epilogue", "ledger"],
+    correct: "3",
+    exptext: "✅ Epilogue fits because it is the closing section that matches a prologue at the start. 📌 Prologue first, epilogue last. ❌ Epitaph is wrong because it is the writing on a grave."
   },
   134: {
-    type: "concept", icon: "✅", accent: "#31d87c", pauseTimer: true,
-    title: "Veracity",
+    type: "concept", icon: "🧊", accent: "#a8c723", pauseTimer: true,
+    title: "Stoic",
     html: `
-      <div class="cp-vocab vp" style="--a:#31d87c;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the quality of being truthful and accurate</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">सत्यता, सच्चाई</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">truthfulness</span><span class="vp-tag syn">honesty</span><span class="vp-tag syn">accuracy</span><span class="vp-tag syn">authenticity</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">falsehood</span><span class="vp-tag ant">dishonesty</span><span class="vp-tag ant">deceit</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The judge questioned the <b>veracity</b> of the witness's story. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Journalists must check the <b>veracity</b> of every claim before publishing it.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Nobody doubted the <b>veracity</b> of the old soldier's tales.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/67.png" alt="Picture for the word veracity"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The judge questioned the <b>veracity</b> of the witness's story.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:168,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈstəʊɪk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">not showing feelings and calmly accepting pain or trouble</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">संयमी, सहनशील</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">calm</li><li class="vc-chip">unemotional</li><li class="vc-chip">patient</li><li class="vc-chip">uncomplaining</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">emotional</li><li class="vc-chip">excitable</li><li class="vc-chip">complaining</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>stoic</b> old farmer accepted the failed harvest without a single complaint. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">She stayed <b>stoic</b> while the doctor treated the deep cut.</p></li><li><span class="vc-n">3</span><p class="vc-s">The soldiers remained <b>stoic</b> through the long, cold night.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">The Stoics were ancient Greek thinkers who taught calm acceptance of pain and trouble.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/45.png" alt="Illustration of the word stoic: A weathered old farmer stands calmly in a dry, cracked field with his arms folded, looking at withered crops" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">stoic</mark> old farmer accepted the failed harvest without a single complaint.</p></div></div>
+      </div></div>
     `
   },
   135: {
-    questext: "Which word is closest in meaning to \"veracity\"?",
-    options: ["truthfulness", "falsehood", "cunning", "pride"],
-    correct: "1",
-    exptext: "✅ Truthfulness is being honest and accurate. 📌 Ver = true, as in verify. ❌ Falsehood is the opposite."
+    questext: "Select the most appropriate synonym of the given word.\nStoic",
+    options: ["Excitable", "Unemotional", "Fearful", "Talkative"],
+    correct: "2",
+    exptext: "✅ A stoic person stays calm and shows no feelings, so unemotional is the closest word. 📌 Stoic means \"steady in trouble\". ❌ Excitable is wrong because it is the opposite idea."
   },
   136: {
-    type: "concept", icon: "😣", accent: "#dd624b", pauseTimer: true,
-    title: "Masochist",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd624b;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who enjoys suffering or being hurt</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">आत्मपीड़क, स्वपीड़न-प्रेमी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">self-tormentor</span><span class="vp-tag syn">self-punisher</span><span class="vp-tag syn">pain-lover</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">sadist</span><span class="vp-tag ant">tormentor</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">Only a <b>masochist</b> would run a marathon barefoot on hot sand for fun. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The psychologist described the <b>masochist</b> as someone who finds pleasure in his own pain.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Accused of being a <b>masochist</b>, he kept returning to the cruel boss who shouted at him.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/68.png" alt="Picture for the word masochist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Only a <b>masochist</b> would run a marathon barefoot on hot sand for fun.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThough he lost everything in the flood, he remained ______ and made no complaint.",
+    options: ["imminent", "eloquent", "ubiquitous", "stoic"],
+    correct: "4",
+    exptext: "✅ Stoic fits because he stayed calm and did not complain. 📌 Calm in pain means stoic. ❌ Eloquent is wrong because it means speaking clearly and powerfully."
   },
   137: {
-    questext: "जो स्वयं कष्ट सहकर आनंद पाता है, उसे क्या कहते हैं?",
-    options: ["sadist", "savant", "pedant", "masochist"],
-    correct: "4",
-    exptext: "✅ A masochist enjoys his own suffering. 📌 Masochist = hurts himself. ❌ A sadist enjoys hurting others."
-  },
-  138: {
-    type: "concept", icon: "😈", accent: "#263bc5", pauseTimer: true,
-    title: "Sadist",
+    type: "concept", icon: "🌤️", accent: "#c75723", pauseTimer: true,
+    title: "Sanguine",
     html: `
-      <div class="cp-vocab vp" style="--a:#263bc5;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who enjoys hurting other people</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">परपीड़क</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">tormentor</span><span class="vp-tag syn">brute</span><span class="vp-tag syn">bully</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">masochist</span><span class="vp-tag ant">humanitarian</span><span class="vp-tag ant">benefactor</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The cruel guard, a true <b>sadist</b>, laughed while the prisoners suffered.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Nobody liked the <b>sadist</b> who teased smaller children until they cried. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">In the novel, the <b>sadist</b> rules the village by fear and enjoys others' pain.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/69.png" alt="Picture for the word sadist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Nobody liked the <b>sadist</b> who teased smaller children until they cried.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,87,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈsæŋɡwɪn/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">cheerful and hopeful, especially in a difficult situation</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">आशावादी, आशान्वित</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">optimistic</li><li class="vc-chip">hopeful</li><li class="vc-chip">confident</li><li class="vc-chip">cheerful</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">pessimistic</li><li class="vc-chip">gloomy</li><li class="vc-chip">hopeless</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Despite the poor results, the coach remained <b>sanguine</b> about the next match. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The farmers were <b>sanguine</b> about a good harvest after the early rains.</p></li><li><span class="vc-n">3</span><p class="vc-s">She stayed <b>sanguine</b> even when the first three interviews failed.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Sanguis" is the Latin word for blood; people with a warm, rosy face were thought to be cheerful.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/46.png" alt="Illustration of the word sanguine: A coach in a tracksuit smiles confidently on a training ground, giving a thumbs-up to his team while a sc" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Despite the poor results, the coach remained <mark class="vc-hl">sanguine</mark> about the next match.</p></div></div>
+      </div></div>
     `
   },
+  138: {
+    questext: "Select the most appropriate antonym of the given word.\nSanguine",
+    options: ["Pessimistic", "Cheerful", "Hopeful", "Confident"],
+    correct: "1",
+    exptext: "✅ Sanguine means hopeful, so pessimistic, which means expecting the worst, is the opposite. 📌 Sanguine sees sunshine. ❌ Hopeful is wrong because it is a synonym."
+  },
   139: {
-    questext: "Choose the OPPOSITE of \"sadist\".",
-    options: ["bully", "humanitarian", "tormentor", "brute"],
-    correct: "2",
-    exptext: "✅ A humanitarian helps and cares for others. 📌 Sadist = enjoys others' pain. ❌ Bully, tormentor and brute are synonyms."
+    questext: "Select the most appropriate option to fill in the blank.\nDespite two failed attempts, the athlete stayed ______ about winning a medal.",
+    options: ["eminent", "omniscient", "sanguine", "imminent"],
+    correct: "3",
+    exptext: "✅ Sanguine fits because the athlete stayed hopeful after failure. 📌 Hope in trouble means sanguine. ❌ Eminent is wrong because it means famous and respected."
   },
   140: {
-    type: "concept", icon: "🧑‍🔬", accent: "#78d831", pauseTimer: true,
-    title: "Savant",
+    type: "concept", icon: "🏔️", accent: "#c7237f", pauseTimer: true,
+    title: "Anchorite",
     html: `
-      <div class="cp-vocab vp" style="--a:#78d831;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person with great learning in a special field</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">विद्वान, महापंडित</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">scholar</span><span class="vp-tag syn">sage</span><span class="vp-tag syn">learned person</span><span class="vp-tag syn">genius</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">ignoramus</span><span class="vp-tag ant">dunce</span><span class="vp-tag ant">fool</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The village <b>savant</b> knew the history of every temple in the district. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A <b>savant</b> in mathematics, she solved problems that puzzled professors.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The young <b>savant</b> amazed the guests by recalling every date of the king's rule.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/70.png" alt="Picture for the word savant"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The village <b>savant</b> knew the history of every temple in the district.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,127;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈæŋkəraɪt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who lives alone, away from society, for religious reasons</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">संन्यासी, एकांतवासी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">hermit</li><li class="vc-chip">recluse</li><li class="vc-chip">solitary monk</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>anchorite</b> lived in a mountain cave and prayed for most of the day. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>anchorite</b> left the busy city to live alone in a forest hut.</p></li><li><span class="vc-n">3</span><p class="vc-s">Villagers sometimes left food at the cave of the <b>anchorite</b>.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/47.png" alt="Illustration of the word anchorite: A thin old man with a long beard sits cross-legged inside a mountain cave with folded hands in prayer, a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">anchorite</mark> lived in a mountain cave and prayed for most of the day.</p></div></div>
+      </div></div>
     `
   },
   141: {
-    questext: "Choose the OPPOSITE of \"savant\".",
-    options: ["scholar", "sage", "genius", "ignoramus"],
-    correct: "4",
-    exptext: "✅ An ignoramus is an ignorant person. 📌 Savant = knowing much. ❌ Scholar and sage are synonyms."
+    questext: "Select the most appropriate synonym of the given word.\nAnchorite",
+    options: ["Merchant", "Hermit", "Soldier", "Ruler"],
+    correct: "2",
+    exptext: "✅ An anchorite lives alone for religious reasons, so hermit is the closest word. 📌 Anchorite means one who withdraws. ❌ Merchant is wrong because a merchant lives among people to trade."
   },
   142: {
-    type: "concept", icon: "🎻", accent: "#dd4bb4", pauseTimer: true,
-    title: "Virtuoso",
-    html: `
-      <div class="cp-vocab vp" style="--a:#dd4bb4;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person with outstanding skill, especially in music</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">कला-निपुण, उस्ताद</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">master</span><span class="vp-tag syn">maestro</span><span class="vp-tag syn">expert</span><span class="vp-tag syn">genius</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">amateur</span><span class="vp-tag ant">novice</span><span class="vp-tag ant">beginner</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The violin <b>virtuoso</b> played so fast that the audience held its breath. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A <b>virtuoso</b> with the camera, he captured a hundred moods in one frame.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The young <b>virtuoso</b> drew applause with a flawless recital.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/71.png" alt="Picture for the word virtuoso"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The violin <b>virtuoso</b> played so fast that the audience held its breath.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nAway from all towns, the ______ spent his life in a cave in silent prayer.",
+    options: ["orator", "herald", "emissary", "anchorite"],
+    correct: "4",
+    exptext: "✅ Anchorite fits because he lived alone in a cave for prayer. 📌 Alone and praying means anchorite. ❌ Orator is wrong because an orator gives speeches to people."
   },
   143: {
-    questext: "Choose the OPPOSITE of \"virtuoso\".",
-    options: ["amateur", "maestro", "master", "expert"],
-    correct: "1",
-    exptext: "✅ An amateur lacks great skill. 📌 Virtuoso = virtue of skill. ❌ Maestro, master and expert are synonyms."
-  },
-  144: {
-    type: "concept", icon: "💭", accent: "#26c5c4", pauseTimer: true,
-    title: "Allusion",
+    type: "concept", icon: "🚪", accent: "#8023c7", pauseTimer: true,
+    title: "Recluse",
     html: `
-      <div class="cp-vocab vp" style="--a:#26c5c4;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">an indirect reference to something without saying it directly</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">संकेत, परोक्ष उल्लेख</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">hint</span><span class="vp-tag syn">reference</span><span class="vp-tag syn">mention</span><span class="vp-tag syn">suggestion</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-none">—</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">His remark about "a modern Ravana" was an <b>allusion</b> to the greedy contractor. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The poem is full of <b>allusions</b> to Greek myths.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">She made a subtle <b>allusion</b> to the incident without naming anyone.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/72.png" alt="Picture for the word allusion"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">His remark about "a modern Ravana" was an <b>allusion</b> to the greedy contractor.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:128,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈrekluːs/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who lives alone and avoids other people</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">एकांतप्रिय, एकांतवासी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">hermit</li><li class="vc-chip">loner</li><li class="vc-chip">solitary person</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">socialite</li><li class="vc-chip">extrovert</li><li class="vc-chip">mixer</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The famous writer lived as a <b>recluse</b> in a house hidden by tall trees. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">After his retirement he became a <b>recluse</b> and rarely opened the door.</p></li><li><span class="vc-n">3</span><p class="vc-s">The neighbours knew little about the <b>recluse</b> who lived at the end of the lane.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Re" means back and "claudere" means to close, so a recluse has closed himself away.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/48.png" alt="Illustration of the word recluse: A lonely man peeks out through a slightly open door of a quiet house hidden among tall dense trees, with a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The famous writer lived as a <mark class="vc-hl">recluse</mark> in a house hidden by tall trees.</p></div></div>
+      </div></div>
     `
   },
+  144: {
+    questext: "Select the most appropriate antonym of the given word.\nRecluse",
+    options: ["Socialite", "Hermit", "Loner", "Anchorite"],
+    correct: "1",
+    exptext: "✅ A recluse avoids people, so socialite, who loves company, is the opposite. 📌 Recluse hides; socialite mixes. ❌ Hermit is wrong because it is a synonym."
+  },
   145: {
-    questext: "The speaker made an ______ to the Mahabharata in his talk.",
-    options: ["illusion", "elusion", "allusion", "delusion"],
+    questext: "Select the most appropriate option to fill in the blank.\nA famous painter, she lived as a ______ and refused every invitation.",
+    options: ["harbinger", "herald", "recluse", "orator"],
     correct: "3",
-    exptext: "✅ Allusion is an indirect reference. 📌 ALLusion = ALLude, hint. ❌ Illusion is a false appearance."
+    exptext: "✅ Recluse fits because she lived alone and refused every invitation. 📌 Alone by choice means recluse. ❌ Orator is wrong because an orator loves speaking in public."
   },
   146: {
-    type: "concept", icon: "🏃", accent: "#d8a631", pauseTimer: true,
-    title: "Elusion",
+    type: "concept", icon: "🧘", accent: "#2356c7", pauseTimer: true,
+    title: "Ascetic",
     html: `
-      <div class="cp-vocab vp" style="--a:#d8a631;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">the act of escaping or avoiding something cleverly</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">चकमा, बचाव</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">evasion</span><span class="vp-tag syn">escape</span><span class="vp-tag syn">dodging</span><span class="vp-tag syn">avoidance</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">capture</span><span class="vp-tag ant">confrontation</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The thief's <b>elusion</b> of the police lasted three weeks. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The cat's skilful <b>elusion</b> of the dog amused the whole street.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">His <b>elusion</b> of the question showed he had no answer.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/73.png" alt="Picture for the word elusion"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The thief's <b>elusion</b> of the police lasted three weeks.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,86,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/əˈsetɪk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who gives up comforts and lives very simply for spiritual reasons</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">तपस्वी, संयमी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">self-denying person</li><li class="vc-chip">austere person</li><li class="vc-chip">hermit</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">hedonist</li><li class="vc-chip">pleasure-seeker</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>ascetic</b> slept on the bare floor and ate only one simple meal a day. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>ascetic</b> gave up his rich home to live on simple food and prayer.</p></li><li><span class="vc-n">3</span><p class="vc-s">Though wealthy, he lived like an <b>ascetic</b>, using almost nothing.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Askesis" is the Greek word for training, so an ascetic trains himself to live with very little.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/49.png" alt="Illustration of the word ascetic: A calm thin man in plain cloth sleeps on a bare floor mat in a tiny empty hut, with only a water pot and a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">ascetic</mark> slept on the bare floor and ate only one simple meal a day.</p></div></div>
+      </div></div>
     `
   },
   147: {
-    questext: "Which word means the act of escaping or avoiding cleverly?",
-    options: ["elusion", "allusion", "illusion", "collusion"],
-    correct: "1",
-    exptext: "✅ Elusion means clever escape. 📌 Elusion = ESCAPE. ❌ Allusion is an indirect reference."
+    questext: "Select the most appropriate synonym of the given word.\nAscetic",
+    options: ["Luxury lover", "Self-denying person", "Money lender", "Famous singer"],
+    correct: "2",
+    exptext: "✅ An ascetic gives up comforts for spiritual reasons, so self-denying person is the closest meaning. 📌 Ascetic trains in simple living. ❌ Luxury lover is wrong because it is the opposite idea."
   },
   148: {
-    type: "concept", icon: "🌊", accent: "#864bdd", pauseTimer: true,
-    title: "Illusion",
-    html: `
-      <div class="cp-vocab vp" style="--a:#864bdd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a false idea or appearance that seems real</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">भ्रम, माया</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">delusion</span><span class="vp-tag syn">mirage</span><span class="vp-tag syn">fantasy</span><span class="vp-tag syn">misconception</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">reality</span><span class="vp-tag ant">truth</span><span class="vp-tag ant">fact</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The shimmering water on the hot road is only an <b>illusion</b> of the desert heat. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">He lived under the <b>illusion</b> that wealth brings lasting happiness.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The magician's <b>illusion</b> made the elephant vanish before everyone's eyes.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/74.png" alt="Picture for the word illusion"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The shimmering water on the hot road is only an <b>illusion</b> of the desert heat.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nHe gave up all comforts and lived as an ______ in a bare hut.",
+    options: ["orator", "charlatan", "pedant", "ascetic"],
+    correct: "4",
+    exptext: "✅ Ascetic fits because he gave up comforts and lived simply for spiritual reasons. 📌 Simple living means ascetic. ❌ Charlatan is wrong because it means a fake who pretends to have skills."
   },
   149: {
-    questext: "A false picture that seems real, like a mirage, is an ______.",
-    options: ["allusion", "elusion", "illusion", "evasion"],
-    correct: "3",
-    exptext: "✅ An illusion is a false appearance. 📌 ILLusion = ILL sight. ❌ Allusion is an indirect reference."
-  },
-  150: {
-    type: "concept", icon: "🦊", accent: "#26c538", pauseTimer: true,
-    title: "Elude",
+    type: "concept", icon: "🛋️", accent: "#23c7a9", pauseTimer: true,
+    title: "Recline",
     html: `
-      <div class="cp-vocab vp" style="--a:#26c538;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">verb</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">to escape or avoid someone or something cleverly</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">चकमा देना, बच निकलना</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">evade</span><span class="vp-tag syn">dodge</span><span class="vp-tag syn">escape</span><span class="vp-tag syn">avoid</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">face</span><span class="vp-tag ant">confront</span><span class="vp-tag ant">catch</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The fox managed to <b>elude</b> the hunters by hiding in a hollow log. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The exact answer continued to <b>elude</b> the students despite hours of effort.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The thief hoped to <b>elude</b> capture by changing trains at midnight.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/75.png" alt="Picture for the word elude"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The fox managed to <b>elude</b> the hunters by hiding in a hollow log.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,169;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">VERB</span><span class="vc-pron" translate="no">/rɪˈklaɪn/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">to lean or lie back in a relaxed position</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">लेटना, पीछे झुकना</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">lean back</li><li class="vc-chip">lie back</li><li class="vc-chip">lounge</li><li class="vc-chip">rest</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">stand up</li><li class="vc-chip">sit upright</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">After lunch, grandfather loved to <b>recline</b> on the cane chair and read. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Passengers may <b>recline</b> their seats once the plane is in the air.</p></li><li><span class="vc-n">3</span><p class="vc-s">She loves to <b>recline</b> on the sofa with a good book.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Re" means back and "clinare" means to lean, so to recline is to lean back.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/50.png" alt="Illustration of the word recline: A relaxed grandfather leans far back in a cane chair on a sunny veranda with his feet on a stool and a boo" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">After lunch, grandfather loved to <mark class="vc-hl">recline</mark> on the cane chair and read.</p></div></div>
+      </div></div>
     `
   },
+  150: {
+    questext: "Select the most appropriate antonym of the given word.\nRecline",
+    options: ["Stand up", "Lie back", "Lounge", "Rest"],
+    correct: "1",
+    exptext: "✅ Recline means to lean back and relax, so stand up is the opposite. 📌 \"Re\" is back. ❌ Lounge is wrong because it is a synonym."
+  },
   151: {
-    questext: "Which word is closest in meaning to \"elude\"?",
-    options: ["confront", "catch", "face", "evade"],
-    correct: "4",
-    exptext: "✅ Evade means to escape cleverly. 📌 E-lude = slip out. ❌ Confront is the opposite."
+    questext: "Select the most appropriate option to fill in the blank.\nAfter the long walk, he decided to ______ on the grass and look at the clouds.",
+    options: ["elude", "masquerade", "recline", "withdraw"],
+    correct: "3",
+    exptext: "✅ Recline fits because he lay back on the grass after a walk. 📌 Lean back means recline. ❌ Elude is wrong because it means to escape cleverly."
   },
   152: {
-    type: "concept", icon: "🏴", accent: "#d8314f", pauseTimer: true,
-    title: "Anarchist",
+    type: "concept", icon: "🔮", accent: "#2dc723", pauseTimer: true,
+    title: "Mystic",
     html: `
-      <div class="cp-vocab vp" style="--a:#d8314f;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who believes there should be no government or law</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अराजकतावादी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">rebel</span><span class="vp-tag syn">nihilist</span><span class="vp-tag syn">revolutionary</span><span class="vp-tag syn">insurgent</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">loyalist</span><span class="vp-tag ant">conformist</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>anarchist</b> said that people could manage life without any ruler.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Police arrested the <b>anarchist</b> for urging the crowd to ignore every law. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Some novels show the <b>anarchist</b> as a dreamer, others as a threat.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/76.png" alt="Picture for the word anarchist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">Police arrested the <b>anarchist</b> for urging the crowd to ignore every law.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:45,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈmɪstɪk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who seeks deep spiritual truth through prayer and meditation</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">रहस्यवादी, अध्यात्म-साधक</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">spiritual seeker</li><li class="vc-chip">seer</li><li class="vc-chip">visionary</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>mystic</b> sat by the river for hours, lost in silent prayer. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>mystic</b> believed that silence leads a person closer to the divine.</p></li><li><span class="vc-n">3</span><p class="vc-s">The poet and <b>mystic</b> taught the love of God through simple songs.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/51.png" alt="Illustration of the word mystic: A peaceful man with closed eyes sits cross-legged on a rock at the edge of a quiet river at dawn in deep me" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">mystic</mark> sat by the river for hours, lost in silent prayer.</p></div></div>
+      </div></div>
     `
   },
   153: {
-    questext: "A person who wants no government at all is an ______.",
-    options: ["realist", "anarchist", "savant", "pedant"],
+    questext: "Select the most appropriate synonym of the given word.\nMystic",
+    options: ["Tax collector", "Spiritual seeker", "Sports coach", "Stage actor"],
     correct: "2",
-    exptext: "✅ An anarchist rejects all government. 📌 An-archy = no ruler. ❌ A realist sees things as they are."
+    exptext: "✅ A mystic seeks spiritual truth through prayer and meditation, so spiritual seeker is the closest meaning. 📌 Mystic means one who seeks the unseen truth. ❌ Stage actor is wrong because an actor performs for an audience."
   },
   154: {
-    type: "concept", icon: "🧭", accent: "#4b8fdd", pauseTimer: true,
-    title: "Realist",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4b8fdd;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a person who sees things as they really are</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">यथार्थवादी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">pragmatist</span><span class="vp-tag syn">practical person</span><span class="vp-tag syn">rationalist</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">idealist</span><span class="vp-tag ant">dreamer</span><span class="vp-tag ant">romantic</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">As a <b>realist</b>, she knew that passing without practice was impossible.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The coach, a <b>realist</b>, told the team they were not yet ready for the finals. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">A true <b>realist</b> neither hopes for miracles nor expects disasters.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/77.png" alt="Picture for the word realist"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The coach, a <b>realist</b>, told the team they were not yet ready for the finals.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nSitting beside the river in silence, the ______ spent hours in deep meditation.",
+    options: ["charlatan", "savant", "pedant", "mystic"],
+    correct: "4",
+    exptext: "✅ Mystic fits because a person in silent meditation by a river seeks spiritual truth. 📌 Meditation means mystic. ❌ Charlatan is wrong because a charlatan is a fake who pretends to have skill."
   },
   155: {
-    questext: "Choose the OPPOSITE of \"realist\".",
-    options: ["pragmatist", "materialist", "rationalist", "dreamer"],
-    correct: "4",
-    exptext: "✅ A dreamer lives in imagination, not reality. 📌 Real-ist = sees real. ❌ Pragmatist and rationalist are similar to realist."
-  },
-  156: {
-    type: "concept", icon: "🚩", accent: "#9fc526", pauseTimer: true,
-    title: "Jingoistic",
+    type: "concept", icon: "🎭", accent: "#bdc723", pauseTimer: true,
+    title: "Charlatan",
     html: `
-      <div class="cp-vocab vp" style="--a:#9fc526;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">adjective</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">showing aggressive and extreme pride in one's own country</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">अंधराष्ट्रवादी</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">chauvinistic</span><span class="vp-tag syn">warmongering</span><span class="vp-tag syn">ultranationalist</span><span class="vp-tag syn">belligerent</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">peace-loving</span><span class="vp-tag ant">pacifist</span><span class="vp-tag ant">moderate</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The <b>jingoistic</b> speaker demanded war and shouted that no other country mattered. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">Newspapers with a <b>jingoistic</b> tone often increase hatred between neighbouring nations.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">Her <b>jingoistic</b> views made her blind to the good in other cultures.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/78.png" alt="Picture for the word jingoistic"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The <b>jingoistic</b> speaker demanded war and shouted that no other country mattered.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:189,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈʃɑːlətən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who falsely claims to have special skill or knowledge</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">ढोंगी, नीमहकीम</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">fraud</li><li class="vc-chip">quack</li><li class="vc-chip">impostor</li><li class="vc-chip">fake</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">genuine expert</li><li class="vc-chip">true professional</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>charlatan</b> sold coloured water as a cure for every disease. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A <b>charlatan</b> in a bright coat promised to make people rich in a week.</p></li><li><span class="vc-n">3</span><p class="vc-s">The villagers realised too late that the so-called doctor was a <b>charlatan</b>.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/52.png" alt="Illustration of the word charlatan: A smooth-talking man in a bright coat stands on a cart at a village fair holding up a bottle of coloured" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">charlatan</mark> sold coloured water as a cure for every disease.</p></div></div>
+      </div></div>
     `
   },
+  156: {
+    questext: "Select the most appropriate antonym of the given word.\nCharlatan",
+    options: ["Genuine expert", "Quack", "Fraud", "Impostor"],
+    correct: "1",
+    exptext: "✅ A charlatan falsely claims skill, so genuine expert, who truly has it, is the opposite. 📌 Charlatan fakes; the expert is real. ❌ Quack is wrong because it is a synonym."
+  },
   157: {
-    questext: "Which word best describes extreme, aggressive patriotism?",
-    options: ["tolerant", "jingoistic", "neutral", "peaceful"],
-    correct: "2",
-    exptext: "✅ Jingoistic means aggressively nationalistic. 📌 Jingo = war cry. ❌ Peaceful is the opposite."
+    questext: "Select the most appropriate option to fill in the blank.\nHe claimed to cure every illness with a single herb, but he was only a ______.",
+    options: ["orator", "ascetic", "charlatan", "savant"],
+    correct: "3",
+    exptext: "✅ Charlatan fits because he made false claims of curing everything. 📌 False claims of skill mean charlatan. ❌ Savant is wrong because a savant is a person with real, deep learning."
   },
   158: {
-    type: "concept", icon: "🌤️", accent: "#cf31d8", pauseTimer: true,
-    title: "Reverie",
+    type: "concept", icon: "🎭", accent: "#c74223", pauseTimer: true,
+    title: "Masquerade",
     html: `
-      <div class="cp-vocab vp" style="--a:#cf31d8;--on:#fff"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a state of pleasant daydreaming</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">दिवास्वप्न, खयाली दुनिया</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">daydream</span><span class="vp-tag syn">trance</span><span class="vp-tag syn">fantasy</span><span class="vp-tag syn">musing</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">alertness</span><span class="vp-tag ant">attention</span><span class="vp-tag ant">awareness</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">A sudden knock at the door broke her <b>reverie</b> by the window. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">The student sat lost in <b>reverie</b> while the lecture went on.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The old man sat on the porch in a happy <b>reverie</b> of his youth.</span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/79.png" alt="Picture for the word reverie"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">A sudden knock at the door broke her <b>reverie</b> by the window.</p></div></div></div></div>
+      <div class="vc-wrap"><div class="vc" style="--ar:199,66,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">VERB</span><span class="vc-pron" translate="no">/ˌmæskəˈreɪd/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">to pretend to be someone or something you are not</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">ढोंग करना, भेष बदलना</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">pretend</li><li class="vc-chip">pose</li><li class="vc-chip">impersonate</li><li class="vc-chip">disguise oneself</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">reveal oneself</li><li class="vc-chip">be genuine</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The thief tried to <b>masquerade</b> as a postman to enter the building. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">She chose to <b>masquerade</b> as a tourist while she studied the market.</p></li><li><span class="vc-n">3</span><p class="vc-s">Fake sellers often <b>masquerade</b> as official dealers on the internet.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">A masquerade is a party where guests wear masks, so to masquerade is to wear a false face.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/53.png" alt="Illustration of the word masquerade: A suspicious man in a postman's cap and a bag walks up to a building gate and presses the bell with a f" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The thief tried to <mark class="vc-hl">masquerade</mark> as a postman to enter the building.</p></div></div>
+      </div></div>
     `
   },
   159: {
-    questext: "He was so lost in ______ that he did not hear the bell.",
-    options: ["jargon", "ledger", "reverie", "quagmire"],
-    correct: "3",
-    exptext: "✅ Reverie is pleasant daydreaming. 📌 Reverie = rave in thought. ❌ A quagmire is a hard situation."
+    questext: "Select the most appropriate synonym of the given word.\nMasquerade",
+    options: ["Reveal", "Pose", "Honour", "Escape"],
+    correct: "2",
+    exptext: "✅ To masquerade is to pretend to be someone else, so pose is the closest word. 📌 Masks mean pretending. ❌ Reveal is wrong because it means to show the truth."
   },
   160: {
-    type: "concept", icon: "🎉", accent: "#4bddab", pauseTimer: true,
-    title: "Euphoria",
-    html: `
-      <div class="cp-vocab vp" style="--a:#4bddab;--on:#111"><div class="vp-grid"><div class="vp-left"><div class="vp-meta"><span class="cp-pos vp-pos">noun</span></div><div class="vp-two"><div class="vp-def"><div class="vp-lbl">Meaning</div><p class="vp-en">a feeling of great happiness and excitement</p></div><div class="vp-def"><div class="vp-lbl">हिंदी अर्थ</div><p class="vp-hi" lang="hi">उल्लास, अत्यंत हर्ष</p></div></div><div class="vp-two"><div class="vp-pane"><div class="vp-lbl syn">✅ Synonyms</div><div class="vp-tags"><span class="vp-tag syn">elation</span><span class="vp-tag syn">bliss</span><span class="vp-tag syn">joy</span><span class="vp-tag syn">rapture</span></div></div><div class="vp-pane"><div class="vp-lbl ant">↔️ Antonyms</div><div class="vp-tags"><span class="vp-tag ant">misery</span><span class="vp-tag ant">despair</span><span class="vp-tag ant">gloom</span></div></div></div><div class="vp-use"><div class="vp-lbl">✍️ Usage — 3 sentences</div><div class="vp-s"><span class="vp-n">1</span><span class="vp-t">The whole city was in <b>euphoria</b> after the team lifted the trophy.</span></div><div class="vp-s"><span class="vp-n">2</span><span class="vp-t">A wave of <b>euphoria</b> swept over her when the results were announced.</span></div><div class="vp-s"><span class="vp-n">3</span><span class="vp-t">The mountaineers felt pure <b>euphoria</b> on reaching the summit at dawn. <span class="vp-mark" title="shown in the picture">🖼️</span></span></div></div></div><div class="vp-right"><div class="vp-frame"><img src="images/English_Comprehension/Vocabulary/Set_1/80.png" alt="Picture for the word euphoria"></div><div class="vp-cap"><div class="vp-cap-lbl"><span class="vp-cap-ico">🖼️</span>Sentence shown in the picture</div><p class="vp-cap-txt">The mountaineers felt pure <b>euphoria</b> on reaching the summit at dawn.</p></div></div></div></div>
-    `
+    questext: "Select the most appropriate option to fill in the blank.\nThe spy tried to ______ as a waiter to enter the crowded hall.",
+    options: ["recline", "withdraw", "elude", "masquerade"],
+    correct: "4",
+    exptext: "✅ Masquerade fits because the spy pretended to be a waiter. 📌 Pretending to be someone means masquerade. ❌ Elude is wrong because it means to escape from someone."
   },
   161: {
-    questext: "Which word is closest in meaning to \"euphoria\"?",
-    options: ["elation", "despair", "gloom", "misery"],
+    type: "concept", icon: "🧠", accent: "#c72394", pauseTimer: true,
+    title: "Omniscient",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,148;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ɒmˈnɪsiənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">knowing everything</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">सर्वज्ञ</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">all-knowing</li><li class="vc-chip">all-wise</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">ignorant</li><li class="vc-chip">unaware</li><li class="vc-chip">uninformed</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>omniscient</b> narrator of the novel knows what every character secretly thinks. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">In the story, the <b>omniscient</b> wizard knew every secret of the kingdom.</p></li><li><span class="vc-n">3</span><p class="vc-s">No human being is <b>omniscient</b>; everyone must keep learning.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Omni" means all and "scientia" means knowledge, so omniscient means all-knowing.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/54.png" alt="Illustration of the word omniscient: A glowing wise wizard in a star-covered robe sits on a tall tower and looks down over a whole kingdom, " loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">omniscient</mark> narrator of the novel knows what every character secretly thinks.</p></div></div>
+      </div></div>
+    `
+  },
+  162: {
+    questext: "Select the most appropriate antonym of the given word.\nOmniscient",
+    options: ["Ignorant", "All-knowing", "Wise", "Informed"],
     correct: "1",
-    exptext: "✅ Elation means great joy. 📌 Eu = good, phoria = feeling. ❌ Despair is the opposite."
+    exptext: "✅ Omniscient means knowing everything, so ignorant, which means knowing little, is the opposite. 📌 \"Omni\" is all. ❌ All-knowing is wrong because it is a synonym."
+  },
+  163: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe student acted as if he were ______ and refused to listen to anyone's advice.",
+    options: ["ubiquitous", "eminent", "omniscient", "imminent"],
+    correct: "3",
+    exptext: "✅ Omniscient fits because he acted as if he knew everything. 📌 Knows all means omniscient. ❌ Ubiquitous is wrong because it means present everywhere."
+  },
+  164: {
+    type: "concept", icon: "📱", accent: "#6b23c7", pauseTimer: true,
+    title: "Ubiquitous",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:107,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/juːˈbɪkwɪtəs/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">seeming to be present everywhere at the same time</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">सर्वव्यापी, हर जगह मौजूद</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">omnipresent</li><li class="vc-chip">everywhere</li><li class="vc-chip">widespread</li><li class="vc-chip">universal</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">rare</li><li class="vc-chip">scarce</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Mobile phones are <b>ubiquitous</b>; you see them in almost every hand. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Plastic bags became <b>ubiquitous</b> in markets across the country.</p></li><li><span class="vc-n">3</span><p class="vc-s">Smartphones are now so <b>ubiquitous</b> that even toddlers can use them.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Ubique" is the Latin word for everywhere.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/55.png" alt="Illustration of the word ubiquitous: A busy street crossing seen from above where almost every walking person, rider and shopkeeper is holdi" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Mobile phones are <mark class="vc-hl">ubiquitous</mark>; you see them in almost every hand.</p></div></div>
+      </div></div>
+    `
+  },
+  165: {
+    questext: "Select the most appropriate synonym of the given word.\nUbiquitous",
+    options: ["Rare", "Omnipresent", "Hidden", "Ancient"],
+    correct: "2",
+    exptext: "✅ Ubiquitous means present everywhere, so omnipresent is the closest word. 📌 \"Ubique\" means everywhere. ❌ Rare is wrong because it is the opposite idea."
+  },
+  166: {
+    questext: "Select the most appropriate option to fill in the blank.\nStreet dogs are ______ in the old city; you meet them at every corner.",
+    options: ["immanent", "omniscient", "eminent", "ubiquitous"],
+    correct: "4",
+    exptext: "✅ Ubiquitous fits because you find the dogs at every corner. 📌 Everywhere means ubiquitous. ❌ Omniscient is wrong because it means knowing everything."
+  },
+  167: {
+    type: "concept", icon: "🌿", accent: "#236bc7", pauseTimer: true,
+    title: "Immanent",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,107,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈɪmənənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">present inside something as a natural part of it</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अंतर्निहित, भीतर व्याप्त</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">inherent</li><li class="vc-chip">intrinsic</li><li class="vc-chip">innate</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">external</li><li class="vc-chip">extrinsic</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The poet felt a quiet beauty <b>immanent</b> in even the smallest pebble. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Many thinkers believe that a spark of goodness is <b>immanent</b> in every person.</p></li><li><span class="vc-n">3</span><p class="vc-s">The sweetness is <b>immanent</b> in the fruit and not added from outside.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Immanent" has "in" in its start: it stays inside.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/56.png" alt="Illustration of the word immanent: A poet sits on a river bank holding a small smooth pebble in his open palm and looking at it with wonder," loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The poet felt a quiet beauty <mark class="vc-hl">immanent</mark> in even the smallest pebble.</p></div></div>
+      </div></div>
+    `
+  },
+  168: {
+    questext: "Select the most appropriate antonym of the given word.\nImmanent",
+    options: ["External", "Inherent", "Intrinsic", "Innate"],
+    correct: "1",
+    exptext: "✅ Immanent means existing inside, so external, which means coming from outside, is the opposite. 📌 Immanent stays in. ❌ Inherent is wrong because it is a synonym."
+  },
+  169: {
+    questext: "Select the most appropriate option to fill in the blank.\nHonesty was ______ in his nature; nobody had to teach him to tell the truth.",
+    options: ["imminent", "eminent", "immanent", "ubiquitous"],
+    correct: "3",
+    exptext: "✅ Immanent fits because honesty was a natural part of his character. 📌 Inside means immanent. ❌ Imminent is wrong because it looks similar but means about to happen."
+  },
+  170: {
+    type: "concept", icon: "⛈️", accent: "#23c794", pauseTimer: true,
+    title: "Imminent",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,148;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈɪmɪnənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">about to happen very soon</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">निकट, आसन्न</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">impending</li><li class="vc-chip">approaching</li><li class="vc-chip">coming soon</li><li class="vc-chip">near</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">distant</li><li class="vc-chip">remote</li><li class="vc-chip">far off</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Black clouds warned that a heavy storm was <b>imminent</b>. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">With the exams <b>imminent</b>, the library was full from early morning.</p></li><li><span class="vc-n">3</span><p class="vc-s">The captain warned the sailors that a cyclone was <b>imminent</b>.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Imminent" rhymes with "in a minute": something that comes in a minute.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/57.png" alt="Illustration of the word imminent: A fishing village seen from the shore where dark storm clouds fill the sky and strong wind bends the palm" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Black clouds warned that a heavy storm was <mark class="vc-hl">imminent</mark>.</p></div></div>
+      </div></div>
+    `
+  },
+  171: {
+    questext: "Select the most appropriate synonym of the given word.\nImminent",
+    options: ["Distant", "Impending", "Past", "Doubtful"],
+    correct: "2",
+    exptext: "✅ Imminent means about to happen, so impending is the closest word. 📌 Think \"in a minute\". ❌ Distant is wrong because it means far away in time or place."
+  },
+  172: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe final bell was ______, so the students packed their bags in a hurry.",
+    options: ["eminent", "immanent", "ubiquitous", "imminent"],
+    correct: "4",
+    exptext: "✅ Imminent fits because the bell was about to ring. 📌 Very soon means imminent. ❌ Eminent is wrong because it means famous and respected."
+  },
+  173: {
+    type: "concept", icon: "🏆", accent: "#42c723", pauseTimer: true,
+    title: "Eminent",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:66,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈemɪnənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">famous and respected, especially in a profession</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">प्रतिष्ठित, विख्यात</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">famous</li><li class="vc-chip">renowned</li><li class="vc-chip">distinguished</li><li class="vc-chip">respected</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">obscure</li><li class="vc-chip">unknown</li><li class="vc-chip">undistinguished</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The college invited an <b>eminent</b> scientist to open its new laboratory. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">An <b>eminent</b> judge was invited to chair the committee.</p></li><li><span class="vc-n">3</span><p class="vc-s">She became an <b>eminent</b> surgeon, known across the country.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Eminent comes from a Latin word meaning to stand out, so an eminent person stands out above others.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/58.png" alt="Illustration of the word eminent: A respected elderly scientist in a white coat cuts a ribbon at the door of a new science laboratory, with " loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The college invited an <mark class="vc-hl">eminent</mark> scientist to open its new laboratory.</p></div></div>
+      </div></div>
+    `
+  },
+  174: {
+    questext: "Select the most appropriate antonym of the given word.\nEminent",
+    options: ["Obscure", "Respected", "Famous", "Renowned"],
+    correct: "1",
+    exptext: "✅ Eminent means famous and respected, so obscure, which means unknown, is the opposite. 📌 Eminent stands out; obscure hides. ❌ Renowned is wrong because it is a synonym."
+  },
+  175: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe university honoured the ______ poet with its highest award for a lifetime of work.",
+    options: ["imminent", "immanent", "eminent", "omniscient"],
+    correct: "3",
+    exptext: "✅ Eminent fits because a famous and respected poet would receive the highest award. 📌 Stands out means eminent. ❌ Imminent is wrong because it means about to happen."
+  },
+  176: {
+    type: "concept", icon: "🚧", accent: "#c7bd23", pauseTimer: true,
+    title: "Impasse",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,189,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈɪmpɑːs/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a situation in which no progress can be made</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">गतिरोध, अवरोध</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">deadlock</li><li class="vc-chip">stalemate</li><li class="vc-chip">standstill</li><li class="vc-chip">dead end</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">breakthrough</li><li class="vc-chip">progress</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The talks ended in an <b>impasse</b> when neither side would change its demand. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The union and the company reached an <b>impasse</b> over wages.</p></li><li><span class="vc-n">3</span><p class="vc-s">Only a fresh offer could break the <b>impasse</b> between the two countries.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Im" means not and "passe" means pass, so an impasse is a road you cannot pass.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/59.png" alt="Illustration of the word impasse: Two groups of negotiators in suits sit on opposite sides of a long table with folded arms and stubborn fac" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The talks ended in an <mark class="vc-hl">impasse</mark> when neither side would change its demand.</p></div></div>
+      </div></div>
+    `
+  },
+  177: {
+    questext: "Select the most appropriate synonym of the given word.\nImpasse",
+    options: ["Agreement", "Deadlock", "Victory", "Progress"],
+    correct: "2",
+    exptext: "✅ An impasse is a point where no progress is possible, so deadlock is the closest word. 📌 Not a pass, a blocked road. ❌ Progress is wrong because it is the opposite."
+  },
+  178: {
+    questext: "Select the most appropriate option to fill in the blank.\nNeither party would give way, so the peace talks reached a ______.",
+    options: ["reverie", "epilogue", "euphoria", "impasse"],
+    correct: "4",
+    exptext: "✅ Impasse fits because neither side would move, so no progress was possible. 📌 Stuck talks mean impasse. ❌ Reverie is wrong because it means pleasant daydreaming."
+  },
+  179: {
+    type: "concept", icon: "🌧️", accent: "#c72d23", pauseTimer: true,
+    title: "Quagmire",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,45,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈkwɒɡmaɪə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a difficult situation that is hard to get out of</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">दलदल, कठिन स्थिति</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">swamp</li><li class="vc-chip">bog</li><li class="vc-chip">predicament</li><li class="vc-chip">mess</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The heavy rain turned the village road into a <b>quagmire</b> of sticky mud. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The company sank into a <b>quagmire</b> of debts and court cases.</p></li><li><span class="vc-n">3</span><p class="vc-s">Our cart wheels stuck in a <b>quagmire</b> after the night's rain.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/60.png" alt="Illustration of the word quagmire: A bullock cart with its wheels stuck deep in thick sticky mud on a village road after heavy rain, while t" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The heavy rain turned the village road into a <mark class="vc-hl">quagmire</mark> of sticky mud.</p></div></div>
+      </div></div>
+    `
+  },
+  180: {
+    questext: "Select the most appropriate synonym of the given word.\nQuagmire",
+    options: ["Predicament", "Success", "Celebration", "Advantage"],
+    correct: "1",
+    exptext: "✅ A quagmire is a hard-to-escape difficult situation, so predicament is the closest word. 📌 Stuck in mud, stuck in trouble. ❌ Success is wrong because it is a good outcome."
+  },
+  181: {
+    questext: "Select the most appropriate option to fill in the blank.\nAfter weeks of rain, the playground turned into a muddy ______ where no child could run.",
+    options: ["reverie", "epitaph", "quagmire", "impasse"],
+    correct: "3",
+    exptext: "✅ Quagmire fits because it means soft, sticky, muddy ground. 📌 Mud trap means quagmire. ❌ Impasse is wrong because it means a deadlock in talks, not a muddy place."
+  },
+  182: {
+    type: "concept", icon: "🛡️", accent: "#c723a9", pauseTimer: true,
+    title: "Pyrrhic",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,169;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˈpɪrɪk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">describing a win gained at such heavy cost that it feels like a loss</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">महँगी जीत</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">costly</li><li class="vc-chip">ruinous</li><li class="vc-chip">self-defeating</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The team won the final, but with three injured stars it was a <b>Pyrrhic</b> victory. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">After years of legal fights, the family's <b>Pyrrhic</b> victory left them without a home.</p></li><li><span class="vc-n">3</span><p class="vc-s">The party won the election, but losing its best leaders made it a <b>Pyrrhic</b> win.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">King Pyrrhus of ancient Greece won battles against Rome but lost so many soldiers that another such win would have ruined him.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/61.png" alt="Illustration of the word Pyrrhic: A football team celebrates holding a trophy on a pitch, but three players sit or lie on the ground wearing" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The team won the final, but with three injured stars it was a <mark class="vc-hl">Pyrrhic</mark> victory.</p></div></div>
+      </div></div>
+    `
+  },
+  183: {
+    questext: "Select the most appropriate synonym of the given word.\nPyrrhic",
+    options: ["Effortless", "Costly", "Joyful", "Complete"],
+    correct: "2",
+    exptext: "✅ A Pyrrhic victory is won at a terrible cost, so costly is the closest word. 📌 Win a battle, lose the war. ❌ Effortless is wrong because a Pyrrhic win needs heavy effort and loss."
+  },
+  184: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe side won the match, but five players were injured, so it was only a ______ victory.",
+    options: ["imminent", "eloquent", "sanguine", "Pyrrhic"],
+    correct: "4",
+    exptext: "✅ Pyrrhic fits because the win came with heavy losses. 📌 Heavy cost means Pyrrhic. ❌ Sanguine is wrong because it means hopeful and cheerful."
+  },
+  185: {
+    type: "concept", icon: "🎸", accent: "#5623c7", pauseTimer: true,
+    title: "Impromptu",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:86,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ɪmˈprɒmptjuː/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">done without planning or preparation</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">तत्काल, बिना तैयारी का</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">unplanned</li><li class="vc-chip">spontaneous</li><li class="vc-chip">improvised</li><li class="vc-chip">off the cuff</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">planned</li><li class="vc-chip">prepared</li><li class="vc-chip">rehearsed</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Friends gave an <b>impromptu</b> concert on the beach when the evening turned cool. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">He gave an <b>impromptu</b> speech when the chief guest arrived late.</p></li><li><span class="vc-n">3</span><p class="vc-s">The students put on an <b>impromptu</b> play during the power cut.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">It comes from the Latin words "in promptu", meaning "in readiness", but now it means done on the spot.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/62.png" alt="Illustration of the word impromptu: At sunset, a group of friends sit around a bonfire on a beach, one strumming a guitar and another tappin" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Friends gave an <mark class="vc-hl">impromptu</mark> concert on the beach when the evening turned cool.</p></div></div>
+      </div></div>
+    `
+  },
+  186: {
+    questext: "Select the most appropriate antonym of the given word.\nImpromptu",
+    options: ["Rehearsed", "Spontaneous", "Unplanned", "Sudden"],
+    correct: "1",
+    exptext: "✅ Impromptu means done without preparation, so rehearsed, which means practised in advance, is the opposite. 📌 Impromptu is on the spot. ❌ Spontaneous is wrong because it is a synonym."
+  },
+  187: {
+    questext: "Select the most appropriate option to fill in the blank.\nWhen the guest of honour did not turn up, the host gave a short, ______ speech.",
+    options: ["eminent", "imminent", "impromptu", "sanguine"],
+    correct: "3",
+    exptext: "✅ Impromptu fits because the host spoke without planning. 📌 No planning means impromptu. ❌ Eminent is wrong because it means famous and respected."
+  },
+  188: {
+    type: "concept", icon: "⏱️", accent: "#2380c7", pauseTimer: true,
+    title: "Extempore",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,128,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ɪkˈstempəri/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">spoken or done without any preparation</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">तुरंत, बिना तैयारी का</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">unprepared</li><li class="vc-chip">off the cuff</li><li class="vc-chip">improvised</li><li class="vc-chip">impromptu</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">prepared</li><li class="vc-chip">rehearsed</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Students enjoyed the <b>extempore</b> speaking contest, where topics were handed out on the spot. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The teacher asked each student to give an <b>extempore</b> talk on a rainy day.</p></li><li><span class="vc-n">3</span><p class="vc-s">The singer's <b>extempore</b> verse made the whole audience laugh.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Ex tempore" is Latin for "out of the time", meaning spoken at that moment.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/63.png" alt="Illustration of the word extempore: A smiling student stands on a stage with a small slip of paper handed to him moments ago, starting to sp" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Students enjoyed the <mark class="vc-hl">extempore</mark> speaking contest, where topics were handed out on the spot.</p></div></div>
+      </div></div>
+    `
+  },
+  189: {
+    questext: "Select the most appropriate synonym of the given word.\nExtempore",
+    options: ["Rehearsed", "Unprepared", "Written", "Planned"],
+    correct: "2",
+    exptext: "✅ Extempore means done without preparation, so unprepared is the closest word. 📌 Spoken out of the moment. ❌ Rehearsed is wrong because it means practised in advance."
+  },
+  190: {
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nSpoken or done without any preparation",
+    options: ["Elaborate", "Reluctant", "Premature", "Extempore"],
+    correct: "4",
+    exptext: "✅ Extempore means spoken or done without preparation. 📌 \"Ex tempore\" is out of the moment. ❌ Premature is wrong because it means happening too early."
+  },
+  191: {
+    type: "concept", icon: "🧐", accent: "#23c77f", pauseTimer: true,
+    title: "Pedant",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,127;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈpedənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who cares too much about small details and rules</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">किताबी विद्वान, बारीकी पसंद</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">nitpicker</li><li class="vc-chip">hair-splitter</li><li class="vc-chip">stickler</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Only a <b>pedant</b> would argue about a comma while the building was on fire. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>pedant</b> corrected the speaker's grammar in the middle of a wedding toast.</p></li><li><span class="vc-n">3</span><p class="vc-s">A <b>pedant</b> often misses the main idea because he is busy with small rules.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/64.png" alt="Illustration of the word pedant: At a wedding feast, an uptight man in glasses raises a finger to correct the speaker's grammar with a stiff" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Only a <mark class="vc-hl">pedant</mark> would argue about a comma while the building was on fire.</p></div></div>
+      </div></div>
+    `
+  },
+  192: {
+    questext: "Select the most appropriate synonym of the given word.\nPedant",
+    options: ["Nitpicker", "Leader", "Dreamer", "Beginner"],
+    correct: "1",
+    exptext: "✅ A pedant fusses over tiny details and rules, so nitpicker is the closest word. 📌 Pedant picks at small points. ❌ Dreamer is wrong because a dreamer does not care about details."
+  },
+  193: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe ______ kept pointing out tiny spelling errors while ignoring the brilliant main idea.",
+    options: ["savant", "orator", "pedant", "pedagogue"],
+    correct: "3",
+    exptext: "✅ Pedant fits because he cared only about tiny errors. 📌 Small details mean pedant. ❌ Pedagogue is wrong because it means a teacher."
+  },
+  194: {
+    type: "concept", icon: "🕰️", accent: "#57c723", pauseTimer: true,
+    title: "Surrealism",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:87,199,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/səˈrɪəlɪzəm/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an art style that shows dreams and strange, impossible images</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अतियथार्थवाद, स्वप्निल कला</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">dreamlike art</li><li class="vc-chip">fantasy art</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">realism</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">A painting of melting clocks in a desert is a classic work of <b>surrealism</b>. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The painter turned to <b>surrealism</b> to show the strange world of dreams.</p></li><li><span class="vc-n">3</span><p class="vc-s">Flying fish above a city street is a typical scene in <b>surrealism</b>.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Sur" means above, so surrealism goes above reality into dreams.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/65.png" alt="Illustration of the word surrealism: A dreamlike painting on an easel showing soft melting clocks draped over a tree branch and a desert tab" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">A painting of melting clocks in a desert is a classic work of <mark class="vc-hl">surrealism</mark>.</p></div></div>
+      </div></div>
+    `
+  },
+  195: {
+    questext: "Select the most appropriate synonym of the given word.\nSurrealism",
+    options: ["Realistic art", "Dreamlike art", "Plain drawing", "Portrait art"],
+    correct: "2",
+    exptext: "✅ Surrealism shows dreams and strange images, so dreamlike art is the closest meaning. 📌 Sur means above reality. ❌ Realistic art is wrong because it is the opposite idea."
+  },
+  196: {
+    questext: "Select the most appropriate option to fill in the blank.\nA clock melting on a tree branch is a classic image of ______.",
+    options: ["verism", "jargon", "veracity", "surrealism"],
+    correct: "4",
+    exptext: "✅ Surrealism fits because melting clocks are strange, dreamlike images. 📌 Dream art means surrealism. ❌ Verism is wrong because it shows everyday life exactly as it is."
+  },
+  197: {
+    type: "concept", icon: "🎞️", accent: "#c7a823", pauseTimer: true,
+    title: "Verism",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,168,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈvɪərɪzəm/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the use of real, everyday life in art, even when it is ugly</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">यथार्थवाद, सत्यवाद</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">realism</li><li class="vc-chip">naturalism</li><li class="vc-chip">truthful art</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">idealism</li><li class="vc-chip">surrealism</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Critics admired the film's <b>verism</b>, from its dusty streets to its tired faces. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Her paintings of poor workers are famous for their honest <b>verism</b>.</p></li><li><span class="vc-n">3</span><p class="vc-s">The novelist's <b>verism</b> showed life in the slums without any decoration.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Verus" is the Latin word for true, so verism shows life as it truly is.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/66.png" alt="Illustration of the word verism: A film crew shoots a scene on a narrow dusty street with real tired workers, peeling walls and a plain bull" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Critics admired the film's <mark class="vc-hl">verism</mark>, from its dusty streets to its tired faces.</p></div></div>
+      </div></div>
+    `
+  },
+  198: {
+    questext: "Select the most appropriate antonym of the given word.\nVerism",
+    options: ["Idealism", "Realism", "Naturalism", "Truthfulness"],
+    correct: "1",
+    exptext: "✅ Verism shows life as it truly is, so idealism, which shows life as perfect, is the opposite. 📌 \"Verus\" means true. ❌ Naturalism is wrong because it is a synonym."
+  },
+  199: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe writer chose ______ and showed the village with its dust, hunger and joy exactly as it was.",
+    options: ["surrealism", "tautology", "verism", "archaism"],
+    correct: "3",
+    exptext: "✅ Verism fits because the writer showed real life exactly as it was. 📌 True to life means verism. ❌ Surrealism is wrong because it shows dreams and impossible images."
+  },
+  200: {
+    type: "concept", icon: "✅", accent: "#c7232e", pauseTimer: true,
+    title: "Veracity",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,46;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/vəˈræsəti/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the quality of being truthful and accurate</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">सत्यता, सच्चाई</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">truthfulness</li><li class="vc-chip">honesty</li><li class="vc-chip">accuracy</li><li class="vc-chip">truth</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">falsehood</li><li class="vc-chip">dishonesty</li><li class="vc-chip">lie</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The judge questioned the <b>veracity</b> of the witness's story. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Nobody doubted the <b>veracity</b> of the old teacher's words.</p></li><li><span class="vc-n">3</span><p class="vc-s">Reporters must check the <b>veracity</b> of every claim before printing it.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Verus" is the Latin word for true, so veracity is the quality of being true.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/67.png" alt="Illustration of the word veracity: In a courtroom, a judge leans forward with a thoughtful frown and looks closely at a nervous witness stan" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The judge questioned the <mark class="vc-hl">veracity</mark> of the witness's story.</p></div></div>
+      </div></div>
+    `
+  },
+  201: {
+    questext: "Select the most appropriate synonym of the given word.\nVeracity",
+    options: ["Falsehood", "Truthfulness", "Speed", "Courage"],
+    correct: "2",
+    exptext: "✅ Veracity means being truthful, so truthfulness is the closest word. 📌 \"Verus\" is true. ❌ Falsehood is wrong because it is the opposite idea."
+  },
+  202: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe lawyer questioned the ______ of the statement because it changed three times.",
+    options: ["euphoria", "reverie", "impasse", "veracity"],
+    correct: "4",
+    exptext: "✅ Veracity fits because a changing statement makes people doubt its truth. 📌 Truth means veracity. ❌ Reverie is wrong because it means pleasant daydreaming."
+  },
+  203: {
+    type: "concept", icon: "🌵", accent: "#c723be", pauseTimer: true,
+    title: "Masochist",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,190;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈmæsəkɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who enjoys suffering or being hurt</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">आत्मपीड़क, स्वपीड़न-प्रेमी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">self-tormentor</li><li class="vc-chip">lover of suffering</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">sadist</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Only a <b>masochist</b> would run a marathon barefoot on hot sand for fun. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>masochist</b> smiled when the dentist said the treatment would hurt.</p></li><li><span class="vc-n">3</span><p class="vc-s">Calling someone a <b>masochist</b> means he seems to enjoy hardship and pain.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">The word comes from the name of the writer Leopold von Sacher-Masoch.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/68.png" alt="Illustration of the word masochist: A cheerful man with bare feet steps along a hot sandy road in a desert under a bright sun carrying a hea" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Only a <mark class="vc-hl">masochist</mark> would run a marathon barefoot on hot sand for fun.</p></div></div>
+      </div></div>
+    `
+  },
+  204: {
+    questext: "Select the most appropriate antonym of the given word.\nMasochist",
+    options: ["Sadist", "Victim", "Martyr", "Ascetic"],
+    correct: "1",
+    exptext: "✅ A masochist enjoys receiving pain, while a sadist enjoys giving it, so sadist is the opposite. 📌 Masochist takes pain; sadist gives pain. ❌ Martyr is wrong because a martyr suffers for a cause, not for pleasure."
+  },
+  205: {
+    questext: "Select the most appropriate option to fill in the blank.\nHe chose to sleep on a bed of thorns and called it fun, so people called him a ______.",
+    options: ["savant", "sadist", "masochist", "mystic"],
+    correct: "3",
+    exptext: "✅ Masochist fits because he enjoyed his own pain. 📌 Enjoys own pain means masochist. ❌ Sadist is wrong because a sadist enjoys hurting others."
+  },
+  206: {
+    type: "concept", icon: "😈", accent: "#4123c7", pauseTimer: true,
+    title: "Sadist",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:65,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈseɪdɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who enjoys hurting other people</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">परपीड़क</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">tormentor</li><li class="vc-chip">cruel person</li><li class="vc-chip">bully</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">benefactor</li><li class="vc-chip">kind person</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Nobody liked the <b>sadist</b> who teased smaller children until they cried. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The villain in the film is a <b>sadist</b> who enjoys frightening others.</p></li><li><span class="vc-n">3</span><p class="vc-s">Nobody trusts a <b>sadist</b> who takes pleasure in the pain of weaker people.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">The word comes from the name of the French writer the Marquis de Sade.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/69.png" alt="Illustration of the word sadist: A cruel older boy in a school playground grins unkindly while a group of small crying children back away fr" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Nobody liked the <mark class="vc-hl">sadist</mark> who teased smaller children until they cried.</p></div></div>
+      </div></div>
+    `
+  },
+  207: {
+    questext: "Select the most appropriate synonym of the given word.\nSadist",
+    options: ["Benefactor", "Tormentor", "Helper", "Healer"],
+    correct: "2",
+    exptext: "✅ A sadist enjoys hurting others, so tormentor is the closest word. 📌 Sadist gives pain. ❌ Benefactor is wrong because that person helps others."
+  },
+  208: {
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who enjoys hurting other people",
+    options: ["Masochist", "Savant", "Pedant", "Sadist"],
+    correct: "4",
+    exptext: "✅ Sadist means a person who enjoys hurting others. 📌 Sadist gives pain. ❌ Masochist is wrong because that person enjoys suffering pain himself."
+  },
+  209: {
+    type: "concept", icon: "🎓", accent: "#2395c7", pauseTimer: true,
+    title: "Savant",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,149,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈsævənt/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person with great learning in a special field</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">विद्वान, महापंडित</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">scholar</li><li class="vc-chip">sage</li><li class="vc-chip">learned person</li><li class="vc-chip">expert</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">ignoramus</li><li class="vc-chip">dunce</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The village <b>savant</b> knew the history of every temple in the district. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The young <b>savant</b> solved the hardest puzzle in her class within minutes.</p></li><li><span class="vc-n">3</span><p class="vc-s">The king asked the court <b>savant</b> to explain the movement of the stars.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/70.png" alt="Illustration of the word savant: A wise old scholar sits among a ring of attentive villagers in front of an old temple, pointing to carved w" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The village <mark class="vc-hl">savant</mark> knew the history of every temple in the district.</p></div></div>
+      </div></div>
+    `
+  },
+  210: {
+    questext: "Select the most appropriate antonym of the given word.\nSavant",
+    options: ["Ignoramus", "Scholar", "Expert", "Sage"],
+    correct: "1",
+    exptext: "✅ A savant has great learning, so ignoramus, a person who knows very little, is the opposite. 📌 Savant knows; ignoramus does not. ❌ Scholar is wrong because it is a synonym."
+  },
+  211: {
+    questext: "Select the most appropriate option to fill in the blank.\nStudents came from distant towns to learn from the ______ who knew everything about the old temples.",
+    options: ["pedant", "charlatan", "savant", "recluse"],
+    correct: "3",
+    exptext: "✅ Savant fits because a person with deep learning teaches others. 📌 Great learning means savant. ❌ Pedant is wrong because a pedant only fusses over small rules."
+  },
+  212: {
+    type: "concept", icon: "🎻", accent: "#23c76a", pauseTimer: true,
+    title: "Virtuoso",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,106;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˌvɜːtʃuˈəʊsəʊ/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person with outstanding skill, especially in music</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">कला-निपुण, उस्ताद</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">master</li><li class="vc-chip">maestro</li><li class="vc-chip">expert</li><li class="vc-chip">ace</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">amateur</li><li class="vc-chip">novice</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The violin <b>virtuoso</b> played so fast that the audience held its breath. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>virtuoso</b> pianist played the hardest piece without a single mistake.</p></li><li><span class="vc-n">3</span><p class="vc-s">Crowds gathered to watch the sitar <b>virtuoso</b> at the festival.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Virtuoso comes from an Italian word for skill and excellence.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/71.png" alt="Illustration of the word virtuoso: A violinist in a black suit plays on a concert stage with fast, flowing bow movements and closed eyes, wh" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The violin <mark class="vc-hl">virtuoso</mark> played so fast that the audience held its breath.</p></div></div>
+      </div></div>
+    `
+  },
+  213: {
+    questext: "Select the most appropriate synonym of the given word.\nVirtuoso",
+    options: ["Beginner", "Maestro", "Critic", "Listener"],
+    correct: "2",
+    exptext: "✅ A virtuoso is a person of outstanding skill, so maestro is the closest word. 📌 Virtuoso comes from skill. ❌ Beginner is wrong because it is the opposite idea."
+  },
+  214: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe young violinist was a ______ who could play the hardest piece from memory.",
+    options: ["savant", "mystic", "pedant", "virtuoso"],
+    correct: "4",
+    exptext: "✅ Virtuoso fits because the violinist played with outstanding skill. 📌 Musical genius means virtuoso. ❌ Savant is wrong because it means a person with great learning, not performing skill."
+  },
+  215: {
+    type: "concept", icon: "💭", accent: "#6cc723", pauseTimer: true,
+    title: "Allusion",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:108,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/əˈluːʒən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">an indirect reference to something without saying it directly</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">संकेत, परोक्ष उल्लेख</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">indirect reference</li><li class="vc-chip">hint</li><li class="vc-chip">mention</li><li class="vc-chip">reference</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">direct statement</li><li class="vc-chip">explicit mention</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">His remark about "a modern Ravana" was an <b>allusion</b> to the greedy contractor. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The poem contains an <b>allusion</b> to the epic Mahabharata.</p></li><li><span class="vc-n">3</span><p class="vc-s">Her joke about a clock striking midnight was an <b>allusion</b> to the story of Cinderella.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Ad" means towards and "ludere" means to play, so an allusion is a playful touch towards something.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/72.png" alt="Illustration of the word allusion: At a dinner table, a man smiles slyly and lifts a finger while telling a joke, a faint outline of a ten-h" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">His remark about "a modern Ravana" was an <mark class="vc-hl">allusion</mark> to the greedy contractor.</p></div></div>
+      </div></div>
+    `
+  },
+  216: {
+    questext: "Select the most appropriate antonym of the given word.\nAllusion",
+    options: ["Direct statement", "Reference", "Mention", "Hint"],
+    correct: "1",
+    exptext: "✅ An allusion is an indirect reference, so direct statement is the opposite. 📌 Allusion hints; direct statement says. ❌ Hint is wrong because it is a synonym."
+  },
+  217: {
+    questext: "Select the most appropriate option to fill in the blank.\nIn his speech, a casual ______ to the old story made everyone smile.",
+    options: ["illusion", "elusion", "allusion", "reverie"],
+    correct: "3",
+    exptext: "✅ Allusion fits because a casual indirect reference to a story is an allusion. 📌 Allude means hint. ❌ Illusion is wrong because it means a false impression."
+  },
+  218: {
+    type: "concept", icon: "💨", accent: "#c79323", pauseTimer: true,
+    title: "Elusion",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,147,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ɪˈluːʒən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">the act of escaping or avoiding something cleverly</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">चकमा, बचाव</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">escape</li><li class="vc-chip">evasion</li><li class="vc-chip">dodge</li><li class="vc-chip">avoidance</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">capture</li><li class="vc-chip">confrontation</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The thief's <b>elusion</b> of the police lasted three weeks. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The prisoner's clever <b>elusion</b> of the guards made him a legend.</p></li><li><span class="vc-n">3</span><p class="vc-s">His skill in <b>elusion</b> helped him dodge every difficult question.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Elusion" comes from "elude"; both carry the idea of slipping away.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/73.png" alt="Illustration of the word elusion: A thief in a dark cap slips through a narrow gap between two market stalls at night while two police offic" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The thief's <mark class="vc-hl">elusion</mark> of the police lasted three weeks.</p></div></div>
+      </div></div>
+    `
+  },
+  219: {
+    questext: "Select the most appropriate synonym of the given word.\nElusion",
+    options: ["Capture", "Evasion", "Arrival", "Welcome"],
+    correct: "2",
+    exptext: "✅ Elusion is the act of cleverly escaping, so evasion is the closest word. 📌 Elusion comes from elude. ❌ Capture is wrong because it is the opposite idea."
+  },
+  220: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe spy's quick ______ of the police left them searching empty streets all night.",
+    options: ["allusion", "reverie", "illusion", "elusion"],
+    correct: "4",
+    exptext: "✅ Elusion fits because the spy cleverly escaped the police. 📌 Escape means elusion. ❌ Illusion is wrong because it means a false picture, not an escape."
+  },
+  221: {
+    type: "concept", icon: "🪄", accent: "#c72343", pauseTimer: true,
+    title: "Illusion",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,35,67;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ɪˈluːʒən/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a false idea or appearance that seems real</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">भ्रम, माया</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">mirage</li><li class="vc-chip">false impression</li><li class="vc-chip">delusion</li><li class="vc-chip">fantasy</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">reality</li><li class="vc-chip">truth</li><li class="vc-chip">fact</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The shimmering water on the hot road is only an <b>illusion</b> of the desert heat. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A magician creates the <b>illusion</b> of a floating person with mirrors.</p></li><li><span class="vc-n">3</span><p class="vc-s">The belief that money alone brings happiness is an <b>illusion</b>.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Illusion" comes from a Latin word meaning to mock or trick the eye.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/74.png" alt="Illustration of the word illusion: A tired traveller walks on a hot straight road in a desert and sees a shimmering blue pool of water far a" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The shimmering water on the hot road is only an <mark class="vc-hl">illusion</mark> of the desert heat.</p></div></div>
+      </div></div>
+    `
+  },
+  222: {
+    questext: "Select the most appropriate antonym of the given word.\nIllusion",
+    options: ["Reality", "Delusion", "Mirage", "Fantasy"],
+    correct: "1",
+    exptext: "✅ An illusion is a false appearance, so reality is the opposite. 📌 Illusion looks real but is not. ❌ Mirage is wrong because it is a synonym."
+  },
+  223: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe magician made the girl seem to float in the air, an ______ created with hidden wires.",
+    options: ["allusion", "elusion", "illusion", "epilogue"],
+    correct: "3",
+    exptext: "✅ Illusion fits because the floating was only a false appearance. 📌 Trick of the eye means illusion. ❌ Allusion is wrong because it means an indirect reference."
+  },
+  224: {
+    type: "concept", icon: "🦊", accent: "#bc23c7", pauseTimer: true,
+    title: "Elude",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:188,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">VERB</span><span class="vc-pron" translate="no">/ɪˈluːd/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">to escape or avoid someone or something cleverly</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">चकमा देना, बच निकलना</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">escape</li><li class="vc-chip">dodge</li><li class="vc-chip">evade</li><li class="vc-chip">avoid</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">capture</li><li class="vc-chip">face</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The fox managed to <b>elude</b> the hunters by hiding in a hollow log. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Thieves often <b>elude</b> the police by changing their clothes.</p></li><li><span class="vc-n">3</span><p class="vc-s">Despite a long search, the answer continued to <b>elude</b> the scientists.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Elude" comes from a Latin word meaning to play a trick on someone and get away.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/75.png" alt="Illustration of the word elude: A clever fox hides inside a hollow log in a forest while two hunters with rifles and a hunting dog walk past" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The fox managed to <mark class="vc-hl">elude</mark> the hunters by hiding in a hollow log.</p></div></div>
+      </div></div>
+    `
+  },
+  225: {
+    questext: "Select the most appropriate synonym of the given word.\nElude",
+    options: ["Capture", "Evade", "Chase", "Welcome"],
+    correct: "2",
+    exptext: "✅ To elude is to escape cleverly, so evade is the closest word. 📌 Slip away. ❌ Capture is wrong because it is the opposite idea."
+  },
+  226: {
+    questext: "Select the most appropriate option to fill in the blank.\nDespite a long search, the answer continued to ______ the scientists.",
+    options: ["recline", "masquerade", "withdraw", "elude"],
+    correct: "4",
+    exptext: "✅ Elude fits because the answer kept slipping away from them. 📌 Escapes cleverly means elude. ❌ Recline is wrong because it means to lean back."
+  },
+  227: {
+    type: "concept", icon: "🚫", accent: "#2c23c7", pauseTimer: true,
+    title: "Anarchist",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:44,35,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈænəkɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who believes there should be no government or law</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अराजकतावादी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">rebel</li><li class="vc-chip">revolutionary</li><li class="vc-chip">lawbreaker</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">law-abiding citizen</li><li class="vc-chip">loyalist</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">Police arrested the <b>anarchist</b> for urging the crowd to ignore every law. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The <b>anarchist</b> believed that people could live in peace without any rulers.</p></li><li><span class="vc-n">3</span><p class="vc-s">The old thinker was called an <b>anarchist</b> because he opposed every government.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"An" means without and "archos" means ruler, so an anarchist wants to live without a ruler.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/76.png" alt="Illustration of the word anarchist: A bold young man stands on a platform in a busy street holding a flag with a crossed-out crown symbol an" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">Police arrested the <mark class="vc-hl">anarchist</mark> for urging the crowd to ignore every law.</p></div></div>
+      </div></div>
+    `
+  },
+  228: {
+    questext: "Select the most appropriate antonym of the given word.\nAnarchist",
+    options: ["Law-abiding citizen", "Revolutionary", "Rebel", "Agitator"],
+    correct: "1",
+    exptext: "✅ An anarchist opposes all government and law, so law-abiding citizen is the opposite. 📌 \"An\" means without. ❌ Rebel is wrong because it is close in meaning."
+  },
+  229: {
+    questext: "Select the most appropriate one-word substitute for the given group of words.\nA person who believes there should be no government or law",
+    options: ["Atheist", "Pacifist", "Anarchist", "Fatalist"],
+    correct: "3",
+    exptext: "✅ Anarchist means a person who wants no government or law. 📌 \"An\" is without and \"archos\" is ruler. ❌ Pacifist is wrong because it means a person who opposes war."
+  },
+  230: {
+    type: "concept", icon: "🎯", accent: "#23aac7", pauseTimer: true,
+    title: "Realist",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,170,199;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈrɪəlɪst/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a person who sees things as they really are</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">यथार्थवादी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">pragmatist</li><li class="vc-chip">practical person</li><li class="vc-chip">down-to-earth person</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">dreamer</li><li class="vc-chip">idealist</li><li class="vc-chip">romantic</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The coach, a <b>realist</b>, told the team they were not yet ready for the finals. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">A <b>realist</b> plans for problems instead of hoping they will not come.</p></li><li><span class="vc-n">3</span><p class="vc-s">As a <b>realist</b>, she counted the cost before buying the house.</p></li></ol></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/77.png" alt="Illustration of the word realist: A thoughtful coach with a clipboard stands in front of a seated sports team in a changing room, talking ho" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The coach, a <mark class="vc-hl">realist</mark>, told the team they were not yet ready for the finals.</p></div></div>
+      </div></div>
+    `
+  },
+  231: {
+    questext: "Select the most appropriate synonym of the given word.\nRealist",
+    options: ["Dreamer", "Pragmatist", "Poet", "Gambler"],
+    correct: "2",
+    exptext: "✅ A realist sees things as they are, so pragmatist is the closest word. 📌 Realist sees real life. ❌ Dreamer is wrong because it is the opposite idea."
+  },
+  232: {
+    questext: "Select the most appropriate option to fill in the blank.\nBeing a ______, he checked the facts and the cost before starting the business.",
+    options: ["mystic", "anarchist", "sadist", "realist"],
+    correct: "4",
+    exptext: "✅ Realist fits because he looked at facts and costs before acting. 📌 Facts first means realist. ❌ Mystic is wrong because it means a person who seeks spiritual truth."
+  },
+  233: {
+    type: "concept", icon: "🚩", accent: "#23c755", pauseTimer: true,
+    title: "Jingoistic",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:35,199,85;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">ADJECTIVE</span><span class="vc-pron" translate="no">/ˌdʒɪŋɡəʊˈɪstɪk/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">showing aggressive and extreme pride in one's own country</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">अंधराष्ट्रवादी</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">chauvinistic</li><li class="vc-chip">warlike</li><li class="vc-chip">ultra-patriotic</li><li class="vc-chip">aggressive</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">peace-loving</li><li class="vc-chip">moderate</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The <b>jingoistic</b> speaker demanded war and shouted that no other country mattered. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The newspaper's <b>jingoistic</b> articles pushed readers to hate neighbouring countries.</p></li><li><span class="vc-n">3</span><p class="vc-s">True love for the country is different from <b>jingoistic</b> pride that despises others.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">The word comes from an old English song that urged war with the phrase "by jingo".</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/78.png" alt="Illustration of the word jingoistic: An angry speaker in a loud suit stands on a stage waving a large national flag and shouting into a micr" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The <mark class="vc-hl">jingoistic</mark> speaker demanded war and shouted that no other country mattered.</p></div></div>
+      </div></div>
+    `
+  },
+  234: {
+    questext: "Select the most appropriate antonym of the given word.\nJingoistic",
+    options: ["Peace-loving", "Aggressive", "Chauvinistic", "Warlike"],
+    correct: "1",
+    exptext: "✅ Jingoistic means aggressively proud of one's country, so peace-loving is the opposite. 📌 Jingo wants war. ❌ Warlike is wrong because it is a synonym."
+  },
+  235: {
+    questext: "Select the most appropriate option to fill in the blank.\nSensible citizens disliked the ______ speech that called for war over a small quarrel.",
+    options: ["eloquent", "sanguine", "jingoistic", "stoic"],
+    correct: "3",
+    exptext: "✅ Jingoistic fits because the speech called for war out of extreme national pride. 📌 Proud of country and wants war means jingoistic. ❌ Eloquent is wrong because it only means speaking clearly and powerfully."
+  },
+  236: {
+    type: "concept", icon: "☁️", accent: "#81c723", pauseTimer: true,
+    title: "Reverie",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:129,199,35;--ink:#111">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/ˈrevəri/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a state of pleasant daydreaming</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">दिवास्वप्न, खयाली दुनिया</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">daydream</li><li class="vc-chip">dream</li><li class="vc-chip">musing</li><li class="vc-chip">trance</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">alertness</li><li class="vc-chip">attention</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">A sudden knock at the door broke her <b>reverie</b> by the window. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">Lost in a happy <b>reverie</b>, he forgot to get off the bus at his stop.</p></li><li><span class="vc-n">3</span><p class="vc-s">She sat by the fire in a quiet <b>reverie</b> about her childhood home.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">Reverie comes from an old French word meaning to dream or wander in thought.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/79.png" alt="Illustration of the word reverie: A young woman sits by a window with her chin on her hand, gazing at soft clouds in the sky with a dreamy s" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">A sudden knock at the door broke her <mark class="vc-hl">reverie</mark> by the window.</p></div></div>
+      </div></div>
+    `
+  },
+  237: {
+    questext: "Select the most appropriate synonym of the given word.\nReverie",
+    options: ["Nightmare", "Daydream", "Argument", "Alarm"],
+    correct: "2",
+    exptext: "✅ A reverie is a pleasant daydream, so daydream is the closest word. 📌 Awake but dreaming. ❌ Nightmare is wrong because it is a frightening dream during sleep."
+  },
+  238: {
+    questext: "Select the most appropriate option to fill in the blank.\nStaring out of the train window, he fell into a pleasant ______ about his village.",
+    options: ["impasse", "quagmire", "euphoria", "reverie"],
+    correct: "4",
+    exptext: "✅ Reverie fits because he drifted into a pleasant daydream. 📌 Dreamy thoughts mean reverie. ❌ Euphoria is wrong because it means great excitement and joy, not quiet dreaming."
+  },
+  239: {
+    type: "concept", icon: "🎉", accent: "#c77e23", pauseTimer: true,
+    title: "Euphoria",
+    html: `
+      <div class="vc-wrap"><div class="vc" style="--ar:199,126,35;--ink:#fff">
+      <div class="vc-main">
+      <div class="vc-top"><span class="vc-pos">NOUN</span><span class="vc-pron" translate="no">/juːˈfɔːriə/</span></div>
+      <div class="vc-pair vc-p1"><div class="vc-card vc-mean"><div class="vc-lab">Meaning</div><p class="vc-t">a feeling of great happiness and excitement</p></div><div class="vc-card vc-hi"><div class="vc-lab">हिंदी अर्थ</div><p class="vc-t" lang="hi">उल्लास, अत्यंत हर्ष</p></div></div>
+      <div class="vc-pair vc-p2"><div class="vc-card vc-syn"><div class="vc-lab"><i>✅</i>Synonyms</div><ul class="vc-chips"><li class="vc-chip">elation</li><li class="vc-chip">joy</li><li class="vc-chip">bliss</li><li class="vc-chip">high spirits</li></ul></div><div class="vc-card vc-ant"><div class="vc-lab"><i>↔️</i>Antonyms</div><ul class="vc-chips"><li class="vc-chip">despair</li><li class="vc-chip">misery</li><li class="vc-chip">gloom</li></ul></div></div>
+      <div class="vc-card vc-use"><div class="vc-lab"><i>✍️</i>Usage — 3 sentences</div><ol><li><span class="vc-n">1</span><p class="vc-s">The mountaineers felt pure <b>euphoria</b> on reaching the summit at dawn. <span class="vc-pic" title="Shown in the picture">🖼️</span></p></li><li><span class="vc-n">2</span><p class="vc-s">The whole city was in <b>euphoria</b> after the team won the world cup.</p></li><li><span class="vc-n">3</span><p class="vc-s">A wave of <b>euphoria</b> swept the hall when the results were announced.</p></li></ol></div>
+      <div class="vc-card vc-mem"><div class="vc-lab"><i>💡</i>Memory hook</div><p class="vc-t">"Eu" is the Greek prefix for good, so euphoria is a good feeling.</p></div>
+      </div>
+      <div class="vc-side"><figure class="vc-fig"><img class="vc-img" src="images/English_Comprehension/Vocabulary/Set_1/80.png" alt="Illustration of the word euphoria: A group of mountaineers in bright jackets stand on a snowy summit at sunrise with their arms raised and b" loading="lazy"></figure>
+      <div class="vc-cap"><div class="vc-lab"><i>🖼️</i>Sentence shown in the picture</div><p class="vc-q">The mountaineers felt pure <mark class="vc-hl">euphoria</mark> on reaching the summit at dawn.</p></div></div>
+      </div></div>
+    `
+  },
+  240: {
+    questext: "Select the most appropriate antonym of the given word.\nEuphoria",
+    options: ["Despair", "Happiness", "Joy", "Elation"],
+    correct: "1",
+    exptext: "✅ Euphoria is great happiness, so despair, which means loss of all hope, is the opposite. 📌 \"Eu\" is good. ❌ Elation is wrong because it is a synonym."
+  },
+  241: {
+    questext: "Select the most appropriate option to fill in the blank.\nThe students were filled with ______ when they learned that every one of them had passed.",
+    options: ["quagmire", "reverie", "euphoria", "impasse"],
+    correct: "3",
+    exptext: "✅ Euphoria fits because great happiness follows good news. 📌 Great joy means euphoria. ❌ Impasse is wrong because it means a situation with no progress."
   }
 };
 
 window.IMG_PROMPTS = Object.assign(window.IMG_PROMPTS || {}, {
-  "images/English_Comprehension/Vocabulary/Set_1/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "an open elegant dictionary, a gold fountain pen and a few floating letter tiles" },
-  "images/English_Comprehension/Vocabulary/Set_1/1.png": { t: "fig", about: "Scene from the sentence: \"The calligrapher dipped her pen carefully and wrote the invitation in flowing letters.\" — Show: a calligrapher dipping a brush pen in ink and writing flowing letters on a wedding invitation, ink bottle and paper on a wooden desk. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/2.png": { t: "fig", about: "Scene from the sentence: \"The doctor's cacography made the prescription impossible for the chemist to read.\" — Show: a pharmacist squinting at a doctor's messy scribbled prescription with a confused face, pill bottles and counter in a small shop. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/3.png": { t: "fig", about: "Scene from the sentence: \"Satellite images help a modern cartographer update city maps within days.\" — Show: a cartographer at a drafting table with compass and satellite printouts, drawing a city map, focused mood. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/4.png": { t: "fig", about: "Scene from the sentence: \"The philatelist paid a huge sum for a rare stamp at the auction.\" — Show: an elderly man with a magnifying glass and tweezers examining a rare stamp at a desk with open stamp albums. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/5.png": { t: "fig", about: "Scene from the sentence: \"No historian can work without the patient help of a good archivist.\" — Show: an archivist in white gloves lifting a fragile old document from a box in a records room with tall shelves. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/6.png": { t: "fig", about: "Scene from the sentence: \"The numismatist examined the ancient silver coin under a bright lamp.\" — Show: a numismatist with a magnifying glass studying an ancient silver coin under a lamp, trays of old coins on velvet. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/7.png": { t: "fig", about: "Scene from the sentence: \"The finance minister visited the mint to see how new coins are made.\" — Show: a factory floor at a mint with machines stamping shiny coins that pour into a bin, a minister in a suit watching. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/8.png": { t: "fig", about: "Scene from the sentence: \"Because of her nyctophobia, Riya always sleeps with a small lamp switched on.\" — Show: a child sitting up in bed clutching a blanket, a glowing night lamp on the table, dark room with shadowy corners. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/9.png": { t: "fig", about: "Scene from the sentence: \"Suffering from agoraphobia, the poet rarely left his small room for years.\" — Show: a worried poet staring from a dim window at a bustling crowded square, one hand pressed on the glass. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/10.png": { t: "fig", about: "Scene from the sentence: \"The film shows how xenophobia slowly poisoned a once-friendly town.\" — Show: villagers turning their backs on a family of newcomers carrying suitcases at a village gate, sad mood. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/11.png": { t: "fig", about: "Scene from the sentence: \"His gynophobia made him nervous even when a woman simply asked him for directions.\" — Show: a nervous young man stepping back with raised hands as a woman politely asks him for directions on a street. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/12.png": { t: "fig", about: "Scene from the sentence: \"In the old story, the king, a digamist, brought a new queen to the palace.\" — Show: an older king standing beside a smiling new queen at a palace wedding with garlands and guests. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/13.png": { t: "fig", about: "Scene from the sentence: \"Claustrophobia made her take the stairs instead of the crowded, narrow lift.\" — Show: a pale woman hesitating at the door of a crowded narrow lift, choosing the staircase instead. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/14.png": { t: "fig", about: "Scene from the sentence: \"The lexicographer spent ten years collecting meanings for the new Hindi dictionary.\" — Show: an elderly lexicographer surrounded by stacks of dictionary pages and index cards, writing at a lamp-lit desk. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/15.png": { t: "fig", about: "Scene from the sentence: \"The etymology of \"salary\" goes back to the Latin word for salt.\" — Show: a student in a library looking at a dictionary beside a small pile of salt, arrows like a family tree floating in the air. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/16.png": { t: "fig", about: "Scene from the sentence: \"The university's entomology department tracks insects that damage the wheat crop.\" — Show: researchers in a wheat field examining insects with magnifying glasses and nets, notebooks in hand. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/17.png": { t: "fig", about: "Scene from the sentence: \"The philologist spent years decoding the grammar of a forgotten tribal language.\" — Show: a scholar at a desk comparing two ancient manuscripts side by side with books piled up, deep concentration. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/18.png": { t: "fig", about: "Scene from the sentence: \"Text messaging has speeded up neology, creating new words almost every month.\" — Show: teenagers laughing over their phones in a cafe, colourful abstract shapes floating above them like fresh ideas. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/19.png": { t: "fig", about: "Scene from the sentence: \"The paleographer slowly read the faded writing on the medieval parchment.\" — Show: a paleographer with a magnifier reading a faded medieval parchment under a lamp, quill and ink bottle nearby. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/20.png": { t: "fig", about: "Scene from the sentence: \"The newspaper's clever coinage 'staycation' soon appeared in many dictionaries.\" — Show: an editor in a busy newsroom proudly showing colleagues a dictionary with a bookmark, everyone smiling. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/21.png": { t: "fig", about: "Scene from the sentence: \"The young orator held the whole hall silent with his powerful opening line.\" — Show: a young speaker at a podium addressing a hushed crowded hall with one hand raised, audience listening intently. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/22.png": { t: "fig", about: "Scene from the sentence: \"The demagogue promised free everything and blamed outsiders for every problem in town.\" — Show: a loud politician on a platform pointing angrily at the sky while an excited crowd waves fists. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/23.png": { t: "fig", about: "Scene from the sentence: \"The village pedagogue taught three generations from one dusty classroom.\" — Show: an elderly village teacher with spectacles and a cane standing before a chalkboard in a dusty classroom of village children. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/24.png": { t: "fig", about: "Scene from the sentence: \"The old synagogue in the city is known for its stained glass windows.\" — Show: exterior of an old synagogue with a stained glass window in golden evening light, people walking in. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/25.png": { t: "fig", about: "Scene from the sentence: \"Her eloquent speech about saving the lake moved even the strongest critics.\" — Show: a confident woman addressing a village meeting beside a lake, listeners nodding and some wiping tears. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/26.png": { t: "fig", about: "Scene from the sentence: \"The first cuckoo's call is a harbinger of spring in the countryside.\" — Show: a cuckoo singing on a blooming branch at sunrise, a village in the distance, last patches of snow melting. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/27.png": { t: "fig", about: "Scene from the sentence: \"The royal herald blew his trumpet and read the king's order aloud.\" — Show: a medieval herald in a colourful tunic blowing a long trumpet and reading a scroll in a market square. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/28.png": { t: "fig", about: "Scene from the sentence: \"As a trusted emissary, he carried secret letters across the mountain border.\" — Show: a cloaked messenger on horseback crossing a mountain pass at dusk, sealed letters in a leather satchel. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/29.png": { t: "fig", about: "Scene from the sentence: \"Shakespeare's plays contain an archaism on almost every page, so students keep glossaries beside them.\" — Show: a puzzled student in a library reading an old book of plays with a thick glossary open beside it. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/30.png": { t: "fig", about: "Scene from the sentence: \"The mechanic's jargon left me completely confused about what was wrong with my scooter.\" — Show: a puzzled customer in a garage listening to a mechanic pointing at engine parts, tools hanging on the wall. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/31.png": { t: "fig", about: "Scene from the sentence: \"Pickpockets in the old city spoke a secret argot to hide their plans.\" — Show: two shady pickpockets whispering in a dim old city alley, glancing around, lantern light on wet stones. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/32.png": { t: "fig", about: "Scene from the sentence: \"The word \"selfie\" was once a neologism, but now everyone uses it.\" — Show: friends laughing on a sofa taking a selfie with a smartphone, an open dictionary lying beside them. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/33.png": { t: "fig", about: "Scene from the sentence: \"Her speech was full of friendly colloquialisms, which made the crowd feel at home.\" — Show: a cheerful speaker chatting casually with a village crowd at a tea stall, everyone laughing and relaxed. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/34.png": { t: "fig", about: "Scene from the sentence: \"The farmer spoke in a rural dialect that city visitors found hard to follow.\" — Show: a farmer chatting at a field gate with puzzled city visitors who lean in to listen. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/35.png": { t: "fig", about: "Scene from the sentence: \"When asked about the budget, his reply about cricket was a complete non sequitur.\" — Show: a meeting room where a man asked about the budget holds up a cricket bat while colleagues stare in confusion. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/36.png": { t: "fig", about: "Scene from the sentence: \"The minister's equivocation on the tax question made reporters even more suspicious.\" — Show: reporters crowding a minister who shrugs and waves his hands vaguely at a bunch of microphones. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/37.png": { t: "fig", about: "Scene from the sentence: \"The editor cut the tautology from the report to make it shorter.\" — Show: an editor with a red pen crossing out repeated lines on a long printed report, desk piled with paper. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/38.png": { t: "fig", about: "Scene from the sentence: \"Farmers once planted crops by checking the weather notes in the village almanac.\" — Show: a farmer in a field at sunrise holding an old almanac book while looking up at the sky. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/39.png": { t: "fig", about: "Scene from the sentence: \"The monk kept a chronicle of every flood and famine in the kingdom.\" — Show: a monk writing in a large book by candlelight in a stone cell with scrolls stacked around him. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/40.png": { t: "fig", about: "Scene from the sentence: \"The shopkeeper noted every sale in his big ledger before closing the shop.\" — Show: a shopkeeper writing in a thick ledger at a wooden counter, shelves of goods behind him. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/41.png": { t: "fig", about: "Scene from the sentence: \"The epigrapher read the ancient king's orders carved on a rock pillar.\" — Show: an epigrapher with a brush and notebook studying lines carved on an ancient stone pillar in sunlight. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/42.png": { t: "fig", about: "Scene from the sentence: \"The epitaph on his grave said simply, \"He loved the mountains.\"\" — Show: a visitor kneeling at a granite gravestone with carved lines at dawn, mountain flowers placed in front. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/43.png": { t: "fig", about: "Scene from the sentence: \"The village doctor was the epitome of kindness, treating the poor without any fee.\" — Show: a village doctor gently treating a poor child in a simple clinic while the family looks on gratefully. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/44.png": { t: "fig", about: "Scene from the sentence: \"The play ended with an epilogue spoken by the main actor.\" — Show: an actor stepping forward alone onto a softly lit stage as the curtain falls behind him. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/45.png": { t: "fig", about: "Scene from the sentence: \"The stoic old farmer accepted the failed harvest without a single complaint.\" — Show: an old farmer standing calmly at the edge of a dry, failed crop field, hands folded and face composed. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/46.png": { t: "fig", about: "Scene from the sentence: \"Despite the poor results, the coach remained sanguine about the next match.\" — Show: a smiling coach with a clipboard standing confidently before a team of players who look down after defeat. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/47.png": { t: "fig", about: "Scene from the sentence: \"The anchorite lived in a mountain cave and prayed for most of the day.\" — Show: a hermit sitting in prayer inside a mountain cave while villagers quietly leave a basket of food at the entrance. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/48.png": { t: "fig", about: "Scene from the sentence: \"The famous writer lived as a recluse in a house hidden by tall trees.\" — Show: a large old house almost hidden by tall trees with curtains drawn, a single lamp glowing in an upper window. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/49.png": { t: "fig", about: "Scene from the sentence: \"The ascetic slept on the bare floor and ate only one simple meal a day.\" — Show: a lean ascetic sitting on a bare floor with a small bowl of rice in a sparse hut. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/50.png": { t: "fig", about: "Scene from the sentence: \"After lunch, grandfather loved to recline on the cane chair and read.\" — Show: an elderly man reclining on a cane chair on a sunny veranda, reading a book in the afternoon light. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/51.png": { t: "fig", about: "Scene from the sentence: \"The mystic sat by the river for hours, lost in silent prayer.\" — Show: a mystic sitting cross-legged by a calm river at dawn, eyes closed, soft golden light on the water. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/52.png": { t: "fig", about: "Scene from the sentence: \"The charlatan sold coloured water as a cure for every disease.\" — Show: a street vendor in a tall hat selling colourful bottles to a crowd while one woman looks doubtful. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/53.png": { t: "fig", about: "Scene from the sentence: \"The thief tried to masquerade as a postman to enter the building.\" — Show: a man wearing a postman's cap and carrying a bag at an apartment door while a guard looks suspicious. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/54.png": { t: "fig", about: "Scene from the sentence: \"The omniscient narrator of the novel knows what every character secretly thinks.\" — Show: a novel open on a desk with tiny glowing figures of its characters rising from the pages, each wrapped in a soft glow. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/55.png": { t: "fig", about: "Scene from the sentence: \"Mobile phones are ubiquitous; you see them in almost every hand.\" — Show: a crowded railway platform where nearly everyone is looking at a mobile phone in hand. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/56.png": { t: "fig", about: "Scene from the sentence: \"The poet felt a quiet beauty immanent in even the smallest pebble.\" — Show: a poet kneeling beside a smooth pebble in a stream at dawn, a soft light glowing from within the stone. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/57.png": { t: "fig", about: "Scene from the sentence: \"Black clouds warned that a heavy storm was imminent.\" — Show: dark storm clouds gathering over a village field, farmers hurrying home with tools as the wind rises. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/58.png": { t: "fig", about: "Scene from the sentence: \"The college invited an eminent scientist to open its new laboratory.\" — Show: an elderly respected scientist cutting a ribbon at a new college laboratory while students clap. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/59.png": { t: "fig", about: "Scene from the sentence: \"The talks ended in an impasse when neither side would change its demand.\" — Show: two negotiators sitting on opposite sides of a long table with folded arms, facing away, papers untouched. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/60.png": { t: "fig", about: "Scene from the sentence: \"The heavy rain turned the village road into a quagmire of sticky mud.\" — Show: a tractor stuck in deep sticky mud on a village road after rain, farmers pushing from behind. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/61.png": { t: "fig", about: "Scene from the sentence: \"The team won the final, but with three injured stars it was a Pyrrhic victory.\" — Show: injured players with bandages holding a winning trophy sadly in an empty stadium. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/62.png": { t: "fig", about: "Scene from the sentence: \"Friends gave an impromptu concert on the beach when the evening turned cool.\" — Show: friends singing with a guitar on a beach at dusk, others clapping around a small campfire. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/63.png": { t: "fig", about: "Scene from the sentence: \"Students enjoyed the extempore speaking contest, where topics were handed out on the spot.\" — Show: students at a classroom contest, one boy drawing a slip from a bowl and starting to speak while others watch. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/64.png": { t: "fig", about: "Scene from the sentence: \"Only a pedant would argue about a comma while the building was on fire.\" — Show: a stern man at a desk with a magnifying glass pointing at a comma on a page while flames flicker outside the window. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/65.png": { t: "fig", about: "Scene from the sentence: \"A painting of melting clocks in a desert is a classic work of surrealism.\" — Show: a desert with soft melting clocks draped over a tree branch and a rock under a dreamlike sky. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/66.png": { t: "fig", about: "Scene from the sentence: \"Critics admired the film's verism, from its dusty streets to its tired faces.\" — Show: a film crew shooting a scene in a dusty narrow lane with tired faces, camera and microphone close by. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/67.png": { t: "fig", about: "Scene from the sentence: \"The judge questioned the veracity of the witness's story.\" — Show: a judge in a courtroom looking doubtfully at a witness on the stand while lawyers listen. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/68.png": { t: "fig", about: "Scene from the sentence: \"Only a masochist would run a marathon barefoot on hot sand for fun.\" — Show: a sweaty runner barefoot on hot sand dunes with a strained smile while baffled spectators watch. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/69.png": { t: "fig", about: "Scene from the sentence: \"Nobody liked the sadist who teased smaller children until they cried.\" — Show: a big boy teasing a smaller crying child in a playground while the little one's friends look frightened. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/70.png": { t: "fig", about: "Scene from the sentence: \"The village savant knew the history of every temple in the district.\" — Show: an elderly village scholar with a white beard sitting under a banyan tree, villagers listening to him about an old temple. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/71.png": { t: "fig", about: "Scene from the sentence: \"The violin virtuoso played so fast that the audience held its breath.\" — Show: a violinist on stage playing with a blur of fast bow movement while the audience leans forward. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/72.png": { t: "fig", about: "Scene from the sentence: \"His remark about \"a modern Ravana\" was an allusion to the greedy contractor.\" — Show: a speaker at a podium glancing slyly at a greedy contractor in the audience, who shifts nervously in his seat. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/73.png": { t: "fig", about: "Scene from the sentence: \"The thief's elusion of the police lasted three weeks.\" — Show: a thief slipping through a narrow alley while police run past in the opposite direction. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/74.png": { t: "fig", about: "Scene from the sentence: \"The shimmering water on the hot road is only an illusion of the desert heat.\" — Show: a hot empty highway with a shimmering water-like mirage on the road, a tired traveller squinting at it. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/75.png": { t: "fig", about: "Scene from the sentence: \"The fox managed to elude the hunters by hiding in a hollow log.\" — Show: a fox hiding inside a hollow log as hunters walk past in the forest. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/76.png": { t: "fig", about: "Scene from the sentence: \"Police arrested the anarchist for urging the crowd to ignore every law.\" — Show: a man standing on a wooden box urging a crowd in a square while police approach and torn posters flutter. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/77.png": { t: "fig", about: "Scene from the sentence: \"The coach, a realist, told the team they were not yet ready for the finals.\" — Show: a coach honestly talking to a quiet team on a training ground, a trophy cabinet visible behind them. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/78.png": { t: "fig", about: "Scene from the sentence: \"The jingoistic speaker demanded war and shouted that no other country mattered.\" — Show: an angry speaker shouting from a platform waving a large flag, a crowd below with raised fists. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/79.png": { t: "fig", about: "Scene from the sentence: \"A sudden knock at the door broke her reverie by the window.\" — Show: a woman gazing dreamily out of a window with a soft smile, startled by a knock at the door behind her. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." },
-  "images/English_Comprehension/Vocabulary/Set_1/80.png": { t: "fig", about: "Scene from the sentence: \"The mountaineers felt pure euphoria on reaching the summit at dawn.\" — Show: mountaineers standing on a snowy summit at dawn with arms raised, golden light over the clouds below. One clean wide 16:9 illustration, modern editorial style, soft lighting. No text, letters, captions or speech bubbles in the image." }
+  "images/English_Comprehension/Vocabulary/Set_1/thumbnail.png": { t: "thumb", accent: "#6366f1", objects: "an open vintage dictionary, a brass quill pen in an inkwell and a few softly glowing golden letters" },
+  "images/English_Comprehension/Vocabulary/Set_1/1.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"calligrapher\" at a glance, without reading anything: A calm young woman in a simple kurta sits at a wooden desk, dipping a long pen into an ink pot and writing an elegant wedding invitation in flowing curved letters; ink bottles, brushes and a lamp are beside her. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/2.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"cacography\" at a glance, without reading anything: A worried chemist in a white coat holds a doctor's prescription full of messy, unreadable scribbles, scratching his head with a puzzled face; shelves of medicine bottles behind him; a large question mark above his head. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/3.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"cartographer\" at a glance, without reading anything: A focused man sits at a big table covered with a half-drawn map, holding a ruler and fine pen; a satellite photo of a city lies beside him, a globe and compass stand nearby, and a computer screen shows a digital map. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/4.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"philatelist\" at a glance, without reading anything: A delighted collector in an auction hall raises a numbered paddle to bid for a tiny rare postage stamp shown on a screen; an open stamp album, tweezers and a magnifying glass lie on the desk beside him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/5.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"archivist\" at a glance, without reading anything: A careful woman in white cotton gloves lifts a fragile old document from a labelled box in a quiet archive room; tall shelves of files and boxes stand behind her, and a historian watches from a desk with a notebook. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/6.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"numismatist\" at a glance, without reading anything: An elderly collector with round glasses studies a shiny ancient silver coin with a magnifying glass under a bright desk lamp; open trays of old coins and medals, a small scale and white gloves lie on the table. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/7.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"mint\" at a glance, without reading anything: Inside a government coin factory, workers in safety gear watch a machine stamping shiny round metal discs into new coins; trays of freshly made coins glitter on a conveyor, and a smiling minister in a formal shirt looks on. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/8.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"nyctophobia\" at a glance, without reading anything: A young girl sits up in bed at night with a blanket pulled to her chin and wide frightened eyes, while a small glowing lamp on the bedside table lights the room and dark shadows gather in the far corners. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/9.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"agoraphobia\" at a glance, without reading anything: A nervous man stands in a doorway looking out at a wide, busy town square full of people; he grips the door frame tightly with a scared face, while his small quiet room is visible behind him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/10.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"xenophobia\" at a glance, without reading anything: In a town street, a group of worried locals stand with crossed arms and angry faces, glaring at a family of newcomers with suitcases who look anxious and hold each other close; a faded welcome sign hangs crooked behind them. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/11.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"gynophobia\" at a glance, without reading anything: On a street corner a nervous young man steps back with wide eyes and raised hands, sweating, while a polite woman holding a city map asks him for directions with a friendly, puzzled smile. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/12.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"digamist\" at a glance, without reading anything: A smiling middle-aged king in royal robes stands with a gentle new queen at the palace gate while courtiers cheer with flowers; a framed portrait of his first queen hangs quietly on the wall behind them. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/13.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"claustrophobia\" at a glance, without reading anything: A frightened woman stands at the door of a small, crowded lift with her hand on her chest and a worried face, then turns towards a wide, bright staircase on the other side, which looks open and safe. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/14.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"lexicographer\" at a glance, without reading anything: A patient scholar sits at a desk piled with open dictionaries and index cards, writing a word meaning with a pen; tall shelves of thick dictionaries rise behind him and a small card box stands beside his lamp. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/15.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"etymology\" at a glance, without reading anything: A teacher points to a chalkboard where a word is drawn as a tree, its roots labelled with old languages and its branches showing modern words; a bag of salt sits on the desk, and curious students lean forward. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/16.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"entomology\" at a glance, without reading anything: A scientist in a lab coat studies a beetle through a large microscope; pinned butterflies in glass cases, a net, jars of insects and a wheat plant with a small insect on its leaf are visible around the table. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/17.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"philologist\" at a glance, without reading anything: A scholar with a grey beard studies two old manuscripts in different scripts at a lamp-lit table, writing comparison notes; a language family tree chart hangs on the wall and several ancient books lie open beside him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/18.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"neology\" at a glance, without reading anything: A group of cheerful teenagers sit in a cafe looking at their phones, and glowing new made-up words float above their heads as playful speech bubbles; a thick old dictionary sits unopened on a nearby shelf. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/19.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"paleographer\" at a glance, without reading anything: A scholar with a magnifying glass bends over a fragile old parchment with faded writing under a bright lamp, copying the letters carefully into a notebook; old palm-leaf manuscripts and an inkwell lie beside him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/20.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"coinage\" at a glance, without reading anything: A smiling journalist in a newsroom holds up a poster with a funny new made-up word written in big letters, while colleagues clap; a lightbulb glows above her head and a coffee cup sits on the desk. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/21.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"orator\" at a glance, without reading anything: A confident young man stands at a podium on a stage, one hand raised in a strong gesture, while a packed hall of listeners sits silent and spellbound, their eyes fixed on him; a microphone stands in front of him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/22.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"demagogue\" at a glance, without reading anything: A loud man in a fancy jacket stands on a wooden box in a town square, waving his fist and shouting, while an angry crowd waves banners below him; a few worried citizens at the edge of the crowd watch him doubtfully. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/23.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"pedagogue\" at a glance, without reading anything: An elderly teacher with round glasses and a long wooden pointer stands beside a blackboard in a small dusty village classroom, while rows of children sit on the floor with slates and listen carefully. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/24.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"synagogue\" at a glance, without reading anything: A peaceful old stone building with tall arched windows of coloured stained glass stands on a quiet city street, while families in neat clothes walk up its stone steps towards the carved wooden doors. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/25.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"eloquent\" at a glance, without reading anything: A passionate young woman stands at a lakeside meeting and speaks with an open hand, while a crowd of villagers and a few stern officials listen closely, some wiping their eyes; a blue lake shines in the background. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/26.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"harbinger\" at a glance, without reading anything: A farmer stands in a green field and looks up with a smile at a cuckoo bird sitting on a branch of a blossoming tree, while fresh flowers open around him and the last bit of snow melts on the ground. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/27.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"herald\" at a glance, without reading anything: A royal messenger in a bright coat stands in a busy market blowing a long trumpet and holding an unrolled scroll, while townspeople stop and look up; a king's flag flutters on a pole behind him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/28.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"emissary\" at a glance, without reading anything: A tired traveller in a long coat rides a horse along a mountain road holding a sealed letter, with a guard beside him; snowy peaks rise behind and a distant border gate with two flags is visible ahead. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/29.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"archaism\" at a glance, without reading anything: A student sits at a desk with an old open play book, looking puzzled at a faded old-fashioned word on the page, while a small glossary booklet and a pen lie beside her and a quill pen stands in an ink pot. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/30.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"jargon\" at a glance, without reading anything: A confused young man stands at a repair shop counter scratching his head, while a mechanic in overalls speaks with many strange floating technical words in speech bubbles around him and points at a scooter engine. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/31.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"argot\" at a glance, without reading anything: In a dim alley at night, three men in caps whisper close together, one making a quiet hand signal, while a stranger in the street looks on and cannot understand; a street lamp glows and a market crowd walks by. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/32.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"neologism\" at a glance, without reading anything: A cheerful teenager takes a picture of herself with a phone held at arm's length, smiling, while a glowing new word floats above her like a bright label and an old dictionary on a shelf has no page for it. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/33.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"colloquialism\" at a glance, without reading anything: Two friends sit on a park bench laughing and chatting casually with relaxed hands; a speech bubble above one of them shows a small slice of cake to show the phrase \"piece of cake\", while a stiff man in a suit walks past. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/34.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"dialect\" at a glance, without reading anything: A smiling farmer in a turban speaks with a village woman in a green field while a puzzled city visitor with a suitcase listens nearby, scratching his head; colourful speech bubbles with different shapes float over each speaker. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/35.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"non sequitur\" at a glance, without reading anything: At a press conference, a reporter asks a serious question with a budget chart behind the stage, while the official answers by holding up a cricket bat with a cheerful face; the audience looks confused with raised eyebrows. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/36.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"equivocation\" at a glance, without reading anything: A nervous official stands at a podium with a slippery smile and a raised hand, while thin foggy swirls of unclear words float around him; a row of reporters holds notebooks and microphones and looks doubtful. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/37.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"tautology\" at a glance, without reading anything: An editor with a red pen sits at a desk and crosses out a repeated phrase on a printed page, where the same short sentence is written twice in different words; stacks of paper and a cup of tea rest beside her. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/38.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"almanac\" at a glance, without reading anything: A farmer in a field holds up a thick yearly book open to a page with a calendar and a small sun and rain symbols, looking at the sky, while rows of young crops stand behind him; a hut and a bullock cart are visible. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/39.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"chronicle\" at a glance, without reading anything: A monk in a simple robe sits in a stone room writing in a large old book with a quill by candlelight; behind him, a window shows distant floodwaters, and stacked old volumes and a hourglass sit on his desk. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/40.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"ledger\" at a glance, without reading anything: A shopkeeper with a pen sits at a wooden counter in the evening writing sales in a big thick account book with columns of numbers, while a small brass scale, a few coins and a lantern lie beside him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/41.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"epigrapher\" at a glance, without reading anything: An expert kneels beside a tall stone pillar covered in carved ancient letters, pressing a sheet of paper on it and rubbing it with charcoal to copy the writing; a notebook, a brush and a water bottle lie on the ground. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/42.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"epitaph\" at a glance, without reading anything: A quiet old graveyard at sunset where a visitor with folded hands stands before a simple stone grave carved with a short line of words, while a small mountain outline is carved above it and fresh flowers lie at its base. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/43.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"epitome\" at a glance, without reading anything: A kind village doctor with a stethoscope sits in a small clinic and gently treats a poor old man, with a hand-painted sign saying \"No fee\" on the wall; a queue of grateful villagers waits at the door. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/44.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"epilogue\" at a glance, without reading anything: On a theatre stage, the main actor in costume stands alone in a single spotlight speaking to the audience as the final words of a play, while the other actors wait in the shadows and the red curtain begins to close. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/45.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"stoic\" at a glance, without reading anything: A weathered old farmer stands calmly in a dry, cracked field with his arms folded, looking at withered crops without any tears or anger, while his neighbours around him look upset and talk loudly. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/46.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"sanguine\" at a glance, without reading anything: A coach in a tracksuit smiles confidently on a training ground, giving a thumbs-up to his team while a scoreboard behind shows a losing result; the players look tired but cheerful and the sun shines through light clouds. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/47.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"anchorite\" at a glance, without reading anything: A thin old man with a long beard sits cross-legged inside a mountain cave with folded hands in prayer, a small oil lamp beside him; far below the cave mouth, a quiet village is visible in the valley. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/48.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"recluse\" at a glance, without reading anything: A lonely man peeks out through a slightly open door of a quiet house hidden among tall dense trees, with a high fence and a closed gate, while a neighbour on the lane glances over and wonders about him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/49.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"ascetic\" at a glance, without reading anything: A calm thin man in plain cloth sleeps on a bare floor mat in a tiny empty hut, with only a water pot and a small bowl of rice beside him; a rich house is visible far away through a small window. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/50.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"recline\" at a glance, without reading anything: A relaxed grandfather leans far back in a cane chair on a sunny veranda with his feet on a stool and a book in his hands, while a cup of tea sits on a small table beside him and a garden is visible behind. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/51.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"mystic\" at a glance, without reading anything: A peaceful man with closed eyes sits cross-legged on a rock at the edge of a quiet river at dawn in deep meditation, with golden sunlight on the water and a soft glow around his head; trees and mist surround him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/52.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"charlatan\" at a glance, without reading anything: A smooth-talking man in a bright coat stands on a cart at a village fair holding up a bottle of coloured water, while a crowd gathers; a small boy at the front looks doubtful and a hand-painted sign says \"Cure for everything\". Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/53.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"masquerade\" at a glance, without reading anything: A suspicious man in a postman's cap and a bag walks up to a building gate and presses the bell with a false smile, while a hidden pair of burglar tools peeks out from the bottom of the bag; a security guard watches closely. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/54.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"omniscient\" at a glance, without reading anything: A glowing wise wizard in a star-covered robe sits on a tall tower and looks down over a whole kingdom, with small bright thought bubbles floating over the houses below showing what each person is thinking; the night sky is full of stars. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/55.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"ubiquitous\" at a glance, without reading anything: A busy street crossing seen from above where almost every walking person, rider and shopkeeper is holding a mobile phone to their ear or looking at its screen, with phones shown glowing in many hands of different ages. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/56.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"immanent\" at a glance, without reading anything: A poet sits on a river bank holding a small smooth pebble in his open palm and looking at it with wonder, while soft golden light seems to glow from inside the pebble; a notebook and a pen rest on the grass beside him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/57.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"imminent\" at a glance, without reading anything: A fishing village seen from the shore where dark storm clouds fill the sky and strong wind bends the palm trees; fishermen quickly pull their boats onto the sand and a villager points at the sky with worried eyes. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/58.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"eminent\" at a glance, without reading anything: A respected elderly scientist in a white coat cuts a ribbon at the door of a new science laboratory, with applauding students and teachers around him and a garland of flowers on his neck; cameras flash in the background. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/59.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"impasse\" at a glance, without reading anything: Two groups of negotiators in suits sit on opposite sides of a long table with folded arms and stubborn faces, a stack of unsigned papers lying untouched in the middle; a wall clock shows a late hour and cups of tea stand cold. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/60.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"quagmire\" at a glance, without reading anything: A bullock cart with its wheels stuck deep in thick sticky mud on a village road after heavy rain, while the farmer pulls the bullock and two villagers push from behind; grey clouds hang above and puddles shine around. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/61.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"Pyrrhic\" at a glance, without reading anything: A football team celebrates holding a trophy on a pitch, but three players sit or lie on the ground wearing bandages and holding their legs, while the coach looks tired and worried; a stretcher is being carried in. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/62.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"impromptu\" at a glance, without reading anything: At sunset, a group of friends sit around a bonfire on a beach, one strumming a guitar and another tapping a drum while the others clap and sing; a few strangers walk up to listen and the waves glow orange. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/63.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"extempore\" at a glance, without reading anything: A smiling student stands on a stage with a small slip of paper handed to him moments ago, starting to speak without notes, while a judge with a stopwatch and clipboard watches and the audience listens. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/64.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"pedant\" at a glance, without reading anything: At a wedding feast, an uptight man in glasses raises a finger to correct the speaker's grammar with a stiff expression, holding a small notebook, while the happy couple and guests stare at him in surprise. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/65.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"surrealism\" at a glance, without reading anything: A dreamlike painting on an easel showing soft melting clocks draped over a tree branch and a desert table under a pale orange sky; the artist stands beside it with a brush and a palette, smiling. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/66.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"verism\" at a glance, without reading anything: A film crew shoots a scene on a narrow dusty street with real tired workers, peeling walls and a plain bullock cart; a director watches a monitor, a camera operator stands close, and no decorations or fancy lights are used. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/67.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"veracity\" at a glance, without reading anything: In a courtroom, a judge leans forward with a thoughtful frown and looks closely at a nervous witness standing in the box with his hand on a book; a lawyer takes notes and scales of justice stand on the bench. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/68.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"masochist\" at a glance, without reading anything: A cheerful man with bare feet steps along a hot sandy road in a desert under a bright sun carrying a heavy bag, grinning happily, while a friend nearby stares at him in disbelief holding a water bottle. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/69.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"sadist\" at a glance, without reading anything: A cruel older boy in a school playground grins unkindly while a group of small crying children back away from him, one holding a broken toy; a teacher is seen running towards them from the school door. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/70.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"savant\" at a glance, without reading anything: A wise old scholar sits among a ring of attentive villagers in front of an old temple, pointing to carved walls while explaining its history; a stack of old books lies at his feet and children listen wide-eyed. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/71.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"virtuoso\" at a glance, without reading anything: A violinist in a black suit plays on a concert stage with fast, flowing bow movements and closed eyes, while a large audience sits motionless with open mouths and held breath; stage lights shine on him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/72.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"allusion\" at a glance, without reading anything: At a dinner table, a man smiles slyly and lifts a finger while telling a joke, a faint outline of a ten-headed demon king floats in a thought bubble above him; a nervous man in a suit sits opposite him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/73.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"elusion\" at a glance, without reading anything: A thief in a dark cap slips through a narrow gap between two market stalls at night while two police officers run past him in the opposite direction, looking the wrong way and holding torches. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/74.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"illusion\" at a glance, without reading anything: A tired traveller walks on a hot straight road in a desert and sees a shimmering blue pool of water far ahead that is only a trick of the heat, while the dry sand and a few cactus plants show the truth. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/75.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"elude\" at a glance, without reading anything: A clever fox hides inside a hollow log in a forest while two hunters with rifles and a hunting dog walk past on a path, looking in the other direction; the fox peeks out with bright eyes. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/76.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"anarchist\" at a glance, without reading anything: A bold young man stands on a platform in a busy street holding a flag with a crossed-out crown symbol and shouting to a crowd, while two police officers push through the crowd to reach him. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/77.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"realist\" at a glance, without reading anything: A thoughtful coach with a clipboard stands in front of a seated sports team in a changing room, talking honestly with a calm face, while the tired players listen and a whiteboard shows a plan. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/78.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"jingoistic\" at a glance, without reading anything: An angry speaker in a loud suit stands on a stage waving a large national flag and shouting into a microphone, while part of the crowd cheers and a few quiet citizens at the back shake their heads in worry. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/79.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"reverie\" at a glance, without reading anything: A young woman sits by a window with her chin on her hand, gazing at soft clouds in the sky with a dreamy smile, while a floating bubble above her shows a small house and a green field; a half-finished cup of tea sits beside her. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly.",
+  "images/English_Comprehension/Vocabulary/Set_1/80.png": "Create a 16:9 landscape illustration, 1600×900 px, in a premium, polished digital-illustration style: rich natural colours, soft cinematic lighting, clean confident shapes, gentle depth of field, expressive semi-realistic characters (not a cartoon sticker, not a photograph). It must show this single scene so clearly that a learner understands the word \"euphoria\" at a glance, without reading anything: A group of mountaineers in bright jackets stand on a snowy summit at sunrise with their arms raised and big smiles, hugging each other; a flag stands in the snow and golden light spreads over the clouds below. Keep the main subject large and near the centre, and keep the outer edges simple so the picture can be cropped a little on phones. Do not add any caption, title, sentence, watermark, logo or channel name. Use text inside the picture only where the scene itself needs it, exactly as written in the scene description, and spelled correctly."
 });
 
 /* CHANGE LOG
-   - Duplicate words removed: Paleographer, Philologist, Herald, Recluse.
-   - 'Henophobia' was hard to read in the handwriting; treated as Gynophobia (fear of women). Please verify.
+   - Pyrrhic: meaning rewritten in plain words as an adjective describing a victory.
+   - Existing word list meanings and Hindi meanings were kept; synonyms, antonyms, extra sentences and questions were added.
 */
