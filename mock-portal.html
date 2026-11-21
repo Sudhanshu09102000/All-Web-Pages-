@@ -24978,6 +24978,16 @@ html body .sv-card.sv-hfix > .test-box-resize-handles { position: sticky !import
 }
 /* keep the divider (and its gap) between the options and the Mark for review / Clear / Hint row on small screens too */
 html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 !important; }
+/* phones: concept pictures always fill the full width of their box (no side/bottom gaps) */
+@media (max-width: 767px) {
+  .cp-body img:not(.cp-inline), .sv-card .cp-body img:not(.cp-inline) {
+    display: block; width: 100% !important; max-width: 100% !important; height: auto !important;
+    margin-left: 0 !important; margin-right: 0 !important; object-fit: cover;
+  }
+  /* a picture inside a framed picture box sits flush to the frame: no white strip above it */
+  .cp-body > * img:not(.cp-inline), .sv-card .cp-body > * img:not(.cp-inline) { margin-top: 0 !important; margin-bottom: 0 !important; }
+  .cp-body :has(> img:first-child:not(.cp-inline)) { padding-top: 0 !important; }
+}
 </style>
 <script id="svResizeJs">
 (function () {
