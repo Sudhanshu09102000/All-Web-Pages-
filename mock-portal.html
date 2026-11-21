@@ -5408,12 +5408,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
               <!-- ✅ Buttons under Navigator -->
               <div class="nav-actions-vertical mt-3">
                 <button id="submitBtn" class="btn btn-danger w-75">Submit test</button>
-
-
-
-                <button id="downloadPdfBtn" class="btn btn-glass w-75 d-none">
-                  Download response pdf
-                </button>
               </div>
             </div>
           </div>
@@ -5705,7 +5699,7 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
     
     
-    <!-- Bootstrap + jsPDF -->
+    <!-- Bootstrap -->
     
 <script>
 /* GOD-LEVEL particle field: device-aware, throttled, pause-when-hidden */
@@ -5804,7 +5798,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <!-- PDF.js for PDF Tutor panel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
@@ -6505,7 +6498,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
         state.submitted = false;
         $('showSummaryBtn').classList.add('d-none');
-        $('downloadPdfBtn').classList.add('d-none');
         // ✅ RESET buttons for new test
         $('reviewNextBtn').classList.remove('d-none');
         $('clearBtn').classList.remove('d-none');
@@ -8408,7 +8400,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
 
         $('showSummaryBtn').onclick = showSummary;
-        $('downloadPdfBtn').onclick = downloadPdf;
 
         // Keyboard controls
         window.addEventListener('keydown', engineKeyHandler);
@@ -8577,7 +8568,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
         // show buttons
         $('showSummaryBtn').classList.remove('d-none');
-        $('downloadPdfBtn').classList.remove('d-none');
         // ✅ After submit: hide extra buttons
         $('reviewNextBtn').classList.add('d-none');
         $('clearBtn').classList.add('d-none');
@@ -8776,582 +8766,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
         modal.show();
       }
 
-      /* ========= PDF DOWNLOAD — GOD-LEVEL (jsPDF) ========= */
-      async function downloadPdf() {
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) { alert('PDF library not loaded yet. Please try again in a moment.'); return; }
-
-        // ── Gather metadata ─────────────────────────────────────────────────────
-        const testName    = state.selectedTest ? state.selectedTest.subtopicName  : 'Mock Test';
-        const topicName   = state.selectedTest ? state.selectedTest.topicName     : '';
-        const subjectName = state.selectedTest ? state.selectedTest.subjectTitle  : '';
-        const candidate   = (state.candidateName || 'Candidate').trim();
-        const st          = computeStats();
-        const now         = new Date();
-        const dateStr     = now.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
-        const timeStr     = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
-        const elapsed     = Math.max(0, Math.floor((Date.now() - (state.startedAt || Date.now())) / 1000));
-        const timeTakenStr = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
-        const accuracy    = st.attempted > 0 ? ((st.correct / st.attempted) * 100).toFixed(1) : '0.0';
-        const maxPossible = st.total * 3;
-        const scorePct    = maxPossible > 0 ? (st.score / maxPossible) * 100 : 0;
-
-        let grade, gradeColor;
-        if (scorePct >= 85)      { grade = 'OUTSTANDING';        gradeColor = [16, 185, 129]; }
-        else if (scorePct >= 70) { grade = 'EXCELLENT';          gradeColor = [34, 197, 94]; }
-        else if (scorePct >= 55) { grade = 'GOOD';               gradeColor = [6, 182, 212]; }
-        else if (scorePct >= 40) { grade = 'AVERAGE';            gradeColor = [250, 204, 21]; }
-        else                     { grade = 'NEEDS IMPROVEMENT';  gradeColor = [239, 68, 68]; }
-
-        // ── jsPDF setup ────────────────────────────────────────────────────────
-        const doc      = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
-        const pageW    = doc.internal.pageSize.getWidth();   // 595.28 pt
-        const pageH    = doc.internal.pageSize.getHeight();  // 841.89 pt
-        const margin   = 44;
-        const cW       = pageW - margin * 2;    // content width
-        const footerH  = 28;
-        let   y        = margin;
-        let   pageNum  = 1;
-
-        // Colour palette
-        const C = {
-          purple:  [160, 120, 255],
-          green:   [ 50, 220, 110],
-          red:     [255,  90,  90],
-          yellow:  [255, 215,  50],
-          cyan:    [ 30, 210, 235],
-          dark:    [ 12,  16,  36],
-          card:    [ 20,  26,  50],
-          mid:     [ 40,  50,  80],
-          light:   [255, 255, 255],
-          muted:   [180, 195, 230],
-          white:   [255, 255, 255],
-        };
-
-        const sf = (...a) => doc.setFillColor(...a);
-        const sd = (...a) => doc.setDrawColor(...a);
-        const st2 = (...a) => doc.setTextColor(...a);
-
-        function imgFmt(dataUrl) {
-          if (!dataUrl) return 'JPEG';
-          if (dataUrl.startsWith('data:image/png'))  return 'PNG';
-          if (dataUrl.startsWith('data:image/gif'))  return 'GIF';
-          if (dataUrl.startsWith('data:image/webp')) return 'WEBP';
-          return 'JPEG';
-        }
-
-        // ── Page utilities ──────────────────────────────────────────────────────
-        function drawHeader() {
-          sf(...C.dark);
-          doc.rect(0, 0, pageW, 30, 'F');
-          // left: portal name
-          st2(...C.purple);
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(7.5);
-          doc.text('MOCK TEST PORTAL', margin, 19);
-          // centre: subject · topic
-          st2(...C.muted);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7.5);
-          const centreLabel = [subjectName, topicName, testName].filter(Boolean).join('  ·  ');
-          doc.text(centreLabel, pageW / 2, 19, { align: 'center' });
-          // right: candidate
-          st2(...C.light);
-          doc.setFont('helvetica', 'bold');
-          doc.text(candidate, pageW - margin, 19, { align: 'right' });
-          y = 44;
-        }
-
-        function drawFooter() {
-          const fy = pageH - footerH + 4;
-          sd(...C.mid);
-          doc.setLineWidth(0.3);
-          doc.line(margin, fy - 6, pageW - margin, fy - 6);
-          st2(...C.muted);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7.5);
-          doc.text(`Generated: ${dateStr}  ${timeStr}`, margin, fy + 8);
-          doc.text(`Page ${pageNum}`, pageW / 2, fy + 8, { align: 'center' });
-          doc.text('Mock Test Portal', pageW - margin, fy + 8, { align: 'right' });
-        }
-
-        function newPage() {
-          drawFooter();
-          doc.addPage();
-          pageNum++;
-          y = margin;
-          drawHeader();
-        }
-
-        function needRoom(h) {
-          if (y + h > pageH - footerH - 16) newPage();
-        }
-
-        // ── COVER PAGE ─────────────────────────────────────────────────────────
-        // Full dark background
-        sf(...C.dark);
-        doc.rect(0, 0, pageW, pageH, 'F');
-
-        // Tri-colour top accent stripe
-        [[139,92,246],[80,140,246],[6,182,212]].forEach((c, i) => {
-          sf(...c);
-          doc.rect(i * (pageW / 3), 0, pageW / 3 + 2, 7, 'F');
-        });
-
-        // Centre card
-        const cX = margin, cY = 90, cardH = pageH - 210;
-        sf(20, 26, 50);
-        doc.roundedRect(cX, cY, cW, cardH, 16, 16, 'F');
-        sd(...C.purple);
-        doc.setLineWidth(1.2);
-        doc.roundedRect(cX, cY, cW, cardH, 16, 16, 'S');
-
-        // "RESULT REPORT" label
-        st2(...C.purple);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8.5);
-        doc.text('MOCK TEST PORTAL  —  RESULT REPORT', pageW / 2, cY + 38, { align: 'center' });
-
-        // Test name
-        st2(...C.white);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(21);
-        const tnLines = doc.splitTextToSize(testName.toUpperCase(), cW - 60);
-        doc.text(tnLines, pageW / 2, cY + 64, { align: 'center' });
-
-        // Subject pill
-        const pillY = cY + 64 + tnLines.length * 26 + 6;
-        sf(50, 30, 100);
-        doc.roundedRect(pageW / 2 - 130, pillY, 260, 20, 10, 10, 'F');
-        st2(...C.light);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.text([subjectName, topicName].filter(Boolean).join('  ·  '), pageW / 2, pillY + 13.5, { align: 'center' });
-
-        // Horizontal rule
-        const ruleY = pillY + 36;
-        sd(50, 60, 95);
-        doc.setLineWidth(0.5);
-        doc.line(cX + 36, ruleY, cX + cW - 36, ruleY);
-
-        // Score (huge)
-        const scoreY = ruleY + 16;
-        st2(...gradeColor);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(58);
-        doc.text(String(st.score), pageW / 2, scoreY + 58, { align: 'center' });
-        st2(...C.muted);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.text(`out of ${maxPossible} marks  (${scorePct.toFixed(1)}%)`, pageW / 2, scoreY + 74, { align: 'center' });
-
-        // Grade badge
-        const gbY = scoreY + 92;
-        sf(...gradeColor);
-        doc.roundedRect(pageW / 2 - 80, gbY, 160, 24, 12, 12, 'F');
-        st2(...C.dark);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9.5);
-        doc.text(grade, pageW / 2, gbY + 15.5, { align: 'center' });
-
-        // Stat row
-        const statY = gbY + 44;
-        const statItems = [
-          { label: 'Correct',     value: String(st.correct),     c: C.green  },
-          { label: 'Wrong',       value: String(st.wrong),       c: C.red    },
-          { label: 'Unattempted', value: String(st.unattempted), c: C.muted  },
-          { label: 'Accuracy',    value: accuracy + '%',         c: C.cyan   },
-          { label: 'Time Taken',  value: timeTakenStr,           c: C.purple },
-          { label: 'Score',       value: String(st.score),       c: gradeColor },
-        ];
-        const sw = (cW - 40) / statItems.length;
-        statItems.forEach((s, i) => {
-          const sx = cX + 20 + i * sw + sw / 2;
-          st2(...s.c);
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(17);
-          doc.text(s.value, sx, statY + 20, { align: 'center' });
-          st2(...C.muted);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7);
-          doc.text(s.label.toUpperCase(), sx, statY + 31, { align: 'center' });
-        });
-
-        // Candidate block
-        const ciY = statY + 52;
-        sd(40, 50, 80);
-        doc.setLineWidth(0.3);
-        doc.line(cX + 36, ciY, cX + cW - 36, ciY);
-        st2(...C.white);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.text(candidate, pageW / 2, ciY + 24, { align: 'center' });
-        st2(...C.muted);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.text(
-          `Date: ${dateStr}  |  Time: ${timeStr}  |  Mode: ${state.mode === 'concept' ? 'Concept' : (state.examMode ? 'Exam' : 'Practice')}  |  Auto-submit: ${state.autoSubmittedFinal ? 'Yes' : 'No'}`,
-          pageW / 2, ciY + 38, { align: 'center' }
-        );
-
-        // Bottom caption
-        st2(...C.muted);
-        doc.setFont('helvetica', 'italic');
-        doc.setFontSize(7.5);
-        doc.text('Auto-generated by Mock Test Portal. For personal use only.', pageW / 2, pageH - 44, { align: 'center' });
-
-        drawFooter();
-
-        // ── DETAILED ANSWERS SECTION ──────────────────────────────────────────
-        doc.addPage();
-        pageNum++;
-        y = margin;
-        drawHeader();
-
-        // Section heading
-        st2(...C.purple);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.text('DETAILED ANSWERS & EXPLANATIONS', margin, y);
-        y += 8;
-        sf(...C.purple);
-        doc.rect(margin, y, 196, 2.5, 'F');
-        y += 20;
-
-        // ══════════════════════════════════════════════════════════════════
-        // HTML2CANVAS-BASED QUESTION RENDERER — renders HTML exactly as
-        // shown on screen (preserves bold, subscript, images, LaTeX, etc.)
-        // ══════════════════════════════════════════════════════════════════
-
-        // Load html2canvas if not already available
-        if (!window.html2canvas) {
-          await new Promise((res, rej) => {
-            if (window.html2canvas) { res(); return; }
-            const s = document.createElement('script');
-            s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-            s.onload = res; s.onerror = rej;
-            document.head.appendChild(s);
-          });
-        }
-
-        // Helper: make every <img> inside a container PDF-safe, then wait for it.
-        //  - drops crossorigin / lazy-loading (lazy images never load off-screen)
-        //  - converts each image to a data: URL so html2canvas never has to re-fetch it
-        //    (re-fetching is what made images come out blank in the PDF)
-        //  - an image that truly can't load is replaced by a small text note instead of a blank gap
-        function _blobToDataUrl(blob) {
-          return new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(blob); });
-        }
-        function _loadOne(img) {
-          if (img.complete && img.naturalWidth) return Promise.resolve(true);
-          return new Promise(res => {
-            const t = setTimeout(() => res(!!img.naturalWidth), 15000);
-            img.onload = () => { clearTimeout(t); res(true); };
-            img.onerror = () => { clearTimeout(t); res(false); };
-          });
-        }
-        async function _waitImgs(container) {
-          const imgs = [...container.querySelectorAll('img')];
-          await Promise.all(imgs.map(async img => {
-            img.removeAttribute('crossorigin');
-            img.removeAttribute('srcset');
-            img.removeAttribute('loading');
-            img.loading = 'eager';
-            const src = img.getAttribute('src') || '';
-            let ok = false;
-            if (src && !src.startsWith('data:')) {
-              // 1st try: fetch -> data URL
-              try {
-                const r = await fetch(new URL(src, document.baseURI).href);
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                const dataUrl = await _blobToDataUrl(await r.blob());
-                img.src = dataUrl;
-                ok = await _loadOne(img);
-              } catch (e) { ok = false; }
-              // 2nd try: let the browser load it, then redraw through a canvas
-              if (!ok) {
-                try {
-                  const im2 = new Image();
-                  im2.crossOrigin = 'anonymous';
-                  const loaded = await new Promise(res => { im2.onload = () => res(true); im2.onerror = () => res(false); im2.src = new URL(src, document.baseURI).href; });
-                  if (loaded && im2.naturalWidth) {
-                    const cv = document.createElement('canvas');
-                    cv.width = im2.naturalWidth; cv.height = im2.naturalHeight;
-                    cv.getContext('2d').drawImage(im2, 0, 0);
-                    img.src = cv.toDataURL('image/png');
-                    ok = await _loadOne(img);
-                  }
-                } catch (e) { ok = false; }
-              }
-            } else {
-              ok = await _loadOne(img);
-            }
-            if (!ok) {
-              console.warn('PDF: image could not be loaded:', src.slice(0, 120));
-              const note = document.createElement('div');
-              note.textContent = '[image not available: ' + (src.startsWith('data:') ? 'embedded image' : src.split('/').pop().slice(0, 60)) + ']';
-              note.style.cssText = 'font:italic 12px sans-serif;opacity:.6;padding:8px 0;';
-              if (img.parentNode) img.parentNode.replaceChild(note, img);
-            }
-          }));
-        }
-
-        // Read live theme colours for PDF card rendering
-        const _pdfTxt = document.getElementById('gcp-text-color') ? document.getElementById('gcp-text-color').value : '#dde8ff';
-        const _pdfBg  = document.getElementById('gcp-bg-color')   ? document.getElementById('gcp-bg-color').value   : '#0d1117';
-        const _pdfBox = document.getElementById('gcp-box-color')  ? document.getElementById('gcp-box-color').value  : '#111827';
-
-        // Build per-option HTML with exact test colours
-        function _optHtml(optText, mid, your, corr) {
-          const isCC = corr === mid, isY = your === mid;
-          let bg, border, clr, leftBar = '';
-          if (isCC) {
-            bg = 'rgba(34,197,94,0.18)'; border = isY ? '#22c55e' : '#16a34a'; clr = '#4ade80';
-            leftBar = '<div style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(180deg,#22c55e,#22c55e55);"></div>';
-          } else if (isY) {
-            bg = 'rgba(239,68,68,0.18)'; border = '#ef4444'; clr = '#f87171';
-            leftBar = '<div style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(180deg,#ef4444,#ef444433);"></div>';
-          } else {
-            bg = 'rgba(128,128,128,0.08)'; border = 'rgba(128,128,128,0.25)'; clr = _pdfTxt;
-          }
-          const numBg  = isCC ? 'rgba(34,197,94,0.22)' : isY ? 'rgba(239,68,68,0.22)' : 'rgba(128,128,128,0.15)';
-          const numClr = isCC ? '#4ade80' : isY ? '#f87171' : _pdfTxt;
-          const icon   = (isCC || isY) ? `<span style="margin-left:auto;padding-left:8px;font-size:17px;font-weight:700;color:${isCC?'#4ade80':'#f87171'};">${isCC?'✓':'✗'}</span>` : '';
-          return `
-            <div style="position:relative;display:flex;align-items:center;gap:12px;
-                        padding:11px 16px 11px 18px;margin-bottom:8px;border-radius:14px;
-                        border:1.5px solid ${border};background:${bg};overflow:hidden;">
-              ${leftBar}
-              <div style="min-width:28px;height:28px;border-radius:50%;background:${numBg};
-                          display:flex;align-items:center;justify-content:center;
-                          font-weight:700;font-size:13px;color:${numClr};flex-shrink:0;">${mid}</div>
-              <span style="color:${clr};font-size:15px;line-height:1.55;flex:1;
-                           font-weight:${(isCC||isY)?'600':'400'};">${optText}</span>
-              ${icon}
-            </div>`;
-        }
-
-        // Build full question-card HTML — uses live theme colours
-        function _buildQCardHtml(q, exp, qs, sh, idx) {
-          const your = qs.selectedMetaId || null;
-          const corr = sh.correctMetaId;
-          const isC  = !!your && your === corr;
-          const isUn = !your;
-
-          const statusLabel = isUn ? 'UNATTEMPTED' : isC ? '✓ CORRECT' : '✗ WRONG';
-          const statusBg    = isUn ? 'rgba(129,140,248,0.18)' : isC ? 'rgba(34,197,94,0.18)' : 'rgba(239,68,68,0.18)';
-          const statusClr   = isUn ? '#a5b4fc' : isC ? '#4ade80' : '#f87171';
-          // Header bg = tinted version of box color toward accent
-          const accentClr   = isUn ? '#818cf8' : isC ? '#22c55e' : '#ef4444';
-          const hdrBg       = _pdfBox; // use theme box colour for header
-
-          const opts     = sh.order.map(i => q.options[i]);
-          const optsHtml = opts.map((o, i) => _optHtml(o, String(i+1), your, corr)).join('');
-
-          const stripTxt = your
-            ? (isC ? `✓&nbsp; Your answer (${your}) is CORRECT`
-                   : `✗&nbsp; Your answer: ${your} &nbsp;—&nbsp; Correct answer: ${corr}`)
-            : `Not attempted &nbsp;—&nbsp; Correct answer: ${corr}`;
-          const stripClr = isUn ? _pdfTxt : isC ? '#4ade80' : '#f87171';
-
-          const expText   = (exp && exp.text)  ? exp.text  : '';
-          const expImgSrc = (exp && exp.image) ? exp.image : '';
-          const expSection = (expText || expImgSrc) ? `
-            <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(128,128,128,0.18);">
-              <div style="display:inline-block;margin-bottom:10px;padding:3px 14px;
-                          border-radius:999px;border:1px solid rgba(34,211,238,0.45);
-                          background:rgba(34,211,238,0.10);color:#22d3ee;
-                          font-size:11px;font-weight:700;letter-spacing:0.6px;">EXPLANATION</div>
-              ${expText ? `<div style="color:${_pdfTxt};font-size:14.5px;line-height:1.75;">${expText}</div>` : ''}
-              ${expImgSrc ? `<img src="${expImgSrc}"
-                                  style="max-width:100%;border-radius:12px;margin-top:10px;
-                                         border:1px solid rgba(128,128,128,0.2);" />` : ''}
-            </div>` : '';
-
-          return `
-            <div style="background:${_pdfBg};
-                        border-radius:18px;overflow:hidden;
-                        font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
-                        border:1px solid rgba(128,128,128,0.18);">
-              <!-- Header bar -->
-              <div style="background:${hdrBg};padding:13px 20px;display:flex;
-                          align-items:center;justify-content:space-between;
-                          border-left:5px solid ${accentClr};">
-                <span style="color:${_pdfTxt};font-weight:700;font-size:17px;">Q${idx+1}</span>
-                <span style="padding:4px 16px;border-radius:999px;background:${statusBg};
-                             color:${statusClr};font-size:11px;font-weight:700;
-                             border:1px solid ${accentClr}55;">${statusLabel}</span>
-              </div>
-              <!-- Body -->
-              <div style="padding:20px 22px 22px;">
-                <!-- Question text (full HTML preserved) -->
-                <div style="color:${_pdfTxt};font-size:16px;line-height:1.75;
-                            font-weight:600;margin-bottom:${q.image?'10px':'16px'};">${q.text}</div>
-                <!-- Question image -->
-                ${q.image ? `<img src="${q.image}"
-                                  style="max-width:100%;border-radius:12px;margin-bottom:16px;
-                                         border:1px solid rgba(128,128,128,0.2);" />` : ''}
-                <!-- Options (full HTML preserved, with correct/wrong colours) -->
-                <div style="margin-bottom:10px;">${optsHtml}</div>
-                <!-- Answer strip -->
-                <div style="padding:10px 18px;border-radius:10px;
-                            background:${_pdfBox};
-                            border:1px solid rgba(128,128,128,0.2);margin-bottom:4px;">
-                  <span style="font-size:13px;font-weight:600;color:${stripClr};">${stripTxt}</span>
-                </div>
-                <!-- Explanation -->
-                ${expSection}
-              </div>
-            </div>`;
-        }
-
-        // Progress toast — read live theme colours so it always matches the active theme
-        const _thTxt = document.getElementById('gcp-text-color') ? document.getElementById('gcp-text-color').value : '#e0e8ff';
-        const _thBox = document.getElementById('gcp-box-color')  ? document.getElementById('gcp-box-color').value  : '#1e2a50';
-        const _toast = document.createElement('div');
-        _toast.style.cssText = `position:fixed;bottom:28px;right:28px;z-index:9999;background:${_thBox};border:1px solid color-mix(in srgb,${_thTxt} 35%,transparent);color:${_thTxt};font:600 13px -apple-system,sans-serif;padding:12px 20px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.5);min-width:220px;`;
-        _toast.innerHTML = '⏳ Generating PDF… <span id="_pdfProg" style="color:' + _thTxt + '">0</span> / ' + state.qIds.length;
-        document.body.appendChild(_toast);
-        const _prog = document.getElementById('_pdfProg');
-
-        // Off-screen render container (720px ≈ PDF content width at 96dpi)
-        const _wrap = document.createElement('div');
-        _wrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:720px;background:transparent;z-index:-1;pointer-events:none;';
-        document.body.appendChild(_wrap);
-
-        // ── Render each question via html2canvas ───────────────────────────────
-        for (let qi = 0; qi < state.qIds.length; qi++) {
-          await new Promise(r => setTimeout(r, 0));
-          if (_prog) _prog.textContent = qi + 1;
-
-          const qid = state.qIds[qi];
-          const q   = state.questionsMap[qid];
-          const exp = state.explanationsMap[qid] || {};
-          const qs  = state.qState[qid];
-          const sh  = getOrBuildShuffle(qid);
-
-          // Inject HTML into off-screen container
-          _wrap.innerHTML = _buildQCardHtml(q, exp, qs, sh, qi);
-
-          // Wait for any images to load before capturing
-          await _waitImgs(_wrap);
-          await new Promise(r => setTimeout(r, 40));
-
-          // Capture as image
-          const qCanvas = await html2canvas(_wrap.firstElementChild, {
-            scale: 2,
-            backgroundColor: _pdfBg,
-            useCORS: true,
-            allowTaint: false,
-            imageTimeout: 20000,
-            logging: false,
-            removeContainer: false,
-          });
-
-          const imgH = cW * qCanvas.height / qCanvas.width;
-          const maxH = pageH - footerH - margin - 16;
-
-          if (y + imgH > pageH - footerH - 8) newPage();
-
-          if (imgH <= maxH) {
-            doc.addImage(qCanvas.toDataURL('image/png'), 'PNG', margin, y, cW, imgH);
-            y += imgH + 12;
-          } else {
-            // Very long question: scale to fit one page
-            const scale = maxH / imgH;
-            doc.addImage(qCanvas.toDataURL('image/png'), 'PNG', margin, y, cW * scale, maxH);
-            y += maxH + 12;
-          }
-        }
-
-        document.body.removeChild(_wrap);
-        _toast.remove();
-        drawFooter();
-
-        // ── "QUESTIONS TO REVISIT" PAGE ───────────────────────────────────────
-        const revisitList = state.qIds.filter(qid => {
-          const qs = state.qState[qid];
-          const sh = getOrBuildShuffle(qid);
-          return !qs.selectedMetaId || qs.selectedMetaId !== sh.correctMetaId;
-        });
-
-        if (revisitList.length > 0) {
-          doc.addPage(); pageNum++; y = margin; drawHeader();
-
-          // Section heading
-          st2(248, 113, 113); doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
-          doc.text('QUESTIONS TO REVISIT', margin, y);
-          y += 8;
-          sf(248, 113, 113); doc.rect(margin, y, 160, 2.5, 'F');
-          y += 16;
-          const _wrongN = state.qIds.filter(id => {
-            const qs2 = state.qState[id];
-            return qs2.selectedMetaId && qs2.selectedMetaId !== getOrBuildShuffle(id).correctMetaId;
-          }).length;
-          st2(...C.muted); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
-          doc.text(`${revisitList.length} question${revisitList.length!==1?'s':''} need further study — ${_wrongN} wrong, ${st.unattempted} not attempted.`, margin, y);
-          y += 20;
-
-          // Off-screen wrap for revisit items
-          const _wrap2 = document.createElement('div');
-          _wrap2.style.cssText = 'position:fixed;left:-9999px;top:0;width:720px;background:transparent;z-index:-1;pointer-events:none;';
-          document.body.appendChild(_wrap2);
-
-          for (const qid of revisitList) {
-            await new Promise(r => setTimeout(r, 0));
-            const ridx = state.qIds.indexOf(qid);
-            const rq   = state.questionsMap[qid];
-            const rqs  = state.qState[qid];
-            const rsh  = getOrBuildShuffle(qid);
-            const isUn = !rqs.selectedMetaId;
-            const acC  = isUn ? '#818cf8' : '#ef4444';
-            const tag  = isUn ? 'NOT ATTEMPTED' : 'WRONG';
-            const corrOptText = rsh.order.length ? rq.options[rsh.order[parseInt(rsh.correctMetaId)-1]] || rsh.correctMetaId : rsh.correctMetaId;
-
-            _wrap2.innerHTML = `
-              <div style="background:linear-gradient(160deg,#0c1224,#090d1c);
-                          border-radius:14px;overflow:hidden;margin-bottom:0;
-                          font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
-                          border:1px solid rgba(255,255,255,0.09);border-left:5px solid ${acC};">
-                <div style="padding:12px 16px;display:flex;align-items:flex-start;gap:12px;">
-                  <span style="color:#dde8ff;font-weight:700;font-size:14px;white-space:nowrap;">Q${ridx+1}.</span>
-                  <div style="display:inline-block;padding:2px 11px;border-radius:999px;
-                              border:1px solid ${acC}88;
-                              background:${isUn?'rgba(129,140,248,0.1)':'rgba(239,68,68,0.1)'};
-                              color:${acC};font-size:10px;font-weight:700;white-space:nowrap;margin-top:2px;">${tag}</div>
-                </div>
-                <div style="color:#c8d6f5;font-size:14.5px;line-height:1.65;padding:0 16px 10px;">${rq.text}</div>
-                <div style="padding:8px 16px 12px;">
-                  <span style="display:inline-block;padding:4px 14px;border-radius:999px;
-                               border:1px solid rgba(34,197,94,0.45);background:rgba(34,197,94,0.1);
-                               color:#4ade80;font-size:12px;font-weight:700;">
-                    ✓ Correct Answer (${rsh.correctMetaId}): ${corrOptText}
-                  </span>
-                </div>
-              </div>`;
-
-            await _waitImgs(_wrap2);
-            await new Promise(r => setTimeout(r, 30));
-
-            const rCanvas = await html2canvas(_wrap2.firstElementChild, {
-              scale: 2, backgroundColor: _pdfBg, useCORS: true, allowTaint: false, imageTimeout: 20000, logging: false, removeContainer: false,
-            });
-
-            const rImgH = cW * rCanvas.height / rCanvas.width;
-            if (y + rImgH > pageH - footerH - 8) { drawFooter(); doc.addPage(); pageNum++; y = margin; drawHeader(); }
-            doc.addImage(rCanvas.toDataURL('image/png'), 'PNG', margin, y, cW, rImgH);
-            y += rImgH + 8;
-          }
-
-          document.body.removeChild(_wrap2);
-          drawFooter();
-        }
-
-        // ── Save ──────────────────────────────────────────────────────────────
-        const safeName = (s) => s.replace(/[^a-zA-Z0-9\-_. ]/g, '').trim().replace(/\s+/g, '-');
-        doc.save(`${safeName(candidate)}_${safeName(testName)}_Result.pdf`);
-      }
-      /* ========= PRACTICE ? HELP BUTTON ========= */
       function buildHelpContentHtml(qid) {
         const exp = state.explanationsMap[qid] || {};
         const sh = getOrBuildShuffle(qid);
@@ -9836,7 +9250,6 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           // same resets as startTestFromPortal
           state.submitted = false;
           $('showSummaryBtn').classList.add('d-none');
-          $('downloadPdfBtn').classList.add('d-none');
           $('reviewNextBtn').classList.remove('d-none');
           $('clearBtn').classList.remove('d-none');
           $('saveNextBtn').textContent = 'Save & Next ▶';
@@ -24217,10 +23630,6 @@ html:not(.lite-mode) .nav-panel #submitBtn {
 }
 html:not(.lite-mode) .nav-panel #submitBtn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 14px 30px rgba(225,29,72,.5), inset 0 1px 0 rgba(255,255,255,.3); }
 html:not(.lite-mode) .nav-panel #submitBtn:active { transform: scale(.97); }
-html:not(.lite-mode) .nav-panel #downloadPdfBtn {
-  color: var(--nv-text); background: var(--nv-soft); border: 1px solid var(--nv-line);
-}
-html:not(.lite-mode) .nav-panel #downloadPdfBtn:hover { transform: translateY(-2px); border-color: var(--nv-accent); }
 
 @media (max-width: 576px) {
   html:not(.lite-mode) .nav-panel { width: 94vw; }
@@ -24879,6 +24288,16 @@ html.lite-mode #hudDock #svToggleBtn.on .sv-ic * { stroke: #fff !important; }
 .sv-head { padding-right: 230px; }
 #ctbOpenCard { margin-top: 1.6rem; }
 @media (max-width: 576px) { .sv-head { padding-right: 14px; padding-top: 46px; } }
+/* ── One shared size for the dock buttons: change --hud-btn to resize the ☰ and the page-view toggle together ── */
+#engineView > #hudDock.hud-dock:not(.nav-open) { --hud-btn: clamp(26px, 2.1vw, 32px); }
+#hudDock:not(.nav-open) #svToggleBtn.sv-toggle,
+html:not(.lite-mode) #hudDock:not(.nav-open) #navToggleIcon.nav-toggle-icon,
+html.lite-mode #hudDock:not(.nav-open) #navToggleIcon.nav-toggle-icon {
+  width: var(--hud-btn, 28px) !important; height: var(--hud-btn, 28px) !important; min-width: 0 !important;
+  margin: 0 2px !important; border-radius: 50% !important; box-sizing: border-box; flex: none;
+}
+html.lite-mode #hudDock:not(.nav-open) #navToggleIcon.nav-toggle-icon { border: 1px solid #000 !important; background: #fff !important; }
+html.lite-mode #hudDock:not(.nav-open) #svToggleBtn .sv-ic { width: 58%; height: 58%; }
 /* inside the opened control deck: same size as the ✕ button, sits next to the mode switch */
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn.sv-toggle { order: 2; width: 40px; height: 40px; margin: 0; flex: 0 0 auto; }
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn .sv-ic { width: 19px; height: 19px; }
@@ -25216,8 +24635,7 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
       var x = null; try { x = computeStats(); } catch (e) { }
       t.textContent = 'Test submitted';
       s.textContent = x ? 'Score ' + x.score + '  ·  ✔ ' + x.correct + ' correct  ·  ✘ ' + x.wrong + ' wrong  ·  ○ ' + x.unattempted + ' unattempted' : 'Scroll up to review every answer.';
-      b.innerHTML = '<button type="button" class="btn btn-glass" data-a="summary">📊 Show summary</button>' +
-        '<button type="button" class="btn btn-glass" data-a="pdf">⬇ Download response PDF</button>';
+      b.innerHTML = '<button type="button" class="btn btn-glass" data-a="summary">📊 Show summary</button>';
     } else if (st.conceptOnly && nq > 0) {
       t.textContent = 'End of the concept pages';
       s.textContent = 'Ready to test yourself?';
@@ -25388,7 +24806,6 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
         if (idx < 0) break; st.conceptView = false; st.currentIndex = idx; googleSearchCurrentQuestion(); break;
       case 'submit': $('submitBtn').click(); break;
       case 'summary': $('showSummaryBtn').click(); break;
-      case 'pdf': $('downloadPdfBtn').click(); break;
       case 'practice':
         setTestMode('practice');
         setTimeout(function () { var r = SV.cards.filter(function (c) { return c.t === 'q'; })[0]; if (r) jump(r.el, true); }, 80);
@@ -25553,6 +24970,118 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   window.singleScreenView = { enable: enable, disable: disable, toggle: toggle, isOn: function () { return SV.on; } };
+})();
+</script>
+
+<style id="svResizeCss">
+/* Single-screen view: every card resizes with the same 8 edge/corner handles as the page-by-page box */
+html body .sv-card > .test-box-resize-handles { z-index: 12; }
+html body .sv-card.sv-wfix { width: var(--svw) !important; margin-left: var(--svml, 0px) !important; }
+html body .sv-card.sv-hfix { height: var(--svh) !important; overflow: auto !important; top: var(--svtop, 0px); }
+/* when the card has a fixed height it scrolls, so the handles stay pinned to its visible frame */
+html body .sv-card.sv-hfix > .test-box-resize-handles { position: sticky !important; inset: auto !important; top: 0; left: 0; width: 100%; height: 0; overflow: visible; }
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="n"],
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="ne"],
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="nw"] { top: 0; bottom: auto; }
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="s"] { top: calc(var(--svh) - 8px); bottom: auto; }
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="se"],
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="sw"] { top: calc(var(--svh) - 14px); bottom: auto; }
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="e"],
+.sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="w"] { top: 0; bottom: auto; height: var(--svh); }
+</style>
+<script id="svResizeJs">
+(function () {
+  'use strict';
+  var EDGES = ['n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'];
+  var act = null;
+
+  function clampW(w) { var max = Math.max(240, window.innerWidth - 4); return Math.max(Math.min(240, max), Math.min(max, w)); }
+  function clampH(h) { return Math.max(120, Math.min(Math.max(600, window.innerHeight * 4), h)); }
+  var SHARED = {};            // one size shared by every card
+  function allCards() { return document.querySelectorAll('.sv-card'); }
+  function resetOne(card) {
+    card.classList.remove('sv-wfix', 'sv-hfix');
+    ['--svw', '--svml', '--svh', '--svtop'].forEach(function (k) { card.style.removeProperty(k); });
+  }
+  function reset() { SHARED = {}; allCards().forEach(resetOne); }
+  function applyOne(card, o) {
+    if (o.w != null) { card.classList.add('sv-wfix'); card.style.setProperty('--svw', o.w + 'px'); card.style.setProperty('--svml', (o.ml || 0) + 'px'); }
+    if (o.h != null) { card.classList.add('sv-hfix'); card.style.setProperty('--svh', o.h + 'px'); card.style.setProperty('--svtop', '0px'); }
+  }
+  function apply(card, o) {          // resizing any card resizes all of them
+    if (o.w != null) { SHARED.w = o.w; SHARED.ml = o.ml; }
+    if (o.h != null) { SHARED.h = o.h; }
+    allCards().forEach(function (c) { applyOne(c, o); });
+  }
+
+  window.addEventListener('pointermove', function (e) {
+    if (!act || e.pointerId !== act.id) return;
+    var a = act, edge = a.edge, dx = e.clientX - a.x, dy = e.clientY - a.y;
+    var hasE = edge.indexOf('e') > -1, hasW = edge.indexOf('w') > -1, hasN = edge.indexOf('n') > -1, hasS = edge.indexOf('s') > -1;
+    var out = {};
+    if (hasE || hasW) {
+      var maxFromAnchor = hasW ? a.left + a.width - 4 : window.innerWidth - a.left - 4;
+      var w = clampW(Math.min(a.width + dx * (hasE ? 1 : -1), maxFromAnchor));
+      out.w = w; out.ml = a.left + (hasW ? a.width - w : 0) - a.contentLeft;
+    }
+    if (hasN || hasS) {
+      var h = clampH(a.height + dy * (hasS ? 1 : -1));
+      out.h = h;
+    }
+    apply(a.card, out);
+  });
+  function finish(e) {
+    if (!act || e.pointerId !== act.id) return;
+    act.card.classList.remove('is-resizing'); document.body.classList.remove('test-box-resizing'); act = null;
+  }
+  window.addEventListener('pointerup', finish);
+  window.addEventListener('pointercancel', finish);
+
+  function attach(card) {
+    if (!card || card.querySelector(':scope > .test-box-resize-handles')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'test-box-resize-handles';
+    EDGES.forEach(function (edge) {
+      var h = document.createElement('div');
+      h.className = 'test-box-resize-handle'; h.dataset.edge = edge; h.tabIndex = 0;
+      h.setAttribute('role', 'button'); h.setAttribute('aria-label', 'Resize ' + edge + ' edge');
+      h.addEventListener('pointerdown', function (e) {
+        if (e.button !== 0) return;
+        e.preventDefault(); e.stopPropagation();
+        var r = card.getBoundingClientRect(), pr = card.parentElement.getBoundingClientRect(), ps = getComputedStyle(card.parentElement);
+        act = {
+          card: card, edge: edge, id: e.pointerId, x: e.clientX, y: e.clientY,
+          left: r.left, width: r.width, height: r.height,
+          top: parseFloat(card.style.getPropertyValue('--svtop')) || 0,
+          contentLeft: pr.left + (parseFloat(ps.borderLeftWidth) || 0) + (parseFloat(ps.paddingLeft) || 0)
+        };
+        card.classList.add('is-resizing'); document.body.classList.add('test-box-resizing');
+      });
+      h.addEventListener('dblclick', function (e) { e.stopPropagation(); reset(); });
+      h.addEventListener('keydown', function (e) {
+        var step = e.shiftKey ? 40 : 16, dx = 0, dy = 0;
+        if (e.key === 'ArrowRight') dx = step; else if (e.key === 'ArrowLeft') dx = -step;
+        else if (e.key === 'ArrowDown') dy = step; else if (e.key === 'ArrowUp') dy = -step; else return;
+        e.preventDefault();
+        var r = card.getBoundingClientRect(), pr = card.parentElement.getBoundingClientRect(), ps = getComputedStyle(card.parentElement);
+        var out = {}, cl = pr.left + (parseFloat(ps.borderLeftWidth) || 0) + (parseFloat(ps.paddingLeft) || 0);
+        if (edge.indexOf('e') > -1 || edge.indexOf('w') > -1) { out.w = clampW(r.width + dx * (edge.indexOf('e') > -1 ? 1 : -1)); out.ml = r.left + (edge.indexOf('w') > -1 ? r.width - out.w : 0) - cl; }
+        if (edge.indexOf('n') > -1 || edge.indexOf('s') > -1) { out.h = clampH(r.height + dy * (edge.indexOf('s') > -1 ? 1 : -1)); }
+        apply(card, out);
+      });
+      wrap.appendChild(h);
+    });
+    card.insertBefore(wrap, card.firstChild);
+    if (SHARED.w != null || SHARED.h != null) applyOne(card, SHARED);   // new/rebuilt cards join the shared size
+  }
+
+  function scan(root) { (root || document).querySelectorAll('.sv-card').forEach(attach); }
+  function start() {
+    scan();
+    var host = document.getElementById('svView') || document.body;
+    new MutationObserver(function () { scan(host); }).observe(host, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 </script>
 </body>
