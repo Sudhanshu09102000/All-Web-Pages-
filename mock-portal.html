@@ -24859,6 +24859,17 @@ html.lite-mode .cip-gpt svg *{ stroke:#000 !important; }
   opacity: 0; transform: translateY(-4px); transition: opacity .15s ease, transform .15s ease;
 }
 #svToggleBtn:hover::after { opacity: 1; transform: none; }
+/* theme-aware: hover label + toast follow the active theme (Light = white box / black text) */
+html #svToggleBtn::after {
+  background: var(--gp-box2, #080e20) !important;
+  color: var(--gp-text, #e0f2fe) !important;
+  border-color: color-mix(in srgb, var(--gp-text, #e0f2fe) 35%, transparent) !important;
+}
+html #modeToast {
+  background: var(--gp-box2, #0f172a) !important;
+  color: var(--gp-text, #fff) !important;
+  border-color: color-mix(in srgb, var(--gp-text, #fff) 35%, transparent) !important;
+}
 /* inside the opened control deck: same size as the ✕ button, sits next to the mode switch */
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn.sv-toggle { order: 2; width: 40px; height: 40px; margin: 0; flex: 0 0 auto; }
 html:not(.lite-mode) #hudDock.nav-open #svToggleBtn .sv-ic { width: 19px; height: 19px; }
