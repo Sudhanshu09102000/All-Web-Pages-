@@ -4568,6 +4568,189 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 }
 #jsErrorBoxInner .err-close-btn{ position:sticky; bottom:0; }
 </style>
+<style id="ctbCss">
+/* =====================================================================
+   CUSTOM TEST BUILDER  (ctb-*)  — pick any chapters, random test
+   ===================================================================== */
+.ctb-cta{
+  position:relative; overflow:hidden; margin-bottom:1.6rem; border-radius:22px;
+  padding:clamp(1.1rem,3vw,1.7rem) clamp(1.1rem,3vw,2rem);
+  display:flex; align-items:center; gap:clamp(.9rem,2.5vw,1.6rem); flex-wrap:wrap;
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb,var(--purple) 26%,transparent), transparent 60%),
+    radial-gradient(90% 120% at 100% 100%, rgba(250,204,21,.13), transparent 65%),
+    linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  border:1px solid color-mix(in srgb,var(--purple) 45%,transparent);
+  box-shadow:0 0 50px color-mix(in srgb,var(--purple) 16%,transparent), 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+  cursor:pointer; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  isolation:isolate;
+}
+.ctb-cta::before{
+  content:""; position:absolute; inset:-1px; z-index:-1; border-radius:inherit;
+  background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%);
+  background-size:250% 100%; animation:ctbSheen 5.5s ease-in-out infinite; pointer-events:none;
+}
+@keyframes ctbSheen{ 0%{background-position:160% 0} 60%,100%{background-position:-60% 0} }
+.ctb-cta:hover{ transform:translateY(-3px); border-color:color-mix(in srgb,var(--purple) 75%,transparent);
+  box-shadow:0 0 70px color-mix(in srgb,var(--purple) 26%,transparent), 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14); }
+.ctb-cta-icon{
+  flex:0 0 auto; width:64px; height:64px; border-radius:20px; display:grid; place-items:center; font-size:30px;
+  background:linear-gradient(135deg, color-mix(in srgb,var(--purple) 55%,#fff 0%), #1d4ed8);
+  box-shadow:0 12px 30px color-mix(in srgb,var(--purple) 45%,transparent), inset 0 1px 0 rgba(255,255,255,.35);
+  animation:ctbFloat 4s ease-in-out infinite;
+}
+@keyframes ctbFloat{ 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-5px) rotate(3deg)} }
+.ctb-cta-body{ flex:1 1 260px; min-width:0; }
+.ctb-eyebrow{ font-size:11px; font-weight:800; letter-spacing:1.4px; color:#fcd34d; display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+.ctb-cta-title{ font-size:clamp(1.15rem,2.6vw,1.55rem); font-weight:800; line-height:1.2; margin:0; color:#fff; }
+.ctb-cta-sub{ color:rgba(200,220,255,.78); font-size:.92rem; margin-top:4px; line-height:1.45; }
+.ctb-cta-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.ctb-mini{ font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.07); color:#dbeafe; }
+.ctb-btn{
+  border:0; border-radius:14px; padding:.8rem 1.35rem; font-weight:800; font-size:.98rem; color:#0b1220; cursor:pointer;
+  background:linear-gradient(135deg,#fde68a,#fbbf24 55%,#f59e0b); letter-spacing:.2px; white-space:nowrap;
+  box-shadow:0 10px 26px rgba(245,158,11,.35), inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.ctb-btn:hover{ transform:translateY(-2px) scale(1.02); box-shadow:0 16px 34px rgba(245,158,11,.45), inset 0 1px 0 rgba(255,255,255,.6); }
+.ctb-btn:active{ transform:translateY(0) scale(.99); }
+.ctb-btn[disabled]{ filter:grayscale(.85) brightness(.7); cursor:not-allowed; transform:none; box-shadow:none; }
+.ctb-btn-big{ width:100%; padding:1rem 1.2rem; font-size:1.05rem; border-radius:16px; }
+
+/* ---------- builder layout ---------- */
+.ctb-panel{ padding:clamp(.9rem,2vw,1.3rem); }
+.ctb-toolbar{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-bottom:1rem; }
+.ctb-search{ flex:1 1 220px; position:relative; }
+.ctb-search input{ padding-left:2.3rem; border-radius:12px; }
+.ctb-search span{ position:absolute; left:.8rem; top:50%; transform:translateY(-50%); opacity:.7; pointer-events:none; }
+.ctb-tool{ border:1px solid var(--stroke); background:rgba(255,255,255,.06); color:var(--txt); border-radius:12px; padding:.5rem .85rem; font-size:.85rem; font-weight:700; transition:.15s; }
+.ctb-tool:hover{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.28); }
+
+.ctb-subj{ border:1px solid var(--stroke); border-radius:16px; margin-bottom:.8rem; overflow:hidden;
+  background:linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); transition:border-color .2s, box-shadow .2s; }
+.ctb-subj.has-sel{ border-color:color-mix(in srgb,var(--accent) 55%,transparent); box-shadow:0 0 26px color-mix(in srgb,var(--accent) 14%,transparent); }
+.ctb-subj-head{ width:100%; display:flex; align-items:center; gap:.8rem; padding:.85rem 1rem; background:none; border:0; color:inherit; text-align:left; cursor:pointer; }
+.ctb-subj-ic{ flex:0 0 auto; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-size:18px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 55%,transparent),color-mix(in srgb,var(--accent) 12%,transparent));
+  border:1px solid color-mix(in srgb,var(--accent) 50%,transparent); }
+.ctb-subj-name{ font-weight:800; font-size:1.02rem; overflow-wrap:anywhere; }
+.ctb-subj-meta{ font-size:.78rem; color:var(--muted); margin-top:1px; }
+.ctb-subj-badge{ margin-left:auto; flex:0 0 auto; font-size:.75rem; font-weight:800; padding:3px 10px; border-radius:999px;
+  background:color-mix(in srgb,var(--accent) 18%,transparent); border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); color:#fff; opacity:.55; transition:.2s; }
+.ctb-subj.has-sel .ctb-subj-badge{ opacity:1; }
+.ctb-chev{ flex:0 0 auto; transition:transform .25s ease; opacity:.7; }
+.ctb-subj.open .ctb-chev{ transform:rotate(180deg); }
+.ctb-subj-body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s ease; }
+.ctb-subj.open .ctb-subj-body{ grid-template-rows:1fr; }
+.ctb-subj-inner{ overflow:hidden; min-height:0; }
+.ctb-subj-pad{ padding:0 1rem 1rem; }
+.ctb-actions{ display:flex; gap:.5rem; margin:.1rem 0 .7rem; flex-wrap:wrap; }
+.ctb-link{ background:none; border:0; color:color-mix(in srgb,var(--accent) 70%,#fff); font-weight:700; font-size:.8rem; padding:2px 4px; cursor:pointer; }
+.ctb-link:hover{ text-decoration:underline; }
+.ctb-group{ margin-top:.9rem; }
+.ctb-group-head{ display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
+.ctb-group-name{ font-weight:700; font-size:.88rem; color:rgba(255,255,255,.88); letter-spacing:.2px; }
+.ctb-group-line{ flex:1; height:1px; background:linear-gradient(90deg,var(--stroke),transparent); }
+.ctb-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:.5rem; }
+.ctb-chap{ position:relative; display:flex; align-items:center; gap:.6rem; padding:.6rem .7rem; border-radius:12px; cursor:pointer; user-select:none;
+  border:1px solid var(--stroke); background:rgba(255,255,255,.04); transition:transform .14s, background .14s, border-color .14s, box-shadow .14s; }
+.ctb-chap:hover{ transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.28); }
+.ctb-chap input{ position:absolute; opacity:0; pointer-events:none; }
+.ctb-tick{ flex:0 0 auto; width:20px; height:20px; border-radius:7px; border:2px solid rgba(255,255,255,.3); display:grid; place-items:center; transition:.15s; font-size:12px; color:transparent; }
+.ctb-chap.on{ background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 24%,transparent),color-mix(in srgb,var(--accent) 8%,transparent));
+  border-color:color-mix(in srgb,var(--accent) 70%,transparent); box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 16%,transparent); }
+.ctb-chap.on .ctb-tick{ background:var(--accent); border-color:var(--accent); color:#0b1220; font-weight:900; }
+.ctb-chap input:focus-visible + .ctb-tick{ outline:2px solid #fff; outline-offset:2px; }
+.ctb-chap-name{ flex:1 1 auto; min-width:0; font-size:.86rem; font-weight:600; line-height:1.3; overflow-wrap:anywhere; }
+.ctb-qn{ flex:0 0 auto; font-size:.7rem; font-weight:800; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,.1); color:#e2e8f0; min-width:2.2em; text-align:center; }
+.ctb-qn.load{ animation:ctbPulse 1s ease-in-out infinite; }
+.ctb-qn.bad{ background:rgba(239,68,68,.18); color:#fca5a5; }
+@keyframes ctbPulse{ 50%{opacity:.35} }
+.ctb-empty{ text-align:center; color:var(--muted); padding:1.6rem .5rem; }
+
+/* ---------- summary panel ---------- */
+.ctb-side{ position:sticky; top:14px; }
+.ctb-sum{ padding:1.1rem; border-radius:20px; border:1px solid color-mix(in srgb,var(--purple) 40%,transparent);
+  background:radial-gradient(100% 70% at 0% 0%,color-mix(in srgb,var(--purple) 18%,transparent),transparent 70%), linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  box-shadow:0 18px 50px rgba(0,0,0,.4), 0 0 40px color-mix(in srgb,var(--purple) 12%,transparent); backdrop-filter:blur(14px); }
+.ctb-sum-title{ font-weight:800; font-size:1.1rem; display:flex; align-items:center; gap:.5rem; }
+.ctb-stats{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin:.9rem 0; }
+.ctb-stat{ border-radius:14px; padding:.7rem .8rem; background:rgba(0,0,0,.22); border:1px solid var(--stroke); text-align:center; }
+.ctb-stat b{ display:block; font-size:1.7rem; line-height:1.1; font-weight:800; background:linear-gradient(135deg,#fff,#93c5fd); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.ctb-stat small{ color:var(--muted); font-size:.72rem; font-weight:700; letter-spacing:.6px; text-transform:uppercase; }
+.ctb-lab{ font-size:.74rem; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:rgba(180,210,255,.75); margin:1rem 0 .45rem; display:flex; justify-content:space-between; align-items:center; }
+.ctb-qrow{ display:flex; align-items:center; gap:.5rem; }
+.ctb-step{ width:40px; height:40px; border-radius:12px; border:1px solid var(--stroke); background:rgba(255,255,255,.08); color:#fff; font-size:1.2rem; font-weight:800; cursor:pointer; transition:.15s; }
+.ctb-step:hover{ background:rgba(255,255,255,.16); }
+.ctb-qnum{ flex:1; min-width:0; text-align:center; font-size:1.5rem; font-weight:800; height:40px; border-radius:12px; border:1px solid var(--stroke); background:rgba(0,0,0,.25); color:#fff; padding:0; -moz-appearance:textfield; }
+.ctb-qnum::-webkit-outer-spin-button,.ctb-qnum::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.ctb-range{ width:100%; margin:.7rem 0 .2rem; accent-color:#fbbf24; }
+.ctb-quick{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.4rem; }
+.ctb-chip{ border:1px solid var(--stroke); background:rgba(255,255,255,.06); color:#e2e8f0; border-radius:999px; padding:.25rem .8rem; font-size:.8rem; font-weight:700; cursor:pointer; transition:.15s; }
+.ctb-chip:hover{ background:rgba(255,255,255,.14); }
+.ctb-chip.on{ background:linear-gradient(135deg,#fde68a,#f59e0b); color:#0b1220; border-color:transparent; }
+.ctb-seg{ display:grid; grid-template-columns:1fr 1fr; gap:.4rem; padding:4px; border-radius:14px; background:rgba(0,0,0,.25); border:1px solid var(--stroke); }
+.ctb-seg button{ border:0; background:none; color:#cbd5e1; padding:.55rem .4rem; border-radius:10px; font-weight:700; font-size:.82rem; cursor:pointer; transition:.15s; }
+.ctb-seg button.on{ background:linear-gradient(135deg,color-mix(in srgb,var(--purple) 75%,#000 0%),#1d4ed8); color:#fff; box-shadow:0 6px 16px color-mix(in srgb,var(--purple) 35%,transparent); }
+.ctb-hint{ font-size:.76rem; color:var(--muted); margin-top:.45rem; line-height:1.4; }
+.ctb-tray{ display:flex; flex-wrap:wrap; gap:.35rem; max-height:150px; overflow:auto; padding:2px; }
+.ctb-tchip{ display:inline-flex; align-items:center; gap:.35rem; max-width:100%; padding:.2rem .35rem .2rem .65rem; border-radius:999px; font-size:.74rem; font-weight:700;
+  background:color-mix(in srgb,var(--accent,#3b82f6) 20%,transparent); border:1px solid color-mix(in srgb,var(--accent,#3b82f6) 50%,transparent); }
+.ctb-tchip span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:170px; }
+.ctb-tchip button{ border:0; background:rgba(255,255,255,.16); color:#fff; width:18px; height:18px; border-radius:50%; font-size:11px; line-height:1; cursor:pointer; padding:0; }
+.ctb-tchip button:hover{ background:rgba(239,68,68,.6); }
+.ctb-note{ font-size:.78rem; padding:.55rem .7rem; border-radius:12px; margin-top:.8rem; }
+.ctb-note.warn{ background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.35); color:#fcd34d; }
+.ctb-note.load{ background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.35); color:#bfdbfe; }
+.ctb-bar{ height:5px; border-radius:99px; background:rgba(255,255,255,.1); overflow:hidden; margin-top:.45rem; }
+.ctb-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,#3b82f6,#fbbf24); transition:width .25s; }
+.ctb-mbar{ display:none; }
+@media (max-width:991.98px){
+  .ctb-side{ position:static; }
+  body.ctb-on > .ctb-mbar{ display:flex; position:fixed; left:10px; right:10px; bottom:calc(10px + env(safe-area-inset-bottom,0px)); z-index:50;
+    align-items:center; gap:.7rem; padding:.6rem .7rem .6rem 1rem; border-radius:18px; background:rgba(13,17,23,.92); backdrop-filter:blur(14px);
+    border:1px solid color-mix(in srgb,var(--purple) 55%,transparent); box-shadow:0 14px 40px rgba(0,0,0,.6); }
+  .ctb-mbar .ctb-mtxt{ flex:1; font-weight:800; font-size:.88rem; line-height:1.25; }
+  .ctb-mbar .ctb-mtxt small{ display:block; font-weight:600; color:var(--muted); font-size:.72rem; }
+  .ctb-mbar .ctb-btn{ padding:.65rem 1rem; font-size:.9rem; }
+  #builderView .container{ padding-bottom:6rem !important; }
+}
+@media (prefers-reduced-motion:reduce){ .ctb-cta::before,.ctb-cta-icon{ animation:none; } }
+
+/* ---------- Light mode (html.lite-mode): plain white, black text & borders, no gradients ---------- */
+html.lite-mode :is(.ctb-cta,.ctb-sum,.ctb-subj,.ctb-mbar) *{
+  color:#000 !important; -webkit-text-fill-color:#000 !important; border-color:#000 !important; background-image:none !important; }
+html.lite-mode :is(.ctb-cta,.ctb-sum,.ctb-subj,.ctb-stat,.ctb-chap,.ctb-tool,.ctb-step,.ctb-qnum,.ctb-seg,.ctb-mbar,.ctb-note,.ctb-qn,.ctb-mini,.ctb-cta-icon,.ctb-subj-ic,.ctb-btn){
+  background:#fff !important; background-image:none !important; border:1px solid #000 !important; color:#000 !important; -webkit-text-fill-color:#000 !important; }
+html.lite-mode .ctb-cta{ border-width:2px !important; }
+html.lite-mode .ctb-cta::before{ display:none !important; }
+html.lite-mode .ctb-cta-icon{ animation:none !important; }
+html.lite-mode .ctb-subj.has-sel{ border-width:2px !important; }
+html.lite-mode .ctb-subj-head,html.lite-mode .ctb-link{ background:none !important; border:0 !important; }
+html.lite-mode .ctb-link{ text-decoration:underline; }
+html.lite-mode .ctb-subj-badge{ opacity:1 !important; }
+html.lite-mode .ctb-chap:hover,html.lite-mode .ctb-tool:hover,html.lite-mode .ctb-step:hover,html.lite-mode .ctb-btn:hover{ background:#eee !important; }
+html.lite-mode .ctb-chap.on{ background:#eee !important; border:2px solid #000 !important; }
+html.lite-mode .ctb-tick{ background:#fff !important; border:2px solid #000 !important; }
+html.lite-mode .ctb-chap.on .ctb-tick{ background:#000 !important; color:#fff !important; -webkit-text-fill-color:#fff !important; }
+html.lite-mode .ctb-chap input:focus-visible + .ctb-tick{ outline:2px solid #000 !important; }
+html.lite-mode .ctb-qn.bad,html.lite-mode .ctb-note.warn{ border-style:dashed !important; }
+html.lite-mode .ctb-chip,html.lite-mode .ctb-tchip{ background:#fff !important; border:1px solid #000 !important; color:#000 !important; -webkit-text-fill-color:#000 !important; }
+html.lite-mode .ctb-chip.on{ background:#000 !important; color:#fff !important; -webkit-text-fill-color:#fff !important; }
+html.lite-mode .ctb-tchip button{ background:#000 !important; color:#fff !important; -webkit-text-fill-color:#fff !important; border:0 !important; }
+html.lite-mode .ctb-seg{ padding:3px; }
+html.lite-mode .ctb-seg button{ background:#fff !important; border:0 !important; }
+html.lite-mode .ctb-seg button.on{ background:#000 !important; color:#fff !important; -webkit-text-fill-color:#fff !important; }
+html.lite-mode .ctb-btn{ border:2px solid #000 !important; font-weight:800; }
+html.lite-mode .ctb-btn[disabled]{ border-style:dashed !important; color:#666 !important; -webkit-text-fill-color:#666 !important; }
+html.lite-mode .ctb-stat b{ background:none !important; -webkit-text-fill-color:#000 !important; }
+html.lite-mode .ctb-bar{ background:#ddd !important; }
+html.lite-mode .ctb-bar i{ background:#000 !important; }
+html.lite-mode .ctb-range{ accent-color:#000; }
+html.lite-mode .ctb-group-line{ background:#000 !important; opacity:.25; }
+html.lite-mode #builderView .subject-hero-title{ -webkit-text-fill-color:#000 !important; background:none !important; color:#000 !important; }
+html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subject-hero-eyebrow{ color:#000 !important; -webkit-text-fill-color:#000 !important; }
+</style>
 </head>
 
 <body>
@@ -4766,6 +4949,22 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
           </div>
         </div>
 
+        <!-- 🎯 CUSTOM TEST BUILDER — entry banner -->
+        <div id="ctbOpenCard" class="ctb-cta" role="button" tabindex="0" aria-label="Open Custom Test Builder">
+          <div class="ctb-cta-icon" aria-hidden="true">🎯</div>
+          <div class="ctb-cta-body">
+            <div class="ctb-eyebrow">✨ NEW · CUSTOM TEST BUILDER</div>
+            <h2 class="ctb-cta-title">Build your own test from any chapters</h2>
+            <div class="ctb-cta-sub">Tick any mix of subjects, topics and chapters, choose how many questions you want, and get a freshly shuffled test every time.</div>
+            <div class="ctb-cta-tags">
+              <span class="ctb-mini">🧩 Any combination</span>
+              <span class="ctb-mini">🎲 Random every time</span>
+              <span class="ctb-mini">🔢 You set the length</span>
+            </div>
+          </div>
+          <button type="button" id="ctbOpenBtn" class="ctb-btn">Build a Test →</button>
+        </div>
+
         <div class="glass p-3 p-md-4 mb-4">
           <div class="row g-3 align-items-center">
             <div class="col-12 col-lg-6">
@@ -4793,6 +4992,94 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
         </div>
 
         <div id="subjectsGrid" class="row g-3 g-md-4"></div>
+      </div>
+    </div>
+
+    <!-- 🎯 CUSTOM TEST BUILDER VIEW -->
+    <div id="builderView" class="view">
+      <div class="container py-4 py-md-5">
+
+        <div class="subject-hero">
+          <div class="subject-hero-orb subject-hero-orb-1"></div>
+          <div class="subject-hero-orb subject-hero-orb-2"></div>
+          <div class="subject-hero-ring"></div>
+          <div class="subject-hero-eyebrow">
+            <span class="subject-hero-dot"></span>
+            <span>CUSTOM TEST BUILDER</span>
+          </div>
+          <h2 class="subject-hero-title mb-0">Build Your Own Test</h2>
+          <div class="subject-hero-divider"></div>
+          <div class="subject-hero-hint">Pick any chapters from any subject, choose the number of questions, and we'll shuffle a fresh test for you.</div>
+          <div class="subject-hero-actions">
+            <button id="ctbBackBtn" class="btn btn-glass subject-hero-back" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              Back to portal
+            </button>
+          </div>
+        </div>
+
+        <div class="row g-3 g-lg-4 align-items-start">
+          <!-- chapter picker -->
+          <div class="col-12 col-lg-8">
+            <div class="glass ctb-panel">
+              <div class="ctb-toolbar">
+                <div class="ctb-search">
+                  <span>🔍</span>
+                  <input id="ctbSearch" class="form-control" type="search" placeholder="Filter chapters…" autocomplete="off" />
+                </div>
+                <button type="button" class="ctb-tool" id="ctbExpandAll">Expand all</button>
+                <button type="button" class="ctb-tool" id="ctbClearAll">Clear selection</button>
+              </div>
+              <div id="ctbTree"></div>
+            </div>
+          </div>
+
+          <!-- summary / controls -->
+          <div class="col-12 col-lg-4" id="ctbSideCol">
+            <div class="ctb-side">
+              <div class="ctb-sum">
+                <div class="ctb-sum-title">🎯 Your Test</div>
+
+                <div class="ctb-stats">
+                  <div class="ctb-stat"><b id="ctbStatCh">0</b><small>Chapters</small></div>
+                  <div class="ctb-stat"><b id="ctbStatAv">0</b><small>Questions available</small></div>
+                </div>
+
+                <div class="ctb-lab"><span>Number of questions</span><span id="ctbQMax" style="text-transform:none;letter-spacing:0;font-weight:700;"></span></div>
+                <div class="ctb-qrow">
+                  <button type="button" class="ctb-step" id="ctbMinus" aria-label="Fewer questions">−</button>
+                  <input id="ctbQNum" class="ctb-qnum" type="number" min="1" value="20" inputmode="numeric" aria-label="Number of questions" />
+                  <button type="button" class="ctb-step" id="ctbPlus" aria-label="More questions">+</button>
+                </div>
+                <input id="ctbRange" class="ctb-range" type="range" min="1" max="1" value="1" aria-label="Question count slider" />
+                <div class="ctb-quick" id="ctbChips"></div>
+
+                <div class="ctb-lab"><span>Mix style</span></div>
+                <div class="ctb-seg" id="ctbMix" role="radiogroup" aria-label="Mix style">
+                  <button type="button" data-mix="random" class="on" role="radio" aria-checked="true">🎲 Pure random</button>
+                  <button type="button" data-mix="equal" role="radio" aria-checked="false">⚖️ Equal per chapter</button>
+                </div>
+                <div class="ctb-hint" id="ctbMixHint">Questions are drawn at random from the combined pool of all chosen chapters.</div>
+
+                <div class="ctb-lab"><span>Selected chapters</span></div>
+                <div class="ctb-tray" id="ctbTray"></div>
+
+                <div id="ctbNotes"></div>
+
+                <div style="margin-top:1rem;">
+                  <button type="button" class="ctb-btn ctb-btn-big" id="ctbStart" disabled>🚀 Generate &amp; Start Test</button>
+                  <div class="ctb-hint" style="text-align:center;">Time limit and Exam / Practice mode come next.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- mobile sticky bar -->
+      <div class="ctb-mbar" id="ctbMBar">
+        <div class="ctb-mtxt"><span id="ctbMTxt">No chapters selected</span><small id="ctbMSub">Pick chapters above</small></div>
+        <button type="button" class="ctb-btn" id="ctbMGo">Review →</button>
       </div>
     </div>
 
@@ -5539,10 +5826,16 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       const views = {
         portal: $('portalView'),
         subject: $('subjectView'),
+        builder: $('builderView'),
         engine: $('engineView'),
       };
 
       function showView(name) {
+        /* Custom Test Builder: leaving a custom test returns to the builder, not a subject list */
+        const _S = window.state;
+        if (_S && _S.customReturn && name === 'subject') name = 'builder';
+        if (_S && (name === 'portal' || name === 'builder')) _S.customReturn = false;
+        document.body.classList.toggle('ctb-on', name === 'builder');
         Object.values(views).forEach(v => v.classList.remove('active'));
         views[name].classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -5584,11 +5877,13 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
             pathEl.innerHTML = pathNodes.map((n, i) => {
               const cls = n.active ? ' bc-active' : '';
               const arrow = i < pathNodes.length - 1 ? '<span class="bc-arrow">›</span>' : '';
-              return `<span class="bc-node${cls}">${n.label}</span>${arrow}`;
+              const _lbl = (window.state && window.state.customReturn && n.label === '📂 Subject') ? '🎯 Builder' : n.label;
+              return `<span class="bc-node${cls}">${_lbl}</span>${arrow}`;
             }).join('');
 
             const goBtn = document.getElementById('bcGoBtn');
             goBtn.textContent = btnLabel || '← Go Back';
+            if (window.state && window.state.customReturn && /Subject/.test(goBtn.textContent)) goBtn.textContent = '← Back to Builder';
             goBtn.className   = danger ? 'danger' : '';
 
             document.getElementById('backConfirmOverlay').classList.add('show');
@@ -5713,6 +6008,9 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
                 if (tp) tp.style.display = 'none';
                 showView('subject');
               }
+
+            } else if (view === 'builder') {
+              showView('portal');   // no confirmation needed from the builder
 
             } else if (view === 'subject') {
               const ok = await askBack({
@@ -6186,6 +6484,7 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
       }
 
       async function startTestFromPortal(sel) {
+        state.customReturn = false;
         state.selectedTest = sel;
         updateTopTestInfo();
 
@@ -9132,6 +9431,460 @@ html .qdot.cdot.current{ color:var(--gp-text,#f1f5f9) !important; }
 
       /* ========= INIT ========= */
       buildSubjects();
+
+      /* ╔══════════════════════════════════════════════════════════════╗
+         ║  CUSTOM TEST BUILDER — random test from any chapter combo    ║
+         ╚══════════════════════════════════════════════════════════════╝
+         • Pick any chapters across subjects / topic groups
+         • Chapter scripts (scripts/<file>.js) are loaded on demand, one at a
+           time (each one writes window.TEST_DATA), cached, and merged
+         • Concept pages are skipped — only real questions are pooled
+         • Result is a normal TEST_DATA object, so the existing engine,
+           Exam/Practice modes, PDF report and Battle Mode all just work   */
+      (function initCustomTestBuilder() {
+        const LS_KEY = 'ctbLastSetup_v1';
+        const ICONS = { 'c-reasoning': '🧩', 'c-gk': '🌍', 'c-math': '📐', 'c-english': '📚', 'c-computer': '💻', 'c-others': '⭐' };
+        const QUICK = [10, 20, 30, 50, 100];
+
+        const meta = {};              // file -> { subject, topic, name, cls }
+        const selected = new Set();   // chosen file keys
+        const cache = new Map();      // file -> { status:'loading'|'ok'|'missing'|'bad', items:[] }
+        const cards = {};             // file -> [chapter card elements]
+        let wantQ = 20, qCount = 0, useAll = false, mix = 'random';   // wantQ = what the user asked for; qCount = what is actually possible
+        let treeBuilt = false;
+
+        const g = (id) => document.getElementById(id);
+        const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+        /* ---------- persistence (best effort) ---------- */
+        function save() {
+          try { localStorage.setItem(LS_KEY, JSON.stringify({ sel: [...selected], q: wantQ, all: useAll, mix })); } catch (e) { }
+        }
+        function restore() {
+          try {
+            const o = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
+            if (!o) return;
+            (o.sel || []).forEach(f => { if (meta[f]) selected.add(f); });
+            if (Number(o.q) > 0) wantQ = Number(o.q);
+            useAll = !!o.all;
+            if (o.mix === 'equal' || o.mix === 'random') mix = o.mix;
+          } catch (e) { }
+        }
+
+        /* ---------- chapter loader (serialised: scripts share window.TEST_DATA) ---------- */
+        let queue = Promise.resolve();
+        function loadChapter(file) {
+          let rec = cache.get(file);
+          if (rec) return rec.promise;
+          rec = { status: 'loading', items: [] };
+          cache.set(file, rec);
+          rec.promise = queue = queue.then(() => new Promise((resolve) => {
+            const prev = window.TEST_DATA;
+            window.TEST_DATA = undefined;
+            const s = document.createElement('script');
+            s.src = 'scripts/' + file + '.js';
+            const finish = (status, data) => {
+              window.TEST_DATA = prev;
+              if (s.parentNode) s.parentNode.removeChild(s);
+              if (status === 'ok') {
+                const items = [];
+                Object.keys(data).forEach(k => {
+                  const it = data[k];
+                  if (!it || typeof it !== 'object' || isConceptItem(it)) return;
+                  if (!(it.questext || it.quesimage)) return;
+                  items.push(it);
+                });
+                rec.items = items;
+                rec.status = items.length ? 'ok' : 'bad';
+              } else rec.status = status;
+              resolve();
+              refresh();
+            };
+            s.onload = () => {
+              const d = window.TEST_DATA;
+              (d && typeof d === 'object') ? finish('ok', d) : finish('bad');
+            };
+            s.onerror = () => finish('missing');
+            document.body.appendChild(s);
+          })).catch(() => { rec.status = 'bad'; });
+          return rec.promise;
+        }
+
+        /* ---------- tree ---------- */
+        function buildTree() {
+          const tree = g('ctbTree');
+          tree.innerHTML = '';
+          PORTAL_DATA.forEach((s, si) => {
+            const sec = document.createElement('section');
+            sec.className = 'ctb-subj ' + (s.colorClass || '');
+            const files = [];
+            (s.topics || []).forEach(tg => (tg.subtopics || []).forEach(st => files.push(st.file)));
+
+            const head = document.createElement('button');
+            head.type = 'button'; head.className = 'ctb-subj-head';
+            head.innerHTML =
+              '<span class="ctb-subj-ic"></span>' +
+              '<span style="min-width:0;"><div class="ctb-subj-name"></div><div class="ctb-subj-meta"></div></span>' +
+              '<span class="ctb-subj-badge">0 selected</span>' +
+              '<svg class="ctb-chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+            head.querySelector('.ctb-subj-ic').textContent = ICONS[s.colorClass] || '📖';
+            head.querySelector('.ctb-subj-name').textContent = s.title;
+            head.querySelector('.ctb-subj-meta').textContent =
+              (s.topics || []).length + ' topic groups · ' + files.length + ' chapters';
+            head.addEventListener('click', () => sec.classList.toggle('open'));
+            sec.appendChild(head);
+
+            const body = document.createElement('div'); body.className = 'ctb-subj-body';
+            const inner = document.createElement('div'); inner.className = 'ctb-subj-inner';
+            const pad = document.createElement('div'); pad.className = 'ctb-subj-pad';
+
+            const act = document.createElement('div'); act.className = 'ctb-actions';
+            const allBtn = document.createElement('button');
+            allBtn.type = 'button'; allBtn.className = 'ctb-link'; allBtn.textContent = '✓ Select all in subject';
+            allBtn.addEventListener('click', () => toggleMany(files));
+            act.appendChild(allBtn);
+            pad.appendChild(act);
+
+            (s.topics || []).forEach(tg => {
+              const gfiles = (tg.subtopics || []).map(st => st.file);
+              const grp = document.createElement('div'); grp.className = 'ctb-group';
+              const gh = document.createElement('div'); gh.className = 'ctb-group-head';
+              const gn = document.createElement('div'); gn.className = 'ctb-group-name'; gn.textContent = tg.name;
+              const gl = document.createElement('div'); gl.className = 'ctb-group-line';
+              const gb = document.createElement('button');
+              gb.type = 'button'; gb.className = 'ctb-link'; gb.textContent = 'Select group';
+              gb.addEventListener('click', () => toggleMany(gfiles));
+              gh.append(gn, gl, gb);
+              grp.appendChild(gh);
+
+              const grid = document.createElement('div'); grid.className = 'ctb-grid';
+              (tg.subtopics || []).forEach(st => {
+                meta[st.file] = meta[st.file] || { subject: s.title, topic: tg.name, name: st.name, cls: s.colorClass || '' };
+                const lab = document.createElement('label'); lab.className = 'ctb-chap';
+                lab.dataset.file = st.file;
+                lab.dataset.search = (st.name + ' ' + tg.name + ' ' + s.title).toLowerCase();
+                const cb = document.createElement('input'); cb.type = 'checkbox';
+                const tick = document.createElement('span'); tick.className = 'ctb-tick'; tick.textContent = '✓';
+                const nm = document.createElement('span'); nm.className = 'ctb-chap-name'; nm.textContent = st.name;
+                const qn = document.createElement('span'); qn.className = 'ctb-qn'; qn.textContent = '—';
+                lab.append(cb, tick, nm, qn);
+                cb.addEventListener('change', () => toggle(st.file, cb.checked));
+                grid.appendChild(lab);
+                (cards[st.file] = cards[st.file] || []).push(lab);
+              });
+              grp.appendChild(grid);
+              pad.appendChild(grp);
+            });
+
+            inner.appendChild(pad); body.appendChild(inner); sec.appendChild(body);
+            sec._files = files;
+            tree.appendChild(sec);
+          });
+          treeBuilt = true;
+        }
+
+        /* ---------- selection ---------- */
+        function toggle(file, on) {
+          if (on) { selected.add(file); loadChapter(file); } else selected.delete(file);
+          save(); refresh();
+        }
+        function toggleMany(files) {
+          const visible = files.filter(f => (cards[f] || []).some(c => c.style.display !== 'none'));
+          const list = visible.length ? visible : files;
+          const allOn = list.every(f => selected.has(f));
+          list.forEach(f => { if (allOn) selected.delete(f); else { selected.add(f); loadChapter(f); } });
+          save(); refresh();
+        }
+
+        /* ---------- derived numbers ---------- */
+        function stats() {
+          let av = 0, loading = 0, bad = 0, ok = 0;
+          selected.forEach(f => {
+            const r = cache.get(f);
+            if (!r || r.status === 'loading') loading++;
+            else if (r.status === 'ok') { av += r.items.length; ok++; }
+            else bad++;
+          });
+          return { av, loading, bad, ok, total: selected.size };
+        }
+
+        /* ---------- UI refresh ---------- */
+        function refresh() {
+          if (!treeBuilt) return;
+          const st = stats();
+
+          // chapter cards
+          Object.keys(cards).forEach(f => {
+            const on = selected.has(f), r = cache.get(f);
+            cards[f].forEach(c => {
+              c.classList.toggle('on', on);
+              c.querySelector('input').checked = on;
+              const qn = c.querySelector('.ctb-qn');
+              qn.classList.remove('load', 'bad');
+              if (!r) { qn.textContent = on ? '…' : '—'; if (on) qn.classList.add('load'); }
+              else if (r.status === 'loading') { qn.textContent = '…'; qn.classList.add('load'); }
+              else if (r.status === 'ok') qn.textContent = r.items.length + ' Q';
+              else { qn.textContent = r.status === 'missing' ? 'no file' : 'empty'; qn.classList.add('bad'); }
+            });
+          });
+
+          // subject headers
+          [...g('ctbTree').children].forEach(sec => {
+            const n = sec._files.filter(f => selected.has(f)).length;
+            sec.classList.toggle('has-sel', n > 0);
+            sec.querySelector('.ctb-subj-badge').textContent = n + ' selected';
+          });
+
+          // count control
+          const max = Math.max(st.av, 0);
+          qCount = max ? clamp(useAll ? max : wantQ, 1, max) : 0;
+          const num = g('ctbQNum'), rng = g('ctbRange');
+          num.max = max || 1; num.disabled = !max;
+          rng.max = Math.max(max, 1); rng.min = 1; rng.disabled = !max;
+          if (document.activeElement !== num) num.value = max ? qCount : '';
+          rng.value = qCount || 1;
+          g('ctbQMax').textContent = max ? 'max ' + max : '';
+
+          const chips = g('ctbChips'); chips.innerHTML = '';
+          if (max) {
+            QUICK.filter(n => n < max).forEach(n => chips.appendChild(chip(String(n), !useAll && qCount === n, () => { useAll = false; wantQ = n; save(); refresh(); })));
+            chips.appendChild(chip('All ' + max, useAll || qCount === max, () => { useAll = true; save(); refresh(); }));
+          }
+
+          // stats + tray
+          g('ctbStatCh').textContent = st.total;
+          g('ctbStatAv').textContent = st.loading ? '…' : st.av;
+          const tray = g('ctbTray'); tray.innerHTML = '';
+          if (!selected.size) {
+            const e = document.createElement('div'); e.className = 'ctb-hint'; e.textContent = 'Nothing yet — open a subject and tick chapters.'; tray.appendChild(e);
+          } else selected.forEach(f => {
+            const m = meta[f]; if (!m) return;
+            const t = document.createElement('div'); t.className = 'ctb-tchip ' + m.cls;
+            t.style.setProperty('--accent', accentOf(m.cls));
+            const sp = document.createElement('span'); sp.textContent = m.name; sp.title = m.subject + ' • ' + m.topic + ' • ' + m.name;
+            const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Remove ' + m.name);
+            x.addEventListener('click', () => toggle(f, false));
+            t.append(sp, x); tray.appendChild(t);
+          });
+
+          // notes
+          const notes = g('ctbNotes'); notes.innerHTML = '';
+          if (st.loading) {
+            const done = st.total - st.loading;
+            const n = document.createElement('div'); n.className = 'ctb-note load';
+            n.innerHTML = '⏳ Loading chapters… ' + done + ' / ' + st.total + '<div class="ctb-bar"><i style="width:' + Math.round(done / st.total * 100) + '%"></i></div>';
+            notes.appendChild(n);
+          }
+          if (st.bad) {
+            const n = document.createElement('div'); n.className = 'ctb-note warn';
+            n.textContent = '⚠ ' + st.bad + (st.bad === 1 ? ' chapter has' : ' chapters have') + ' no usable questions (missing or empty script) and will be skipped.';
+            notes.appendChild(n);
+          }
+
+          // start button + mobile bar
+          const ready = st.av > 0 && !st.loading && qCount > 0;
+          const btn = g('ctbStart');
+          btn.disabled = !ready;
+          btn.textContent = st.loading ? '⏳ Loading chapters…'
+            : !selected.size ? '🚀 Pick at least one chapter'
+            : !st.av ? '🚫 No questions available'
+            : '🚀 Generate & Start · ' + qCount + ' Qs';
+          g('ctbMTxt').textContent = selected.size ? selected.size + (selected.size === 1 ? ' chapter' : ' chapters') + ' · ' + (st.loading ? '…' : st.av) + ' Qs available' : 'No chapters selected';
+          g('ctbMSub').textContent = selected.size ? (ready ? 'Test of ' + qCount + ' questions' : 'Getting ready…') : 'Pick chapters above';
+          g('ctbMGo').disabled = !selected.size;
+          g('ctbMGo').textContent = ready ? 'Start →' : 'Review →';
+        }
+
+        function applyMixUI() {
+          g('ctbMix').querySelectorAll('button').forEach(x => { const on = x.dataset.mix === mix; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); });
+          g('ctbMixHint').textContent = mix === 'equal'
+            ? 'Each chosen chapter contributes about the same number of questions (smaller chapters give everything they have).'
+            : 'Questions are drawn at random from the combined pool of all chosen chapters.';
+        }
+
+        function chip(txt, on, fn) {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'ctb-chip' + (on ? ' on' : ''); b.textContent = txt;
+          b.addEventListener('click', fn); return b;
+        }
+        function accentOf(cls) {
+          return ({ 'c-reasoning': '#22c55e', 'c-gk': '#38bdf8', 'c-math': '#f59e0b', 'c-english': '#93c5fd', 'c-computer': '#f43f5e', 'c-others': '#14b8a6' })[cls] || '#3b82f6';
+        }
+
+        /* ---------- search filter ---------- */
+        function applyFilter() {
+          const q = g('ctbSearch').value.trim().toLowerCase();
+          [...g('ctbTree').children].forEach(sec => {
+            let any = false;
+            sec.querySelectorAll('.ctb-group').forEach(grp => {
+              let gAny = false;
+              grp.querySelectorAll('.ctb-chap').forEach(c => {
+                const hit = !q || c.dataset.search.includes(q);
+                c.style.display = hit ? '' : 'none';
+                if (hit) gAny = true;
+              });
+              grp.style.display = gAny ? '' : 'none';
+              if (gAny) any = true;
+            });
+            sec.style.display = any ? '' : 'none';
+            if (q && any) sec.classList.add('open');
+          });
+          let empty = g('ctbNoMatch');
+          const visible = [...g('ctbTree').children].some(s => s.style.display !== 'none');
+          if (!visible) {
+            if (!empty) { empty = document.createElement('div'); empty.id = 'ctbNoMatch'; empty.className = 'ctb-empty'; empty.textContent = 'No chapters match your filter.'; g('ctbTree').appendChild(empty); }
+          } else if (empty) empty.remove();
+        }
+
+        /* ---------- random draw ---------- */
+        function shuffle(a) {
+          a = a.slice();
+          for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+          return a;
+        }
+        function draw(files, N) {
+          const lists = files.map(f => shuffle(cache.get(f).items));
+          let picked = [];
+          if (mix === 'equal' && lists.length > 1) {
+            const take = lists.map(() => 0);
+            let left = N, active = lists.map((_, i) => i);
+            while (left > 0 && active.length) {
+              const share = Math.max(1, Math.floor(left / active.length));
+              shuffle(active).forEach(i => {
+                if (left <= 0) return;
+                const t = Math.min(share, lists[i].length - take[i], left);
+                take[i] += t; left -= t;
+              });
+              active = active.filter(i => take[i] < lists[i].length);
+            }
+            lists.forEach((l, i) => { picked = picked.concat(l.slice(0, take[i])); });
+          } else {
+            picked = shuffle([].concat.apply([], lists)).slice(0, N);
+          }
+          return shuffle(picked);
+        }
+
+        /* ---------- launch ---------- */
+        async function startCustomTest() {
+          const st = stats();
+          if (!st.av || st.loading) return;
+          const files = [...selected].filter(f => cache.get(f) && cache.get(f).status === 'ok');
+          const N = clamp(qCount, 1, st.av);
+          const items = draw(files, N);
+          if (!items.length) return;
+
+          // new numbered TEST_DATA (copies, so the cached chapter data is never touched)
+          const merged = {};
+          items.forEach((it, i) => {
+            const c = Object.assign({}, it);
+            if (Array.isArray(it.options)) c.options = it.options.slice();
+            merged[i + 1] = c;
+          });
+
+          // label shown in the top bar, PDF report, etc.
+          const subs = [...new Set(files.map(f => meta[f].subject))];
+          const onlyEnglish = subs.length === 1 && /english\s*comprehension/i.test(subs[0]);
+          state.selectedTest = {
+            subjectTitle: onlyEnglish ? subs[0] : 'Custom Test',
+            topicName: files.length + (files.length === 1 ? ' chapter' : ' chapters'),
+            subtopicName: 'Random mix · ' + items.length + ' Qs',
+            fileKey: '__custom__',
+            custom: true,
+            chapters: files.map(f => meta[f].name)
+          };
+          updateTopTestInfo();
+
+          // same resets as startTestFromPortal
+          state.submitted = false;
+          $('showSummaryBtn').classList.add('d-none');
+          $('downloadPdfBtn').classList.add('d-none');
+          $('reviewNextBtn').classList.remove('d-none');
+          $('clearBtn').classList.remove('d-none');
+          $('saveNextBtn').textContent = 'Save & Next ▶';
+          $('saveNextBtn').onclick = saveAndNext;
+          $('prevBtn').onclick = goPrev;
+
+          // default time = 1 minute per question (user can change it in the popup)
+          const hint = document.querySelector('#candTimeInput + .small');
+          const oldHint = hint ? hint.textContent : '';
+          if (hint) hint.textContent = 'If empty, auto time = ' + items.length + ' mins (1 min per question)';
+          const details = await askCandidateDetails(state.candidateName, items.length);
+          if (hint) hint.textContent = oldHint;
+          if (!details) return;
+
+          state.candidateName = details.name;
+          state.desiredTimeMin = details.timeMin;
+          state.startExamMode = !!details.examMode;
+          state.startMode = details.mode || (details.examMode ? 'exam' : 'practice');
+
+          const label = 'Custom Test • ' + files.length + (files.length === 1 ? ' chapter' : ' chapters') + ' • ' + items.length + ' Qs';
+          $('testInfoTop').textContent = label;
+          $('testInfoTop').title = files.map(f => meta[f].name).join(' • ');
+
+          window.questions = undefined;
+          window.explanations = undefined;
+          window.TEST_DATA = merged;
+
+          try {
+            const conv = convertTestData(merged);
+            initEngine(conv.questionsObj, conv.explanationsObj, conv.conceptsList, conv.seqRaw);
+            state.customReturn = true;      // leaving the test brings you back to the builder
+            showView('engine');
+          } catch (err) {
+            console.error(err);
+            alert('Could not start the custom test: ' + (err && err.message ? err.message : err));
+          }
+        }
+
+        /* ---------- open / wire up ---------- */
+        function open() {
+          if (!treeBuilt) {
+            buildTree(); restore(); applyMixUI();
+            selected.forEach(f => loadChapter(f));
+            // open the subjects that already hold a selection
+            [...g('ctbTree').children].forEach(sec => { if (sec._files.some(f => selected.has(f))) sec.classList.add('open'); });
+            if (!g('ctbTree').querySelector('.open') && g('ctbTree').firstElementChild) g('ctbTree').firstElementChild.classList.add('open');
+          }
+          state.customReturn = false;
+          showView('builder');
+          refresh();
+        }
+        window.openCustomTestBuilder = open;
+
+        document.body.appendChild(g('ctbMBar'));   // fixed bars must live on <body> (views create their own containing block)
+        const card = g('ctbOpenCard');
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+        g('ctbBackBtn').addEventListener('click', () => showView('portal'));
+        g('ctbSearch').addEventListener('input', applyFilter);
+        g('ctbExpandAll').addEventListener('click', (e) => {
+          const secs = [...g('ctbTree').children].filter(s => s._files);
+          const allOpen = secs.every(s => s.classList.contains('open'));
+          secs.forEach(s => s.classList.toggle('open', !allOpen));
+          e.currentTarget.textContent = allOpen ? 'Expand all' : 'Collapse all';
+        });
+        g('ctbClearAll').addEventListener('click', () => { selected.clear(); save(); refresh(); });
+
+        const num = g('ctbQNum'), rng = g('ctbRange');
+        function setQ(n) { useAll = false; wantQ = Math.max(1, Math.round(n) || 1); save(); refresh(); }
+        num.addEventListener('input', () => { const v = parseInt(num.value, 10); if (v > 0) setQ(v); });
+        num.addEventListener('blur', () => refresh());
+        rng.addEventListener('input', () => setQ(Number(rng.value)));
+        g('ctbMinus').addEventListener('click', () => setQ((qCount || wantQ) - 1));
+        g('ctbPlus').addEventListener('click', () => setQ((qCount || wantQ) + 1));
+
+        g('ctbMix').addEventListener('click', (e) => {
+          const b = e.target.closest('button[data-mix]'); if (!b) return;
+          mix = b.dataset.mix; save(); applyMixUI();
+        });
+        g('ctbStart').addEventListener('click', startCustomTest);
+        g('ctbMGo').addEventListener('click', () => {
+          const st = stats();
+          if (st.av > 0 && !st.loading) startCustomTest();
+          else g('ctbSideCol').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      })();
+
 
       /* ── Share toast ── */
       function showShareToast(name) {
