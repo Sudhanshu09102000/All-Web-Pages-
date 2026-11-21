@@ -3015,4 +3015,58 @@ addEventListener('keydown',e=>{const k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.
 try{if(!matchMedia('(pointer:coarse)').matches){setInterval(()=>{const d=outerWidth-innerWidth>220||outerHeight-innerHeight>300;document.documentElement.classList.toggle('dtx',d)},1200)}}catch(e){}
 try{console.log('%cPixelForge','font:800 28px sans-serif;color:#6d5efc');console.log('%c© Sudhanshu Sharma. All rights reserved. Copying or reusing this code is prohibited.','font:600 13px sans-serif;color:#e5484d')}catch(e){}})();
 </script>
+<!-- ===== Refresh guard: asks for confirmation before the page is refreshed or closed ===== -->
+<script>
+(function(){
+  var leaving = false, box = null, stayBtn, goBtn;
+  var css = '#rfgOverlay{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,16,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}'
+    + '#rfgOverlay.show{display:flex}'
+    + '#rfgBox{width:100%;max-width:380px;background:#111827;color:#f1f5f9;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:24px 22px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.55)}'
+    + '#rfgIcon{width:48px;height:48px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(245,158,11,.15);color:#f59e0b}'
+    + '#rfgBox h3{margin:0 0 8px;font-size:18px;font-weight:700}'
+    + '#rfgBox p{margin:0 0 18px;font-size:14px;line-height:1.55;color:#cbd5e1}'
+    + '#rfgBox .rfgRow{display:flex;gap:10px}'
+    + '#rfgBox button{flex:1;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.16);font-family:inherit}'
+    + '#rfgStay{background:#2563eb;border-color:#2563eb;color:#fff}'
+    + '#rfgGo{background:transparent;color:#f1f5f9}'
+    + '#rfgBox button:hover{filter:brightness(1.12)}';
+  function build(){
+    if(box) return;
+    var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+    box = document.createElement('div'); box.id = 'rfgOverlay';
+    box.innerHTML = '<div id="rfgBox" role="alertdialog" aria-modal="true" aria-labelledby="rfgT">'
+      + '<div id="rfgIcon">\u21BB</div><h3 id="rfgT">Refresh this page?</h3>'
+      + '<p>Anything in progress on this page \u2014 uploaded files, results, settings or unsaved work \u2014 will be lost if you refresh now.</p>'
+      + '<div class="rfgRow"><button id="rfgStay" type="button">Stay here</button><button id="rfgGo" type="button">Refresh anyway</button></div></div>';
+    document.body.appendChild(box);
+    stayBtn = box.querySelector('#rfgStay'); goBtn = box.querySelector('#rfgGo');
+    stayBtn.addEventListener('click', hide);
+    goBtn.addEventListener('click', function(){ leaving = true; location.reload(); });
+    box.addEventListener('click', function(e){ if(e.target === box) hide(); });
+  }
+  function show(){ build(); box.classList.add('show'); setTimeout(function(){ stayBtn.focus(); }, 30); }
+  function hide(){ if(box) box.classList.remove('show'); }
+  function isOpen(){ return box && box.classList.contains('show'); }
+
+  // F5 / Ctrl+R / Cmd+R / Ctrl+Shift+R -> custom confirmation box
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    var isRefresh = e.key === 'F5' || ((e.ctrlKey || e.metaKey) && k === 'r');
+    if(isOpen()){
+      if(e.key === 'Escape'){ e.preventDefault(); hide(); }
+      else if(e.key === 'Tab'){ e.preventDefault(); (document.activeElement === stayBtn ? goBtn : stayBtn).focus(); }
+      else if(isRefresh){ e.preventDefault(); }
+      return;
+    }
+    if(isRefresh){ e.preventDefault(); e.stopPropagation(); show(); }
+  }, true);
+
+  // Browser refresh button, pull-to-refresh, tab/window close -> browser's own prompt
+  window.addEventListener('beforeunload', function(e){
+    if(leaving) return;
+    e.preventDefault(); e.returnValue = '';
+  });
+})();
+</script>
+
 </body></html>
