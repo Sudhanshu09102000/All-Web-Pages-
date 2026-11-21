@@ -4758,6 +4758,7 @@ html.lite-mode .ctb-group-line{ background:#000 !important; opacity:.25; }
 html.lite-mode #builderView .subject-hero-title{ -webkit-text-fill-color:#000 !important; background:none !important; color:#000 !important; }
 html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subject-hero-eyebrow{ color:#000 !important; -webkit-text-fill-color:#000 !important; }
 </style>
+<style id="noScreenFlashCss">#feedbackOverlay, .feedback-overlay, #bmFlash, .bm-flash { display: none !important; }</style>
 </head>
 
 <body>
@@ -7529,13 +7530,9 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
       }
 
       function showOverlay(isCorrect) {
+        /* full-screen red/green flash removed on purpose - the option boxes already turn green / red */
         const ov = $('feedbackOverlay');
-        ov.classList.remove('good', 'bad', 'show');
-        ov.classList.add(isCorrect ? 'good' : 'bad');
-        requestAnimationFrame(() => {
-          ov.classList.add('show');
-          setTimeout(() => ov.classList.remove('show'), 180);
-        });
+        if (ov) ov.classList.remove('good', 'bad', 'show');
       }
 
       function playSound(isCorrect) {
@@ -12220,14 +12217,7 @@ function bmSelectOption(metaId, correctMetaId, qIdx) {
     else                     btn.classList.add('bm-disabled');
   });
 
-  // Flash feedback
-  const flash = document.getElementById('bmFlash');
-  if (flash) {
-    flash.className = 'bm-flash ' + (isCorrect ? 'bm-flash-good' : 'bm-flash-bad');
-    clearTimeout(flash._t1); clearTimeout(flash._t2);
-    flash._t1 = setTimeout(() => { flash.classList.add('bm-flash-fade'); }, 300);
-    flash._t2 = setTimeout(() => { flash.className = 'bm-flash'; }, 700);
-  }
+  // (full-screen right/wrong flash removed on purpose - option boxes carry the green / red colour)
 
   // ── SCORING ──────────────────────────────────────────────────────────────────
   // Correct:  base +4  +  speed bonus (up to +6 extra for answering under 3s)
