@@ -24974,7 +24974,9 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
 </script>
 
 <style id="svResizeCss">
-/* Single-screen view: every card resizes with the same 8 edge/corner handles as the page-by-page box */
+/* Single-screen view: every card resizes with the same 8 edge/corner handles as the page-by-page box.
+   Desktop / mouse only: on phones a finger-scroll must never grab a handle and stretch the cards. */
+@media (min-width: 768px) and (pointer: fine) {
 html body .sv-card > .test-box-resize-handles { z-index: 12; }
 html body .sv-card.sv-wfix { width: var(--svw) !important; margin-left: var(--svml, 0px) !important; }
 html body .sv-card.sv-hfix { height: var(--svh) !important; overflow: auto !important; top: var(--svtop, 0px); }
@@ -24988,6 +24990,13 @@ html body .sv-card.sv-hfix > .test-box-resize-handles { position: sticky !import
 .sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="sw"] { top: calc(var(--svh) - 14px); bottom: auto; }
 .sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="e"],
 .sv-hfix > .test-box-resize-handles .test-box-resize-handle[data-edge="w"] { top: 0; bottom: auto; height: var(--svh); }
+}
+/* phones / touch: no handles, cards always size to their content */
+@media (max-width: 767px), (pointer: coarse) {
+  html body .sv-card > .test-box-resize-handles { display: none !important; }
+}
+/* keep the divider (and its gap) between the options and the Mark for review / Clear / Hint row on small screens too */
+html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 !important; }
 </style>
 <script id="svResizeJs">
 (function () {
