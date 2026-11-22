@@ -355,7 +355,32 @@
   var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
   function build() {
     map = {};
-    var D = window.TEST_DATA || {};
+    var D = /* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── IMAGE-ROW SNIPPET: pictures that come one after another sit side by side in ONE row (2, 3 or 4 per row) instead of a tall stack with empty space ── */
+(function () {
+  var CSS = [
+    ".cp-figrow{display:grid!important;gap:14px;align-items:stretch;width:100%;max-width:100%;margin:16px auto!important;box-sizing:border-box;padding:0}",
+    ".cp-figrow.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}",
+    ".cp-figrow.n3{grid-template-columns:repeat(3,minmax(0,1fr))}",
+    ".cp-figrow.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
+    ".cp-figcell{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-width:0;margin:0!important;padding:0!important}",
+    ".cp-figcell>.cp-fig{margin:0!important;width:100%!important;max-width:100%!important;min-width:0}",
+    ".cp-figrow img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:4/3;object-fit:contain!important;margin:0 auto!important}",
+    ".cp-figrow .cpm{width:100%!important;max-width:none!important;margin:0!important}",
+    "@media (max-width:980px){.cp-figrow.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+    "@media (max-width:560px){.cp-figrow{gap:10px}.cp-figrow.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-figrow.n3>.cp-figcell:last-child{grid-column:1/-1}.cp-figrow.n3>.cp-figcell:last-child img{aspect-ratio:16/9}}"
+  ].join("");
+  function add() {
+    if (document.getElementById("cpfr-style")) return;
+    var st = document.createElement("style");
+    st.id = "cpfr-style";
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  add();
+})();
+
+window.TEST_DATA || {};
     Object.keys(D).forEach(function (k) {
       var q = D[k] && D[k].questext;
       if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
@@ -542,8 +567,7 @@ window.TEST_DATA = {
       <p class="cp-lead">The highest peaks of the world are in this range. Mount Everest, called Sagarmatha in Nepal, is the highest of all.</p>
       <table><thead><tr><th>Peak</th><th>Height in metres</th></tr></thead><tbody><tr><td>Mount Everest</td><td>8,848</td></tr><tr><td>Kanchenjunga</td><td>8,586</td></tr><tr><td>Makalu</td><td>8,485</td></tr><tr><td>Dhaulagiri</td><td>8,167</td></tr><tr><td>Nanga Parbat</td><td>8,126</td></tr><tr><td>Annapurna</td><td>8,091</td></tr><tr><td>Nanda Devi</td><td>7,816</td></tr><tr><td>Namcha Barwa</td><td>7,782</td></tr></tbody></table>
       <p class="cp-lead">Kanchenjunga, on the border of Sikkim and Nepal, is the highest peak seen from India and the third highest in the world.</p>
-      <div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/9.png" alt="Kanchenjunga peak Sikkim photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/10.png" alt="Bar chart of the eight peaks in order of height, Everest tallest on the left and Namcha Ba" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/9.png" alt="Kanchenjunga peak Sikkim photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/10.png" alt="Bar chart of the eight peaks in order of height, Everest tallest on the left and Namcha Ba" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Everest is the highest peak of the world, but it is not in India. It lies on the border of Nepal and Tibet.</div>
       <div class="cp-note exam">Remember the order Everest, Kanchenjunga, Makalu, Dhaulagiri. Questions often ask which is the third or fourth highest.</div>
       <div class="cp-mnemonic">Every Kind Man Does Not Ask Nobody Nothing: Everest, Kanchenjunga, Makalu, Dhaulagiri, Nanga Parbat, Annapurna, Nanda Devi, Namcha Barwa.</div>
@@ -1043,8 +1067,7 @@ window.TEST_DATA = {
       <p class="cp-lead">The <b>Andhra Plateau</b> includes the Rayalaseema Plateau and the Telangana Plateau. The Velikonda, Palakonda and Nallamalai hills spread here.</p>
       <table><thead><tr><th>Part</th><th>What to remember</th></tr></thead><tbody><tr><td>Deccan Trap</td><td>Basalt rock and black soil in Maharashtra</td></tr><tr><td>Karnataka Plateau</td><td>Iron ore and gold-bearing rocks</td></tr><tr><td>Andhra Plateau</td><td>Rayalaseema and Telangana</td></tr><tr><td>Kolleru Lake</td><td>Between the Godavari and Krishna delta regions</td></tr></tbody></table>
       <p class="cp-lead"><b>Kolleru Lake</b> lies between the Krishna and Godavari deltas in Andhra Pradesh. It is one of the largest freshwater lakes in India.</p>
-      <div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/52.png" alt="Kolleru Lake Andhra Pradesh birds wetland photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/53.png" alt="Outline map of the Deccan with the three parts coloured and labelled: Deccan Trap in the n" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/52.png" alt="Kolleru Lake Andhra Pradesh birds wetland photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Geography/Geomorphic_Regions/53.png" alt="Outline map of the Deccan with the three parts coloured and labelled: Deccan Trap in the n" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Black soil forms from basalt rock, not from granite or sandstone.</div>
       <div class="cp-note exam">Questions ask the rock behind black soil. The answer is basalt, in Maharashtra.</div>
     `

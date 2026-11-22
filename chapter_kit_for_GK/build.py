@@ -90,6 +90,25 @@ def figure(spec, where):
     name = "%d.png" % n; AUTO[name] = v
     return FIG % (img + name, re.sub(r'["<>&]', "", alt)[:90], cap)
 
+# ---- consecutive images -> one side-by-side row (2-4 per row; 5+ are split into balanced rows) ----
+def group_figs(out):
+    res, run = [], []
+    def flush():
+        n = len(run)
+        if n < 2: res.extend(run)
+        else:
+            rows = -(-n // 4); size = -(-n // rows); i = 0
+            while i < n:
+                chunk = run[i:i + size]; i += size
+                if len(chunk) == 1: res.append(chunk[0]); continue
+                res.append('<div class="cp-figrow n%d">' % len(chunk) + "".join('<div class="cp-figcell">%s</div>' % c for c in chunk) + "</div>")
+        run.clear()
+    for x in out:
+        if x.startswith('<div class="cp-fig">'): run.append(x)
+        else: flush(); res.append(x)
+    flush()
+    return res
+
 # ---- shorthand parser ----
 def concept(head, body, n):
     m = [x.strip() for x in head.split("|", 2)]
@@ -113,6 +132,7 @@ def concept(head, body, n):
             out.append('<div class="cp-note %s">%s</div>' % (k.strip(), esc(txt)))
         elif ln.startswith("<"): out.append(ln)
         else: raise SystemExit("Unknown line in concept '%s': %s" % (head.strip(), ln[:60]))
+    out = group_figs(out)
     html = "\n".join("      " + x for x in out)
     if "`" in html or "${" in html: raise SystemExit("backtick or ${ in html of '%s'" % title)
     return dict(kind="c", icon=icon, accent=acc, title=title.strip(), html=html)
@@ -136,8 +156,8 @@ def question(head, body):
 
 # ---- snippets (verbatim from snippets.txt) ----
 sn = open(os.path.join(HERE, "snippets.txt"), encoding="utf-8").read()
-a, b, d, c = (sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ SNIPPET 3"), sn.index("/* ═══ END SNIPPETS"))
-snip = sn[a:b].rstrip() + "\n\n" + sn[b:d].rstrip() + "\n\n" + sn[d:c].rstrip() + "\n"
+a, b, d, e, c = (sn.index("/* ═══ SNIPPET 1"), sn.index("/* ═══ SNIPPET 2"), sn.index("/* ═══ SNIPPET 3"), sn.index("/* ═══ SNIPPET 4"), sn.index("/* ═══ END SNIPPETS"))
+snip = sn[a:b].rstrip() + "\n\n" + sn[b:d].rstrip() + "\n\n" + sn[d:e].rstrip() + "\n\n" + sn[e:c].rstrip() + "\n"
 
 entries = []
 for f in sorted(glob.glob(os.path.join(pdir, "p*.txt")), key=lambda p: int(re.sub(r"\D", "", os.path.basename(p)) or 0)):

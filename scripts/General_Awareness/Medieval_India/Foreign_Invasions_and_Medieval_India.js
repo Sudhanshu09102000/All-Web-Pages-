@@ -355,7 +355,32 @@
   var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
   function build() {
     map = {};
-    var D = window.TEST_DATA || {};
+    var D = /* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── IMAGE-ROW SNIPPET: pictures that come one after another sit side by side in ONE row (2, 3 or 4 per row) instead of a tall stack with empty space ── */
+(function () {
+  var CSS = [
+    ".cp-figrow{display:grid!important;gap:14px;align-items:stretch;width:100%;max-width:100%;margin:16px auto!important;box-sizing:border-box;padding:0}",
+    ".cp-figrow.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}",
+    ".cp-figrow.n3{grid-template-columns:repeat(3,minmax(0,1fr))}",
+    ".cp-figrow.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
+    ".cp-figcell{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-width:0;margin:0!important;padding:0!important}",
+    ".cp-figcell>.cp-fig{margin:0!important;width:100%!important;max-width:100%!important;min-width:0}",
+    ".cp-figrow img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:4/3;object-fit:contain!important;margin:0 auto!important}",
+    ".cp-figrow .cpm{width:100%!important;max-width:none!important;margin:0!important}",
+    "@media (max-width:980px){.cp-figrow.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+    "@media (max-width:560px){.cp-figrow{gap:10px}.cp-figrow.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-figrow.n3>.cp-figcell:last-child{grid-column:1/-1}.cp-figrow.n3>.cp-figcell:last-child img{aspect-ratio:16/9}}"
+  ].join("");
+  function add() {
+    if (document.getElementById("cpfr-style")) return;
+    var st = document.createElement("style");
+    st.id = "cpfr-style";
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  add();
+})();
+
+window.TEST_DATA || {};
     Object.keys(D).forEach(function (k) {
       var q = D[k] && D[k].questext;
       if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
@@ -610,8 +635,7 @@ window.TEST_DATA = {
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/13.png" alt="Two columns: Political effect labelled Very small, and Cultural exchange labelled Large, w" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <p class="cp-lead">The real gain was in learning. Indian knowledge passed to the Arab world through scholars, and the Arabic names of these works are important for the exam.</p>
       <table><thead><tr><th>Indian work</th><th>What happened</th></tr></thead><tbody><tr><td>Panchatantra of Vishnu Sharma</td><td>Became the Arabic work Kalila wa Dimna</td></tr><tr><td>Brahmasiddhanta of Brahmagupta</td><td>Taken up by Arab scholars in the 8th century</td></tr><tr><td>Khandanakhandakhadya of Sri Harsha</td><td>Also taken up by Arab scholars</td></tr></tbody></table>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/14.png" alt="Kalila wa Dimna illustrated Arabic manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/15.png" alt="Three boxes on the left - Panchatantra, Brahmasiddhanta, Khandanakhandakhadya - joined to " style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/14.png" alt="Kalila wa Dimna illustrated Arabic manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/15.png" alt="Three boxes on the left - Panchatantra, Brahmasiddhanta, Khandanakhandakhadya - joined to " style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">The Arab conquest of Sindh did not weaken the Indian powers. Muslim rule in India was truly established later by the Turks, not by the Arabs.</div>
       <div class="cp-note exam">Remember the sentence: the Panchatantra became Kalila wa Dimna.</div>
       <div class="cp-mnemonic">Panchatantra and Kalila wa Dimna: one story, two names.</div>
@@ -637,8 +661,7 @@ window.TEST_DATA = {
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/16.png" alt="Two boxes - Turks accept Islam, and Indian states fight each other - both pointing to a th" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Ruler</th><th>Facts</th></tr></thead><tbody><tr><td>Alptegin</td><td>A Turk slave of Abdul Malik, the Samani ruler of Bukhara (954–961 CE); became governor of Khurasan in 956 CE; after a conflict in 961 CE he took about 800 soldiers to Ghazni</td></tr><tr><td>Ishaq, Balkatigin, Pirai</td><td>Held Ghazni after Alptegin; Subuktagin removed Pirai</td></tr><tr><td>Subuktagin (977–997 CE)</td><td>Slave and son-in-law of Alptegin; titled Amir-ul-Umara; the first Turkish ruler to attack India; the first Turk to beat Hindushahi Jaipal</td></tr></tbody></table>
       <p class="cp-lead">The <b>Ghaznavid dynasty</b> ruled from <b>977 to 1186 CE</b>. It was a Turkish dynasty that ruled over Khorasan, Afghanistan, and the north-west of India, which is now partly Pakistan.</p>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/17.png" alt="Ghazni Afghanistan old citadel minaret photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/18.png" alt="Family chain of five boxes in order: Alptegin, Ishaq, Balkatigin, Pirai, Subuktagin, with " style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/17.png" alt="Ghazni Afghanistan old citadel minaret photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Foreign_Invasions_and_Medieval_India/18.png" alt="Family chain of five boxes in order: Alptegin, Ishaq, Balkatigin, Pirai, Subuktagin, with " style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">The <b>first Muslim invader</b> of India is Qasim (712 CE), but the <b>first Turk to attack</b> India is Subuktagin. Do not mix the two.</div>
       <div class="cp-note exam">The Ghaznavid dynasty is counted from 977 CE, the year Subuktagin came to power.</div>
     `

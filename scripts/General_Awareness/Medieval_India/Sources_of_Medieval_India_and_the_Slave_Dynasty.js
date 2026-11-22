@@ -355,7 +355,32 @@
   var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
   function build() {
     map = {};
-    var D = window.TEST_DATA || {};
+    var D = /* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── IMAGE-ROW SNIPPET: pictures that come one after another sit side by side in ONE row (2, 3 or 4 per row) instead of a tall stack with empty space ── */
+(function () {
+  var CSS = [
+    ".cp-figrow{display:grid!important;gap:14px;align-items:stretch;width:100%;max-width:100%;margin:16px auto!important;box-sizing:border-box;padding:0}",
+    ".cp-figrow.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}",
+    ".cp-figrow.n3{grid-template-columns:repeat(3,minmax(0,1fr))}",
+    ".cp-figrow.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
+    ".cp-figcell{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-width:0;margin:0!important;padding:0!important}",
+    ".cp-figcell>.cp-fig{margin:0!important;width:100%!important;max-width:100%!important;min-width:0}",
+    ".cp-figrow img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:4/3;object-fit:contain!important;margin:0 auto!important}",
+    ".cp-figrow .cpm{width:100%!important;max-width:none!important;margin:0!important}",
+    "@media (max-width:980px){.cp-figrow.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+    "@media (max-width:560px){.cp-figrow{gap:10px}.cp-figrow.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-figrow.n3>.cp-figcell:last-child{grid-column:1/-1}.cp-figrow.n3>.cp-figcell:last-child img{aspect-ratio:16/9}}"
+  ].join("");
+  function add() {
+    if (document.getElementById("cpfr-style")) return;
+    var st = document.createElement("style");
+    st.id = "cpfr-style";
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  add();
+})();
+
+window.TEST_DATA || {};
     Object.keys(D).forEach(function (k) {
       var q = D[k] && D[k].questext;
       if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
@@ -533,8 +558,7 @@ window.TEST_DATA = {
       <p class="cp-lead">Every dynasty left its own buildings. Seeing which monument belongs to which ruler helps us answer match-the-following questions.</p>
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/8.png" alt="Four columns for Khilji, Tughlaq, Lodi and Balban, each with a small box listing the monum" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Ruler or dynasty</th><th>Monuments</th></tr></thead><tbody><tr><td>Balban</td><td>Lal Mahal</td></tr><tr><td>Alauddin Khilji</td><td>Alai Darwaza</td></tr><tr><td>Mubarak Shah Khilji</td><td>Ukha Masjid at Bayana, Rajasthan</td></tr><tr><td>Tughlaq period</td><td>Tughlaqabad Fort, Jahanpanah Nagar, Ghiyasuddin's Tomb, Kotla Firoz Shah</td></tr><tr><td>Lodi period</td><td>Sikandar Lodi's Tomb, Moth ki Masjid</td></tr></tbody></table>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/9.png" alt="Tughlaqabad Fort Delhi ruins photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/10.png" alt="Alai Darwaza Qutb complex Delhi photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/9.png" alt="Tughlaqabad Fort Delhi ruins photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/10.png" alt="Alai Darwaza Qutb complex Delhi photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">The Alai Darwaza belongs to Alauddin Khilji. Do not link it with the Slave Dynasty ruler Aibak.</div>
       <div class="cp-note tip">Remember one monument for each dynasty: Balban with Lal Mahal, Khilji with Alai Darwaza, Tughlaq with Tughlaqabad, and Lodi with Moth ki Masjid.</div>
     `
@@ -709,8 +733,7 @@ window.TEST_DATA = {
       <p class="cp-lead">Many books of the Sultanate were written by courtiers. Exams usually ask us to match the book with its writer.</p>
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/21.png" alt="Two-column match chart: books on the left (Tarikh-ul-Hind, Taj-ul-Masir, Tabakat-i-Nasiri," style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Work</th><th>Writer and key detail</th></tr></thead><tbody><tr><td>Tarikh-ul-Hind (Kitab-ul-Hind)</td><td>Alberuni, who came with Mahmud Ghaznavi; English translation by Edward Sachau</td></tr><tr><td>Kitab-ul-Yamini</td><td>Utbi; the campaigns of Mahmud Ghaznavi</td></tr><tr><td>Chachnama</td><td>Muhammad Ali bin Abu Bakr Kufi; the Arab conquest of Sindh; translated in the time of Nasiruddin Qubacha</td></tr><tr><td>Taj-ul-Masir</td><td>Hasan Nizami; Indian events from 1192 to 1228</td></tr><tr><td>Tabakat-i-Nasiri</td><td>Minhaj-us-Siraj; the history of Ghori's conquests up to 1259 to 1260</td></tr><tr><td>Tarikh-e-Firozshahi</td><td>Ziauddin Barani; he lived in the Tughlaq period</td></tr><tr><td>Fatwa-e-Jahandari</td><td>Ziauddin Barani; a political book on statecraft</td></tr><tr><td>Futuhat-e-Firozshahi</td><td>Firoz Shah Tughlaq himself</td></tr><tr><td>Tughlaqnama</td><td>Amir Khusro; the Tughlaq dynasty</td></tr></tbody></table>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/22.png" alt="Tabakat-i-Nasiri Persian manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/23.png" alt="Alberuni Tarikh-ul-Hind manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/22.png" alt="Tabakat-i-Nasiri Persian manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/23.png" alt="Alberuni Tarikh-ul-Hind manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Barani wrote both Tarikh-e-Firozshahi and Fatwa-e-Jahandari. Futuhat-e-Firozshahi was written by Firoz Shah Tughlaq himself.</div>
       <div class="cp-note exam">Taj-ul-Masir is the writing of Hasan Nizami, who covered events from 1192 to 1228.</div>
     `
@@ -746,8 +769,7 @@ window.TEST_DATA = {
       <p class="cp-lead">Writers in other regions and in the early Mughal period also left important books. Learn the writer with each book.</p>
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/24.png" alt="Two-column match chart: Rajatarangini, Prithviraj Raso, Hammir Mahakavya, Baburnama, Humay" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Work</th><th>Writer and key detail</th></tr></thead><tbody><tr><td>Rajatarangini</td><td>Kalhan; the chronicle of Kashmir's history</td></tr><tr><td>Prithviraj Raso</td><td>Chandbardai; a heroic account of Prithviraj Chauhan</td></tr><tr><td>Hammir Mahakavya</td><td>Nayanchandra Suri; about Rana Hammir of Ranthambore</td></tr><tr><td>Tuzuk-e-Babri (Baburnama)</td><td>Babur; his autobiography, written in Turkish</td></tr><tr><td>Humayunama</td><td>Gulbadan Begum, the sister of Humayun; written in Persian</td></tr><tr><td>Tarikh-e-Rashidi</td><td>Mirza Haider Dughlat; the last days of Babur, and Humayun and Sher Shah</td></tr><tr><td>Tarikh-e-Shershahi</td><td>Abbas Khan Sherwani; the reign of Sher Shah Suri</td></tr><tr><td>Tarikh-e-Farishta</td><td>Muhammad Qasim Farishta; a general history of Muslim rule</td></tr></tbody></table>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/25.png" alt="Baburnama illustrated manuscript Mughal painting photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/26.png" alt="Rajatarangini Kalhana Kashmir manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/25.png" alt="Baburnama illustrated manuscript Mughal painting photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/26.png" alt="Rajatarangini Kalhana Kashmir manuscript photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Babur wrote in Turkish, but Humayun's sister Gulbadan Begum wrote the Humayunama in Persian.</div>
       <div class="cp-note exam">Rajatarangini by Kalhan is the best known chronicle of Kashmir.</div>
     `
@@ -777,8 +799,7 @@ window.TEST_DATA = {
       <p class="cp-lead">The Mughal court used many writers. The book names often include the name of the king they describe.</p>
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/27.png" alt="Timeline with four boxes: Akbar (Akbarnama, Tabakat-e-Akbari), Jahangir (Tuzuk-e-Jahangiri" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Ruler</th><th>Work</th><th>Writer</th></tr></thead><tbody><tr><td>Akbar</td><td>Tabakat-e-Akbari</td><td>Khwaja Nizamuddin Ahmad</td></tr><tr><td>Akbar</td><td>Akbarnama (3 volumes)</td><td>Abul Fazal; the third volume is the Ain-e-Akbari, the book of administration</td></tr><tr><td>Jahangir</td><td>Tuzuk-e-Jahangiri</td><td>Jahangir, completed by Mutamid Khan</td></tr><tr><td>Shah Jahan</td><td>Padshahnama / Shahjahannama</td><td>Qazvini and Inayat Khan</td></tr><tr><td>Shah Jahan</td><td>Badshahnama</td><td>Abdul Hamid Lahori</td></tr><tr><td>Aurangzeb</td><td>Muntakhab-ul-Lubab</td><td>Khafi Khan</td></tr><tr><td>Aurangzeb</td><td>Alamgirnama and Maasir-e-Alamgiri</td><td>Muhammad Kazim and Saqi Mustad Khan</td></tr><tr><td>Aurangzeb</td><td>Futuhat-e-Alamgiri and Nushra-e-Dilkusha</td><td>Ishwar Das Nagar and Bhimsen</td></tr></tbody></table>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/28.png" alt="Akbarnama illustrated manuscript Abul Fazal painting photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/29.png" alt="Ain-e-Akbari manuscript Abul Fazal photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/28.png" alt="Akbarnama illustrated manuscript Abul Fazal painting photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Sources_of_Medieval_India_and_the_Slave_Dynasty/29.png" alt="Ain-e-Akbari manuscript Abul Fazal photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Abul Fazal wrote the Akbarnama, but Khwaja Nizamuddin Ahmad wrote Tabakat-e-Akbari.</div>
       <div class="cp-note exam">Ain-e-Akbari is the third volume of the Akbarnama and records the administration of Akbar.</div>
     `

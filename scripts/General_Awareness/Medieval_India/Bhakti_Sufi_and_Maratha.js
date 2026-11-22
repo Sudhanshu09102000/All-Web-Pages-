@@ -355,7 +355,32 @@
   var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
   function build() {
     map = {};
-    var D = window.TEST_DATA || {};
+    var D = /* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── IMAGE-ROW SNIPPET: pictures that come one after another sit side by side in ONE row (2, 3 or 4 per row) instead of a tall stack with empty space ── */
+(function () {
+  var CSS = [
+    ".cp-figrow{display:grid!important;gap:14px;align-items:stretch;width:100%;max-width:100%;margin:16px auto!important;box-sizing:border-box;padding:0}",
+    ".cp-figrow.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}",
+    ".cp-figrow.n3{grid-template-columns:repeat(3,minmax(0,1fr))}",
+    ".cp-figrow.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
+    ".cp-figcell{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-width:0;margin:0!important;padding:0!important}",
+    ".cp-figcell>.cp-fig{margin:0!important;width:100%!important;max-width:100%!important;min-width:0}",
+    ".cp-figrow img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:4/3;object-fit:contain!important;margin:0 auto!important}",
+    ".cp-figrow .cpm{width:100%!important;max-width:none!important;margin:0!important}",
+    "@media (max-width:980px){.cp-figrow.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+    "@media (max-width:560px){.cp-figrow{gap:10px}.cp-figrow.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-figrow.n3>.cp-figcell:last-child{grid-column:1/-1}.cp-figrow.n3>.cp-figcell:last-child img{aspect-ratio:16/9}}"
+  ].join("");
+  function add() {
+    if (document.getElementById("cpfr-style")) return;
+    var st = document.createElement("style");
+    st.id = "cpfr-style";
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  add();
+})();
+
+window.TEST_DATA || {};
     Object.keys(D).forEach(function (k) {
       var q = D[k] && D[k].questext;
       if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
@@ -532,8 +557,7 @@ window.TEST_DATA = {
       <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha/7.png" alt="Kabir Das portrait painting" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
       <table><thead><tr><th>Saint</th><th>Period</th><th>Region</th><th>Key contribution</th><th>Deity</th></tr></thead><tbody><tr><td>Shankaracharya</td><td>8th century</td><td>Kerala</td><td>Advaita; four maths</td><td>Vedanta and Upanishads</td></tr><tr><td>Ramanujacharya</td><td>11th to 12th century</td><td>Sriperumbudur (Tamil Nadu)</td><td>Vishishtadvaita; <b>Shri Bhashya</b></td><td>Vishnu or Ram</td></tr><tr><td>Nimbarkacharya</td><td>12th century</td><td>—</td><td>Dvaitadvaita</td><td>Krishna</td></tr><tr><td>Madhvacharya</td><td>13th century</td><td>—</td><td>Dvaita (Tattvavada)</td><td>Vishnu</td></tr><tr><td>Vallabhacharya</td><td>15th to 16th century</td><td>Telangana</td><td>Shuddhadvaita; Pushtimarg; Ashtachhaap</td><td>Krishna</td></tr><tr><td>Ramanand</td><td>14th century</td><td>Allahabad</td><td>Took Bhakti to North India, in Hindi</td><td>Ram</td></tr><tr><td>Kabir</td><td>15th to 16th century</td><td>Varanasi</td><td><b>Bijak</b> (Ramaini, Sabad, Sakhi); Sadhukkadi language</td><td>Nirguna</td></tr><tr><td>Raidas or Ravidas</td><td>15th to 16th century</td><td>Varanasi</td><td>Hymns in the Guru Granth Sahib; Mirabai's guru</td><td>Nirguna</td></tr><tr><td>Dadu Dayal</td><td>16th century</td><td>Ahmedabad</td><td><b>Hardevaani</b>; Brij language; discussed with Akbar</td><td>Nirguna</td></tr><tr><td>Guru Nanak</td><td>1469 to 1539</td><td>Talwandi (Pakistan)</td><td><b>Japuji, Asadivar</b>; Pangat, Sangat, Langar</td><td>Nirguna</td></tr><tr><td>Chaitanya</td><td>15th to 16th century</td><td>Navadwip (West Bengal)</td><td>Gaudiya Vaishnavism; <b>Chaitanya Charitamrita</b></td><td>Krishna (Saguna)</td></tr><tr><td>Mirabai</td><td>16th century</td><td>Merta (Rajasthan)</td><td><b>Padavali</b>; married Bhojraj of Mewar</td><td>Krishna</td></tr><tr><td>Shankar Dev</td><td>15th to 16th century</td><td>Assam</td><td>Called the Chaitanya of Assam</td><td>Vishnu</td></tr><tr><td>Tukaram</td><td>17th century</td><td>Maharashtra</td><td>Warkari sect; Hindu–Muslim unity; contemporary of Shivaji</td><td>Vithoba</td></tr><tr><td>Ramdas</td><td>17th century</td><td>Maharashtra</td><td>Dharkari sect; Shivaji's guru</td><td>Ram</td></tr></tbody></table>
       <p class="cp-lead"><b>Nirguna</b> means God without any form, and <b>Saguna</b> means God with a form, such as Krishna or Ram. The saints of the Nirguna path rejected idol worship.</p>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha/8.png" alt="A two-column chart: Nirguna (Kabir, Raidas, Dadu Dayal, Guru Nanak) on the left and Saguna" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha/9.png" alt="Tukaram Dehu Maharashtra temple photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha/8.png" alt="A two-column chart: Nirguna (Kabir, Raidas, Dadu Dayal, Guru Nanak) on the left and Saguna" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Bhakti_Sufi_and_Maratha/9.png" alt="Tukaram Dehu Maharashtra temple photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Nirguna saints are Kabir, Raidas, Dadu Dayal and Guru Nanak. Saguna saints are Mirabai, Surdas, Tulsidas and Chaitanya.</div>
       <div class="cp-note exam">Chaitanya is called Gauranga and is linked with Krishna. Tukaram's sect is Warkari, and Ramdas's sect is Dharkari.</div>
     `

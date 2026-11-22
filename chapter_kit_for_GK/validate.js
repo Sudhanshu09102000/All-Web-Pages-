@@ -33,6 +33,7 @@ for (const k of keys) {
       if (!c) E(k + ": image without data-caption");
       else if (c.length < 12 || c.length > 160 || /^(figure|fig|image|img|diagram|photo|picture)\s*\d*\.?$/i.test(c.trim())) E(k + ": weak caption \"" + c.slice(0, 40) + "\" (12-160 chars, say what the picture shows)");
     }
+    if (/<div class="cp-fig">\s*<img[^>]*>\s*<\/div>\s*<div class="cp-fig">/.test(e.html)) E(k + ": two images follow each other without a row (build.py groups them; do not write them by hand)");
     const lines = (e.html.match(/<(p|div|table|ul|ol|li|tr)[\s>]/g) || []).length; if (k > 1 && lines > 70) E(k + ": page too long");
     for (const m of e.html.matchAll(/src="([^"]+)"/g)) used.add(m[1]);
   } else {

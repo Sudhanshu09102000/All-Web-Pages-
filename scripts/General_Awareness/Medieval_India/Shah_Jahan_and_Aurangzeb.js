@@ -355,7 +355,32 @@
   var norm = function (s) { return String(s || "").replace(/\s+/g, " ").trim(); };
   function build() {
     map = {};
-    var D = window.TEST_DATA || {};
+    var D = /* ═══ SNIPPET 4 — put right after SNIPPET 3 ═══ */
+/* ── IMAGE-ROW SNIPPET: pictures that come one after another sit side by side in ONE row (2, 3 or 4 per row) instead of a tall stack with empty space ── */
+(function () {
+  var CSS = [
+    ".cp-figrow{display:grid!important;gap:14px;align-items:stretch;width:100%;max-width:100%;margin:16px auto!important;box-sizing:border-box;padding:0}",
+    ".cp-figrow.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}",
+    ".cp-figrow.n3{grid-template-columns:repeat(3,minmax(0,1fr))}",
+    ".cp-figrow.n4{grid-template-columns:repeat(4,minmax(0,1fr))}",
+    ".cp-figcell{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;min-width:0;margin:0!important;padding:0!important}",
+    ".cp-figcell>.cp-fig{margin:0!important;width:100%!important;max-width:100%!important;min-width:0}",
+    ".cp-figrow img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:4/3;object-fit:contain!important;margin:0 auto!important}",
+    ".cp-figrow .cpm{width:100%!important;max-width:none!important;margin:0!important}",
+    "@media (max-width:980px){.cp-figrow.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}",
+    "@media (max-width:560px){.cp-figrow{gap:10px}.cp-figrow.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-figrow.n3>.cp-figcell:last-child{grid-column:1/-1}.cp-figrow.n3>.cp-figcell:last-child img{aspect-ratio:16/9}}"
+  ].join("");
+  function add() {
+    if (document.getElementById("cpfr-style")) return;
+    var st = document.createElement("style");
+    st.id = "cpfr-style";
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  add();
+})();
+
+window.TEST_DATA || {};
     Object.keys(D).forEach(function (k) {
       var q = D[k] && D[k].questext;
       if (typeof q === "string" && q.indexOf("\n") > -1) map[norm(q)] = q;
@@ -934,8 +959,7 @@ window.TEST_DATA = {
       <table><thead><tr><th>Guru</th><th>Ruler</th><th>What happened</th></tr></thead><tbody><tr><td>Guru Hargobind, the sixth Guru</td><td>Shah Jahan</td><td>Clashed with the Mughal army in the time of Shah Jahan</td></tr><tr><td>Guru Teg Bahadur, the ninth Guru</td><td>Aurangzeb</td><td>Criticised the anti-Hindu policy, urged Kashmiri Brahmins to resist, and was killed in Delhi in November 1675</td></tr><tr><td>Guru Gobind Singh, the tenth Guru</td><td>Aurangzeb and later Bahadur Shah I</td><td>Made the Sikhs a military community and founded the Khalsa at Anandpur in 1699</td></tr></tbody></table>
       <p class="cp-lead"><b>Guru Teg Bahadur</b> was summoned to Delhi, tortured and killed. The Gurudwara Sisganj in Chandni Chowk, Delhi, stands on the place of his execution.</p>
       <p class="cp-lead"><b>Guru Gobind Singh</b> founded the Khalsa at Anandpur on Baisakhi in 1699. The first battle of Anandpur, in 1700, ended in a Mughal defeat. After the second battle, in 1704, he escaped to the Deccan. Later, Bahadur Shah I made peace with him.</p>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Shah_Jahan_and_Aurangzeb/39.png" alt="Anandpur Sahib Khalsa Heritage Complex Punjab photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
-      <div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Shah_Jahan_and_Aurangzeb/40.png" alt="Timeline strip: November 1675 Guru Teg Bahadur killed; 1699 Khalsa founded at Anandpur; 17" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div>
+      <div class="cp-figrow n2"><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Shah_Jahan_and_Aurangzeb/39.png" alt="Anandpur Sahib Khalsa Heritage Complex Punjab photo" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div><div class="cp-figcell"><div class="cp-fig"><img src="images/General_Awareness/Medieval_India/Shah_Jahan_and_Aurangzeb/40.png" alt="Timeline strip: November 1675 Guru Teg Bahadur killed; 1699 Khalsa founded at Anandpur; 17" style="display:block;width:100%;max-width:420px;max-height:240px;height:auto;object-fit:contain;margin:10px auto;border-radius:12px"></div></div></div>
       <div class="cp-note trap">Guru Hargobind clashed with Shah Jahan, and Guru Teg Bahadur was executed by Aurangzeb in November 1675. Guru Gobind Singh fought at Anandpur in 1700 and 1704.</div>
       <div class="cp-mnemonic">The sixth Guru met Shah Jahan, and the ninth Guru met Aurangzeb.</div>
     `
