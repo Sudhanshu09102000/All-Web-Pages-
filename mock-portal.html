@@ -4167,13 +4167,23 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
 .cp-body img.cp-broken { min-height: 44px; padding: 10px; border: 1px dashed #ef4444; color: #fca5a5; font: 600 .8rem 'Inter', sans-serif; }
 .cp-fig { margin: 16px 0; text-align: center; }
 .cp-fig figcaption { margin-top: 6px; font: 500 .82rem 'Inter', system-ui, sans-serif; opacity: .7; }
-/* 🏷 auto caption shown under every concept-page image (text comes from data-caption / alt / title) */
-.cp-body .cp-imgcap {
-  display: block; max-width: min(92%, 640px); margin: -6px auto 18px; padding: 0 6px; text-align: center;
-  font: 600 .86rem/1.45 'Inter', system-ui, sans-serif; font-style: italic; opacity: .82;
+/* 🏷 beautiful caption under every concept-page image (text from data-caption > alt > title > file name > "Figure N") */
+.cp-body .cp-imgcap, .sv-card .cp-imgcap {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: fit-content; max-width: min(92%, 680px); margin: -4px auto 22px; padding: 8px 18px;
+  text-align: center; font: 600 .92rem/1.4 'Inter', system-ui, sans-serif; letter-spacing: .2px;
+  border-radius: 999px; color: inherit;
+  background: linear-gradient(135deg, rgba(var(--cp-rgb, 59,130,246), .16), rgba(var(--cp-rgb, 59,130,246), .05));
+  border: 1px solid rgba(var(--cp-rgb, 59,130,246), .45);
+  box-shadow: 0 4px 14px rgba(var(--cp-rgb, 59,130,246), .15);
 }
-.cp-body .cp-imgcap, .sv-card .cp-imgcap { display: none !important; }
-.cp-body .cp-imgcap::before { content: '📷 '; font-style: normal; }
+.cp-imgcap .cp-imgcap-no {
+  flex: none; padding: 2px 9px; border-radius: 999px; font-size: .72rem; font-weight: 800; letter-spacing: .8px; text-transform: uppercase;
+  background: var(--cp-accent, #3b82f6); color: var(--cp-on, #fff);
+}
+.cp-imgcap .cp-imgcap-txt { min-width: 0; }
+html.lite-mode .cp-imgcap { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; }
+html.lite-mode .cp-imgcap .cp-imgcap-no { background: #000 !important; color: #fff !important; }
 
 /* ── CARDS ── <div class="cp-card [blue|green|amber|red|violet|teal|pink]"> */
 .cp-body .cp-card {
@@ -8021,6 +8031,39 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
         goNext();
       }
 
+      
+/* 🏷 cpCaptionImages(body): adds a styled caption under every figure image */
+window.cpCaptionImages = function (body) {
+  if (!body) return;
+  var generic = /^\s*((image|img|figure|fig|photo|picture|diagram|screenshot|untitled|question image|explanation image)\s*[-_]?\d*)\s*$/i;
+  function fromFile(src) {
+    if (!src || /^(data|blob):/i.test(src)) return '';
+    var f = src.split('?')[0].split('#')[0].split('/').pop() || '';
+    try { f = decodeURIComponent(f); } catch (e) {}
+    f = f.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/[-_.]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (f.length < 4 || f.length > 60 || /^[0-9a-f\s]{8,}$/i.test(f) || !/[a-z]{3}/i.test(f) || generic.test(f)) return '';
+    return f.replace(/\b([a-z])/g, function (m) { return m.toUpperCase(); });
+  }
+  var n = 0;
+  body.querySelectorAll('img').forEach(function (img) {
+    if (img.classList.contains('cp-inline') || img.closest('.cp-imgcap')) return;
+    n++;
+    var fig = img.closest('figure');
+    if (fig && fig.querySelector('figcaption')) return;                       // author already wrote a caption
+    var nx = img.nextElementSibling;
+    if (nx && nx.classList && nx.classList.contains('cp-imgcap')) return;      // already captioned
+    var txt = (img.getAttribute('data-caption') || '').trim();
+    if (!txt) { var al = (img.getAttribute('alt') || '').trim(); if (al && !generic.test(al) && !/^[\w\- ]+\.(jpe?g|png|webp|gif|svg)$/i.test(al)) txt = al; }
+    if (!txt) { var ti = (img.getAttribute('title') || '').trim(); if (ti && !generic.test(ti)) txt = ti; }
+    if (!txt) txt = fromFile(img.getAttribute('src') || '');
+    var cap = document.createElement('div');
+    cap.className = 'cp-imgcap';
+    cap.innerHTML = '<span class="cp-imgcap-no">Fig. ' + n + '</span><span class="cp-imgcap-txt"></span>';
+    cap.lastChild.textContent = txt || 'Figure ' + n;
+    img.insertAdjacentElement('afterend', cap);
+  });
+};
+
       /* tables scroll sideways, images zoom on click */
       function cpEnhanceBody() {
         const body = $('cpBody');
@@ -8031,19 +8074,7 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           t.parentNode.insertBefore(w, t);
           w.appendChild(t);
         });
-        /* 🏷 caption under every image: what the picture actually shows.
-           Text priority: data-caption > alt > title > "Figure N" (generic alts like "image" / "3.jpg" are ignored). */
-        (function () {
-          const generic = /^\s*((image|img|figure|fig|photo|picture|diagram)\s*\d*|[\w\- ]+\.(jpe?g|png|webp|gif|svg))\s*$/i;
-          let n = 0;
-          body.querySelectorAll('img').forEach(img => {
-            if (img.classList.contains('cp-inline')) return;                      // tiny inline icons are not figures
-            n++;
-            const fig = img.closest('figure');
-            if (fig && fig.querySelector('figcaption')) return;                    // already captioned by the author
-            /* auto caption ("Picture for the word ...") removed on purpose - only captions the author wrote are shown */
-          });
-        })();
+        window.cpCaptionImages(body);
         body.querySelectorAll('img').forEach(img => {
           img.addEventListener('click', () => cpOpenLightbox(img.currentSrc || img.src, img.alt));
           img.addEventListener('error', () => {
@@ -24474,14 +24505,7 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
       var w = document.createElement('div'); w.className = 'cp-tablewrap cp-scroll-x';
       t.parentNode.insertBefore(w, t); w.appendChild(t);
     });
-    var generic = /^\s*((image|img|figure|fig|photo|picture|diagram)\s*\d*|[\w\- ]+\.(jpe?g|png|webp|gif|svg))\s*$/i, n = 0;
-    body.querySelectorAll('img').forEach(function (img) {
-      if (img.classList.contains('cp-inline')) return;
-      n++;
-      var fig = img.closest('figure');
-      if (fig && fig.querySelector('figcaption')) return;
-      /* auto caption removed on purpose */
-    });
+    try { window.cpCaptionImages(body); } catch (e) { }
     body.querySelectorAll('img').forEach(function (img) {
       img.addEventListener('click', function () { try { cpOpenLightbox(img.currentSrc || img.src, img.alt); } catch (e) { } });
       img.addEventListener('error', function () {
