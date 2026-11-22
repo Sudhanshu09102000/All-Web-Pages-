@@ -4184,6 +4184,17 @@ html.lite-mode #ytStudio .yk-kicker i { background: #000 !important; }
 .cp-imgcap .cp-imgcap-txt { min-width: 0; }
 html.lite-mode .cp-imgcap { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; }
 html.lite-mode .cp-imgcap .cp-imgcap-no { background: #000 !important; color: #fff !important; }
+/* fix: caption box under images - badge text visible in lite mode, no overlap with image frame, softer corners for wrapped text */
+.cp-body .cp-imgcap, .sv-card .cp-imgcap {
+  margin: 8px auto 20px; border-radius: 14px; padding: 8px 16px; width: fit-content; max-width: min(96%, 680px);
+  position: relative; z-index: 1; box-sizing: border-box;
+}
+.cp-imgcap .cp-imgcap-no { white-space: nowrap; line-height: 1.5; }
+html.lite-mode #conceptBox .cp-imgcap { border-radius: 14px; }
+html.lite-mode #conceptBox .cp-imgcap .cp-imgcap-no {
+  background: #000 !important; color: #fff !important; -webkit-text-fill-color: #fff !important; border-color: #000 !important;
+}
+
 
 /* ── CARDS ── <div class="cp-card [blue|green|amber|red|violet|teal|pink]"> */
 .cp-body .cp-card {
