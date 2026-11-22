@@ -4191,6 +4191,19 @@ html.lite-mode .cp-imgcap .cp-imgcap-no { background: #000 !important; color: #f
 }
 .cp-imgcap .cp-imgcap-no { white-space: nowrap; line-height: 1.5; }
 html.lite-mode #conceptBox .cp-imgcap { border-radius: 14px; }
+/* caption box: plain centred text, never overflows its column, tidy on phones */
+.cp-body .cp-imgcap, .sv-card .cp-imgcap {
+  display: block; text-align: center; box-sizing: border-box; min-width: 0;
+  overflow-wrap: break-word; word-break: normal; hyphens: manual; line-height: 1.4;
+}
+.cp-imgcap .cp-imgcap-txt { display: block; min-width: 0; overflow-wrap: break-word; }
+.cp-imgcap .cp-imgcap-no { display: none !important; }
+@media (max-width: 767px) {
+  .cp-body .cp-imgcap, .sv-card .cp-imgcap {
+    width: 100%; max-width: 100%; margin: 6px 0 14px; padding: 7px 10px;
+    border-radius: 12px; font-size: .78rem; font-weight: 600; letter-spacing: 0; line-height: 1.35;
+  }
+}
 html.lite-mode #conceptBox .cp-imgcap .cp-imgcap-no {
   background: #000 !important; color: #fff !important; -webkit-text-fill-color: #fff !important; border-color: #000 !important;
 }
@@ -8097,10 +8110,11 @@ window.cpCaptionImages = function (body) {
     if (!txt) { var al = (img.getAttribute('alt') || '').trim(); if (al && !generic.test(al) && !/^[\w\- ]+\.(jpe?g|png|webp|gif|svg)$/i.test(al)) txt = al; }
     if (!txt) { var ti = (img.getAttribute('title') || '').trim(); if (ti && !generic.test(ti)) txt = ti; }
     if (!txt) txt = fromFile(img.getAttribute('src') || '');
+    if (!txt) return;                                  // no real caption text -> no caption box (never "Figure N")
     var cap = document.createElement('div');
     cap.className = 'cp-imgcap';
-    cap.innerHTML = '<span class="cp-imgcap-no">Fig. ' + n + '</span><span class="cp-imgcap-txt"></span>';
-    cap.lastChild.textContent = txt || 'Figure ' + n;
+    cap.innerHTML = '<span class="cp-imgcap-txt"></span>';
+    cap.firstChild.textContent = txt;
     img.insertAdjacentElement('afterend', cap);
   });
 };
