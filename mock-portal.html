@@ -4783,6 +4783,33 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 </head>
 
 <body>
+<script id="rtViewJs">
+/* helpers so box-resizing keeps working while the screen is rotated (see rtJs at the end of the page) */
+window.rtView = {
+  st: { on: false, deg: 0, k: 1, W: 0, H: 0 },
+  geom: function () {
+    var s = this.st;
+    if (!s.on) return { on: false, deg: 0, k: 1, W: window.innerWidth, H: window.innerHeight };
+    return s;
+  },
+  /* screen-space drag distance -> distance inside the rotated page */
+  toLocal: function (dx, dy) {
+    var g = this.geom(); if (!g.on) return { x: dx, y: dy };
+    var t = g.deg * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+    return { x: (dx * c + dy * s) / g.k, y: (-dx * s + dy * c) / g.k };
+  },
+  /* element box in the rotated page's own coordinates (same as getBoundingClientRect when not rotated) */
+  rect: function (el) {
+    var g = this.geom(), r = el.getBoundingClientRect();
+    if (!g.on) return r;
+    var cx = r.left + r.width / 2 - window.innerWidth / 2, cy = r.top + r.height / 2 - window.innerHeight / 2;
+    var t = g.deg * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+    var lx = (cx * c + cy * s) / g.k + g.W / 2, ly = (-cx * s + cy * c) / g.k + g.H / 2;
+    var w = el.offsetWidth, h = el.offsetHeight;
+    return { left: lx - w / 2, top: ly - h / 2, width: w, height: h, right: lx + w / 2, bottom: ly + h / 2 };
+  }
+};
+</script>
 
   <!-- ===== Premium loading screen (isolated in Shadow DOM so the app's global styles can't affect it) ===== -->
   <div id="ssSplashHost" aria-hidden="true" style="position:fixed;inset:0;z-index:2147483647;background:#04060c;"></div>
@@ -7815,9 +7842,10 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
 
       function setTestBoxSize(box, width, height) {
         const isMobile = window.innerWidth <= 767;
-        const maxWidth = Math.max(240, window.innerWidth - 4);
+        const vg = window.rtView.geom();
+        const maxWidth = Math.max(240, vg.W - 4);
         const minWidth = Math.min(isMobile ? 240 : 320, maxWidth);
-        const maxHeight = Math.max(260, window.innerHeight - 4);
+        const maxHeight = Math.max(260, vg.H - 4);
         const minHeight = Math.min(isMobile ? 260 : 280, maxHeight);
         box.style.width = Math.max(minWidth, Math.min(maxWidth, width)) + 'px';
         box.style.height = Math.max(minHeight, Math.min(maxHeight, height)) + 'px';
@@ -7828,23 +7856,25 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
           window.addEventListener('pointermove', (event) => {
             if (!activeTestBoxResize || event.pointerId !== activeTestBoxResize.pointerId) return;
             const { box, edge, startX, startY, width, height, left, top, screenTop, contentLeft } = activeTestBoxResize;
-            const dx = event.clientX - startX;
-            const dy = event.clientY - startY;
+            const ld = window.rtView.toLocal(event.clientX - startX, event.clientY - startY);
+            const dx = ld.x;
+            const dy = ld.y;
+            const vg = window.rtView.geom();
             const nextWidth = width + dx * (edge.includes('e') ? 1 : edge.includes('w') ? -1 : 0);
             const nextHeight = height + dy * (edge.includes('s') ? 1 : edge.includes('n') ? -1 : 0);
             const maxWidthFromAnchor = edge.includes('w')
               ? left + width - 4
-              : window.innerWidth - left - 4;
+              : vg.W - left - 4;
             const maxHeightFromAnchor = edge.includes('n')
               ? screenTop + height - 4
-              : window.innerHeight - screenTop - 4;
+              : vg.H - screenTop - 4;
             setTestBoxSize(
               box,
               Math.min(nextWidth, maxWidthFromAnchor),
               Math.min(nextHeight, maxHeightFromAnchor)
             );
-            const actualWidth = box.getBoundingClientRect().width;
-            const actualHeight = box.getBoundingClientRect().height;
+            const actualWidth = window.rtView.rect(box).width;
+            const actualHeight = window.rtView.rect(box).height;
             box.style.marginLeft = (left + (edge.includes('w') ? width - actualWidth : 0) - contentLeft) + 'px';
             box.style.marginRight = '0px';
             box.style.top = (top + (edge.includes('n') ? height - actualHeight : 0)) + 'px';
@@ -7878,9 +7908,9 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
               if (event.button !== 0) return;
               event.preventDefault();
               event.stopPropagation();
-              const rect = box.getBoundingClientRect();
+              const rect = window.rtView.rect(box);
               const parent = box.parentElement;
-              const parentRect = parent.getBoundingClientRect();
+              const parentRect = window.rtView.rect(parent);
               const parentStyle = getComputedStyle(parent);
               activeTestBoxResize = {
                 box,
@@ -7910,7 +7940,7 @@ html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subj
               else return;
 
               event.preventDefault();
-              const rect = box.getBoundingClientRect();
+              const rect = window.rtView.rect(box);
               setTestBoxSize(
                 box,
                 rect.width + dx * (edge.includes('e') ? 1 : edge.includes('w') ? -1 : 0),
@@ -25020,7 +25050,7 @@ html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 
   var EDGES = ['n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'];
   var act = null;
 
-  function clampW(w) { var max = Math.max(240, window.innerWidth - 4); return Math.max(Math.min(240, max), Math.min(max, w)); }
+  function clampW(w) { var max = Math.max(240, window.rtView.geom().W - 4); return Math.max(Math.min(240, max), Math.min(max, w)); }
   function clampH(h) { return Math.max(120, Math.min(Math.max(600, window.innerHeight * 4), h)); }
   var SHARED = {};            // one size shared by every card
   function allCards() { return document.querySelectorAll('.sv-card'); }
@@ -25041,11 +25071,11 @@ html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 
 
   window.addEventListener('pointermove', function (e) {
     if (!act || e.pointerId !== act.id) return;
-    var a = act, edge = a.edge, dx = e.clientX - a.x, dy = e.clientY - a.y;
+    var a = act, edge = a.edge, ld = window.rtView.toLocal(e.clientX - a.x, e.clientY - a.y), dx = ld.x, dy = ld.y;
     var hasE = edge.indexOf('e') > -1, hasW = edge.indexOf('w') > -1, hasN = edge.indexOf('n') > -1, hasS = edge.indexOf('s') > -1;
     var out = {};
     if (hasE || hasW) {
-      var maxFromAnchor = hasW ? a.left + a.width - 4 : window.innerWidth - a.left - 4;
+      var maxFromAnchor = hasW ? a.left + a.width - 4 : window.rtView.geom().W - a.left - 4;
       var w = clampW(Math.min(a.width + dx * (hasE ? 1 : -1), maxFromAnchor));
       out.w = w; out.ml = a.left + (hasW ? a.width - w : 0) - a.contentLeft;
     }
@@ -25073,7 +25103,7 @@ html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 
       h.addEventListener('pointerdown', function (e) {
         if (e.button !== 0) return;
         e.preventDefault(); e.stopPropagation();
-        var r = card.getBoundingClientRect(), pr = card.parentElement.getBoundingClientRect(), ps = getComputedStyle(card.parentElement);
+        var r = window.rtView.rect(card), pr = window.rtView.rect(card.parentElement), ps = getComputedStyle(card.parentElement);
         act = {
           card: card, edge: edge, id: e.pointerId, x: e.clientX, y: e.clientY,
           left: r.left, width: r.width, height: r.height,
@@ -25088,7 +25118,7 @@ html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 
         if (e.key === 'ArrowRight') dx = step; else if (e.key === 'ArrowLeft') dx = -step;
         else if (e.key === 'ArrowDown') dy = step; else if (e.key === 'ArrowUp') dy = -step; else return;
         e.preventDefault();
-        var r = card.getBoundingClientRect(), pr = card.parentElement.getBoundingClientRect(), ps = getComputedStyle(card.parentElement);
+        var r = window.rtView.rect(card), pr = window.rtView.rect(card.parentElement), ps = getComputedStyle(card.parentElement);
         var out = {}, cl = pr.left + (parseFloat(ps.borderLeftWidth) || 0) + (parseFloat(ps.paddingLeft) || 0);
         if (edge.indexOf('e') > -1 || edge.indexOf('w') > -1) { out.w = clampW(r.width + dx * (edge.indexOf('e') > -1 ? 1 : -1)); out.ml = r.left + (edge.indexOf('w') > -1 ? r.width - out.w : 0) - cl; }
         if (edge.indexOf('n') > -1 || edge.indexOf('s') > -1) { out.h = clampH(r.height + dy * (edge.indexOf('s') > -1 ? 1 : -1)); }
@@ -25107,6 +25137,236 @@ html body .sv-card.sv-q > hr.sv-hr { display: block !important; margin: .9rem 0 
     new MutationObserver(function () { scan(host); }).observe(host, { childList: true, subtree: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+
+<!-- ===== 🛌 Reading-angle rotator (controls live in the Control Panel) ===== -->
+<style id="rtCss">
+html.rt-on{position:fixed!important;top:50%!important;left:50%!important;right:auto!important;bottom:auto!important;
+  width:var(--rt-w)!important;height:var(--rt-h)!important;margin:0!important;padding:0!important;overflow:hidden!important;
+  transform:translate(-50%,-50%) rotate(var(--rt-deg,0deg)) scale(var(--rt-s,1))!important;transform-origin:50% 50%!important}
+html.rt-on.rt-anim{transition:transform .38s cubic-bezier(.22,.8,.3,1)!important}
+html.rt-on body{height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;overflow-y:auto!important;overflow-x:hidden!important;position:relative!important}
+
+#rtSection{--rt-accent:#8b5cf6;--rt-rgb:139,92,246;--rt-on:#fff}
+#rtSection .gcp-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#rtSection .rt-deg{font:800 12px/1 'Inter',system-ui,sans-serif;padding:5px 10px;border-radius:999px;background:var(--rt-accent);color:var(--rt-on)}
+#rtSection .rt-hint{opacity:.7;font-size:12px;margin:0 0 10px}
+#rtSection .rt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+#rtSection .rt-btn{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--rt-accent);border-radius:12px;padding:10px 6px;
+  background:linear-gradient(135deg,rgba(var(--rt-rgb),.38),rgba(var(--rt-rgb),.12));color:inherit;font:700 12.5px 'Inter',system-ui,sans-serif;cursor:pointer;
+  box-shadow:0 4px 14px rgba(var(--rt-rgb),.22);transition:transform .1s,box-shadow .15s,background .15s}
+#rtSection .rt-btn:hover{box-shadow:0 6px 18px rgba(var(--rt-rgb),.45)}
+#rtSection .rt-btn:active{transform:scale(.96)}
+#rtSection .rt-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+#rtSection .rt-nudge{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--rt-accent);background:rgba(var(--rt-rgb),.18);color:inherit;font:800 16px/1 sans-serif;cursor:pointer;padding:0}
+#rtSection input[type=range]{flex:1;min-width:0;accent-color:var(--rt-accent);height:26px}
+#rtSection label.rt-tg{display:flex;align-items:center;gap:8px;margin:8px 0 0;cursor:pointer;font-size:12.5px}
+#rtSection label.rt-tg input{width:16px;height:16px;accent-color:var(--rt-accent)}
+#rtSection.rt-active{box-shadow:inset 0 0 0 1px rgba(var(--rt-rgb),.55)}
+html.lite-mode #rtSection .rt-btn,html.lite-mode #rtSection .rt-nudge{background:#fff!important;border:2px solid var(--rt-accent)!important;box-shadow:none!important;color:#000!important}
+html.lite-mode #rtSection .rt-deg{background:#fff;color:#000;border:2px solid var(--rt-accent)}
+</style>
+<script id="rtJs">
+(function () {
+  'use strict';
+  var KEY = 'ssReadingAngle', CKEY = 'ssReadingColor', deg = 0, on = false, offTimer = 0, snap = true, twist = false;
+  var root = document.documentElement, body = document.body, V = window.rtView;
+
+  /* ---- 1. viewport units: inside a turned screen, 1vh / 1vw must follow the *turned* box ---- */
+  var patched = new WeakSet(), sheetCount = -1;
+  function fixVU(txt) {
+    return txt.replace(/(-?\d*\.?\d+)(d|s|l)?v(h|w)\b/g, function (m, n, p, a) {
+      return 'calc(' + n + ' * var(--rv' + a + ', 1' + (p || '') + 'v' + a + '))';
+    });
+  }
+  function patchRules(rules) {
+    for (var i = 0; i < rules.length; i++) {
+      var r = rules[i];
+      try {
+        if (r.cssRules) patchRules(r.cssRules);
+        if (r.style && !patched.has(r)) {
+          patched.add(r);
+          var t = r.style.cssText;
+          if (/\dv[hw]\b/.test(t) && t.indexOf('--rv') < 0) r.style.cssText = fixVU(t);
+        }
+      } catch (e) {}
+    }
+  }
+  function patchViewportUnits() {
+    var sheets = document.styleSheets;
+    if (sheets.length === sheetCount) return;
+    sheetCount = sheets.length;
+    for (var i = 0; i < sheets.length; i++) { try { patchRules(sheets[i].cssRules); } catch (e) {} }
+    document.querySelectorAll('[style*="vh"],[style*="vw"]').forEach(function (el) {
+      var s = el.getAttribute('style');
+      if (s && s.indexOf('--rv') < 0) el.setAttribute('style', fixVU(s));
+    });
+  }
+
+  /* ---- 2. while turned, <body> is the scroller: keep window.scrollTo / scrollY working ---- */
+  var nTo = window.scrollTo.bind(window), nBy = window.scrollBy.bind(window);
+  window.scrollTo = function (a, b) {
+    if (!on) return nTo.apply(window, arguments);
+    var o = (a && typeof a === 'object') ? a : { left: a, top: b };
+    body.scrollTo({ left: o.left || 0, top: o.top || 0, behavior: o.behavior });
+  };
+  window.scrollBy = function (a, b) {
+    if (!on) return nBy.apply(window, arguments);
+    var o = (a && typeof a === 'object') ? a : { left: a, top: b };
+    body.scrollBy({ left: o.left || 0, top: o.top || 0, behavior: o.behavior });
+  };
+  ['scrollY', 'pageYOffset'].forEach(function (k) {
+    try {
+      var d = Object.getOwnPropertyDescriptor(window, k);
+      if (d && d.configurable && d.get) Object.defineProperty(window, k, { configurable: true, get: function () { return on ? body.scrollTop : d.get.call(window); } });
+    } catch (e) {}
+  });
+  var scrollTick = 0;
+  body.addEventListener('scroll', function () {
+    if (!on || scrollTick) return;
+    scrollTick = requestAnimationFrame(function () { scrollTick = 0; window.dispatchEvent(new Event('scroll')); });
+  }, { passive: true });
+
+  /* ---- 3. the rotation itself ---- */
+  function norm(d) { d = ((d + 180) % 360 + 360) % 360 - 180; return d === -180 ? 180 : d; }
+  function clampBoxes(W, H) {          /* a box sized for the old orientation must still fit the turned screen */
+    document.querySelectorAll('.test-resizable-box').forEach(function (b) {
+      var w = parseFloat(b.style.width), h = parseFloat(b.style.height), hit = false;
+      if (w > W - 4) { b.style.width = (W - 4) + 'px'; hit = true; }
+      if (h > H - 4) { b.style.height = (H - 4) + 'px'; hit = true; }
+      if (hit) { b.style.marginLeft = ''; b.style.marginRight = ''; b.style.top = ''; }
+    });
+  }
+  function layout(d) {
+    var W = window.innerWidth, H = window.innerHeight;
+    var swap = Math.abs(Math.round(d / 90)) % 2 === 1;
+    var rw = swap ? H : W, rh = swap ? W : H;
+    var r = d * Math.PI / 180, c = Math.abs(Math.cos(r)), s = Math.abs(Math.sin(r));
+    var k = Math.min(W / (rw * c + rh * s), H / (rw * s + rh * c), 1);
+    if (k > 0.9999) k = 1;
+    var st = root.style;
+    st.setProperty('--rt-w', rw + 'px'); st.setProperty('--rt-h', rh + 'px');
+    st.setProperty('--rt-deg', d + 'deg'); st.setProperty('--rt-s', k);
+    st.setProperty('--rvh', (rh / 100) + 'px'); st.setProperty('--rvw', (rw / 100) + 'px');
+    if (V) { V.st.on = true; V.st.deg = d; V.st.k = k; V.st.W = rw; V.st.H = rh; }
+    clampBoxes(rw, rh);
+  }
+  function sync() {
+    var n = Math.round(norm(deg));
+    var dg = document.getElementById('rtDeg'), sl = document.getElementById('rtSlider'), sec = document.getElementById('rtSection');
+    if (dg) dg.textContent = n + '°';
+    if (sl) sl.value = n;
+    if (sec) sec.classList.toggle('rt-active', n !== 0);
+  }
+  function save() { try { localStorage.setItem(KEY, String(Math.round(deg))); } catch (e) {} }
+
+  function setDeg(d, animate) {
+    clearTimeout(offTimer);
+    var wasOn = on, y = 0;
+    deg = d;
+    var zero = Math.abs(norm(d)) < 0.01 && Math.abs(d % 360) < 0.01;
+    if (zero && !on) { sync(); save(); return; }
+    if (!on) {
+      patchViewportUnits();
+      y = window.scrollY;
+      on = true;
+      root.classList.add('rt-on');
+      layout(0);
+      void root.offsetWidth;
+    }
+    if (animate) root.classList.add('rt-anim'); else root.classList.remove('rt-anim');
+    layout(d);
+    if (!wasOn) body.scrollTop = y;
+    if (zero) {
+      offTimer = setTimeout(function () {
+        var yy = body.scrollTop;
+        on = false; root.classList.remove('rt-on', 'rt-anim');
+        if (V) V.st.on = false;
+        ['--rt-w', '--rt-h', '--rt-deg', '--rt-s', '--rvh', '--rvw'].forEach(function (p) { root.style.removeProperty(p); });
+        nTo(0, yy);
+        window.dispatchEvent(new Event('resize'));
+      }, animate ? 420 : 0);
+    } else if (animate) {
+      offTimer = setTimeout(function () { root.classList.remove('rt-anim'); }, 420);
+    }
+    sync(); save();
+  }
+  function turn(delta) { setDeg(Math.round(deg / 90) * 90 + delta, true); }
+  function reset() { var n = norm(deg); if (n !== deg && on) { root.classList.remove('rt-anim'); layout(n); void root.offsetWidth; deg = n; } setDeg(0, true); }
+
+  /* ---- 4. UI: a section inside the Control Panel ---- */
+  var sec = document.createElement('div');
+  sec.className = 'gcp-section'; sec.id = 'rtSection';
+  sec.innerHTML =
+    '<div class="gcp-section-title"><span>🛌 Screen Rotation</span><span class="rt-deg" id="rtDeg">0°</span></div>' +
+    '<p class="rt-hint">Lying down? Turn the screen so the text sits upright for your head.</p>' +
+    '<div class="rt-grid">' +
+    '<button class="rt-btn" type="button" data-a="l">⟲ Rotate left</button><button class="rt-btn" type="button" data-a="r">⟳ Rotate right</button>' +
+    '<button class="rt-btn" type="button" data-a="f">⇅ Upside down</button><button class="rt-btn" type="button" data-a="z">↺ Reset</button></div>' +
+    '<div class="gcp-appear-label">Fine angle</div>' +
+    '<div class="rt-row"><button class="rt-nudge" type="button" data-a="m" aria-label="1 degree left">−</button>' +
+    '<input id="rtSlider" type="range" min="-180" max="180" step="1" value="0" aria-label="Fine angle">' +
+    '<button class="rt-nudge" type="button" data-a="p" aria-label="1 degree right">+</button></div>' +
+    '<div class="gcp-color-row"><span class="gcp-c-label">🎨 Rotate button colour</span><input type="color" id="rtColor" class="gcp-color-input" value="#8b5cf6"></div>' +
+    '<label class="rt-tg"><input type="checkbox" id="rtSnap" checked> Snap twist to 90° turns</label>' +
+    '<label class="rt-tg"><input type="checkbox" id="rtTwist"> Two-finger twist to rotate</label>';
+  var anchor = null;
+  document.querySelectorAll('#gcp-panel .gcp-section-title').forEach(function (t) { if (!anchor && /Appearance/.test(t.textContent)) anchor = t.parentElement; });
+  var gp = document.getElementById('gcp-panel');
+  if (anchor) anchor.parentNode.insertBefore(sec, anchor); else if (gp) gp.appendChild(sec);
+
+  function setColor(hex, persist) {
+    if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
+    var n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    sec.style.setProperty('--rt-accent', hex);
+    sec.style.setProperty('--rt-rgb', r + ',' + g + ',' + b);
+    sec.style.setProperty('--rt-on', (0.299 * r + 0.587 * g + 0.114 * b) > 170 ? '#0b1220' : '#ffffff');
+    var ci = document.getElementById('rtColor'); if (ci) ci.value = hex;
+    if (persist) { try { localStorage.setItem(CKEY, hex); } catch (e) {} }
+  }
+  sec.addEventListener('click', function (e) {
+    var a = e.target && e.target.getAttribute && e.target.getAttribute('data-a');
+    if (a === 'l') turn(-90); else if (a === 'r') turn(90); else if (a === 'f') turn(180); else if (a === 'z') reset();
+    else if (a === 'm') setDeg(Math.round(deg) - 1, false); else if (a === 'p') setDeg(Math.round(deg) + 1, false);
+  });
+  document.getElementById('rtSlider').addEventListener('input', function (e) { setDeg(parseFloat(e.target.value) || 0, false); });
+  document.getElementById('rtSnap').addEventListener('change', function (e) { snap = e.target.checked; });
+  document.getElementById('rtTwist').addEventListener('change', function (e) { twist = e.target.checked; });
+  document.getElementById('rtColor').addEventListener('input', function (e) { setColor(e.target.value, true); });
+  try { var sc = localStorage.getItem(CKEY); if (sc) setColor(sc, false); } catch (e) {}
+
+  /* two-finger twist */
+  var tw = null;
+  function ang(t) { return Math.atan2(t[1].clientY - t[0].clientY, t[1].clientX - t[0].clientX) * 180 / Math.PI; }
+  document.addEventListener('touchstart', function (e) {
+    if (twist && e.touches.length === 2) tw = { a: ang(e.touches), d: deg };
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (!tw || e.touches.length !== 2) return;
+    var delta = ang(e.touches) - tw.a;
+    delta = ((delta + 540) % 360) - 180;
+    e.preventDefault();
+    setDeg(tw.d + delta, false);
+  }, { passive: false });
+  function endTwist() { if (!tw) return; tw = null; if (snap) setDeg(Math.round(deg / 90) * 90, true); }
+  document.addEventListener('touchend', function (e) { if (e.touches.length < 2) endTwist(); }, { passive: true });
+  document.addEventListener('touchcancel', endTwist, { passive: true });
+
+  /* keyboard: Alt+Shift+← / → turn 90°, Alt+Shift+↓ flip, Alt+Shift+0 reset */
+  document.addEventListener('keydown', function (e) {
+    if (!(e.altKey && e.shiftKey)) return;
+    if (e.key === 'ArrowLeft') { turn(-90); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { turn(90); e.preventDefault(); }
+    else if (e.key === 'ArrowDown') { turn(180); e.preventDefault(); }
+    else if (e.key === '0') { reset(); e.preventDefault(); }
+  });
+
+  window.addEventListener('resize', function () { if (on) layout(deg); });
+  window.addEventListener('orientationchange', function () { setTimeout(function () { if (on) layout(deg); }, 250); });
+
+  try { var saved = parseFloat(localStorage.getItem(KEY)); if (saved && isFinite(saved)) setDeg(saved, false); } catch (e) {}
+  window.readingRotate = { set: function (d) { setDeg(d, true); }, turn: turn, reset: reset, angle: function () { return deg; } };
 })();
 </script>
 </body>
