@@ -25380,6 +25380,57 @@ html.lite-mode #rtSection .rt-deg{background:#fff;color:#000;border:2px solid va
   window.addEventListener('orientationchange', function () { setTimeout(function () { if (on) layout(deg); }, 250); });
 
   try { var saved = parseFloat(localStorage.getItem(KEY)); if (saved && isFinite(saved)) setDeg(saved, false); } catch (e) {}
+  /* ---- 5. sideways turn (±90°): make an up/down swipe scroll the page ----
+     The browser scrolls a rotated scroller along its own (now horizontal) axis, so
+     vertical swipes did nothing. Here we turn the finger movement into scrolling ourselves. */
+  (function () {
+    var SKIP = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],.test-box-resize-handle,.sep-resize-handle,.sv-resize,#chatFab,.cp-scroll-x,pre';
+    var g = null, raf = 0;
+    function sideways() { var r = deg * Math.PI / 180; return on && Math.abs(Math.sin(r)) > 0.7; }
+    function scale() { return (V && V.st && V.st.k) ? V.st.k : 1; }
+    function scroller(t) {
+      var n = t && t.nodeType === 3 ? t.parentElement : t;
+      while (n && n !== body && n !== root) {
+        var cs = getComputedStyle(n);
+        if ((cs.overflowY === 'auto' || cs.overflowY === 'scroll') && n.scrollHeight > n.clientHeight + 1) return n;
+        n = n.parentElement;
+      }
+      return body;
+    }
+    function stopFling() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    document.addEventListener('touchstart', function (e) {
+      stopFling();
+      if (e.touches.length !== 1 || twist || !sideways()) { g = null; return; }
+      if (e.target.closest && e.target.closest(SKIP)) { g = null; return; }
+      var t = e.touches[0];
+      g = { y: t.clientY, x: t.clientX, el: scroller(e.target), v: 0, t: e.timeStamp, moved: false };
+    }, { passive: true });
+    document.addEventListener('touchmove', function (e) {
+      if (!g || e.touches.length !== 1) return;
+      var t = e.touches[0], dy = t.clientY - g.y;
+      if (!g.moved && Math.abs(dy) < 4) return;
+      g.moved = true;
+      g.y = t.clientY; g.x = t.clientX;
+      var d = -dy / scale();                 /* swipe up -> scroll forward */
+      g.el.scrollTop += d;
+      var dt = Math.max(1, e.timeStamp - g.t); g.t = e.timeStamp;
+      g.v = 0.8 * g.v + 0.2 * (d / dt);
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+    function end() {
+      if (!g) return;
+      var el = g.el, v = g.v * 16; g = null;
+      if (Math.abs(v) < 1) return;
+      (function step() {
+        v *= 0.95;
+        if (Math.abs(v) < 0.3) { raf = 0; return; }
+        el.scrollTop += v; raf = requestAnimationFrame(step);
+      })();
+    }
+    document.addEventListener('touchend', end, { passive: true });
+    document.addEventListener('touchcancel', function () { g = null; stopFling(); }, { passive: true });
+  })();
+
   window.readingRotate = { set: function (d) { setDeg(d, true); }, turn: turn, reset: reset, angle: function () { return deg; } };
 })();
 </script>
