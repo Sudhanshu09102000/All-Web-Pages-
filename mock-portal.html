@@ -4793,6 +4793,15 @@ html.lite-mode #builderView .subject-hero-title{ -webkit-text-fill-color:#000 !i
 html.lite-mode #builderView .subject-hero-hint,html.lite-mode #builderView .subject-hero-eyebrow{ color:#000 !important; -webkit-text-fill-color:#000 !important; }
 </style>
 <style id="noScreenFlashCss">#feedbackOverlay, .feedback-overlay, #bmFlash, .bm-flash { display: none !important; }</style>
+<style id="cpEqRowCss">
+/* Images in one row: same picture height, widths follow aspect ratios (set by cpEqualRows). Desktop/tablet only. */
+@media (min-width: 768px) {
+  .cp-body .cp-eqrow { display: flex !important; flex-wrap: nowrap !important; align-items: flex-start !important; justify-content: flex-start !important; }
+  .cp-body .cp-eqrow > .cp-eqcell { flex: var(--eq-r, 1) 1 var(--eq-x, 0px) !important; min-width: 0 !important; width: auto !important; max-width: none !important; height: auto !important; min-height: 0 !important; aspect-ratio: auto !important; box-sizing: border-box !important; }
+  .cp-body .cp-eqcell .cp-eqpath { aspect-ratio: auto !important; height: auto !important; min-height: 0 !important; max-height: none !important; }
+  .cp-body .cp-eqcell img:not(.cp-inline) { aspect-ratio: auto !important; width: 100% !important; height: auto !important; max-width: 100% !important; max-height: none !important; object-fit: fill !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-left: 0 !important; margin-right: 0 !important; }
+}
+</style>
 </head>
 
 <body>
@@ -8086,6 +8095,65 @@ window.rtView = {
       }
 
       
+
+/* 🖼 cpEqualRows(body): images in the same row -> same height, widths adjusted to each image's aspect ratio */
+window.cpEqualRows = function (body, tries) {
+  if (!body) return;
+  tries = tries || 0;
+  var SKIP = { STYLE: 1, SCRIPT: 1 };
+  function hasImg(k) { return k.tagName === 'IMG' ? !k.classList.contains('cp-inline') : !!k.querySelector('img:not(.cp-inline)'); }
+  function num(v) { return parseFloat(v) || 0; }
+  var rows = [];
+  body.querySelectorAll('img:not(.cp-inline)').forEach(function (img) {
+    var cur = img;
+    while (cur.parentElement && cur.parentElement !== body) {
+      var p = cur.parentElement;
+      var cells = Array.prototype.filter.call(p.children, function (k) { return !SKIP[k.tagName] && hasImg(k); });
+      if (cells.length >= 2) { if (rows.indexOf(p) < 0) rows.push(p); return; }
+      cur = p;
+    }
+  });
+  var retry = false;
+  rows.forEach(function (row) {
+    if (row.classList.contains('cp-eqrow') && row.__eqDone) return;
+    var cells = Array.prototype.filter.call(row.children, function (k) { return !SKIP[k.tagName] && hasImg(k); });
+    var others = Array.prototype.filter.call(row.children, function (k) { return !SKIP[k.tagName] && !hasImg(k) && k.offsetWidth > 0 && k.offsetHeight > 0; });
+    if (others.length) return;                       // row mixes pictures with other blocks -> leave it alone
+    var imgs = cells.map(function (c) { return c.tagName === 'IMG' ? c : c.querySelector('img:not(.cp-inline)'); });
+    if (imgs.some(function (i) { return !i; })) return;
+    if (!imgs.every(function (i) { return i.naturalWidth > 0 && i.naturalHeight > 0; })) { imgs.forEach(function (i) { if (!i.complete) i.addEventListener('load', function () { window.cpEqualRows(body); }, { once: true }); }); return; }
+    var rects = cells.map(function (c) { return c.getBoundingClientRect(); });
+    if (rects.every(function (r) { return r.width === 0; })) { retry = true; return; }   // box not visible yet
+    // must really be side by side (not a vertical stack)
+    var side = rects.some(function (r, i) { return i > 0 && r.left >= rects[i - 1].right - 2 && r.top < rects[i - 1].bottom - 2; });
+    if (!side) return;
+    var left = Math.min.apply(null, rects.map(function (r) { return r.left; }));
+    var right = Math.max.apply(null, rects.map(function (r) { return r.right; }));
+    var sumW = rects.reduce(function (a, r) { return a + r.width; }, 0);
+    var gap = Math.max(0, Math.min(48, (right - left - sumW) / Math.max(1, cells.length - 1)));
+    cells.forEach(function (c, idx) {
+      var im = imgs[idx], extra = 0, el = im;
+      while (el) {                                    // horizontal padding / border / margin between cell edge and picture
+        var cs = getComputedStyle(el);
+        if (el !== c) extra += num(cs.marginLeft) + num(cs.marginRight);
+        if (el !== im) extra += num(cs.paddingLeft) + num(cs.paddingRight);
+        extra += num(cs.borderLeftWidth) + num(cs.borderRightWidth);
+        if (el !== im && el !== c) el.classList.add('cp-eqpath');
+        if (el === c) break;
+        el = el.parentElement;
+      }
+      c.classList.add('cp-eqcell');
+      c.style.setProperty('--eq-r', (im.naturalWidth / im.naturalHeight).toFixed(4));
+      c.style.setProperty('--eq-x', Math.max(0, extra).toFixed(1) + 'px');
+    });
+    row.style.setProperty('column-gap', gap.toFixed(1) + 'px', 'important');
+    row.style.setProperty('gap', gap.toFixed(1) + 'px', 'important');
+    row.classList.add('cp-eqrow');
+    row.__eqDone = true;
+  });
+  if (retry && tries < 6) setTimeout(function () { window.cpEqualRows(body, tries + 1); }, 150);
+};
+
 /* 🏷 cpCaptionImages(body): adds a styled caption under every figure image */
 window.cpCaptionImages = function (body) {
   if (!body) return;
@@ -8117,6 +8185,7 @@ window.cpCaptionImages = function (body) {
     cap.firstChild.textContent = txt;
     img.insertAdjacentElement('afterend', cap);
   });
+  try { window.cpEqualRows(body); } catch (e) { console.error('cpEqualRows', e); }
 };
 
       /* tables scroll sideways, images zoom on click */
