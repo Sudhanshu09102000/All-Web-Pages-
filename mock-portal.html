@@ -18831,7 +18831,42 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     for (var n = start; n && n !== document.body && n !== document.documentElement; n = n.parentElement) if (isScroller(n)) out.push(n);
     return out;
   }
+  /* ───────── single-screen view: every concept / question card is its own ink page ─────────
+     Ink is anchored to the card it was written on (so it scrolls with it and is saved WITH it). */
+  function svOn() { try { return !!(window.svApi && window.svApi.on()); } catch (e) { return false; } }
+  function svSig() { var st = window.state; return (st && st.qIds && st.qIds.length) ? (st.qIds[0] || '') + '|' + st.qIds.length : ''; }
+  function svRecKey(r) { var st = window.state, g = svSig(); return r.t === 'c' ? g + '#c' + r.pos : g + '#q' + st.qIds[r.idx]; }
+  function svCards() {
+    var out = [];
+    try { window.svApi.cards().forEach(function (r) { if (r && r.el && r.el.isConnected) { r.el._ck = svRecKey(r); out.push(r); } }); } catch (e) { }
+    return out;
+  }
+  function svCurKey() { try { var r = window.svApi.cur(); return r ? svRecKey(r) : null; } catch (e) { return null; } }
+  function svCardAt(x, y) {
+    var cs = svCards(); if (!cs.length) return null;
+    var stack = document.elementsFromPoint(x, y);
+    for (var i = 0; i < stack.length; i++) {
+      var c = stack[i].closest && stack[i].closest('.sv-card');
+      if (c) for (var j = 0; j < cs.length; j++) if (cs[j].el === c) return cs[j];
+    }
+    var best = null, bd = 1e18;                                   // between cards / on the header: the nearest card
+    cs.forEach(function (r) { var b = r.el.getBoundingClientRect(), d = y < b.top ? b.top - y : (y > b.bottom ? y - b.bottom : 0); if (d < bd) { bd = d; best = r; } });
+    return best;
+  }
+  function svRebind() {                                           // cards were rebuilt (mode change …): move the ink to the new card of the same page
+    if (!svOn()) return;
+    var map = {}; svCards().forEach(function (r) { map[r.el._ck] = r.el; });
+    function fix(it) { if (it.anc && !it.anc.isConnected && it.anc._ck && map[it.anc._ck]) it.anc = map[it.anc._ck]; }
+    Object.keys(viewStore).forEach(function (k) { viewStore[k].pages.forEach(function (pg) { pg.items.forEach(fix); }); });
+    items.forEach(fix);
+  }
+  function svInkByCard() {
+    var m = {}, v = viewStore[svSig() + '#sv'];
+    if (v) v.pages.forEach(function (pg) { pg.items.forEach(function (it) { if (it.t === 'eraser') return; var k = it.anc && it.anc._ck; if (k) m[k] = (m[k] || 0) + 1; }); });
+    return m;
+  }
   function makeAnchor(x, y) {
+    if (svOn()) { var sc = svCardAt(x, y), so = sc ? originOf(sc.el) : null; if (so) return { anc: sc.el, o0: { x: so.x, y: so.y } }; }
     var l = scrollersAt(x, y), a = l.length ? l[0] : null, o = originOf(a);
     if (!o) { a = null; o = originOf(null); }
     return { anc: a, o0: { x: o.x, y: o.y } };
@@ -20219,6 +20254,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       var eng = document.getElementById('engineView'), st = window.state;
       if (st && st.qIds && st.qIds.length && eng && eng.classList.contains('active')) {
         var sig = (st.qIds[0] || '') + '|' + st.qIds.length;
+        if (svOn()) return { key: sig + '#sv', pos: 5e8, kind: 'sv' };       // single-screen view: ONE layer, ink belongs to the card it sits on
         if (st.conceptView) return { key: sig + '#c' + st.seqPos, pos: st.seqPos, kind: 'c' };
         var pos = (typeof curSeqPos === 'function') ? curSeqPos() : st.currentIndex;
         return { key: sig + '#q' + st.qIds[st.currentIndex], pos: pos, kind: 'q' };
@@ -20317,7 +20353,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       });
     });
     /* the on-screen footer controls (Previous / Next / Show summary / Sound / Exam mode / Translate ...) don't belong in a PDF */
-    doc.querySelectorAll('#questionBox > hr, #qaOneLine, #qaFooterButtonsRow, #qaToolbarRow, #mobileHintSlot').forEach(function (n) {
+    doc.querySelectorAll('#questionBox > hr, #qaOneLine, #qaFooterButtonsRow, #qaToolbarRow, #mobileHintSlot, .sv-card > hr, .sv-card > .sv-actions').forEach(function (n) {
       n.style.setProperty('display', 'none', 'important');
     });
     /* show the WHOLE scrolling content, not just the part that fits in the box */
@@ -20562,8 +20598,8 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     await sleep(120);
   }
   /* screenshot of the whole question / concept box (scroll area fully expanded) + where every anchor sits inside it */
-  async function captureView(kind, bgCol, anchors) {
-    var box = document.getElementById(kind === 'c' ? 'conceptBox' : 'questionBox');
+  async function captureView(kind, bgCol, anchors, boxEl) {
+    var box = boxEl || document.getElementById(kind === 'c' ? 'conceptBox' : 'questionBox');
     if (!box || !box.getClientRects().length) return null;
     var t0 = Date.now();
     while (Date.now() - t0 < 2500 && ![].every.call(box.querySelectorAll('img'), function (i) { return i.complete; })) await sleep(120);
@@ -20579,9 +20615,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     function mark(n) { if (n.getAttribute('data-sp-exp') === null) { n.setAttribute('data-sp-h', n.getBoundingClientRect().height); n.setAttribute('data-sp-exp', ''); marked.push(n); } }
     mark(box);
     /* the footer is left out of the PDF, so the box doesn't need to keep its height either */
-    if (kind !== 'c') {
+    if (kind !== 'c' && kind !== 'svc') {
       var gone = 0;
-      [].forEach.call(box.querySelectorAll(':scope > hr, :scope > #qaOneLine, :scope > #mobileHintSlot'), function (n) {
+      [].forEach.call(box.querySelectorAll(':scope > hr, :scope > #qaOneLine, :scope > #mobileHintSlot, :scope > .sv-actions'), function (n) {
         var r = n.getBoundingClientRect(), c = getComputedStyle(n);
         if (r.height > 0) gone += r.height + (parseFloat(c.marginTop) || 0) + (parseFloat(c.marginBottom) || 0);
       });
@@ -20739,8 +20775,57 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     return composePage(cap, list, bg);
   }
 
+  async function runExportSV(sel) {                  // Save PDF while the single-screen view is open: capture each card itself
+    if (exporting) return;
+    sel = sel.slice().sort(function (a, b) { return a.pos - b.pos; });
+    exporting = true; _skipLocal = false; _localPending = null;
+    var imgs = [], skipped = 0;
+    try {
+      if (textEl) commitText();
+      syncView(); savePage(); svRebind();
+      var haveH2C = true;
+      try { await loadH2C(); } catch (e) { haveH2C = false; console.warn(e); }
+      var scale = Math.min(2, Math.max(1, dpr)), v = viewStore[svSig() + '#sv'];
+      for (var si = 0; si < sel.length; si++) {
+        var o = sel[si];
+        toast('Making PDF…  page ' + (si + 1) + ' of ' + sel.length, true);
+        if (o.kind === 'g') {
+          (viewStore.g ? viewStore.g.pages.filter(hasInk) : []).forEach(function (pg) { imgs.push(plainPage(pg.items, pickBg([pg.items]), scale)); });
+          continue;
+        }
+        var rec = null; svCards().forEach(function (r) { if (r.el._ck === o.key) rec = r; });
+        if (!rec) { skipped++; continue; }
+        var lists = [];
+        if (v) v.pages.forEach(function (pg) {
+          var l = pg.items.filter(function (it) { return it.anc && it.anc._ck === o.key; });
+          if (l.some(function (it) { return it.t !== 'eraser'; })) lists.push(l);
+        });
+        var bg = pdfBg !== 'auto' ? BG[pdfBg] : bodyBg(), cap = null;
+        if (haveH2C && window.html2canvas) {
+          try { cap = await captureView(rec.t === 'c' ? 'svc' : 'svq', bg, [rec.el], rec.el); } catch (e) { console.error('capture failed', e); }
+        }
+        if (!lists.length) lists = [[]];
+        lists.forEach(function (lst) {
+          if (cap) imgs.push(composePage(cap, lst, bg));
+          else if (lst.length) imgs.push(plainPage(lst, pickBg([lst]), scale));
+          else skipped++;
+        });
+      }
+      if (!imgs.length) { toast('Nothing could be captured', true); return; }
+      var blob = buildPDF(imgs);
+      var a = document.createElement('a'), d = new Date(), pad = function (n) { return ('0' + n).slice(-2); };
+      a.href = URL.createObjectURL(blob);
+      a.download = 'drawings-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.pdf';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      toast('Saved PDF · ' + imgs.length + ' page' + (imgs.length > 1 ? 's' : '') + (skipped ? '  (' + skipped + ' skipped – could not capture)' : ''), true);
+    } catch (err) {
+      console.error(err); toast('PDF failed — see console', true);
+    } finally { exporting = false; }
+  }
   async function runExport(sel) {
     if (exporting) return;
+    if (svOn()) return runExportSV(sel);
     sel = sel.slice().sort(function (a, b) { return a.pos - b.pos; });
     exporting = true; _skipLocal = false; _localPending = null;
     var startKey = viewKey, startPos = whichView().pos, imgs = [], skipped = 0;
@@ -20811,8 +20896,10 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
         }
       });
     }
+    if (svOn()) { var have = {}; svCards().forEach(function (r) { have[r.el._ck] = 1; }); out = out.filter(function (o) { return have[o.key]; }); }
     if (inkCount(viewStore.g)) out.push({ key: 'g', kind: 'g', pos: 1e9, icon: '🖥️', tag: 'Other', title: 'Writing made outside the questions (home / other screens)' });
-    out.forEach(function (o) { o.ink = inkCount(viewStore[o.key]); });
+    if (svOn()) { var sk = svInkByCard(); out.forEach(function (o) { o.ink = o.kind === 'g' ? inkCount(viewStore.g) : (sk[o.key] || 0); }); }
+    else out.forEach(function (o) { o.ink = inkCount(viewStore[o.key]); });
     return out;
   }
   function pickStyle() {
@@ -20876,7 +20963,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       var tt = document.createElement('span'); tt.className = 'spp-tt'; tt.textContent = o.title; tt.title = o.title;
       var ch = document.createElement('span'); ch.className = 'spp-chip ' + (o.ink ? 'w' : 'b'); ch.textContent = o.ink ? '✍️ written · ' + o.ink : 'blank';
       row.appendChild(cb); row.appendChild(tk); row.appendChild(ic); row.appendChild(tg); row.appendChild(tt);
-      if (o.key === viewKey) { var hb = document.createElement('span'); hb.className = 'spp-here-b'; hb.textContent = 'YOU ARE HERE'; row.appendChild(hb); row.classList.add('spp-here'); hereRow = row; }
+      if (o.key === viewKey || (svOn() && o.key === svCurKey())) { var hb = document.createElement('span'); hb.className = 'spp-here-b'; hb.textContent = 'YOU ARE HERE'; row.appendChild(hb); row.classList.add('spp-here'); hereRow = row; }
       row.appendChild(ch); list.appendChild(row); rows[o.key] = { row: row, cb: cb };
     });
     var cnt = card.querySelector('.spp-cnt'), go = card.querySelector('.spp-go');
@@ -21070,7 +21157,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     var w = function () { var r = f.apply(this, arguments); try { syncView(); } catch (err) { console.error(err); } return r; };
     w.__sp = true; window[n] = w;
   });
-  setInterval(function () { if (document.hidden) return; try { syncView(); checkShift(); } catch (_) {} }, 400);
+  setInterval(function () { if (document.hidden) return; try { syncView(); svRebind(); checkShift(); } catch (_) {} }, 400);
 
   /* ───────── go ───────── */
   setup(); sizeTrail(); applyCursor(); refreshBar();
@@ -24521,6 +24608,8 @@ html.lite-mode .sv-chip, html.lite-mode .sv-pill { background: #fff !important; 
   ═══════════════════════════════════════════════════════════════ */
   var SV = { on: false, cards: [], cur: null, vIO: null, tIO: null, tok: 0, lang: null, raf: 0, rafR: 0,
              cloned: false, vt: new Map(), mode: null, langTimer: 0, rbT: 0 };
+  /* read-only window for the pencil / Save-PDF layer (sp-script): which cards exist and which one is on screen */
+  window.svApi = { on: function () { return !!SV.on; }, cards: function () { return SV.cards; }, cur: function () { return SV.cur; } };
   var $ = function (id) { return document.getElementById(id); };
   var S = function () { return window.state; };
   function engineActive() { var v = $('engineView'); return !!(v && v.classList.contains('active')); }
