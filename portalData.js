@@ -98,15 +98,20 @@ const PORTAL_DATA = [
       {
         name: "Economics",
         subtopics: [
-          { name: "1. Basics of Economy", file: "General_Awareness/Economics/Basics_of_Economy" },
-          { name: "2. Demand and Supply", file: "General_Awareness/Economics/Demand_and_Supply" },
-          { name: "3. National Income", file: "General_Awareness/Economics/National_Income" },
-          { name: "4. Inflation and Unemployment", file: "General_Awareness/Economics/Inflation_and_Unemployment" },
-          { name: "5. Budget and Taxation", file: "General_Awareness/Economics/Budget_and_Taxation" },
-          { name: "6. Monetary Policy", file: "General_Awareness/Economics/Monetary_Policy" },
-          { name: "7. Money and Banking", file: "General_Awareness/Economics/Money_and_Banking" },
-          { name: "8. Balance of Payment and Poverty", file: "General_Awareness/Economics/Balance_of_Payment_and_Poverty" },
-          { name: "9. Five Year Plan and Industrial Policy Resolution", file: "General_Awareness/Economics/Five_Year_Plan_and_Industrial_Policy_Resolution" }
+          { name: "1. GDP, GNP National Income", file: "General_Awareness/Economics/GDP_GNP_National_Income" },
+          { name: "2. Banking Sector", file: "General_Awareness/Economics/Banking_Sector" },
+          { name: "3. Capital Market", file: "General_Awareness/Economics/Capital_Market" },
+          { name: "4. Classification of Economies", file: "General_Awareness/Economics/Classification_of_Economies" },
+          { name: "5. Unemployment and Poverty", file: "General_Awareness/Economics/Unemployment_and_Poverty" },
+          { name: "6. Various Sectors of Economy", file: "General_Awareness/Economics/Various_Sectors_of_Economy" },
+          { name: "7. Five Year Planning", file: "General_Awareness/Economics/Five_Year_Planning" },
+          { name: "8. External Sector of India", file: "General_Awareness/Economics/External_Sector_of_India" },
+          { name: "9. International Financial Institutions & Agriculture", file: "General_Awareness/Economics/International_Financial_Institutions_and_Agriculture" },
+          { name: "10. Taxation", file: "General_Awareness/Economics/Taxation" },
+          { name: "11. Budget", file: "General_Awareness/Economics/Budget" },
+          { name: "12. Inflation & Types of Money", file: "General_Awareness/Economics/Inflation_and_Types_of_Money" },
+          { name: "13. Industrial Policies and Industrial Development in India", file: "General_Awareness/Economics/Industrial_Policies_and_Industrial_Development_in_India" },
+          { name: "14. Census", file: "General_Awareness/Economics/Census" }
         ]
       },
       {
