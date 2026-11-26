@@ -15377,7 +15377,7 @@ const bmTow = (function () {
   const T = { A:{n:'TITANS', c:'#3b82f6', l:'#93c5fd', d:'#1e3a8a', dir:1}, B:{n:'PHOENIX', c:'#f97316', l:'#fdba74', d:'#7c2d12', dir:-1} };
   const SK = ['#f2c9a0','#e0a97a','#c68642','#8d5524','#f6d7b8','#a0674b'], HR = ['#1f2937','#4b2e1a','#9a5b1f','#0b0b0b','#c9a227','#7c2d12'];
   const BN = ['Bolt','Nova','Pixel','Turbo','Echo','Zed','Rex','Luna'];
-  const S = { on:0, mem:{}, memo:{}, frozen:{}, arr:[], pos:0, vel:0, tgt:0, tot:{A:0,B:0}, cnt:{A:0,B:0}, lead:'', my:'A', vs:1, dom:0, parts:[], floats:[], feed:[],
+  const S = { on:0, mem:{}, memo:{}, frozen:{}, arr:[], pos:0, vel:0, tgt:0, tot:{A:0,B:0}, cnt:{A:0,B:0}, lead:'', my:'A', vs:1, vw:'team', opp:'', vis:[], vn:1, ttgt:0, dwin:'', dom:0, parts:[], floats:[], feed:[],
               shake:0, ex:0, t:0, dt:.016, rw:0, final:0, win:'', sound:true, w:0, h:0, dpr:1, run:0, g:{}, crowd:[], pref:'' };
   let c, cv, bg, bx, root, AC; const el = {};
   const rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -15454,25 +15454,34 @@ const bmTow = (function () {
       let best = null; g.forEach(m => { if (m.score > 0 && (!best || m.score > best.score)) best = m; }); g.forEach(m => m.mvp = g.length > 1 && m === best);
     });
     const a = S.tot.A / Math.max(1, S.cnt.A), b = S.tot.B / Math.max(1, S.cnt.B);   // average per puller keeps uneven teams fair
-    S.tgt = Math.tanh((a - b) / (.35*(a + b)/2 + 28));
+    S.ttgt = Math.tanh((a - b) / (.35*(a + b)/2 + 28));
     const real = Object.values(B.players || {});
     if (real.length && real.every(p => p.done) && !S.final) {
       S.final = 1; S.win = a > b ? 'A' : b > a ? 'B' : '';
       banner(S.win ? T[S.win].n + ' WIN! 🏆' : "IT'S A DRAW! 🤝", S.win); snd('win'); S.ex = 1;
       confetti(S.win || 'A', 70); if (!S.win) confetti('B', 70);
     }
-    if (S.final) S.tgt = S.win ? (S.win === 'A' ? 1 : -1) * Math.max(.6, Math.abs(S.tgt)) : 0;
-    const ld = Math.abs(S.tgt) < .05 ? '' : S.tgt > 0 ? 'A' : 'B';
+    if (S.final) S.ttgt = S.win ? (S.win === 'A' ? 1 : -1) * Math.max(.6, Math.abs(S.ttgt)) : 0;
+    const ld = Math.abs(S.ttgt) < .05 ? '' : S.ttgt > 0 ? 'A' : 'B';
     if (!S.final) {
       if (ld && S.lead && ld !== S.lead) { banner(T[ld].n + ' TAKE THE LEAD!', ld); snd('lead'); S.ex = 1; confetti(ld, 24); if (navigator.vibrate) try { navigator.vibrate(40); } catch (_) {} }
-      if (Math.abs(S.tgt) > .8 && !S.dom) { S.dom = 1; banner('ONE MORE PULL! 🔥', ld); } else if (Math.abs(S.tgt) < .6) S.dom = 0;
+      if (Math.abs(S.ttgt) > .8 && !S.dom) { S.dom = 1; banner('ONE MORE PULL! 🔥', ld); } else if (Math.abs(S.ttgt) < .6) S.dom = 0;
     }
     if (ld) S.lead = ld;
+    S.tgt = S.ttgt; S.dwin = '';
+    const dm = S.mem[B.myId], dp = S.mem[S.opp];
+    if (S.vw === 'duel' && dm && dp) {   // 1v1: me vs the chosen player
+      const x = Math.max(0, dm.score), y = Math.max(0, dp.score); let d = Math.tanh((x - y)/(.35*(x + y)/2 + 28));
+      S.dwin = x > y ? S.my : y > x ? (S.my === 'A' ? 'B' : 'A') : '';
+      if (S.final) d = S.dwin ? (x > y ? 1 : -1)*Math.max(.6, Math.abs(d)) : 0;
+      S.tgt = d*S.vs;
+    }
   }
   function hit(m, d) {
     const me = m.id === B.myId;
+    if (S.vw === 'duel' && !me && m.id !== S.opp) { if (d > 0) { m.streak++; } else m.streak = 0; return; }
     if (d > 0) {
-      m.heave = clamp(.5 + d/70, .5, 1); m.streak++; m.puff = 1; S.vel += (m.team === 'A' ? 1 : -1) * .12 * m.heave;
+      m.heave = clamp(.5 + d/70, .5, 1); m.streak++; m.puff = 1; S.vel += ((m.vt || m.team) === 'A' ? 1 : -1) * .12 * m.heave;
       S.shake = Math.min(6, S.shake + 2 + 3*m.heave); S.rw = Math.min(5, S.rw + 2.5*m.heave); S.ex = Math.min(1, S.ex + .15);
       S.floats.push({ m, txt:'+' + d, col:'#4ade80', t:0 });
       if (me) { snd('pull', m.heave); if (navigator.vibrate) try { navigator.vibrate(18); } catch (_) {} }
@@ -15487,12 +15496,13 @@ const bmTow = (function () {
   function log(txt) { S.feed.unshift(txt); S.feed = S.feed.slice(0,3); drawFeed(); setTimeout(() => { S.feed.pop(); drawFeed(); }, 6000); }
   function drawFeed() { if (el.fd) el.fd.innerHTML = S.feed.map((x,i) => `<div style="opacity:${1 - i*.3}">${esc(x)}</div>`).join(''); }
   function hud() {
-    if (!el.ap) return; const L = S.my, R = L === 'A' ? 'B' : 'A';
+    if (!el.ap) return; const L = S.my, R = L === 'A' ? 'B' : 'A', duel = S.vw === 'duel', me = S.mem[B.myId], op = S.mem[S.opp];
     el.lt.style.setProperty('--c', T[L].c); el.rt.style.setProperty('--c', T[R].c);
-    el.lb.textContent = T[L].n + ' · YOU'; el.rb.textContent = T[R].n;
-    el.ap.textContent = Math.round(S.tot[L]); el.bp.textContent = Math.round(S.tot[R]);
-    el.ac.textContent = S.cnt[L] + ' 👥'; el.bc.textContent = S.cnt[R] + ' 👥';
+    if (duel && me && op) { el.lb.textContent = me.name + ' · YOU'; el.rb.textContent = op.name; el.ap.textContent = Math.round(me.score); el.bp.textContent = Math.round(op.score); el.ac.textContent = ''; el.bc.textContent = ''; }
+    else { el.lb.textContent = T[L].n + ' · YOU'; el.rb.textContent = T[R].n; el.ap.textContent = Math.round(S.tot[L]); el.bp.textContent = Math.round(S.tot[R]); el.ac.textContent = S.cnt[L] + ' 👥'; el.bc.textContent = S.cnt[R] + ' 👥'; }
     el.m.style.background = `linear-gradient(90deg,${T[L].c},#1e293b 50%,${T[R].c})`;
+    const real = Object.keys(B.players || {}).length; el.v.style.display = real > 1 ? '' : 'none'; el.v.textContent = duel ? '🪢 Teams' : '⚔️ 1v1'; root.dataset.vw = S.vw;
+    if (duel) el.ch.innerHTML = S.arr.filter(m => m.id !== B.myId).map(m => `<button data-id="${esc(m.id)}" class="${m.id === S.opp ? 'on' : ''}">${esc(m.av)} ${esc(m.name)} <b>${Math.round(m.score)}</b></button>`).join('');
   }
   /* ── particles ── */
   function sp(k,x,y,vx,vy,life,r,col) { if (S.parts.length < 320) S.parts.push({ k,x,y,vx,vy,life,max:life,r,col,rot:Math.random()*6 }); }
@@ -15502,10 +15512,20 @@ const bmTow = (function () {
   }
 
   /* ── geometry ── */
+  function view() {   // which pullers are on screen: whole teams, or me vs one chosen player
+    const me = S.mem[B.myId];
+    if (S.vw === 'duel') {
+      if (!S.mem[S.opp] || S.opp === B.myId) S.opp = (S.arr.find(m => m.id !== B.myId) || {}).id;
+      const op = S.mem[S.opp];
+      if (me && op) { me.vt = S.my; op.vt = S.my === 'A' ? 'B' : 'A'; me.vslot = op.vslot = 0; S.vis = [me, op]; S.vn = 1; return; }
+      S.vw = 'team'; root.dataset.vw = 'team';
+    }
+    const n = { A:0, B:0 }; S.arr.forEach(m => { m.vt = m.team; m.vslot = m.slot; n[m.team]++; }); S.vis = S.arr; S.vn = Math.max(n.A, n.B, 1);
+  }
   function geo() {
     const W = S.w, H = S.h, cp = root.classList.contains('compact'), g = S.g;
     g.gy = H*(cp ? .9 : .88); g.hud = cp ? 22 : 34; g.Lh = cp ? 13 : 15;
-    const n = Math.max(S.cnt.A, S.cnt.B, 1), room = g.gy - g.hud - 20;
+    const n = S.vn || 1, room = g.gy - g.hud - 20;
     g.R = clamp(Math.floor((room - 40)/g.Lh) + 1, 1, Math.min(n, 6));   // depth rows: one rope strand per player
     g.fh = Math.min(clamp(room - (g.R-1)*g.Lh, 30, 130), W*.22); g.s = g.fh/106;
     g.cols = Math.ceil(n/g.R); g.travel = W*.1; g.gap0 = g.fh*.75;
@@ -15519,10 +15539,10 @@ const bmTow = (function () {
 
   /* ── pose solver: hands pinned to rope, body leans from effort ── */
   function pose(m) {
-    const W = S.w, g = S.g, side = m.team === S.my ? -1 : 1, dir = -side, lane = m.slot % g.R, col = Math.floor(m.slot/g.R), sl = g.s*(1 - lane*.04);
+    const W = S.w, g = S.g, side = m.vt === S.my ? -1 : 1, dir = -side, lane = m.vslot % g.R, col = Math.floor(m.vslot/g.R), sl = g.s*(1 - lane*.04);
     const kx = W/2 - S.pos*S.vs*g.travel, gx = kx + side*(g.gap0 + col*g.colStep + (lane%2)*g.fh*.1), fy = g.gy - lane*g.Lh, ax = gx - dir*34*sl, gyW = fy - .62*106*sl;
     m.st = { kx, ky:g.ry, gx, gy:gyW };
-    const mine = T[m.team].dir * S.pos, cheer = S.final && (!S.win || S.win === m.team), slump = S.final && S.win && S.win !== m.team;
+    const mine = T[m.vt].dir * S.pos, WN = S.vw === 'duel' ? S.dwin : S.win, cheer = S.final && (!WN || WN === m.vt), slump = S.final && WN && WN !== m.vt;
     m.heave *= Math.pow(.15, S.dt); m.stumble *= Math.pow(.2, S.dt);
     const L = clamp(.45 + .3*mine + .12*Math.sin(S.t*5 + m.ph) + .5*m.heave - .7*m.stumble, -.4, 1);
     let Hy = -(50 - 8*L), Hx, Sx, Sy, G = { x:34, y:(gyW - fy)/sl };
@@ -15541,7 +15561,7 @@ const bmTow = (function () {
   }
   const shoe = p => { c.fillStyle = '#f8fafc'; c.beginPath(); c.ellipse(p.x + 4, -2, 8, 3.6, 0, 0, 7); c.fill(); };
   function body(m) {
-    const p = m.pz, t = T[m.team], sk = SK[m.h % 6], hr = HR[(m.h >> 3) % 6], st = (m.h >> 6) & 3, h = p.hd;
+    const p = m.pz, t = T[m.vt], sk = SK[m.h % 6], hr = HR[(m.h >> 3) % 6], st = (m.h >> 6) & 3, h = p.hd;
     c.save(); c.translate(p.ax, p.fy); c.scale(p.dir*p.sl, p.sl); c.lineCap = 'round';
     c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(p.hp.x - 2, 1, 28, 4.5, 0, 0, 7); c.fill();
     if (m.id === B.myId) { c.strokeStyle = 'rgba(250,204,21,.7)'; c.lineWidth = 1.5; c.beginPath(); c.ellipse(p.hp.x - 2, 1, 31, 6, 0, 0, 7); c.stroke(); }
@@ -15562,14 +15582,14 @@ const bmTow = (function () {
   }
   function arm(m) {
     const p = m.pz, sk = SK[m.h % 6]; c.save(); c.translate(p.ax, p.fy); c.scale(p.dir*p.sl, p.sl); c.lineCap = 'round';
-    ln(p.sh,p.e1,9,T[m.team].c); ln(p.e1,p.G,7,sk); c.fillStyle = sk; c.beginPath(); c.arc(p.G.x,p.G.y,4.6,0,7); c.fill(); c.restore();
+    ln(p.sh,p.e1,9,T[m.vt].c); ln(p.e1,p.G,7,sk); c.fillStyle = sk; c.beginPath(); c.arc(p.G.x,p.G.y,4.6,0,7); c.fill(); c.restore();
   }
   function label(m) {
     const p = m.pz, cp = root.classList.contains('compact'), me = m.id === B.myId;
     const x = p.ax + p.dir*(p.hp.x + p.sh.x)/2*p.sl, y = p.fy + (p.hp.y + p.sh.y)/2*p.sl;   // name printed on the player's torso
     const txt = m.av + ' ' + (m.name.length > 9 ? m.name.slice(0,8) + '…' : m.name), h = cp ? 12 : 14;
     c.textAlign = 'center'; c.font = '700 ' + (cp ? 8.5 : 10) + 'px system-ui,sans-serif'; const w = c.measureText(txt).width + 8;
-    c.fillStyle = 'rgba(8,12,20,.85)'; rr(x - w/2, y - h/2, w, h, h/2); c.fill(); c.strokeStyle = T[m.team].c; c.lineWidth = me ? 1.8 : 1; c.stroke();
+    c.fillStyle = 'rgba(8,12,20,.85)'; rr(x - w/2, y - h/2, w, h, h/2); c.fill(); c.strokeStyle = T[m.vt].c; c.lineWidth = me ? 1.8 : 1; c.stroke();
     c.fillStyle = m.left ? '#94a3b8' : '#fff'; c.fillText(txt, x, y + (cp ? 3 : 3.5));
     const hy = p.hy - 11*p.sl;
     if (me) { const b = Math.sin(S.t*5)*1.5; c.fillStyle = '#facc15'; c.beginPath(); c.moveTo(p.hx-4,hy-9+b); c.lineTo(p.hx+4,hy-9+b); c.lineTo(p.hx,hy-4+b); c.fill(); }
@@ -15585,7 +15605,7 @@ const bmTow = (function () {
   function rope(m) {   // each player holds their own rope strand, all tied to the centre knot
     const k = Math.max(.6, m.pz.sl*1.6), s = m.st; c.lineCap = 'round'; c.lineJoin = 'round';
     strand(m, 8*k, '#6b4423'); strand(m, 5.5*k, '#c99a5b'); strand(m, 5.5*k, 'rgba(70,40,10,.6)', [2,6]); c.setLineDash([]);
-    c.strokeStyle = T[m.team].c; c.lineWidth = 7*k; c.beginPath(); c.moveTo(s.kx + (s.gx - s.kx)*.86, s.ky + (s.gy - s.ky)*.86); c.lineTo(s.gx, s.gy); c.stroke();
+    c.strokeStyle = T[m.vt].c; c.lineWidth = 7*k; c.beginPath(); c.moveTo(s.kx + (s.gx - s.kx)*.86, s.ky + (s.gy - s.ky)*.86); c.lineTo(s.gx, s.gy); c.stroke();
   }
   function knot() {
     const g = S.g, s = g.s, fx = S.w/2 - S.pos*S.vs*g.travel, fy = g.ry, wv = v => Math.sin(S.t*7 + v*5)*3*s*(.4 + v);
@@ -15611,8 +15631,8 @@ const bmTow = (function () {
     c.fillStyle = TL.c + '1a'; c.fillRect(0,hz,cx-tr,H-hz); c.fillStyle = TR.c + '1a'; c.fillRect(cx+tr,hz,cx-tr,H-hz);
     [[cx-tr,TL],[cx+tr,TR]].forEach(([x,t]) => { c.strokeStyle = t.c; c.lineWidth = 2; c.shadowColor = t.c; c.shadowBlur = 10; c.beginPath(); c.moveTo(x,hz+4); c.lineTo(x,H); c.stroke(); c.shadowBlur = 0; });
     c.strokeStyle = 'rgba(255,255,255,.3)'; c.lineWidth = 1; c.setLineDash([4,5]); c.beginPath(); c.moveTo(cx,hz+4); c.lineTo(cx,H); c.stroke(); c.setLineDash([]);
-    S.arr.forEach(pose);
-    const ord = S.arr.slice().sort((a,b) => b.pz.lane - a.pz.lane);
+    S.vis.forEach(pose);
+    const ord = S.vis.slice().sort((a,b) => b.pz.lane - a.pz.lane);
     for (let r = g.R - 1; r >= 0; r--) { const row = ord.filter(m => m.pz.lane === r); row.forEach(body); row.forEach(rope); row.forEach(arm); }
     knot();
     S.parts.forEach(p => { const a = p.life/p.max;
@@ -15620,7 +15640,7 @@ const bmTow = (function () {
       else if (p.k === 'd') { c.fillStyle = `rgba(200,180,150,${a*.45})`; c.beginPath(); c.arc(p.x,p.y,p.r,0,7); c.fill(); }
       else { c.fillStyle = `rgba(251,${120 + a*100|0},40,${a})`; c.beginPath(); c.arc(p.x,p.y,Math.max(.5,p.r*a),0,7); c.fill(); } });
     c.globalAlpha = 1; ord.forEach(label);
-    S.floats.forEach(f => { const p = f.m.pz; if (!p) return; c.globalAlpha = clamp(1 - f.t/1.2, 0, 1); c.font = '800 13px system-ui'; c.textAlign = 'center'; c.lineWidth = 3; c.strokeStyle = '#000'; c.strokeText(f.txt, p.hx, p.hy - 30 - f.t*30); c.fillStyle = f.col; c.fillText(f.txt, p.hx, p.hy - 30 - f.t*30); });
+    S.floats.forEach(f => { const p = f.m.pz; if (!p || !S.vis.includes(f.m)) return; c.globalAlpha = clamp(1 - f.t/1.2, 0, 1); c.font = '800 13px system-ui'; c.textAlign = 'center'; c.lineWidth = 3; c.strokeStyle = '#000'; c.strokeText(f.txt, p.hx, p.hy - 30 - f.t*30); c.fillStyle = f.col; c.fillText(f.txt, p.hx, p.hy - 30 - f.t*30); });
     c.globalAlpha = 1; c.restore();
   }
   function frame(ts) {
@@ -15632,7 +15652,7 @@ const bmTow = (function () {
     S.parts = S.parts.filter(p => { p.life -= dt; if (p.life <= 0) return 0; p.x += p.vx*dt; p.y += p.vy*dt;
       if (p.k === 'c') { p.vy += 60*dt; p.vx *= .99; p.rot += dt*8; } else if (p.k === 'd') { p.vy -= 8*dt; p.r += dt*8; } else p.vy -= 40*dt; return 1; });
     S.floats = S.floats.filter(f => (f.t += dt) < 1.2);
-    draw(); if (el.mk) el.mk.style.left = (50 - S.pos*S.vs*50) + '%';
+    view(); draw(); if (el.mk) el.mk.style.left = (50 - S.pos*S.vs*50) + '%';
   }
   function size() {
     const r = root.getBoundingClientRect(); if (!r.width || !r.height) return 0;
@@ -15668,6 +15688,11 @@ const bmTow = (function () {
 .tow-tl button{width:26px;height:26px;border-radius:8px;border:1px solid #fff3;background:#0009;color:#fff;font-size:12px;cursor:pointer;padding:0}
 .tow.compact .tow-fd,.tow.compact .tow-t small{display:none}.tow.compact .tow-tl button{width:22px;height:22px}
 @media(max-width:420px){.tow-t b{display:none}}
+.tow-ch{position:absolute;top:32px;left:6px;right:6px;display:none;gap:5px;overflow-x:auto;scrollbar-width:none}.tow[data-vw=duel] .tow-ch{display:flex}
+.tow-ch button{flex:0 0 auto;display:flex;gap:5px;align-items:center;padding:3px 9px;border-radius:12px;border:1px solid #fff3;background:#0b1220cc;color:#e2e8f0;font:700 11px system-ui,sans-serif;cursor:pointer}
+.tow-ch button.on{background:#2563eb;border-color:#93c5fd;color:#fff}.tow-ch button b{color:#4ade80}
+.tow.compact .tow-ch{top:21px}.tow.compact .tow-ch button{padding:1px 7px;font-size:10px}
+.tow-tl .v,.tow.compact .tow-tl .v{width:auto;padding:0 9px;font:800 11px system-ui,sans-serif}
 #bmFinished,#bmWaiting{overflow-y:auto;justify-content:flex-start!important}
 #bmFinished>:first-child,#bmWaiting>:first-child{margin-top:auto}#bmFinished>:last-child,#bmWaiting>:last-child{margin-bottom:auto}
 .tow-pick{margin:10px 0;padding:10px;border-radius:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.3);font-size:12px;font-weight:700;color:#93c5fd}
@@ -15681,9 +15706,11 @@ const bmTow = (function () {
     root.innerHTML = `<canvas></canvas><div class="tow-hud">
       <div class="tow-t" style="--c:${T.A.c}"><b>${T.A.n}</b><small class="ac"></small><em class="ap">0</em></div><div class="tow-m"><i></i></div>
       <div class="tow-t r" style="--c:${T.B.c}"><b>${T.B.n}</b><small class="bc"></small><em class="bp">0</em></div></div>
-      <div class="tow-bn"></div><div class="tow-fd"></div><div class="tow-tl"><button class="s" title="Sound"></button><button class="z" title="Resize arena">⤢</button></div>`;
+      <div class="tow-ch"></div><div class="tow-bn"></div><div class="tow-fd"></div><div class="tow-tl"><button class="v" title="Switch between team view and 1v1 view" style="display:none">⚔️ 1v1</button><button class="s" title="Sound"></button><button class="z" title="Resize arena">⤢</button></div>`;
     cv = root.firstChild; c = cv.getContext('2d'); bg = document.createElement('canvas'); bx = bg.getContext('2d');
-    ['ap','bp','ac','bc'].forEach(k => el[k] = root.querySelector('.' + k)); el.lt = root.querySelector('.tow-t:not(.r)'); el.rt = root.querySelector('.tow-t.r'); el.lb = el.lt.querySelector('b'); el.rb = el.rt.querySelector('b'); el.m = root.querySelector('.tow-m'); el.mk = root.querySelector('.tow-m i'); el.bn = root.querySelector('.tow-bn'); el.fd = root.querySelector('.tow-fd');
+    ['ap','bp','ac','bc'].forEach(k => el[k] = root.querySelector('.' + k)); el.lt = root.querySelector('.tow-t:not(.r)'); el.rt = root.querySelector('.tow-t.r'); el.lb = el.lt.querySelector('b'); el.rb = el.rt.querySelector('b'); el.m = root.querySelector('.tow-m'); el.v = root.querySelector('.v'); el.ch = root.querySelector('.tow-ch'); root.dataset.vw = 'team';
+    el.v.onclick = e => { e.stopPropagation(); S.vw = S.vw === 'duel' ? 'team' : 'duel'; if (S.vw === 'duel' && (!S.mem[S.opp] || S.opp === B.myId)) S.opp = (S.arr.find(m => m.id !== B.myId) || {}).id; update(); };
+    el.ch.onclick = e => { const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); S.opp = b.dataset.id; update(); }; el.mk = root.querySelector('.tow-m i'); el.bn = root.querySelector('.tow-bn'); el.fd = root.querySelector('.tow-fd');
     const sb = root.querySelector('.s'); sb.textContent = S.sound ? '🔊' : '🔇';
     sb.onclick = e => { e.stopPropagation(); S.sound = !S.sound; sb.textContent = S.sound ? '🔊' : '🔇'; try { localStorage.setItem('bmTowSnd', S.sound ? '1' : '0'); } catch (_) {} if (S.sound) snd('pull', .6); };
     root.querySelector('.z').onclick = e => { e.stopPropagation(); if (root.classList.contains('xl')) return; S.pref = root.classList.contains('compact') ? 'normal' : 'compact'; root.className = 'tow ' + S.pref; };
