@@ -20522,7 +20522,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   html += '<button type="button" tabindex="-1" data-act="undo" title="Undo — Ctrl+Z">↶</button>';
   html += '<button type="button" tabindex="-1" data-act="redo" title="Redo — Ctrl+Y">↷</button>';
   html += '<button type="button" tabindex="-1" data-act="clear" title="Clear writing on THIS question / concept only — X / Delete">🗑️<i>x</i></button>';
-  html += '<button type="button" tabindex="-1" data-act="save" title="Save PDF (every question / concept you wrote on, with its content) — S">💾<i>s</i></button>';
+  html += '<button type="button" tabindex="-1" data-act="save" title="Save as PDF or PPT (every question / concept you wrote on, with its content) — S">💾<i>s</i></button>';
   html += '<button type="button" tabindex="-1" data-act="bg" title="PDF background (auto / dark / white / green) — B">🎨<i>b</i></button>';
   html += '<button type="button" tabindex="-1" data-act="invis" title="Invisible mode: hide this toolbar — I (press I again to show)">👁️<i>i</i></button>';
   html += '<button type="button" tabindex="-1" data-act="help" title="All shortcuts — ?">?</button>';
@@ -21014,6 +21014,72 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     if (failed) toast('⚠ ' + failed + ' picture(s) could not be read by the browser and appear as a grey box in the PDF. Run Save PDF again and choose your images folder, or open the portal through http://localhost.', true);
     await sleep(120);
   }
+  /* ── PDF / PPT CONTENT FIX ─────────────────────────────────────────────────────────────────────────
+     ROOT CAUSE of "the PDF has my writing but not the question / concept underneath":
+     Chrome reports every color-mix(...) / color(...) value from getComputedStyle() as  color(srgb r g b / a).
+     html2canvas 1.4.1 can only read rgb / rgba / hsl / hex, so it THROWS "unsupported color function".
+     The old mixFix() only rewrote the simplest color-mix() forms (not the ones with var(...) inside, which is most of
+     this portal's CSS), so the capture crashed, the error was swallowed, and the export fell back to "ink on an empty board".
+     Fix: while html2canvas runs, every computed colour string is converted to a plain rgba() first. ── */
+  var _CF_RE = /(?:color-mix|color|oklch|oklab|lab|lch|hwb|light-dark)\(/i;
+  var _cfCtx = null, _cfCache = {};
+  function _cfNum(v) { v = String(v).trim(); return v.slice(-1) === '%' ? parseFloat(v) / 100 : parseFloat(v); }
+  function _cfOne(s) {                                   // one colour function -> plain "rgba(r, g, b, a)"
+    if (_cfCache[s] !== undefined) return _cfCache[s];
+    var out = 'rgba(0, 0, 0, 0)', m;
+    try {
+      /* what Chrome gives for color-mix(in srgb …) / color(srgb …): read the numbers directly */
+      if ((m = /^color\(\s*srgb(?:-linear)?\s+([-+\d.e%]+)\s+([-+\d.e%]+)\s+([-+\d.e%]+)(?:\s*\/\s*([-+\d.e%]+))?\s*\)$/i.exec(s.trim())) && !/srgb-linear/i.test(s)) {
+        var cl = function (x) { return Math.max(0, Math.min(255, Math.round(x * 255))); };
+        var al = m[4] !== undefined ? Math.max(0, Math.min(1, _cfNum(m[4]))) : 1;
+        out = 'rgba(' + cl(_cfNum(m[1])) + ', ' + cl(_cfNum(m[2])) + ', ' + cl(_cfNum(m[3])) + ', ' + (Math.round(al * 1000) / 1000) + ')';
+      } else {
+        /* any other colour space: paint it over black and over white, read the pixels back (exact, no premultiply loss) */
+        var cv = document.createElement('canvas'); cv.width = cv.height = 1;
+        var c = cv.getContext('2d', { willReadFrequently: true });
+        c.fillStyle = '#010203'; c.fillStyle = s; var f1 = c.fillStyle;
+        c.fillStyle = '#040506'; c.fillStyle = s; var f2 = c.fillStyle;
+        if (f1 === f2) {
+          function px(bg) { c.clearRect(0, 0, 1, 1); c.fillStyle = bg; c.fillRect(0, 0, 1, 1); c.fillStyle = s; c.fillRect(0, 0, 1, 1); return c.getImageData(0, 0, 1, 1).data; }
+          var B = px('#000'), W = px('#fff'), a2 = 1 - (W[0] - B[0] + W[1] - B[1] + W[2] - B[2]) / (3 * 255);
+          a2 = Math.max(0, Math.min(1, a2));
+          if (a2 > 0.002) out = 'rgba(' + Math.min(255, Math.round(B[0] / a2)) + ', ' + Math.min(255, Math.round(B[1] / a2)) + ', ' + Math.min(255, Math.round(B[2] / a2)) + ', ' + (Math.round(a2 * 1000) / 1000) + ')';
+        }
+      }
+    } catch (e) { /* keep transparent */ }
+    return (_cfCache[s] = out);
+  }
+  function _cfFix(str) {                                 // replace every colour function inside a CSS value (gradients, shadows, borders ...)
+    if (typeof str !== 'string' || !_CF_RE.test(str)) return str;
+    var out = '', i = 0, re = /(?:color-mix|color|oklch|oklab|lab|lch|hwb|light-dark)\(/gi, m;
+    while ((m = re.exec(str))) {
+      if (m.index > 0 && /[a-z0-9_-]/i.test(str.charAt(m.index - 1))) continue;     // part of a longer name (e.g. "oklab(" while matching "lab(")
+      var d = 1, j = m.index + m[0].length;
+      for (; j < str.length && d > 0; j++) { var ch = str.charAt(j); if (ch === '(') d++; else if (ch === ')') d--; }
+      out += str.slice(i, m.index) + _cfOne(str.slice(m.index, j));
+      i = j; re.lastIndex = j;
+    }
+    return out + str.slice(i);
+  }
+  async function withSafeColors(fn) {                    // html2canvas reads window.getComputedStyle(); hand it colours it can parse
+    var orig = window.getComputedStyle;
+    window.getComputedStyle = function (el, ps) {
+      var cs = orig.call(window, el, ps);
+      try {
+        return new Proxy(cs, {
+          get: function (t, p) {
+            var v = t[p];
+            if (typeof v === 'function') {
+              if (p === 'getPropertyValue') return function (n) { return _cfFix(t.getPropertyValue(n)); };
+              return v.bind(t);
+            }
+            return typeof v === 'string' ? _cfFix(v) : v;
+          }
+        });
+      } catch (e) { return cs; }
+    };
+    try { return await fn(); } finally { window.getComputedStyle = orig; }
+  }
   /* screenshot of the whole question / concept box (scroll area fully expanded) + where every anchor sits inside it */
   async function captureView(kind, bgCol, anchors, boxEl) {
     var box = boxEl || document.getElementById(kind === 'c' ? 'conceptBox' : 'questionBox');
@@ -21079,7 +21145,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     document.head.appendChild(cs);
     await sleep(60);
     try {
-      var cv = await html2canvas(box, {
+      var cv = await withSafeColors(function () { return html2canvas(box, {
         scale: sc, backgroundColor: bgCol, useCORS: true, allowTaint: false, logging: false,
         ignoreElements: function (el) {
           var c = typeof el.className === 'string' ? el.className : '';
@@ -21108,7 +21174,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
             });
           } catch (e) { console.warn('clone element measure failed', e); }
         }
-      });
+      }); });
       return {
         canvas: cv, sc: sc,
         aob: function (a) {
@@ -21145,7 +21211,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   function jpegOf(canvas, sc) {
     var b64 = canvas.toDataURL('image/jpeg', 0.92).split(',')[1], bin = atob(b64), arr = new Uint8Array(bin.length);
     for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    return { data: arr, w: canvas.width, h: canvas.height, pw: Math.round(canvas.width / sc * 0.75), ph: Math.round(canvas.height / sc * 0.75) };
+    return { data: arr, url: 'data:image/jpeg;base64,' + b64, w: canvas.width, h: canvas.height, pw: Math.round(canvas.width / sc * 0.75), ph: Math.round(canvas.height / sc * 0.75) };
   }
   function itemBounds(it) {                       // axis-aligned box of the item's (rotated) frame
     var f = frameOf(it), x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
@@ -21196,7 +21262,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     if (exporting) return;
     sel = sel.slice().sort(function (a, b) { return a.pos - b.pos; });
     exporting = true; _skipLocal = false; _localPending = null;
-    var imgs = [], skipped = 0;
+    var imgs = [], skipped = 0, capFail = 0;
     try {
       if (textEl) commitText();
       syncView(); savePage(); svRebind();
@@ -21219,7 +21285,8 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
         });
         var bg = pdfBg !== 'auto' ? BG[pdfBg] : bodyBg(), cap = null;
         if (haveH2C && window.html2canvas) {
-          try { cap = await captureView(rec.t === 'c' ? 'svc' : 'svq', bg, [rec.el], rec.el); } catch (e) { console.error('capture failed', e); }
+          try { cap = await captureView(rec.t === 'c' ? 'svc' : 'svq', bg, [rec.el], rec.el); } catch (e) { console.error('capture failed', e); capFail++; }
+          if (!cap) capFail++;
         }
         if (!lists.length) lists = [[]];
         lists.forEach(function (lst) {
@@ -21229,15 +21296,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
         });
       }
       if (!imgs.length) { toast('Nothing could be captured', true); return; }
-      var blob = buildPDF(imgs);
-      var a = document.createElement('a'), d = new Date(), pad = function (n) { return ('0' + n).slice(-2); };
-      a.href = URL.createObjectURL(blob);
-      a.download = 'drawings-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.pdf';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
-      toast('Saved PDF · ' + imgs.length + ' page' + (imgs.length > 1 ? 's' : '') + (skipped ? '  (' + skipped + ' skipped – could not capture)' : ''), true);
+      await deliver(imgs, skipped, capFail);
     } catch (err) {
-      console.error(err); toast('PDF failed — see console', true);
+      console.error(err); toast('Export failed — see console (F12)', true);
     } finally { exporting = false; }
   }
   async function runExport(sel) {
@@ -21245,7 +21306,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     if (svOn()) return runExportSV(sel);
     sel = sel.slice().sort(function (a, b) { return a.pos - b.pos; });
     exporting = true; _skipLocal = false; _localPending = null;
-    var startKey = viewKey, startPos = whichView().pos, imgs = [], skipped = 0;
+    var startKey = viewKey, startPos = whichView().pos, imgs = [], skipped = 0, capFail = 0;
     try {
       var haveH2C = true;
       try { await loadH2C(); } catch (e) { haveH2C = false; console.warn(e); }
@@ -21261,7 +21322,8 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
         if (o.kind !== 'g' && viewKey === o.key && haveH2C && window.html2canvas) {
           var anchors = [];
           inkPages.forEach(function (pg) { pg.items.forEach(function (it) { var a = it.anc || null; if (anchors.indexOf(a) < 0) anchors.push(a); }); });
-          try { cap = await captureView(o.kind, pdfBg !== 'auto' ? BG[pdfBg] : bodyBg(), anchors); } catch (e) { console.error('capture failed', e); }
+          try { cap = await captureView(o.kind, pdfBg !== 'auto' ? BG[pdfBg] : bodyBg(), anchors); } catch (e) { console.error('capture failed', e); capFail++; }
+          if (!cap) capFail++;
         }
         var lists = inkPages.length ? inkPages.map(function (pg) { return pg.items; }) : [[]];
         lists.forEach(function (lst) {
@@ -21275,15 +21337,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
         await sleep(350); syncView();
       }
       if (!imgs.length) { toast('Nothing could be captured', true); return; }
-      var blob = buildPDF(imgs);
-      var a = document.createElement('a'), d = new Date(), pad = function (n) { return ('0' + n).slice(-2); };
-      a.href = URL.createObjectURL(blob);
-      a.download = 'drawings-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.pdf';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
-      toast('Saved PDF (ink-fix v3 + images v3) · ' + imgs.length + ' page' + (imgs.length > 1 ? 's' : '') + (skipped ? '  (' + skipped + ' skipped – could not capture)' : ''), true);
+      await deliver(imgs, skipped, capFail);
     } catch (err) {
-      console.error(err); toast('PDF failed — see console', true);
+      console.error(err); toast('Export failed — see console (F12)', true);
       try { if (viewKey !== startKey && startPos < 1e9 && typeof openSeq === 'function') openSeq(startPos); } catch (_) {}
     } finally { exporting = false; }
   }
@@ -21329,6 +21385,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       '.spp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px 10px}' +
       '.spp-head h3{margin:0;font-size:19px;font-weight:800;letter-spacing:.2px}.spp-head p{margin:4px 0 0;font-size:12.5px;color:rgba(226,232,240,.68)}' +
       '.spp-x{flex:none;width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#e2e8f0;font-size:15px;cursor:pointer}.spp-x:hover{background:rgba(255,255,255,.14)}' +
+      '.spp-fmt{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:4px 22px 10px}.spp-fmt-q{font:800 13px Inter,system-ui,sans-serif;color:#e2e8f0;margin-right:4px}' +
+      '.spp-fmt button{border:2px solid rgba(148,163,184,.35);background:rgba(255,255,255,.05);color:#e2e8f0;font:800 13.5px Inter,system-ui,sans-serif;padding:9px 18px;border-radius:12px;cursor:pointer;transition:all .12s}.spp-fmt button:hover{background:rgba(255,255,255,.13)}' +
+      '.spp-fmt button.spp-fon{background:linear-gradient(135deg,#3b82f6,#2563eb);border-color:#93c5fd;color:#fff;box-shadow:0 6px 18px rgba(37,99,235,.35)}' +
       '.spp-tools{display:flex;flex-wrap:wrap;gap:8px;padding:6px 22px 12px}' +
       '.spp-tools button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#e2e8f0;font:700 12.5px Inter,system-ui,sans-serif;padding:8px 14px;border-radius:999px;cursor:pointer;transition:transform .12s,background .12s}' +
       '.spp-tools button:hover{background:rgba(255,255,255,.15);transform:translateY(-1px)}' +
@@ -21360,12 +21419,14 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     var all = listPages();
     if (!all.length) return toast('Nothing to save yet — open a test or write something first', true);
     closePicker(); pickStyle();
+    outFmt = 'pdf';                                          // always ask again; PDF is just the pre-selected choice
     var sel = {}; all.forEach(function (o) { sel[o.key] = o.ink > 0; });
     var wrote = all.filter(function (o) { return o.ink > 0; }).length;
     var root = document.createElement('div'); root.id = 'sp-pick'; pickEl = root;
     var card = document.createElement('div'); card.className = 'spp-card'; root.appendChild(card);
     card.innerHTML =
-      '<div class="spp-head"><div><h3>📄 Save as PDF</h3><p></p></div><button type="button" class="spp-x" title="Close (Esc)">✕</button></div>' +
+      '<div class="spp-head"><div><h3>💾 Save your pages</h3><p></p></div><button type="button" class="spp-x" title="Close (Esc)">✕</button></div>' +
+      '<div class="spp-fmt"><span class="spp-fmt-q">Which format do you want?</span><button type="button" data-f="pdf">📄 PDF</button><button type="button" data-f="ppt">📊 PowerPoint (PPT)</button></div>' +
       '<div class="spp-tools"><button type="button" class="spp-keep" data-a="all">✅ Keep all</button><button type="button" data-a="written">✍️ Only pages I wrote on</button><button type="button" data-a="none">Clear selection</button></div>' +
       '<div class="spp-list"></div>' +
       '<div class="spp-foot"><span class="spp-cnt"></span><button type="button" class="spp-cancel">Cancel</button><button type="button" class="spp-go"></button></div>';
@@ -21388,7 +21449,9 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       var n = 0;
       all.forEach(function (o) { var r = rows[o.key]; r.cb.checked = !!sel[o.key]; r.row.classList.toggle('spp-on', !!sel[o.key]); if (sel[o.key]) n++; });
       cnt.textContent = n + ' of ' + all.length + ' selected';
-      go.textContent = n ? '⬇ Create PDF (' + n + ' page' + (n > 1 ? 's' : '') + ')' : 'Pick at least one page';
+      var fl = outFmt === 'ppt' ? 'PPT' : 'PDF', un = outFmt === 'ppt' ? 'slide' : 'page';
+      go.textContent = n ? '⬇ Create ' + fl + ' (' + n + ' ' + un + (n > 1 ? 's' : '') + ')' : 'Pick at least one page';
+      card.querySelectorAll('.spp-fmt button').forEach(function (fb) { fb.classList.toggle('spp-fon', fb.dataset.f === outFmt); });
       go.disabled = !n;
     }
     list.addEventListener('change', function (e) { var k = e.target && e.target.dataset && e.target.dataset.k; if (k != null) { sel[k] = e.target.checked; refresh(); } });
@@ -21397,6 +21460,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
       all.forEach(function (o) { sel[o.key] = b.dataset.a === 'all' ? true : b.dataset.a === 'written' ? o.ink > 0 : false; });
       refresh();
     });
+    card.querySelector('.spp-fmt').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; outFmt = b.dataset.f === 'ppt' ? 'ppt' : 'pdf'; refresh(); });
     card.querySelector('.spp-x').addEventListener('click', closePicker);
     card.querySelector('.spp-cancel').addEventListener('click', closePicker);
     root.addEventListener('mousedown', function (e) { if (e.target === root) closePicker(); });
@@ -21409,6 +21473,51 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     if (hereRow) setTimeout(function () { try { hereRow.scrollIntoView({ block: 'center' }); } catch (_) {} }, 30);
   }
   function savePDF() { openPicker(); }
+
+  /* ───────── output: PDF or PowerPoint, whichever was chosen in the Save dialog ───────── */
+  var outFmt = 'pdf';
+  function _stamp() { var d = new Date(), pad = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()); }
+  function _download(blob, name) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  function loadPPTX() {
+    if (window.PptxGenJS) return Promise.resolve();
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+      s.onload = res; s.onerror = function () { rej(new Error('PowerPoint library could not load (check internet)')); };
+      document.head.appendChild(s);
+    });
+  }
+  async function buildPPTX(imgs, bgHex) {
+    await loadPPTX();
+    var SW = 13.33, SH = 7.5, pptx = new PptxGenJS();
+    pptx.defineLayout({ name: 'FULL', width: SW, height: SH }); pptx.layout = 'FULL';
+    imgs.forEach(function (im) {
+      var sl = pptx.addSlide(), ar = im.w / im.h, w = SW, h = SW / ar;     // fit the whole page inside the slide, never crop
+      if (h > SH) { h = SH; w = SH * ar; }
+      if (bgHex) sl.background = { color: bgHex.replace('#', '') };
+      sl.addImage({ data: im.url, x: (SW - w) / 2, y: (SH - h) / 2, w: w, h: h });
+    });
+    return await pptx.write({ outputType: 'blob' });
+  }
+  function _hex(c) { var m = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(c || ''); if (m) return '#' + [m[1], m[2], m[3]].map(function (v) { return ('0' + (+v).toString(16)).slice(-2); }).join(''); return /^#[0-9a-f]{6}$/i.test(c || '') ? c : null; }
+  async function deliver(imgs, skipped, capFail) {
+    var fmt = outFmt, note = (skipped ? '  (' + skipped + ' skipped – could not capture)' : '');
+    if (fmt === 'ppt') {
+      var bg = null; try { bg = _hex(pdfBg !== 'auto' ? BG[pdfBg] : bodyBg()); } catch (e) { }
+      toast('Building PowerPoint…', true);
+      var pb = await buildPPTX(imgs, bg);
+      _download(pb, 'drawings-' + _stamp() + '.pptx');
+      toast('Saved PPT · ' + imgs.length + ' slide' + (imgs.length > 1 ? 's' : '') + note, true);
+    } else {
+      _download(buildPDF(imgs), 'drawings-' + _stamp() + '.pdf');
+      toast('Saved PDF · ' + imgs.length + ' page' + (imgs.length > 1 ? 's' : '') + note, true);
+    }
+    if (capFail) setTimeout(function () { toast('⚠ The question / concept text could not be captured on ' + capFail + ' page(s) – only your writing was saved there. See the browser console (F12) for the reason.', true); }, 1800);
+  }
 
   function buildPDF(imgs) {
     var enc = new TextEncoder(), chunks = [], offs = [], len = 0;
@@ -21447,7 +21556,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     ['F', 'Fill shapes on / off'], ['Q', 'Next colour'],
     ['Shift + 1…8', 'Pick colour'], ['[  ]', 'Smaller / bigger'],
     ['Ctrl + Z', 'Undo'], ['Ctrl + Y', 'Redo'],
-    ['X / Delete', 'Clear writing on this question / concept'], ['S', 'Save PDF with the questions & concepts'],
+    ['X / Delete', 'Clear writing on this question / concept'], ['S', 'Save as PDF or PPT with the questions & concepts'],
     ['N', 'New page'], [', (comma)  .  (period)', 'Previous / next page'],
     ['Shift + X', 'Delete this page'], ['Shift + S', 'Save this page as PNG'],
     ['B', 'PDF background: auto/dark/white/green'], ['I  (or U)', 'Invisible mode: hide toolbar & popups'],
