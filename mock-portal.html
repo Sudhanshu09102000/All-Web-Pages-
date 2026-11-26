@@ -5497,7 +5497,12 @@ window.rtView = {
       <div class="err-subtitle" id="jsErrorSubtitle">The following file could not be loaded:</div>
       <div class="err-filename">
         <span class="file-icon">📄</span>
-        <span id="jsErrorFilename">unknown.js</span>
+        <span id="jsErrorFilename" style="flex:1;min-width:0;">unknown.js</span>
+        <button type="button" class="err-copy-btn" id="jsErrorFileCopyBtn" onclick="copyJsErrorFile()" title="Copy file name" style="margin-left:auto;">
+          <svg class="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+          <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          <span id="jsErrorFileCopyLabel">Copy</span>
+        </button>
       </div>
       <div class="err-tip" id="jsErrorTip">
         Make sure the <strong style="color:rgba(251,191,36,.85);">.js</strong> file exists in the
@@ -5557,6 +5562,34 @@ window.rtView = {
           '<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> <span class="c-path">' + esc(q(dir)) + '</span> <span class="c-path">' + esc(q(imgDir)) + '</span> ' +
           '<span class="c-op">&amp;&amp;</span> <span class="c-cmd">touch</span> <span class="c-path">' + esc(q(filePath)) + '</span>';
         box.classList.add('show');
+      };
+
+      window.copyJsErrorFile = function () {
+        var fn = document.getElementById('jsErrorFilename');
+        var text = fn ? fn.textContent.trim() : '';
+        if (!text) return;
+        var btn = document.getElementById('jsErrorFileCopyBtn');
+        var lbl = document.getElementById('jsErrorFileCopyLabel');
+        var done = function () {
+          if (btn) btn.classList.add('copied');
+          if (lbl) lbl.textContent = 'Copied!';
+          clearTimeout(window.__jsErrFileCopyT);
+          window.__jsErrFileCopyT = setTimeout(function () {
+            if (btn) btn.classList.remove('copied');
+            if (lbl) lbl.textContent = 'Copy';
+          }, 1900);
+        };
+        var fallback = function () {
+          var ta = document.createElement('textarea');
+          ta.value = text; ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:-999px;opacity:0;';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) {}
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
       };
 
       window.copyJsErrorCmd = function () {
@@ -6592,7 +6625,7 @@ window.rtView = {
           if (kind === 'missing') {
             if (tEl) tEl.textContent = 'Script File Not Found';
             if (sEl) sEl.textContent = 'The following file could not be loaded:';
-            if (fnEl) fnEl.textContent = qFile;
+            if (fnEl) fnEl.textContent = qFile; (function(){var b=document.getElementById('jsErrorFileCopyBtn'),l=document.getElementById('jsErrorFileCopyLabel');if(b)b.classList.remove('copied');if(l)l.textContent='Copy';})();
             if (window.setJsErrorCmd) window.setJsErrorCmd(qFile);
             if (tipEl) tipEl.innerHTML = 'Make sure the <strong style="color:rgba(251,191,36,.85);">.js</strong> file exists in the <code style="background:rgba(255,255,255,.08);padding:.1rem .35rem;border-radius:6px;font-size:.92em;">scripts/</code> folder and the filename exactly matches the test key (case-sensitive).';
           } else {
@@ -6600,7 +6633,7 @@ window.rtView = {
             if (sEl) sEl.textContent = kind === 'nodata'
               ? 'The file loaded, but it did not define window.TEST_DATA:'
               : 'The file loaded fine, but the portal hit an error while starting it:';
-            if (fnEl) fnEl.textContent = qFile;
+            if (fnEl) fnEl.textContent = qFile; (function(){var b=document.getElementById('jsErrorFileCopyBtn'),l=document.getElementById('jsErrorFileCopyLabel');if(b)b.classList.remove('copied');if(l)l.textContent='Copy';})();
             if (window.setJsErrorCmd) window.setJsErrorCmd(null);
             if (tipEl) tipEl.textContent = detail || '';
           }
