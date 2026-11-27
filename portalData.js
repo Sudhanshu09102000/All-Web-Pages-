@@ -117,44 +117,21 @@ const PORTAL_DATA = [
       {
         name: "Physics",
         subtopics: [
-          { name: "1. Kinematics", file: "General_Awareness/Physics/Kinematics" },
-          { name: "2. Speed, Velocity & Acceleration", file: "General_Awareness/Physics/Speed_Velocity_and_Acceleration" },
-          { name: "3. Projectile Motion & Its Properties", file: "General_Awareness/Physics/Projectile_Motion_and_Its_Properties" },
-          { name: "4. Circular Motion & Its Types", file: "General_Awareness/Physics/Circular_Motion_and_Its_Types" },
-          { name: "5. Force & Its Applications", file: "General_Awareness/Physics/Force_and_Its_Applications" },
-          { name: "6. Newton's Laws", file: "General_Awareness/Physics/Newtons_Laws" },
-          { name: "7. Friction & Its Uses", file: "General_Awareness/Physics/Friction_and_Its_Uses" },
-          { name: "8. Oscillations & Waves", file: "General_Awareness/Physics/Oscillations_and_Waves" },
-          { name: "9. Sound & Its Properties", file: "General_Awareness/Physics/Sound_and_Its_Properties" },
-          { name: "10. Heat & Its Properties", file: "General_Awareness/Physics/Heat_and_Its_Properties" },
-          { name: "11. All About Matter", file: "General_Awareness/Physics/All_About_Matter" },
-          { name: "12. Atmospheric Pressure", file: "General_Awareness/Physics/Atmospheric_Pressure" },
-          { name: "13. Archimedes Principle", file: "General_Awareness/Physics/Archimedes_Principle" },
-          { name: "14. Surface Tension & Its Applications", file: "General_Awareness/Physics/Surface_Tension_and_Its_Applications" },
-          { name: "15. Light", file: "General_Awareness/Physics/Light" },
-          { name: "16. Examples of Atmospheric Refraction", file: "General_Awareness/Physics/Examples_of_Atmospheric_Refraction" },
-          { name: "17. Magnetism & Electricity", file: "General_Awareness/Physics/Magnetism_and_Electricity" },
-          { name: "18. All About Nuclear Reactor", file: "General_Awareness/Physics/All_About_Nuclear_Reactor" },
-          { name: "19. Work, Power & Energy", file: "General_Awareness/Physics/Work_Power_and_Energy" }
+          { name: "1. Motion, Force & Energy", file: "General_Awareness/Physics/Motion_Force_and_Energy" },
+          { name: "2. Oscillations, Waves & Sound", file: "General_Awareness/Physics/Oscillations_Waves_and_Sound" },
+          { name: "3. Heat & Thermodynamics", file: "General_Awareness/Physics/Heat_and_Thermodynamics" },
+          { name: "4. Properties of Matter & Gravitation", file: "General_Awareness/Physics/Properties_of_Matter_and_Gravitation" },
+          { name: "5. Light, Electricity, Magnetism & Nuclear Reactor", file: "General_Awareness/Physics/Light_Electricity_Magnetism_and_Nuclear_Reactor" }
         ]
       },
       {
         name: "Chemistry",
         subtopics: [
-          { name: "1. Acid & Its Properties", file: "General_Awareness/Chemistry/Acid_and_Its_Properties" },
-          { name: "2. Bases", file: "General_Awareness/Chemistry/Bases" },
-          { name: "3. Salt & Its Applications", file: "General_Awareness/Chemistry/Salt_and_Its_Applications" },
-          { name: "4. All About pH Scale", file: "General_Awareness/Chemistry/All_About_pH_Scale" },
-          { name: "5. Atom & Its Particles", file: "General_Awareness/Chemistry/Atom_and_Its_Particles" },
-          { name: "6. Uses of Important Elements & Compounds", file: "General_Awareness/Chemistry/Uses_of_Important_Elements_and_Compounds" },
-          { name: "7. Chemistry in Everyday Life", file: "General_Awareness/Chemistry/Chemistry_in_Everyday_Life" },
-          { name: "8. Chemicals in Agriculture", file: "General_Awareness/Chemistry/Chemicals_in_Agriculture" },
-          { name: "9. Classification of Elements", file: "General_Awareness/Chemistry/Classification_of_Elements" },
-          { name: "10. Chemical Reactions & Equation", file: "General_Awareness/Chemistry/Chemical_Reactions_and_Equation" },
-          { name: "11. Matter & Its Nature", file: "General_Awareness/Chemistry/Matter_and_Its_Nature" },
-          { name: "12. Chemical Bonding", file: "General_Awareness/Chemistry/Chemical_Bonding" },
-          { name: "13. Properties of Gases", file: "General_Awareness/Chemistry/Properties_of_Gases" },
-          { name: "14. Organic Chemistry", file: "General_Awareness/Chemistry/Organic_Chemistry" }
+          { name: "1. Matter, Acids, Bases, Salts", file: "General_Awareness/Chemistry/Matter_Acids_Bases_Salts" },
+          { name: "2. Atom and Common Elements", file: "General_Awareness/Chemistry/Atom_and_Common_Elements" },
+          { name: "3. Everyday Materials and Polymers", file: "General_Awareness/Chemistry/Everyday_Materials_Polymers" },
+          { name: "4. Periodic Table, Reactions, Metals", file: "General_Awareness/Chemistry/Periodic_Table_Reactions_Metals" },
+          { name: "5. Alloys, Bonding, Gases, Organic, Fuels", file: "General_Awareness/Chemistry/Alloys_Bonding_Gases_Organic_Fuels" }
         ]
       },
       {
