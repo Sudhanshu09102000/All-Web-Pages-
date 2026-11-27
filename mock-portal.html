@@ -5010,10 +5010,10 @@ window.rtView = {
         <div class="glass p-3 p-md-4 mb-4">
           <div class="row g-3 align-items-center">
             <div class="col-12 col-lg-6">
-              <label class="form-label subtle mb-1">🔍 Search chapters / subtopics</label>
+              <label class="form-label subtle mb-1">🔍 Search chapters / subtopics / keywords</label>
               <input id="searchInput" class="form-control"
                 placeholder="Type e.g. 'Number System', 'Synonyms', 'demo'..." />
-              <div class="small subtle mt-2">Search results open the selected test directly.</div>
+              <div class="small subtle mt-2">Search results open the selected test directly. Also searches inside every file's questions, explanations &amp; concept pages.</div>
             </div>
             <div class="col-12 col-lg-6">
               <div class="glass p-3">
@@ -5031,6 +5031,7 @@ window.rtView = {
           </div>
 
           <div id="searchResults" class="search-results mt-3"></div>
+          <div id="contentSearch" class="sx-wrap" hidden></div>
         </div>
 
         <div id="subjectsGrid" class="row g-3 g-md-4"></div>
@@ -6521,6 +6522,328 @@ window.rtView = {
         box.appendChild(list);
       });
 
+      /* ========= CONTENT SEARCH — looks inside every test JS file =========
+         The title search above stays exactly as it was. This adds a premium
+         "Found inside tests" box below it. Files are read lazily (first time
+         the search box is used), one at a time, only while the browser is idle,
+         and cached for the session — so typing and scrolling stay smooth.      */
+      (function initContentSearch() {
+        const wrap = $('contentSearch');
+        const inp = $('searchInput');
+        if (!wrap || !inp) return;
+
+        const PAGE = 10;           // cards shown before "Show more"
+        const MIN_CHARS = 2;
+        const SEP = ' \u2503 ';    // joins the parts of one entry (question | options | explanation)
+        const FILES = [];          // unique file keys, in portal order
+        const META = {};           // fileKey -> { subjectTitle, topicName, subtopicName, fileKey }
+        SEARCH_INDEX.forEach(x => {
+          if (!x.fileKey || META[x.fileKey]) return;
+          META[x.fileKey] = x;
+          FILES.push(x.fileKey);
+        });
+
+        const cache = new Map();   // fileKey -> { status:'ok'|'missing'|'bad', entries:[] }
+        let pumping = false, paused = false, inflight = Promise.resolve(), skipped = 0;
+        let lastQ = '', sig = '', shown = PAGE, typeTimer = null, renderTimer = null;
+
+        const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const isConcept = it => {
+          const t = String(it.type || '').toLowerCase().replace(/[\s_-]/g, '');
+          return t === 'concept' || t === 'conceptpage' || it.conceptHtml !== undefined || it.concepthtml !== undefined;
+        };
+
+        /* ---------- html -> plain text (no DOM work, so it is cheap) ---------- */
+        const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', hellip: '…',
+          rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”', rarr: '→', larr: '←', times: '×', divide: '÷', deg: '°', rupee: '₹' };
+        function decode(s) {
+          return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, g) => {
+            if (g.charAt(0) === '#') {
+              const c = (g.charAt(1) === 'x' || g.charAt(1) === 'X') ? parseInt(g.slice(2), 16) : parseInt(g.slice(1), 10);
+              try { return String.fromCodePoint(c); } catch (e) { return m; }
+            }
+            const v = ENT[g.toLowerCase()];
+            return v === undefined ? m : v;
+          });
+        }
+        function plain(h) {
+          if (h === null || h === undefined) return '';
+          let s = String(h);
+          if (s.indexOf('<') > -1) {
+            s = s.replace(/<(script|style|svg)[\s\S]*?<\/\1>/gi, ' ').replace(/<\/?[a-zA-Z][^>]*>/g, ' ');
+          }
+          if (s.indexOf('&') > -1) s = decode(s);
+          return s.replace(/\s+/g, ' ').trim();
+        }
+
+        /* ---------- one TEST_DATA object -> searchable entries (one text + one lowercase copy each) ---------- */
+        function pack(label, kind, n, parts) {
+          const txt = parts.map(p => p.t).join(SEP);
+          return { label, kind, n, ks: parts.map(p => p.k), txt, low: txt.toLowerCase() };
+        }
+        function extract(data) {
+          const out = [];
+          const keys = Object.keys(data);
+          const hasConcepts = keys.some(k => data[k] && typeof data[k] === 'object' && isConcept(data[k]));
+          let qi = -1, cn = 0;   // qi = question position (same order the engine uses), cn = concept page number
+          keys.forEach(k => {
+            const it = data[k];
+            if (!it || typeof it !== 'object') return;
+            if (isConcept(it)) {
+              cn++;
+              const title = plain(it.title), sub = plain(it.subtitle);
+              const body = plain(it.html ?? it.conceptHtml ?? it.concepthtml ?? it.content ?? it.concepttext ?? it.text ?? '');
+              const parts = [];
+              if (title || sub) parts.push({ k: 'Concept', t: title + (sub ? ' — ' + sub : '') });
+              if (body) parts.push({ k: 'Concept', t: body });
+              if (parts.length) out.push(pack('Page ' + cn, 'c', cn - 1, parts));
+              return;
+            }
+            qi++;                                   // every non-concept item is a question in the engine
+            if (!(it.questext || it.quesimage)) return;
+            const parts = [];
+            const qt = plain(it.questext);
+            if (qt) parts.push({ k: 'Question', t: qt });
+            const op = Array.isArray(it.options) ? it.options.map(plain).filter(Boolean).join('  ·  ') : '';
+            if (op) parts.push({ k: 'Options', t: op });
+            const ex = plain(it.exptext);
+            if (ex) parts.push({ k: 'Explanation', t: ex });
+            if (parts.length) out.push(pack('Q' + (hasConcepts ? qi + 1 : (Number(k) || qi + 1)), 'q', qi, parts));
+          });
+          return out;
+        }
+
+        /* ---------- loader (scripts share window.TEST_DATA, so strictly one at a time) ---------- */
+        function loadOne(fileKey) {
+          return new Promise(resolve => {
+            const prev = window.TEST_DATA;
+            window.TEST_DATA = undefined;
+            const s = document.createElement('script');
+            s.src = 'scripts/' + fileKey + '.js';
+            let done = false;
+            const finish = (status) => {
+              if (done) return;
+              done = true;
+              let entries = [];
+              try {
+                const d = window.TEST_DATA;
+                if (status === 'ok') {
+                  if (d && typeof d === 'object') entries = extract(d); else status = 'bad';
+                }
+              } catch (e) { status = 'bad'; }
+              window.TEST_DATA = prev;
+              if (s.parentNode) s.parentNode.removeChild(s);
+              cache.set(fileKey, { status, entries });
+              if (status !== 'ok') skipped++;
+              resolve();
+            };
+            s.onload = () => finish('ok');
+            s.onerror = () => finish('missing');
+            document.body.appendChild(s);
+          });
+        }
+
+        // wait until the browser has nothing better to do (keeps typing / scrolling smooth)
+        const idle = () => new Promise(r => {
+          if (window.requestIdleCallback) requestIdleCallback(() => setTimeout(r, 30), { timeout: 500 });
+          else setTimeout(r, 60);
+        });
+
+        async function pump() {
+          if (pumping) return;
+          pumping = true;
+          try {
+            for (const f of FILES) {
+              if (paused) break;
+              if (cache.has(f)) continue;
+              await idle();
+              if (paused) break;
+              inflight = loadOne(f);
+              await inflight;
+              scheduleRender();
+            }
+          } finally {
+            pumping = false;
+            scheduleRender();
+          }
+        }
+
+        /* ---------- searching: the exact phrase only ---------- */
+        function search(q) {
+          const phrase = q.toLowerCase().replace(/\s+/g, ' ').trim();
+          const res = [];
+          let total = 0;
+          cache.forEach((rec, fk) => {
+            if (rec.status !== 'ok') return;
+            const hits = [];
+            for (let i = 0; i < rec.entries.length; i++) {
+              const e = rec.entries[i];
+              if (e.low.indexOf(phrase) > -1) hits.push({ e });
+            }
+            if (!hits.length) return;
+            res.push({ fk, meta: META[fk], count: hits.length, hits });
+            total += hits.length;
+          });
+          res.sort((a, b) => b.count - a.count);
+          return { res, total, phrase };
+        }
+
+        function highlight(piece, phrase) {
+          if (!phrase) return escapeHtml(piece);
+          const re = new RegExp('(' + reEsc(phrase).replace(/\s+/g, '\\s+') + ')', 'gi');
+          return piece.split(re).map((s, i) => i % 2 ? '<mark>' + escapeHtml(s) + '</mark>' : escapeHtml(s)).join('');
+        }
+
+        const KIND_CLS = { Question: 'q', Options: 'o', Explanation: 'e', Concept: 'c' };
+
+        function snippet(entry, phrase) {
+          const texts = entry.txt.split(SEP);
+          let pi = 0, idx = 0;
+          for (let i = 0; i < texts.length; i++) {
+            const at = texts[i].toLowerCase().indexOf(phrase);
+            if (at > -1) { pi = i; idx = at; break; }
+          }
+          const text = texts[pi] || '', len = phrase.length, R = 85;
+          let a = Math.max(0, idx - R), b = Math.min(text.length, idx + len + R);
+          if (a > 0) { const sp = text.indexOf(' ', a); if (sp > -1 && sp < idx) a = sp + 1; }
+          if (b < text.length) { const sp = text.lastIndexOf(' ', b); if (sp > idx + len) b = sp; }
+          const kind = entry.ks[pi] || 'Question';
+          return {
+            kind,
+            cls: KIND_CLS[kind] || 'q',
+            html: (a > 0 ? '… ' : '') + highlight(text.slice(a, b), phrase) + (b < text.length ? ' …' : '')
+          };
+        }
+
+        /* ---------- rendering ---------- */
+        function fileLabel(fk) { return String(fk).split('/').pop() + '.js'; }
+
+        function cardHtml(r, i, phrase) {
+          const m = r.meta || {};
+          const snips = r.hits.slice(0, 3).map(h => {
+            const s = snippet(h.e, phrase);
+            return '<div class="sx-snip" data-k="' + h.e.kind + '" data-n="' + h.e.n + '" title="Open this page"><span class="sx-tag sx-t-' + s.cls + '">' + escapeHtml(h.e.label) + ' · ' + s.kind + '</span>' +
+              '<span class="sx-txt">' + s.html + '</span></div>';
+          }).join('');
+          const more = r.count > 3 ? '<div class="sx-moreline">+ ' + (r.count - 3) + ' more ' + (r.count - 3 === 1 ? 'match' : 'matches') + ' in this test</div>' : '';
+          return '<div class="sx-card" role="button" tabindex="0" data-fk="' + escapeHtml(r.fk) + '" data-k="' + r.hits[0].e.kind + '" data-n="' + r.hits[0].e.n + '" style="--i:' + Math.min(i, 9) + '"' +
+            ' title="Open this test at the first match">' +
+            '<div class="sx-num"><span>' + r.count + '</span><small>' + (r.count === 1 ? 'match' : 'matches') + '</small></div>' +
+            '<div class="sx-main">' +
+              '<div class="sx-crumb">' + escapeHtml(m.subjectTitle || '') + ' <i>•</i> ' + escapeHtml(m.topicName || '') + '</div>' +
+              '<div class="sx-name">' + escapeHtml(m.subtopicName || r.fk) + '<span class="sx-file">' + escapeHtml(fileLabel(r.fk)) + '</span></div>' +
+              snips + more +
+            '</div>' +
+            '<div class="sx-go"><span>Open test</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
+            '</div>';
+        }
+
+        // progress only: touch two tiny nodes instead of rebuilding the whole box
+        function updateProgress(loaded, all) {
+          const n = wrap.querySelector('.sx-live-n');
+          if (n) n.textContent = loaded + '/' + all;
+          const bar = wrap.querySelector('.sx-prog i');
+          if (bar) bar.style.setProperty('--p', (all ? Math.round(loaded / all * 100) : 100) + '%');
+        }
+
+        function render() {
+          const q = inp.value.trim();
+          if (q.length < MIN_CHARS) {
+            if (!wrap.hidden) { wrap.hidden = true; wrap.innerHTML = ''; }
+            lastQ = ''; sig = '';
+            return;
+          }
+          wrap.hidden = false;
+
+          const fresh = q !== lastQ;
+          if (fresh) shown = PAGE;
+
+          const { res, total, phrase } = search(q);
+          const loaded = cache.size, all = FILES.length;
+          const indexing = loaded < all;
+
+          // nothing visible changed (only the scan counter moved) -> leave the DOM alone
+          const newSig = [q, total, res.length, shown, indexing ? 1 : 0, skipped].join('|');
+          if (!fresh && newSig === sig) { updateProgress(loaded, all); return; }
+          sig = newSig;
+
+          const oldList = wrap.querySelector('.sx-list');
+          const oldScroll = (!fresh && oldList) ? oldList.scrollTop : 0;
+          const pct = all ? Math.round(loaded / all * 100) : 100;
+
+          let body = '';
+          if (res.length) {
+            body = '<div class="sx-list">' + res.slice(0, shown).map((r, i) => cardHtml(r, i, phrase)).join('') + '</div>';
+            if (res.length > shown) {
+              body += '<button type="button" class="sx-more" data-more="1">Show ' + Math.min(PAGE, res.length - shown) + ' more tests <span>(' + (res.length - shown) + ' left)</span></button>';
+            }
+          } else if (indexing) {
+            body = '<div class="sx-skel"><i></i><i></i><i></i></div>';
+          } else {
+            body = '<div class="sx-empty"><div class="sx-empty-ic">🔎</div><b>Nothing inside the tests matches “' + escapeHtml(q) + '”</b>' +
+              '<span>Try a shorter word, or check the spelling.</span></div>';
+          }
+
+          wrap.innerHTML =
+            '<section class="sx-box' + (fresh ? ' sx-anim' : '') + '" aria-label="Search results inside tests">' +
+              '<header class="sx-head">' +
+                '<div class="sx-title"><div class="sx-spark">✦</div><div><b>Found inside tests</b>' +
+                '<small>Questions, options, explanations &amp; concept pages of every file</small></div></div>' +
+                '<div class="sx-stat" aria-live="polite">' +
+                  (res.length ? '<span class="sx-chip"><b>' + total + '</b> ' + (total === 1 ? 'match' : 'matches') + '</span><span class="sx-chip"><b>' + res.length + '</b> ' + (res.length === 1 ? 'test' : 'tests') + '</span>' : '') +
+                  (indexing ? '<span class="sx-chip sx-chip-live"><i></i>Scanning <span class="sx-live-n">' + loaded + '/' + all + '</span></span>' : '') +
+                '</div>' +
+              '</header>' +
+              (indexing ? '<div class="sx-prog"><i style="--p:' + pct + '%"></i></div>' : '') +
+              body +
+              (!indexing && skipped ? '<div class="sx-note">' + skipped + ' file' + (skipped === 1 ? '' : 's') + ' could not be read and ' + (skipped === 1 ? 'was' : 'were') + ' skipped.</div>' : '') +
+            '</section>';
+
+          const list = wrap.querySelector('.sx-list');
+          if (list && oldScroll) list.scrollTop = oldScroll;
+          lastQ = q;
+        }
+
+        function scheduleRender() {
+          if (renderTimer) return;
+          const busy = cache.size < FILES.length;
+          renderTimer = setTimeout(() => { renderTimer = null; render(); }, busy ? 500 : 80);
+        }
+
+        /* ---------- open a test (on the exact page that matched) ---------- */
+        async function openTest(fk, k, n) {
+          const meta = META[fk];
+          if (!meta) return;
+          window.__sxJump = (k === 'q' || k === 'c') && n !== null && n !== '' && !isNaN(Number(n)) ? { k: k, n: Number(n) } : null;
+          paused = true;                       // never load a file while the real test is loading
+          try { await inflight; } catch (e) { }
+          startTestFromPortal(meta);
+        }
+
+        wrap.addEventListener('click', (e) => {
+          if (e.target.closest('[data-more]')) { shown += PAGE; render(); return; }
+          const card = e.target.closest('.sx-card');
+          if (!card) return;
+          const row = e.target.closest('.sx-snip') || card;      // tapping a snippet opens THAT page, anywhere else = first match
+          openTest(card.getAttribute('data-fk'), row.getAttribute('data-k'), row.getAttribute('data-n'));
+        });
+        wrap.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          const card = e.target.closest && e.target.closest('.sx-card');
+          if (!card) return;
+          e.preventDefault();
+          openTest(card.getAttribute('data-fk'), card.getAttribute('data-k'), card.getAttribute('data-n'));
+        });
+
+        const wake = () => { paused = false; pump(); };
+        inp.addEventListener('focus', wake);
+        inp.addEventListener('input', () => {
+          wake();
+          clearTimeout(typeTimer);
+          typeTimer = setTimeout(render, 220);
+        });
+      })();
+
       /* ========= ENGINE LOADER (data-driven external scripts) ========= */
       function loadScript(src) {
         return new Promise((resolve, reject) => {
@@ -6577,6 +6900,7 @@ window.rtView = {
       }
 
       async function startTestFromPortal(sel) {
+        const __sxJ = window.__sxJump || null; window.__sxJump = null;   // one-shot: page to land on (from content search)
         state.customReturn = false;
         state.selectedTest = sel;
         updateTopTestInfo();
@@ -6660,11 +6984,29 @@ window.rtView = {
 
           initEngine(questionsObj, explanationsObj, conceptsList, seqRaw);
           showView('engine');
+          if (__sxJ) { try { sxJumpTo(__sxJ); } catch (e) { console.warn('jump failed', e); } }
         } catch (err) {
           console.error(err);
           showJsError('runtime', (err && err.message ? err.message : String(err)));
         }
 
+      }
+
+      /* land directly on a concept page / question (used by the content search) */
+      function sxJumpTo(j) {
+        if (!j) return;
+        const first = state.qIds && state.qIds.length ? state.qState && state.qState[state.qIds[0]] : null;
+        if (j.k === 'c') {
+          if (first && state.seq[0] && state.seq[0].t !== 'c') first.visited = false;
+          const p = state.seq.findIndex(s => s.t === 'c' && s.ci === j.n);
+          if (p >= 0) { openSeq(p); return; }
+          const c = state.concepts && state.concepts[j.n];          // concept pages hidden (exam mode) → the question after it
+          if (c && c.nextQ >= 0) goToIndex(c.nextQ);
+          return;
+        }
+        if (j.n > 0 && first && !(state.seq[0] && state.seq[0].t === 'c')) first.visited = false;
+        if (state.conceptOnly) { openSeq(conceptPosFor(j.n)); return; }   // questions not reachable in concept-only mode
+        goToIndex(j.n);
       }
 
       function updateTopTestInfo() {
@@ -26333,6 +26675,123 @@ html.lite-mode:not(#px) #bmQCardWrap .bm-opt.bm-wrong .bm-opt-key{color:#fff !im
 /* unselected options fade after answering */
 html:not(#px) #bmQCardWrap .bm-opt.bm-disabled{opacity:.45 !important}
 </style>
+<style id="contentSearchCSS">
+/* ═══ CONTENT SEARCH — premium "Found inside tests" label box ═══ */
+html:not(#px) .sx-wrap[hidden]{display:none!important}
+html:not(#px) .sx-wrap{margin-top:1.1rem}
+
+html:not(#px) .sx-box{
+  position:relative;border-radius:22px;padding:1.05rem 1.05rem .95rem;
+  border:1.5px solid transparent;
+  background:
+    radial-gradient(520px 150px at 0% 0%,rgba(111,140,255,.16),transparent 65%) padding-box,
+    radial-gradient(420px 140px at 100% 0%,rgba(167,139,250,.12),transparent 65%) padding-box,
+    linear-gradient(var(--px-surface,#fff),var(--px-surface,#fff)) padding-box,
+    linear-gradient(135deg,#6f8cff,#a78bfa 48%,#f5b942) border-box;
+  box-shadow:0 1px 2px rgba(16,24,40,.05),0 28px 54px -26px rgba(47,84,235,.45);
+}
+
+/* header */
+html:not(#px) .sx-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin-bottom:.85rem}
+html:not(#px) .sx-title{display:flex;align-items:center;gap:.75rem;min-width:0}
+html:not(#px) .sx-spark{width:40px;height:40px;flex:0 0 40px;border-radius:13px;display:grid;place-items:center;font-size:1.05rem;color:#fff;
+  background:linear-gradient(135deg,#4f6bff,#8b5cf6);box-shadow:0 10px 20px -8px rgba(79,107,255,.75),inset 0 1px 0 rgba(255,255,255,.35)}
+html:not(#px) .sx-title b{display:block;font-size:1.02rem;font-weight:800;letter-spacing:-.01em;color:var(--px-ink,#0e1526)}
+html:not(#px) .sx-title small{display:block;margin-top:1px;font-size:.76rem;font-weight:500;color:var(--px-mute,#586177)}
+html:not(#px) .sx-stat{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+html:not(#px) .sx-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .72rem;border-radius:999px;font-size:.76rem;font-weight:600;
+  background:var(--px-soft,#eef2ff);color:var(--px-accent,#2f54eb);border:1px solid rgba(111,140,255,.28)}
+html:not(#px) .sx-chip b{font-weight:800}
+html:not(#px) .sx-chip-live i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:sxBlink 1.4s ease-in-out infinite}
+
+/* progress */
+html:not(#px) .sx-prog{height:4px;border-radius:99px;background:var(--px-line,#e1e6f0);overflow:hidden;margin:0 0 .85rem}
+html:not(#px) .sx-prog i{display:block;height:100%;width:var(--p,0%);border-radius:inherit;transition:width .3s ease;
+  background:linear-gradient(90deg,#4f6bff,#8b5cf6,#f5b942)}
+
+/* list + cards */
+html:not(#px) .sx-list{display:grid;gap:.7rem;max-height:min(68vh,640px);overflow:auto;padding:.2rem .3rem .3rem .05rem;scrollbar-width:thin}
+html:not(#px) .sx-card{
+  position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.95rem;align-items:center;
+  padding:.9rem 1rem .9rem .9rem;border-radius:18px;cursor:pointer;outline:none;
+  background:var(--px-surface,#fff);border:1px solid var(--px-line,#e1e6f0);
+  box-shadow:0 1px 2px rgba(16,24,40,.04);
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s,border-color .22s;
+}
+html:not(#px) .sx-card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 4px 4px 0;
+  background:linear-gradient(#4f6bff,#a78bfa,#f5b942);opacity:0;transition:opacity .22s}
+html:not(#px) .sx-card:hover,html:not(#px) .sx-card:focus-visible{
+  transform:translateY(-2px);border-color:rgba(111,140,255,.65);
+  box-shadow:0 20px 38px -20px rgba(47,84,235,.55),0 0 0 3px rgba(111,140,255,.14)}
+html:not(#px) .sx-card:hover::before,html:not(#px) .sx-card:focus-visible::before{opacity:1}
+html:not(#px) .sx-card:active{transform:translateY(0) scale(.995)}
+
+html:not(#px) .sx-num{width:58px;height:58px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,rgba(111,140,255,.22),rgba(167,139,250,.14));border:1px solid rgba(111,140,255,.3);color:var(--px-accent,#2f54eb)}
+html:not(#px) .sx-num span{font-size:1.3rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+html:not(#px) .sx-num small{margin-top:4px;font-size:.56rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;opacity:.85}
+
+html:not(#px) .sx-main{min-width:0}
+html:not(#px) .sx-crumb{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--px-mute,#586177);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html:not(#px) .sx-crumb i{font-style:normal;opacity:.5;margin:0 .15rem}
+html:not(#px) .sx-name{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:2px;font-size:1.02rem;font-weight:800;letter-spacing:-.01em;color:var(--px-ink,#0e1526)}
+html:not(#px) .sx-file{font:600 .66rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:.28rem .5rem;border-radius:8px;
+  background:var(--px-soft,#eef2ff);color:var(--px-mute,#586177);border:1px solid var(--px-line,#e1e6f0)}
+
+html:not(#px) .sx-snip{display:flex;gap:.55rem;align-items:flex-start;margin-top:.5rem;font-size:.85rem;line-height:1.55;color:var(--px-ink,#0e1526)}
+html:not(#px) .sx-snip{padding:.3rem .45rem;margin-left:-.45rem;margin-right:-.45rem;border-radius:10px;transition:background .18s}
+html:not(#px) .sx-snip:hover{background:var(--px-soft,#eef2ff)}
+html:not(#px) .sx-txt{min-width:0;opacity:.86;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html:not(#px) .sx-tag{flex:0 0 auto;margin-top:2px;padding:.14rem .5rem;border-radius:7px;font-size:.66rem;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+html:not(#px) .sx-t-q{background:rgba(91,124,255,.15);color:#5b7cff!important}
+html:not(#px) .sx-t-o{background:rgba(167,139,250,.17);color:#9a77f5!important}
+html:not(#px) .sx-t-e{background:rgba(34,181,115,.16);color:#1fa86a!important}
+html:not(#px) .sx-t-c{background:rgba(245,185,66,.2);color:#d99211!important}
+html:not(#px) .sx-moreline{margin-top:.45rem;font-size:.73rem;font-weight:600;color:var(--px-accent,#2f54eb)}
+
+html:not(#px) .sx-card mark{background:linear-gradient(120deg,rgba(255,200,0,.6),rgba(255,160,0,.42));color:inherit;border-radius:5px;
+  padding:.02em .24em;font-weight:700;box-shadow:inset 0 -1px 0 rgba(255,150,0,.45)}
+
+html:not(#px) .sx-go{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .9rem;border-radius:13px;font-size:.8rem;font-weight:700;white-space:nowrap;
+  color:#fff!important;background:linear-gradient(135deg,#4f6bff,#7c5cff);box-shadow:0 10px 20px -10px rgba(79,107,255,.85),inset 0 1px 0 rgba(255,255,255,.3);
+  transition:transform .22s,box-shadow .22s}
+html:not(#px) .sx-go svg{transition:transform .22s}
+html:not(#px) .sx-card:hover .sx-go{box-shadow:0 14px 26px -10px rgba(79,107,255,.95),inset 0 1px 0 rgba(255,255,255,.3)}
+html:not(#px) .sx-card:hover .sx-go svg{transform:translateX(3px)}
+
+/* show more / note / empty / skeleton */
+html:not(#px) .sx-more{display:block;margin:.8rem auto 0;padding:.55rem 1.1rem;border-radius:999px;cursor:pointer;font-size:.8rem;font-weight:700;
+  color:var(--px-accent,#2f54eb);background:var(--px-soft,#eef2ff);border:1px solid rgba(111,140,255,.35);transition:transform .2s,background .2s}
+html:not(#px) .sx-more span{font-weight:500;opacity:.75}
+html:not(#px) .sx-more:hover{transform:translateY(-1px);background:rgba(111,140,255,.2)}
+html:not(#px) .sx-note{margin-top:.7rem;text-align:center;font-size:.72rem;color:var(--px-mute,#586177)}
+html:not(#px) .sx-empty{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:1.5rem .5rem 1.2rem;text-align:center;color:var(--px-mute,#586177)}
+html:not(#px) .sx-empty b{color:var(--px-ink,#0e1526);font-size:.98rem}
+html:not(#px) .sx-empty span{font-size:.82rem}
+html:not(#px) .sx-empty-ic{font-size:2rem;margin-bottom:.2rem}
+html:not(#px) .sx-skel{display:grid;gap:.7rem}
+html:not(#px) .sx-skel i{display:block;height:86px;border-radius:18px;border:1px solid var(--px-line,#e1e6f0);
+  background:var(--px-soft,#eef2ff);animation:sxBlink 1.4s ease-in-out infinite}
+
+/* motion */
+html:not(#px) .sx-anim .sx-card{animation:sxIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes sxIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes sxBlink{50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){
+  html:not(#px) .sx-anim .sx-card,html:not(#px) .sx-prog i,html:not(#px) .sx-skel i,html:not(#px) .sx-chip-live i{animation:none}
+}
+
+/* phones */
+@media (max-width:640px){
+  html:not(#px) .sx-box{padding:.85rem .75rem .8rem;border-radius:20px}
+  html:not(#px) .sx-card{grid-template-columns:auto minmax(0,1fr);gap:.7rem;padding:.8rem .8rem .8rem .75rem}
+  html:not(#px) .sx-num{width:50px;height:50px;border-radius:14px}
+  html:not(#px) .sx-go{grid-column:1 / -1;justify-content:center}
+  html:not(#px) .sx-title small{display:none}
+}
+</style>
+
 </body>
 
 

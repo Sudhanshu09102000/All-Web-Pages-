@@ -157,19 +157,13 @@ const PORTAL_DATA = [
       {
         name: "Static GK",
         subtopics: [
-          { name: "1. Classical Dance", file: "General_Awareness/Static_GK/Classical_Dance" },
-          { name: "2. Folk Dances of India", file: "General_Awareness/Static_GK/Folk_Dances_of_India" },
-          { name: "3. Census", file: "General_Awareness/Static_GK/Census" },
-          { name: "4. Musical Instruments", file: "General_Awareness/Static_GK/Musical_Instruments" },
-          { name: "5. Gharanas", file: "General_Awareness/Static_GK/Gharanas" },
-          { name: "6. Important Days", file: "General_Awareness/Static_GK/Important_Days" },
-          { name: "7. Books and Authors", file: "General_Awareness/Static_GK/Books_and_Authors" },
-          { name: "8. Sports", file: "General_Awareness/Static_GK/Sports" },
-          { name: "9. International Organisations", file: "General_Awareness/Static_GK/International_Organisations" },
-          { name: "10. National Organisations", file: "General_Awareness/Static_GK/National_Organisations" },
-          { name: "11. Festivals of India", file: "General_Awareness/Static_GK/Festivals_of_India" },
-          { name: "12. Government Schemes", file: "General_Awareness/Static_GK/Government_Schemes" },
-          { name: "13. Awards and Honours", file: "General_Awareness/Static_GK/Awards_and_Honours" }
+          { name: "Classical Dance", file: "General_Awareness/Static_GK/Classical_Dance" },
+          { name: "Folk Dances of India", file: "General_Awareness/Static_GK/Folk_Dances_of_India" },
+          { name: "Census", file: "General_Awareness/Static_GK/Census" },
+          { name: "Musical Instruments", file: "General_Awareness/Static_GK/Musical_Instruments" },
+          { name: "Gharanas", file: "General_Awareness/Static_GK/Gharanas" },
+          { name: "Important Days", file: "General_Awareness/Static_GK/Important_Days" },
+          { name: "Festivals of India", file: "General_Awareness/Static_GK/Festivals_of_India" }
         ]
       }
     ]
