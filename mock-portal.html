@@ -5013,7 +5013,7 @@ window.rtView = {
               <label class="form-label subtle mb-1">🔍 Search chapters / subtopics / keywords</label>
               <input id="searchInput" class="form-control"
                 placeholder="Type e.g. 'Number System', 'Synonyms', 'demo'..." />
-              <div class="small subtle mt-2">Search results open the selected test directly. Also searches inside every file's questions, explanations &amp; concept pages.</div>
+              <div class="small subtle mt-2">Search results open the selected test directly. To look inside every file's questions, explanations &amp; concept pages, press “Search inside tests” below.</div>
             </div>
             <div class="col-12 col-lg-6">
               <div class="glass p-3">
@@ -6544,8 +6544,11 @@ window.rtView = {
         });
 
         const cache = new Map();   // fileKey -> { status:'ok'|'missing'|'bad', entries:[] }
-        let pumping = false, paused = false, inflight = Promise.resolve(), skipped = 0;
+        let pumping = false, paused = false, active = false, stopped = false, inflight = Promise.resolve(), skipped = 0;   // active = user pressed "Search inside tests"
         let lastQ = '', sig = '', shown = PAGE, typeTimer = null, renderTimer = null;
+        let chain = Promise.resolve();                 // every script load goes through this queue
+        const enqueue = fn => (chain = chain.then(fn, fn));
+        let viewMap = {}, viewPhrase = '';             // what the cards on screen show (used by the reader)
 
         const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const isConcept = it => {
@@ -6658,7 +6661,7 @@ window.rtView = {
               if (cache.has(f)) continue;
               await idle();
               if (paused) break;
-              inflight = loadOne(f);
+              inflight = enqueue(() => loadOne(f));
               await inflight;
               scheduleRender();
             }
@@ -6723,7 +6726,8 @@ window.rtView = {
           const snips = r.hits.slice(0, 3).map(h => {
             const s = snippet(h.e, phrase);
             return '<div class="sx-snip" data-k="' + h.e.kind + '" data-n="' + h.e.n + '" title="Open this page"><span class="sx-tag sx-t-' + s.cls + '">' + escapeHtml(h.e.label) + ' · ' + s.kind + '</span>' +
-              '<span class="sx-txt">' + s.html + '</span></div>';
+              '<span class="sx-txt">' + s.html + '</span>' +
+              '<button type="button" class="sx-rd" data-read="1" title="Read this page here"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"></path></svg>Read</button></div>';
           }).join('');
           const more = r.count > 3 ? '<div class="sx-moreline">+ ' + (r.count - 3) + ' more ' + (r.count - 3 === 1 ? 'match' : 'matches') + ' in this test</div>' : '';
           return '<div class="sx-card" role="button" tabindex="0" data-fk="' + escapeHtml(r.fk) + '" data-k="' + r.hits[0].e.kind + '" data-n="' + r.hits[0].e.n + '" style="--i:' + Math.min(i, 9) + '"' +
@@ -6734,7 +6738,8 @@ window.rtView = {
               '<div class="sx-name">' + escapeHtml(m.subtopicName || r.fk) + '<span class="sx-file">' + escapeHtml(fileLabel(r.fk)) + '</span></div>' +
               snips + more +
             '</div>' +
-            '<div class="sx-go"><span>Open test</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>' +
+            '<div class="sx-act"><button type="button" class="sx-readbtn" data-read="1" title="Read the first matching page here, without opening the test"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"></path><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"></path></svg><span>Read page</span></button>' +
+            '<div class="sx-go"><span>Open test</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div></div>' +
             '</div>';
         }
 
@@ -6759,11 +6764,12 @@ window.rtView = {
           if (fresh) shown = PAGE;
 
           const { res, total, phrase } = search(q);
+          viewMap = {}; res.forEach(r => { viewMap[r.fk] = r; }); viewPhrase = phrase;
           const loaded = cache.size, all = FILES.length;
-          const indexing = loaded < all;
+          const indexing = active && !stopped && loaded < all;
 
           // nothing visible changed (only the scan counter moved) -> leave the DOM alone
-          const newSig = [q, total, res.length, shown, indexing ? 1 : 0, skipped].join('|');
+          const newSig = [q, total, res.length, shown, indexing ? 1 : 0, active ? 1 : 0, stopped ? loaded : 0, skipped].join('|');
           if (!fresh && newSig === sig) { updateProgress(loaded, all); return; }
           sig = newSig;
 
@@ -6772,7 +6778,10 @@ window.rtView = {
           const pct = all ? Math.round(loaded / all * 100) : 100;
 
           let body = '';
-          if (res.length) {
+          if (!active) {
+            body = '<div class="sx-idle"><div class="sx-idle-ic">🔍</div><div><b>Ready when you are</b>' +
+              '<span>Press <em>Search inside tests</em> to look for “' + escapeHtml(q) + '” in every question, option, explanation &amp; concept page.</span></div></div>';
+          } else if (res.length) {
             body = '<div class="sx-list">' + res.slice(0, shown).map((r, i) => cardHtml(r, i, phrase)).join('') + '</div>';
             if (res.length > shown) {
               body += '<button type="button" class="sx-more" data-more="1">Show ' + Math.min(PAGE, res.length - shown) + ' more tests <span>(' + (res.length - shown) + ' left)</span></button>';
@@ -6780,15 +6789,24 @@ window.rtView = {
           } else if (indexing) {
             body = '<div class="sx-skel"><i></i><i></i><i></i></div>';
           } else {
-            body = '<div class="sx-empty"><div class="sx-empty-ic">🔎</div><b>Nothing inside the tests matches “' + escapeHtml(q) + '”</b>' +
-              '<span>Try a shorter word, or check the spelling.</span></div>';
+            body = '<div class="sx-empty"><div class="sx-empty-ic">🔎</div><b>' + (stopped && loaded < all ? 'Nothing found in the ' + loaded + ' files scanned so far' : 'Nothing inside the tests matches “' + escapeHtml(q) + '”') + '</b>' +
+              '<span>' + (stopped && loaded < all ? 'Press Resume scan to check the remaining ' + (all - loaded) + ' files.' : 'Try a shorter word, or check the spelling.') + '</span></div>';
           }
+
+          const runBtn = !active
+            ? '<button type="button" class="sx-run" data-run="1"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><span>Search inside tests</span></button>'
+            : (indexing
+              ? '<button type="button" class="sx-run is-off" disabled><span>Scanning…</span></button>' +
+                '<button type="button" class="sx-run sx-stop" data-stop="1" title="Stop scanning"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2.5"></rect></svg><span>Abort</span></button>'
+              : (stopped && loaded < all
+                ? '<button type="button" class="sx-run" data-run="1"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"></polygon></svg><span>Resume scan</span></button>'
+                : '<button type="button" class="sx-run is-off" disabled><span>✓ All tests scanned</span></button>'));
 
           wrap.innerHTML =
             '<section class="sx-box' + (fresh ? ' sx-anim' : '') + '" aria-label="Search results inside tests">' +
               '<header class="sx-head">' +
-                '<div class="sx-title"><div class="sx-spark">✦</div><div><b>Found inside tests</b>' +
-                '<small>Questions, options, explanations &amp; concept pages of every file</small></div></div>' +
+                '<div class="sx-left"><div class="sx-title"><div class="sx-spark">✦</div><div><b>Found inside tests</b>' +
+                '<small>Questions, options, explanations &amp; concept pages of every file</small></div></div>' + runBtn + '</div>' +
                 '<div class="sx-stat" aria-live="polite">' +
                   (res.length ? '<span class="sx-chip"><b>' + total + '</b> ' + (total === 1 ? 'match' : 'matches') + '</span><span class="sx-chip"><b>' + res.length + '</b> ' + (res.length === 1 ? 'test' : 'tests') + '</span>' : '') +
                   (indexing ? '<span class="sx-chip sx-chip-live"><i></i>Scanning <span class="sx-live-n">' + loaded + '/' + all + '</span></span>' : '') +
@@ -6796,6 +6814,7 @@ window.rtView = {
               '</header>' +
               (indexing ? '<div class="sx-prog"><i style="--p:' + pct + '%"></i></div>' : '') +
               body +
+              (stopped && loaded < all ? '<div class="sx-note">Scan aborted — showing results from ' + loaded + ' of ' + all + ' files.</div>' : '') +
               (!indexing && skipped ? '<div class="sx-note">' + skipped + ' file' + (skipped === 1 ? '' : 's') + ' could not be read and ' + (skipped === 1 ? 'was' : 'were') + ' skipped.</div>' : '') +
             '</section>';
 
@@ -6816,26 +6835,269 @@ window.rtView = {
           if (!meta) return;
           window.__sxJump = (k === 'q' || k === 'c') && n !== null && n !== '' && !isNaN(Number(n)) ? { k: k, n: Number(n) } : null;
           paused = true;                       // never load a file while the real test is loading
-          try { await inflight; } catch (e) { }
+          try { await chain; } catch (e) { }
           startTestFromPortal(meta);
         }
 
+        /* ---------- reader popup: read ONE page here, without opening the test ---------- */
+        let rawHold = null;     // { fk, data } — only the file currently being read (freed on close)
+        let rd = null;          // { fk, hits, pos, phrase, token, groups, cur }
+        let rdEl = null;
+
+        function loadRaw(fk) {
+          return enqueue(() => new Promise(resolve => {
+            const prev = window.TEST_DATA;
+            window.TEST_DATA = undefined;
+            const s = document.createElement('script');
+            s.src = 'scripts/' + fk + '.js';
+            let done = false;
+            const fin = (ok) => {
+              if (done) return;
+              done = true;
+              const d = ok ? window.TEST_DATA : null;
+              window.TEST_DATA = prev;
+              if (s.parentNode) s.parentNode.removeChild(s);
+              resolve(d && typeof d === 'object' ? d : null);
+            };
+            s.onload = () => fin(true);
+            s.onerror = () => fin(false);
+            document.body.appendChild(s);
+          }));
+        }
+        async function getRaw(fk) {
+          if (rawHold && rawHold.fk === fk) return rawHold.data;
+          const d = await loadRaw(fk);
+          if (d) rawHold = { fk, data: d };
+          return d;
+        }
+        function locate(data, kind, n) {
+          let qi = -1, cn = -1;
+          const keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            const it = data[keys[i]];
+            if (!it || typeof it !== 'object') continue;
+            if (isConcept(it)) { cn++; if (kind === 'c' && cn === n) return it; }
+            else { qi++; if (kind === 'q' && qi === n) return it; }
+          }
+          return null;
+        }
+        function accentVars(it) {
+          let a = String(it.accent || it.color || '#3b82f6').trim();
+          if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(a)) a = '#3b82f6';
+          let h = a.slice(1);
+          if (h.length === 3) h = h.split('').map(c => c + c).join('');
+          const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+          return '--cp-accent:' + a + ';--cp-rgb:' + r + ',' + g + ',' + b + ';--cp-on:' + ((0.299 * r + 0.587 * g + 0.114 * b) > 170 ? '#0b1220' : '#ffffff') + ';';
+        }
+
+        function pageHtml(it, kind) {
+          if (kind === 'c') {
+            const title = it.title ? '<h2 class="sxp-h">' + (it.icon ? '<span>' + it.icon + '</span> ' : '') + it.title + '</h2>' : '';
+            const sub = it.subtitle ? '<p class="sxp-sub">' + it.subtitle + '</p>' : '';
+            const body = it.html ?? it.conceptHtml ?? it.concepthtml ?? it.content ?? it.concepttext ?? it.text ?? '';
+            return title + sub + '<div class="cp-body sxp-cpbody">' + body + '</div>';
+          }
+          const img = s => s ? '<img class="sxp-img" src="' + escapeHtml(s) + '" alt="">' : '';
+          const opts = Array.isArray(it.options) ? it.options : [];
+          const ci = Number(it.correct) || 1;
+          let h = '<div class="sxp-qtext">' + (it.questext || '') + '</div>' + img(it.quesimage);
+          if (opts.length) {
+            h += '<ol class="sxp-opts">' + opts.map((o, i) =>
+              '<li class="sxp-opt' + (i + 1 === ci ? ' is-correct' : '') + '"><span class="sxp-key">' + String.fromCharCode(65 + i) + '</span><span class="sxp-ot">' + o + '</span>' +
+              (i + 1 === ci ? '<em class="sxp-ok">✓ Correct</em>' : '') + '</li>').join('') + '</ol>';
+          }
+          if (it.exptext || it.expimage) h += '<div class="sxp-exp"><b>Explanation</b><div>' + (it.exptext || '') + '</div>' + img(it.expimage) + '</div>';
+          return h;
+        }
+
+        /* highlight the exact phrase inside real HTML — even when it is split by <b>, <span> … tags */
+        function hlDom(root, phrase) {
+          const words = phrase.split(' ').filter(Boolean).map(reEsc);
+          if (!words.length) return 0;
+          const re = new RegExp(words.join('\\s*'), 'gi');
+          const nodes = [];
+          let full = '';
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+            acceptNode: n => (n.nodeValue && !/^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+          });
+          while (walker.nextNode()) {
+            const n = walker.currentNode;
+            nodes.push({ n, s: full.length, e: full.length + n.nodeValue.length });
+            full += n.nodeValue;
+          }
+          const segs = new Map();
+          let m, g = 0, j = 0;
+          while ((m = re.exec(full))) {
+            if (!m[0].length) { re.lastIndex++; continue; }
+            const s = m.index, e = s + m[0].length;
+            while (j < nodes.length && nodes[j].e <= s) j++;
+            for (let k = j; k < nodes.length && nodes[k].s < e; k++) {
+              const a = Math.max(s, nodes[k].s) - nodes[k].s, b = Math.min(e, nodes[k].e) - nodes[k].s;
+              if (!segs.has(nodes[k].n)) segs.set(nodes[k].n, []);
+              segs.get(nodes[k].n).push([a, b, g]);
+            }
+            g++;
+          }
+          segs.forEach((list, node) => {
+            const txt = node.nodeValue, frag = document.createDocumentFragment();
+            let pos = 0;
+            list.forEach(([a, b, gi]) => {
+              if (a > pos) frag.appendChild(document.createTextNode(txt.slice(pos, a)));
+              const mk = document.createElement('mark');
+              mk.className = 'sx-hl';
+              mk.setAttribute('data-m', gi);
+              mk.textContent = txt.slice(a, b);
+              frag.appendChild(mk);
+              pos = b;
+            });
+            if (pos < txt.length) frag.appendChild(document.createTextNode(txt.slice(pos)));
+            node.parentNode.replaceChild(frag, node);
+          });
+          return g;
+        }
+
+        const rq = (name) => rdEl.querySelector('[data-r="' + name + '"]');
+
+        function ensureReader() {
+          if (rdEl) return rdEl;
+          rdEl = document.createElement('div');
+          rdEl.className = 'sxp-overlay';
+          rdEl.hidden = true;
+          rdEl.innerHTML =
+            '<div class="sxp-panel" role="dialog" aria-modal="true" aria-label="Page reader">' +
+              '<div class="sxp-bar"></div>' +
+              '<header class="sxp-head">' +
+                '<div class="sxp-ic" data-r="ic">📖</div>' +
+                '<div class="sxp-ttl"><div class="sxp-chips" data-r="chips"></div><b data-r="title"></b><small data-r="crumb"></small></div>' +
+                '<button type="button" class="sxp-x" data-r="close" aria-label="Close" title="Close (Esc)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>' +
+              '</header>' +
+              '<div class="sxp-tools"><span class="sxp-hlcount" data-r="count"></span>' +
+                '<div class="sxp-hlnav"><button type="button" data-r="hprev" title="Previous highlight">▲</button><button type="button" data-r="hnext" title="Next highlight">▼</button></div></div>' +
+              '<div class="sxp-body" data-r="body"></div>' +
+              '<footer class="sxp-foot">' +
+                '<div class="sxp-pager"><button type="button" data-r="pprev">‹ Prev page</button><span data-r="ppos"></span><button type="button" data-r="pnext">Next page ›</button></div>' +
+                '<button type="button" class="sxp-open" data-r="open">Open in test <span>→</span></button>' +
+              '</footer>' +
+            '</div>';
+          document.body.appendChild(rdEl);
+          rdEl.addEventListener('mousedown', (e) => { if (e.target === rdEl) closeReader(); });   // click outside = close
+          rdEl.addEventListener('click', (e) => {
+            const b = e.target.closest('[data-r]');
+            if (!b || !rd) return;
+            const a = b.getAttribute('data-r');
+            if (a === 'close') closeReader();
+            else if (a === 'pprev') { if (rd.pos > 0) showPage(rd.pos - 1); }
+            else if (a === 'pnext') { if (rd.pos < rd.hits.length - 1) showPage(rd.pos + 1); }
+            else if (a === 'hprev') goMark(rd.cur - 1);
+            else if (a === 'hnext') goMark(rd.cur + 1);
+            else if (a === 'open') { const h = rd.hits[rd.pos].e, fk = rd.fk; closeReader(); openTest(fk, h.kind, h.n); }
+          });
+          return rdEl;
+        }
+
+        function goMark(i) {
+          if (!rd || !rd.groups) return;
+          rd.cur = (i + rd.groups) % rd.groups;
+          const body = rq('body');
+          body.querySelectorAll('mark.sx-hl.is-cur').forEach(m => m.classList.remove('is-cur'));
+          const list = body.querySelectorAll('mark.sx-hl[data-m="' + rd.cur + '"]');
+          list.forEach(m => m.classList.add('is-cur'));
+          if (list[0]) list[0].scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+          rq('count').innerHTML = '<b>' + (rd.cur + 1) + '</b> of <b>' + rd.groups + '</b> highlighted';
+        }
+
+        async function showPage(pos) {
+          if (!rd) return;
+          const my = ++rd.token;
+          rd.pos = pos; rd.groups = 0; rd.cur = 0;
+          const h = rd.hits[pos].e, meta = META[rd.fk] || {};
+          rq('ic').textContent = h.kind === 'c' ? '📖' : '❓';
+          rq('chips').innerHTML = '<span class="sx-tag sx-t-' + (h.kind === 'c' ? 'c' : 'q') + '">' + escapeHtml(h.label) + ' · ' + (h.kind === 'c' ? 'Concept page' : 'Question') + '</span>';
+          rq('title').textContent = meta.subtopicName || rd.fk;
+          rq('crumb').textContent = [meta.subjectTitle, meta.topicName].filter(Boolean).join(' • ');
+          rq('ppos').textContent = (pos + 1) + ' / ' + rd.hits.length;
+          rq('pprev').disabled = pos <= 0;
+          rq('pnext').disabled = pos >= rd.hits.length - 1;
+          rq('count').textContent = 'Loading page…';
+          rq('hprev').disabled = rq('hnext').disabled = true;
+          const body = rq('body');
+          body.innerHTML = '<div class="sxp-load">Loading page…</div>';
+          body.scrollTop = 0;
+
+          const data = await getRaw(rd.fk);
+          if (!rd || rd.token !== my) return;                       // closed, or another page was requested meanwhile
+          const it = data ? locate(data, h.kind, h.n) : null;
+          if (!it) {
+            body.innerHTML = '<div class="sxp-load">Could not read this page from <code>scripts/' + escapeHtml(rd.fk) + '.js</code>.</div>';
+            rq('count').textContent = '';
+            return;
+          }
+          body.setAttribute('style', accentVars(it));
+          body.innerHTML = pageHtml(it, h.kind);
+          rd.groups = hlDom(body, rd.phrase);
+          rq('hprev').disabled = rq('hnext').disabled = rd.groups < 2;
+          if (rd.groups) goMark(0); else rq('count').textContent = 'No highlight on this page';
+        }
+
+        function onReaderKey(e) {
+          if (!rd) return;
+          if (e.key === 'Escape') closeReader();
+          else if (e.key === 'ArrowRight') { if (rd.pos < rd.hits.length - 1) showPage(rd.pos + 1); }
+          else if (e.key === 'ArrowLeft') { if (rd.pos > 0) showPage(rd.pos - 1); }
+          else return;
+          e.preventDefault();
+          e.stopPropagation();                                      // keep the portal's own shortcuts out of it
+        }
+
+        function openReader(fk, kind, n) {
+          const r = viewMap[fk];
+          if (!r) return;
+          let pos = r.hits.findIndex(h => h.e.kind === kind && h.e.n === Number(n));
+          if (pos < 0) pos = 0;
+          rd = { fk, hits: r.hits, pos, phrase: viewPhrase, token: 0, groups: 0, cur: 0 };
+          ensureReader();
+          rdEl.hidden = false;
+          document.documentElement.classList.add('sxp-lock');
+          window.addEventListener('keydown', onReaderKey, true);
+          showPage(pos);
+          const x = rq('close'); if (x) x.focus({ preventScroll: true });
+        }
+
+        function closeReader() {
+          if (!rd) return;
+          rd = null;
+          rawHold = null;
+          rdEl.hidden = true;
+          rq('body').innerHTML = '';
+          document.documentElement.classList.remove('sxp-lock');
+          window.removeEventListener('keydown', onReaderKey, true);
+        }
+
         wrap.addEventListener('click', (e) => {
+          if (e.target.closest('[data-stop]')) { stopped = true; paused = true; render(); return; }          // abort: the file being read finishes, then it stops
+          if (e.target.closest('[data-run]')) { active = true; stopped = false; paused = false; render(); pump(); return; }   // start / resume scanning ONLY on this click
           if (e.target.closest('[data-more]')) { shown += PAGE; render(); return; }
           const card = e.target.closest('.sx-card');
           if (!card) return;
+          const rb = e.target.closest('[data-read]');            // 📖 Read = popup, the test is NOT opened
+          if (rb) {
+            const host = rb.closest('.sx-snip') || card;
+            openReader(card.getAttribute('data-fk'), host.getAttribute('data-k'), host.getAttribute('data-n'));
+            return;
+          }
           const row = e.target.closest('.sx-snip') || card;      // tapping a snippet opens THAT page, anywhere else = first match
           openTest(card.getAttribute('data-fk'), row.getAttribute('data-k'), row.getAttribute('data-n'));
         });
         wrap.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
+          if (e.target.closest && e.target.closest('button')) return;      // buttons handle their own keys
           const card = e.target.closest && e.target.closest('.sx-card');
           if (!card) return;
           e.preventDefault();
           openTest(card.getAttribute('data-fk'), card.getAttribute('data-k'), card.getAttribute('data-n'));
         });
 
-        const wake = () => { paused = false; pump(); };
+        const wake = () => { if (!active || stopped) return; paused = false; pump(); };
         inp.addEventListener('focus', wake);
         inp.addEventListener('input', () => {
           wake();
@@ -26774,6 +27036,22 @@ html:not(#px) .sx-skel{display:grid;gap:.7rem}
 html:not(#px) .sx-skel i{display:block;height:86px;border-radius:18px;border:1px solid var(--px-line,#e1e6f0);
   background:var(--px-soft,#eef2ff);animation:sxBlink 1.4s ease-in-out infinite}
 
+/* run button + idle state */
+html:not(#px) .sx-left{display:flex;align-items:center;gap:.9rem 1.1rem;flex-wrap:wrap;min-width:0}
+html:not(#px) .sx-run{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1.05rem;border-radius:13px;border:0;cursor:pointer;font-size:.82rem;font-weight:700;white-space:nowrap;
+  color:#fff!important;background:linear-gradient(135deg,#4f6bff,#7c5cff);box-shadow:0 10px 20px -10px rgba(79,107,255,.9),inset 0 1px 0 rgba(255,255,255,.3);
+  transition:transform .2s,box-shadow .2s}
+html:not(#px) .sx-run:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 14px 26px -10px rgba(79,107,255,1),inset 0 1px 0 rgba(255,255,255,.3)}
+html:not(#px) .sx-run:active:not(:disabled){transform:translateY(0) scale(.98)}
+html:not(#px) .sx-run.is-off{cursor:default;box-shadow:none;background:var(--px-soft,#eef2ff);color:var(--px-accent,#2f54eb)!important;border:1px solid rgba(111,140,255,.3)}
+html:not(#px) .sx-run.sx-stop{background:rgba(239,68,68,.12);color:#ef4444!important;border:1px solid rgba(239,68,68,.4);box-shadow:none}
+html:not(#px) .sx-run.sx-stop:hover{background:rgba(239,68,68,.2);transform:translateY(-1px)}
+html:not(#px) .sx-idle{display:flex;align-items:center;gap:.85rem;padding:1rem 1.05rem;border-radius:16px;border:1px dashed rgba(111,140,255,.45);background:var(--px-soft,#eef2ff)}
+html:not(#px) .sx-idle-ic{font-size:1.5rem}
+html:not(#px) .sx-idle b{display:block;color:var(--px-ink,#0e1526);font-size:.95rem}
+html:not(#px) .sx-idle span{display:block;margin-top:2px;font-size:.82rem;line-height:1.5;color:var(--px-mute,#586177)}
+html:not(#px) .sx-idle em{font-style:normal;font-weight:700;color:var(--px-accent,#2f54eb)}
+
 /* motion */
 html:not(#px) .sx-anim .sx-card{animation:sxIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms)}
 @keyframes sxIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
@@ -26787,9 +27065,94 @@ html:not(#px) .sx-anim .sx-card{animation:sxIn .45s cubic-bezier(.2,.8,.2,1) bot
   html:not(#px) .sx-box{padding:.85rem .75rem .8rem;border-radius:20px}
   html:not(#px) .sx-card{grid-template-columns:auto minmax(0,1fr);gap:.7rem;padding:.8rem .8rem .8rem .75rem}
   html:not(#px) .sx-num{width:50px;height:50px;border-radius:14px}
-  html:not(#px) .sx-go{grid-column:1 / -1;justify-content:center}
   html:not(#px) .sx-title small{display:none}
+  html:not(#px) .sx-left{width:100%}
+  html:not(#px) .sx-run{width:100%;justify-content:center}
 }
+/* ═══ per-card "Read" buttons ═══ */
+html:not(#px) .sx-act{display:flex;flex-direction:column;gap:.5rem;align-items:stretch}
+html:not(#px) .sx-readbtn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.5rem .85rem;border-radius:13px;cursor:pointer;white-space:nowrap;
+  font-size:.8rem;font-weight:700;color:var(--px-accent,#2f54eb)!important;background:var(--px-soft,#eef2ff);border:1px solid rgba(111,140,255,.4);transition:transform .2s,background .2s,box-shadow .2s}
+html:not(#px) .sx-readbtn:hover{transform:translateY(-1px);background:rgba(111,140,255,.2);box-shadow:0 10px 20px -12px rgba(79,107,255,.8)}
+html:not(#px) .sx-rd{flex:0 0 auto;align-self:flex-start;display:inline-flex;align-items:center;gap:.3rem;margin-left:auto;padding:.22rem .55rem;border-radius:9px;cursor:pointer;
+  font-size:.68rem;font-weight:800;color:var(--px-accent,#2f54eb)!important;background:var(--px-soft,#eef2ff);border:1px solid rgba(111,140,255,.35);transition:background .18s,transform .18s}
+html:not(#px) .sx-rd:hover{background:rgba(111,140,255,.25);transform:translateY(-1px)}
+html:not(#px) .sx-snip .sx-txt{flex:1 1 auto}
+
+/* ═══ reader popup ═══ */
+html.sxp-lock,html.sxp-lock body{overflow:hidden!important}
+html:not(#px) .sxp-overlay[hidden]{display:none!important}
+html:not(#px) .sxp-overlay{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:clamp(8px,3vw,32px);
+  background:rgba(8,12,26,.58);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:sxpFade .22s ease both}
+html:not(#px) .sxp-panel{position:relative;display:flex;flex-direction:column;width:min(940px,100%);max-height:min(90vh,100%);border-radius:26px;overflow:hidden;
+  border:1.5px solid transparent;
+  background:linear-gradient(var(--px-surface,#fff),var(--px-surface,#fff)) padding-box,linear-gradient(135deg,#6f8cff,#a78bfa 48%,#f5b942) border-box;
+  box-shadow:0 40px 90px -30px rgba(10,20,60,.7),0 0 0 1px rgba(255,255,255,.04);animation:sxpIn .32s cubic-bezier(.2,.9,.25,1) both;color:var(--px-ink,#0e1526)}
+html:not(#px) .sxp-bar{height:5px;flex:0 0 5px;background:linear-gradient(90deg,#4f6bff,#8b5cf6,#f5b942)}
+html:not(#px) .sxp-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1.2rem .85rem}
+html:not(#px) .sxp-ic{width:46px;height:46px;flex:0 0 46px;border-radius:15px;display:grid;place-items:center;font-size:1.35rem;
+  background:linear-gradient(145deg,rgba(111,140,255,.25),rgba(167,139,250,.16));border:1px solid rgba(111,140,255,.35)}
+html:not(#px) .sxp-ttl{min-width:0;flex:1}
+html:not(#px) .sxp-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.25rem}
+html:not(#px) .sxp-ttl b{display:block;font-size:1.12rem;font-weight:800;letter-spacing:-.01em;line-height:1.3;color:var(--px-ink,#0e1526)}
+html:not(#px) .sxp-ttl small{display:block;margin-top:2px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--px-mute,#586177)}
+html:not(#px) .sxp-x{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  color:var(--px-ink,#0e1526)!important;background:var(--px-soft,#eef2ff);border:1px solid var(--px-line,#e1e6f0);transition:transform .2s,background .2s,color .2s}
+html:not(#px) .sxp-x:hover{background:rgba(239,68,68,.14);color:#ef4444!important;transform:rotate(90deg)}
+html:not(#px) .sxp-tools{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.5rem 1.2rem;background:var(--px-soft,#eef2ff);border-block:1px solid var(--px-line,#e1e6f0)}
+html:not(#px) .sxp-hlcount{font-size:.78rem;font-weight:600;color:var(--px-mute,#586177)}
+html:not(#px) .sxp-hlcount b{color:var(--px-accent,#2f54eb)}
+html:not(#px) .sxp-hlnav{display:flex;gap:.3rem}
+html:not(#px) .sxp-hlnav button{width:30px;height:28px;border-radius:9px;cursor:pointer;font-size:.7rem;color:var(--px-accent,#2f54eb)!important;background:var(--px-surface,#fff);border:1px solid rgba(111,140,255,.35)}
+html:not(#px) .sxp-hlnav button:hover:not(:disabled){background:rgba(111,140,255,.2)}
+html:not(#px) .sxp-hlnav button:disabled,html:not(#px) .sxp-pager button:disabled{opacity:.4;cursor:default}
+
+html:not(#px) .sxp-body{flex:1 1 auto;min-height:120px;overflow:auto;padding:1.2rem 1.4rem 1.5rem;font-size:1rem;line-height:1.75;scrollbar-width:thin;overscroll-behavior:contain}
+html:not(#px) .sxp-body img{max-width:100%;height:auto;border-radius:12px}
+html:not(#px) .sxp-body table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.94em}
+html:not(#px) .sxp-body th,html:not(#px) .sxp-body td{border:1px solid var(--px-line,#e1e6f0);padding:.45rem .65rem;vertical-align:top}
+html:not(#px) .sxp-body th{background:var(--px-soft,#eef2ff)}
+html:not(#px) .sxp-body ul,html:not(#px) .sxp-body ol{padding-left:1.35rem}
+html:not(#px) .sxp-h{margin:0 0 .25rem;font-size:1.4rem;font-weight:800;letter-spacing:-.01em;color:var(--cp-accent,var(--px-accent,#2f54eb))}
+html:not(#px) .sxp-sub{margin:0 0 1rem;color:var(--px-mute,#586177);font-weight:600}
+html:not(#px) .sxp-load{padding:2.5rem 1rem;text-align:center;color:var(--px-mute,#586177);font-weight:600}
+html:not(#px) .sxp-qtext{font-size:1.1rem;font-weight:700;line-height:1.6;margin-bottom:.9rem}
+html:not(#px) .sxp-opts{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:.55rem}
+html:not(#px) .sxp-opt{display:flex;align-items:center;gap:.7rem;padding:.65rem .85rem;border-radius:14px;border:1px solid var(--px-line,#e1e6f0);background:var(--px-surface,#fff)}
+html:not(#px) .sxp-opt.is-correct{border-color:rgba(34,181,115,.6);background:rgba(34,181,115,.12)}
+html:not(#px) .sxp-key{flex:0 0 auto;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:.8rem;font-weight:800;background:var(--px-soft,#eef2ff);color:var(--px-accent,#2f54eb)}
+html:not(#px) .sxp-opt.is-correct .sxp-key{background:#22b573;color:#fff}
+html:not(#px) .sxp-ot{flex:1;min-width:0}
+html:not(#px) .sxp-ok{font-style:normal;font-size:.7rem;font-weight:800;color:#1fa86a}
+html:not(#px) .sxp-exp{padding:.85rem 1rem;border-radius:14px;background:var(--px-soft,#eef2ff);border-left:4px solid #8b5cf6}
+html:not(#px) .sxp-exp>b{display:block;margin-bottom:.25rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--px-accent,#2f54eb)}
+html:not(#px) .sxp-body mark.sx-hl{background:linear-gradient(120deg,rgba(255,200,0,.65),rgba(255,160,0,.5));color:inherit;border-radius:5px;padding:.02em .22em;box-shadow:inset 0 -1px 0 rgba(255,150,0,.5);scroll-margin:90px}
+html:not(#px) .sxp-body mark.sx-hl.is-cur{outline:2px solid #ff9f0a;box-shadow:0 0 0 4px rgba(255,159,10,.28)}
+
+html:not(#px) .sxp-foot{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;padding:.8rem 1.2rem;border-top:1px solid var(--px-line,#e1e6f0);background:var(--px-surface,#fff)}
+html:not(#px) .sxp-pager{display:flex;align-items:center;gap:.5rem}
+html:not(#px) .sxp-pager span{min-width:52px;text-align:center;font-size:.78rem;font-weight:700;color:var(--px-mute,#586177)}
+html:not(#px) .sxp-pager button{padding:.5rem .8rem;border-radius:12px;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--px-accent,#2f54eb)!important;background:var(--px-soft,#eef2ff);border:1px solid rgba(111,140,255,.35)}
+html:not(#px) .sxp-pager button:hover:not(:disabled){background:rgba(111,140,255,.22)}
+html:not(#px) .sxp-open{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.05rem;border-radius:13px;border:0;cursor:pointer;font-size:.82rem;font-weight:700;color:#fff!important;
+  background:linear-gradient(135deg,#4f6bff,#7c5cff);box-shadow:0 10px 20px -10px rgba(79,107,255,.9),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .2s}
+html:not(#px) .sxp-open:hover{transform:translateY(-1px)}
+html:not(#px) .sxp-open span{transition:transform .2s}
+html:not(#px) .sxp-open:hover span{transform:translateX(3px)}
+
+@keyframes sxpFade{from{opacity:0}to{opacity:1}}
+@keyframes sxpIn{from{opacity:0;transform:translateY(18px) scale(.965)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){html:not(#px) .sxp-overlay,html:not(#px) .sxp-panel{animation:none}}
+@media (max-width:640px){
+  html:not(#px) .sxp-overlay{align-items:flex-end;padding:0}
+  html:not(#px) .sxp-panel{width:100%;max-height:94vh;border-radius:24px 24px 0 0}
+  html:not(#px) .sxp-body{padding:1rem 1rem 1.2rem}
+  html:not(#px) .sxp-foot{justify-content:center}
+  html:not(#px) .sxp-open{width:100%;justify-content:center}
+  html:not(#px) .sx-act{grid-column:1 / -1;flex-direction:row}
+  html:not(#px) .sx-act>*{flex:1;justify-content:center}
+}
+
 </style>
 
 </body>
