@@ -160,24 +160,11 @@ const PORTAL_DATA = [
       {
         name: "Biology",
         subtopics: [
-          { name: "1. Know All About Cell", file: "General_Awareness/Biology/Know_All_About_Cell" },
-          { name: "2. Facts About Cell", file: "General_Awareness/Biology/Facts_About_Cell" },
-          { name: "3. Tissue & Its Types", file: "General_Awareness/Biology/Tissue_and_Its_Types" },
-          { name: "4. Facts About Bone", file: "General_Awareness/Biology/Facts_About_Bone" },
-          { name: "5. Nervous System", file: "General_Awareness/Biology/Nervous_System" },
-          { name: "6. All About Human Eye", file: "General_Awareness/Biology/All_About_Human_Eye" },
-          { name: "7. Facts About Human Brain", file: "General_Awareness/Biology/Facts_About_Human_Brain" },
-          { name: "8. All About Hormones", file: "General_Awareness/Biology/All_About_Hormones" },
-          { name: "9. Blood & Its Components", file: "General_Awareness/Biology/Blood_and_Its_Components" },
-          { name: "10. Functions of Human Heart", file: "General_Awareness/Biology/Functions_of_Human_Heart" },
-          { name: "11. Reproduction System", file: "General_Awareness/Biology/Reproduction_System" },
-          { name: "12. Plant Reproduction", file: "General_Awareness/Biology/Plant_Reproduction" },
-          { name: "13. Functions of Intestine", file: "General_Awareness/Biology/Functions_of_Intestine" },
-          { name: "14. Vitamins & Its Functions", file: "General_Awareness/Biology/Vitamins_and_Its_Functions" },
-          { name: "15. Excretory System", file: "General_Awareness/Biology/Excretory_System" },
-          { name: "16. Diversity in Living Organism", file: "General_Awareness/Biology/Diversity_in_Living_Organism" },
-          { name: "17. All About Microorganism", file: "General_Awareness/Biology/All_About_Microorganism" },
-          { name: "18. Important Facts About Science", file: "General_Awareness/Biology/Important_Facts_About_Science" }
+          { name: "1. Biology Basics, Cell and Tissue", file: "General_Awareness/Biology/Biology_Basics_Cell_and_Tissue" },
+          { name: "2. Skeletal, Nervous and Endocrine Systems", file: "General_Awareness/Biology/Skeletal_Nervous_and_Endocrine_Systems" },
+          { name: "3. Blood, Heart, Digestion and Excretion", file: "General_Awareness/Biology/Blood_Heart_Digestion_and_Excretion" },
+          { name: "4. Vitamins, Reproduction and Plants", file: "General_Awareness/Biology/Vitamins_Reproduction_and_Plants" },
+          { name: "5. Classification, Micro-organisms and Diseases", file: "General_Awareness/Biology/Classification_Microorganisms_and_Diseases" }
         ]
       },
       {
