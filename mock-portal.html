@@ -5170,6 +5170,23 @@ window.rtView = {
         </div>
 
         <div class="glass p-3 p-md-4">
+          <div class="ssx ssx-subject" id="sxeBar" role="search">
+            <label class="ssx-field">
+              <span class="ssx-ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+              <input id="sxeInput" class="ssx-input" type="search" placeholder="Search topic groups &amp; chapters…" aria-label="Search topic groups and chapters in this subject" autocomplete="off" spellcheck="false" enterkeyhint="search">
+              <span class="ssx-count" id="sxeCount" aria-live="polite"></span>
+              <button type="button" class="ssx-clear" id="sxeClear" aria-label="Clear search" tabindex="-1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+              <kbd class="ssx-kbd" aria-hidden="true">/</kbd>
+            </label>
+            <div class="ssx-scope">Searching only in <b id="sxeScopeName"></b></div>
+          </div>
+          <div id="sxeContent" class="sx-wrap" hidden></div>
+          <div id="sxeEmpty" class="ssx-empty" role="status">
+            <div class="ssx-empty-ico">🔎</div>
+            <div class="ssx-empty-t">No chapters found</div>
+            <div class="ssx-empty-s">No chapter name in <b id="sxeEmptyName"></b> matches. Press <em>Search inside tests</em> above to look inside the questions &amp; concept pages.</div>
+            <button type="button" class="ssx-empty-btn" id="sxeEmptyClear">Clear search</button>
+          </div>
           <div id="topicsArea" class="row g-3"></div>
         </div>
       </div>
@@ -6269,36 +6286,61 @@ window.rtView = {
         state.selectedSubjectIndex = subjectIndex;
         const subject = PORTAL_DATA[subjectIndex];
         $('subjectTitle').textContent = subject.title;
+        sxeMount(subject);
+        showView('subject');
+      }
 
-        const topicsArea = $('topicsArea');
-        topicsArea.innerHTML = '';
+      /* ========= SUBJECT EXPLORER — topic groups + chapters with scoped search =========
+         • Top search box  → searches ONLY this subject (topic-group names + chapter names)
+         • Box inside each group → searches ONLY that group's chapters
+         Speed notes: one innerHTML render, delegated events, filtering = class toggles on
+         existing nodes (no node churn), match highlighting via the CSS Custom Highlight API
+         (no <mark> wrapping), updates batched into one requestAnimationFrame. */
+      var SXE = null;
+      var SXE_SUB = null;   // the subject-level "Search inside tests" box (created once, re-scoped per subject)
+      const sxeFiles = (topics) => { const s = new Set(); topics.forEach(tg => tg.subtopics.forEach(st => { if (st.file) s.add(st.file); })); return Array.from(s); };
+      var SXE_BOUND = false;
+      var SXE_GROUP_SEARCH_MIN = 1;   // groups with fewer chapters than this get no search box
+      var SXE_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+      var SXE_X = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>';
 
-        subject.topics.forEach((tg, i) => {
-          const topicCol = document.createElement('div');
-          topicCol.className = 'col-12 col-lg-6';
+      function sxeNorm(s) { return String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim(); }
+      function sxeTokens(q) { const n = sxeNorm(q); return n ? n.split(' ') : []; }
+      function sxeMatch(tokens, hay) { for (let i = 0; i < tokens.length; i++) { if (hay.indexOf(tokens[i]) < 0) return false; } return true; }
+      function sxeText(el) { let n = el.firstChild; if (!n) { n = document.createTextNode(''); el.appendChild(n); } return n; }
 
-          const subBtns = tg.subtopics.map(st => `
-      <div class="subtopic-row d-flex align-items-center gap-2 mt-2">
-        <button class="subtopic-btn flex-grow-1" data-file="${st.file}">
-          ${escapeHtml(st.name)} <span class="pill float-end">Start</span>
-        </button>
-        <button class="share-btn" data-file="${st.file}"
-          data-subject="${escapeHtml(subject.title)}"
-          data-topic="${escapeHtml(tg.name)}"
-          data-subtopic="${escapeHtml(st.name)}"
-          title="Copy direct link to this test"
-          style="flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid rgba(59, 130, 246,.4);background:rgba(59, 130, 246,.10);color:#3b82f6;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;">🔗</button>
-      </div>
-    `).join('');
+      function sxeMount(subject) {
+        const area = $('topicsArea');
+        sxeBindOnce(area);
 
-          const subCount = tg.subtopics.length;
+        if (SXE) SXE.groups.forEach(g => { if (g.cs) g.cs.dispose(); });   // old group boxes: stop their scans, free their popups
+        const parts = [];
+        subject.topics.forEach((tg, gi) => {
+          const n = tg.subtopics.length;
+          const rows = tg.subtopics.map((st, si) => `
+      <div class="subtopic-row d-flex align-items-center gap-2 mt-2" data-s="${si}">
+        <button type="button" class="subtopic-btn flex-grow-1" data-act="start"><span class="st-name">${escapeHtml(st.name)}</span> <span class="pill float-end">Start</span></button>
+        <button type="button" class="share-btn" data-act="share" title="Copy direct link to this test">🔗</button>
+      </div>`).join('');
 
-          topicCol.innerHTML = `
+          const gsearch = n >= SXE_GROUP_SEARCH_MIN ? `
+            <div class="ssx ssx-group" data-role="gbar">
+              <label class="ssx-field">
+                <span class="ssx-ico">${SXE_ICON}</span>
+                <input class="ssx-input" type="search" data-role="ginput" placeholder="Search in ${escapeHtml(tg.name)}…" aria-label="Search chapters in ${escapeHtml(tg.name)}" autocomplete="off" spellcheck="false" enterkeyhint="search">
+                <span class="ssx-count" data-role="gchip" aria-live="polite"></span>
+                <button type="button" class="ssx-clear" data-act="gclear" aria-label="Clear search" tabindex="-1">${SXE_X}</button>
+              </label>
+            </div>
+            <div class="sx-wrap ssx-gcontent" data-role="gcontent" hidden></div>` : '';
+
+          parts.push(`
+    <div class="col-12 col-lg-6" data-g="${gi}">
       <div class="glass p-3 h-100 topic-group-card">
-        <button class="topic-dropdown-header" type="button" data-topic="${escapeHtml(tg.name)}" aria-expanded="false">
+        <button class="topic-dropdown-header" type="button" data-act="toggle" data-topic="${escapeHtml(tg.name)}" aria-expanded="false">
           <span class="topic-dropdown-title">
             <span class="topic-dropdown-name">${escapeHtml(tg.name)}</span>
-            <span class="topic-dropdown-count">${subCount} ${subCount === 1 ? 'topic' : 'topics'}</span>
+            <span class="topic-dropdown-count">${n} ${n === 1 ? 'topic' : 'topics'}</span>
           </span>
           <span class="topic-dropdown-chevron" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -6306,7 +6348,9 @@ window.rtView = {
         </button>
         <div class="subtopic-collapse">
           <div class="subtopic-collapse-inner">
-            <div class="subtopic-area mt-2">${subBtns}</div>
+            ${gsearch}
+            <div class="subtopic-area mt-2">${rows}</div>
+            <div class="ssx-gempty" data-role="gempty">No chapter name matches. Press <em>Search inside tests</em> above to look inside the questions.</div>
             <div class="pdf-upload-area mt-2" style="display:none;">
               <div class="pdf-upload-box glass p-3 text-center" style="border:2px dashed rgba(59, 130, 246,.4);border-radius:14px;cursor:pointer;transition:all .2s;">
                 <input type="file" accept=".pdf" class="chapter-pdf-input" style="display:none;">
@@ -6319,120 +6363,256 @@ window.rtView = {
           </div>
         </div>
       </div>
-    `;
+    </div>`);
+        });
+        area.innerHTML = parts.join('');            // single render
 
-          // subtopic clicks
-          topicCol.querySelectorAll('.subtopic-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const fileKey = btn.getAttribute('data-file');
-              const subName = btn.closest('.subtopic-row').querySelector('.subtopic-btn').textContent.replace('Start', '').trim();
-              startTestFromPortal({
-                subjectTitle: subject.title,
-                topicName: tg.name,
-                subtopicName: subName,
-                fileKey
-              });
-            });
+        const groups = [];
+        Array.prototype.forEach.call(area.children, (col, gi) => {
+          const tg = subject.topics[gi];
+          const rowEls = col.querySelectorAll('.subtopic-row');
+          const g = {
+            tg, col, n: tg.subtopics.length,
+            header: col.querySelector('.topic-dropdown-header'),
+            collapse: col.querySelector('.subtopic-collapse'),
+            inner: col.querySelector('.subtopic-collapse-inner'),
+            nameNode: col.querySelector('.topic-dropdown-name').firstChild,
+            countNode: sxeText(col.querySelector('.topic-dropdown-count')),
+            baseCount: col.querySelector('.topic-dropdown-count').textContent,
+            gbar: col.querySelector('[data-role="gbar"]'),
+            input: col.querySelector('[data-role="ginput"]'),
+            chip: null,
+            emptyEl: col.querySelector('[data-role="gempty"]'),
+            rows: [],
+            q: '', userOpen: false, open: false, override: null,
+            shown: true, empty: false, label: null, chipLabel: null
+          };
+          if (g.gbar) g.chip = sxeText(g.gbar.querySelector('[data-role="gchip"]'));
+          g.cs = null;
+          const cw = col.querySelector('[data-role="gcontent"]');
+          if (cw && g.input) g.cs = createContentSearch(cw, g.input, sxeFiles([tg]), tg.name, true);   // "Search inside tests" for THIS group only
+          g.rows = Array.prototype.map.call(rowEls, (el, si) => {
+            const st = tg.subtopics[si];
+            return {
+              el, st,
+              nameNode: el.querySelector('.st-name').firstChild,
+              name: sxeNorm(st.name),
+              hay: sxeNorm(st.name + ' ' + tg.name),
+              shown: true
+            };
           });
+          groups.push(g);
+        });
 
-          // share button clicks
-          topicCol.querySelectorAll('.share-btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-              btn.style.background = 'rgba(59, 130, 246,.22)';
-              btn.style.borderColor = 'rgba(59, 130, 246,.8)';
-              btn.style.transform = 'scale(1.08)';
-            });
-            btn.addEventListener('mouseleave', () => {
-              btn.style.background = 'rgba(59, 130, 246,.10)';
-              btn.style.borderColor = 'rgba(59, 130, 246,.4)';
-              btn.style.transform = '';
-            });
-            btn.addEventListener('click', (e) => {
+        const input = $('sxeInput');
+        input.value = '';
+        input.placeholder = 'Search topic groups & chapters in ' + subject.title + '…';
+        sxeText($('sxeScopeName')).nodeValue = subject.title;
+        const subFiles = sxeFiles(subject.topics);
+        if (!SXE_SUB) SXE_SUB = createContentSearch($('sxeContent'), input, subFiles, subject.title, true);   // …and for the whole SUBJECT
+        else SXE_SUB.setScope(subFiles, subject.title);
+        sxeText($('sxeEmptyName')).nodeValue = subject.title;
+        $('sxeBar').classList.remove('has-q');
+        $('sxeEmpty').classList.remove('is-on');
+        area.classList.remove('ssx-searching');
+        sxeText($('sxeCount')).nodeValue = '';
+        if (window.CSS && CSS.highlights) CSS.highlights.delete('ssx-hit');
+
+        if (SXE && SXE.raf) cancelAnimationFrame(SXE.raf);
+        SXE = { subject, groups, sq: '', lastSq: '', raf: 0, area };
+      }
+
+      function sxeSchedule() { if (SXE && !SXE.raf) SXE.raf = requestAnimationFrame(sxeApply); }
+
+      function sxeSetOpen(g, open, animate) {
+        if (g.open === open) return;
+        g.open = open;
+        g.header.classList.toggle('is-open', open);
+        g.header.setAttribute('aria-expanded', open ? 'true' : 'false');
+        const c = g.collapse;
+        if (open) {
+          c.style.height = animate ? (g.inner.scrollHeight + 'px') : 'auto';
+        } else if (animate) {
+          c.style.height = c.scrollHeight + 'px';
+          requestAnimationFrame(() => { c.style.height = '0px'; });
+        } else {
+          c.style.height = '0px';
+        }
+      }
+
+      function sxeRanges(node, tokens, out) {
+        if (!node || !tokens.length) return;
+        const text = node.nodeValue, low = text.toLowerCase();
+        if (low.length !== text.length) return;
+        for (let k = 0; k < tokens.length; k++) {
+          const t = tokens[k];
+          let i = low.indexOf(t);
+          while (i >= 0) {
+            const r = document.createRange();
+            r.setStart(node, i); r.setEnd(node, i + t.length);
+            out.push(r);
+            i = low.indexOf(t, i + t.length);
+          }
+        }
+      }
+
+      function sxeApply() {
+        const E = SXE; if (!E) return;
+        E.raf = 0;
+        const st = sxeTokens(E.sq);
+        if (E.sq !== E.lastSq) { E.lastSq = E.sq; E.groups.forEach(g => { g.override = null; }); }
+        const ranges = [];
+        let rowsShown = 0, groupsShown = 0, anyGroupQ = false;
+
+        E.groups.forEach(g => {
+          const gt = sxeTokens(g.q);
+          if (gt.length) anyGroupQ = true;
+          let subjHits = 0, vis = 0;
+          for (let i = 0; i < g.rows.length; i++) {
+            const r = g.rows[i];
+            const sOk = !st.length || sxeMatch(st, r.hay);
+            const ok = sOk && (!gt.length || sxeMatch(gt, r.name));
+            if (sOk) subjHits++;
+            if (ok) { vis++; if (st.length || gt.length) sxeRanges(r.nameNode, st.concat(gt), ranges); }
+            if (r.shown !== ok) { r.shown = ok; r.el.classList.toggle('ssx-hide', !ok); }
+          }
+          // a whole group is hidden only by the SUBJECT-level search; a group's own box never hides the group
+          const gShown = !st.length || subjHits > 0;
+          if (g.shown !== gShown) { g.shown = gShown; g.col.classList.toggle('ssx-hide', !gShown); }
+          if (gShown) { groupsShown++; rowsShown += vis; if (st.length) sxeRanges(g.nameNode, st, ranges); }
+
+          const empty = gShown && vis === 0;
+          if (g.empty !== empty) { g.empty = empty; g.emptyEl.classList.toggle('is-on', empty); }
+
+          const filtering = st.length > 0 || gt.length > 0;
+          const label = filtering ? (vis + ' of ' + g.n + ' ' + (g.n === 1 ? 'topic' : 'topics')) : g.baseCount;
+          if (g.label !== label) { g.label = label; g.countNode.nodeValue = label; }
+          if (g.gbar) {
+            g.gbar.classList.toggle('has-q', gt.length > 0);
+            const chip = gt.length ? (vis + '/' + g.n) : '';
+            if (g.chipLabel !== chip) { g.chipLabel = chip; g.chip.nodeValue = chip; }
+          }
+
+          // open state: auto-open groups that contain subject-level hits; otherwise restore what the user had
+          let want = g.override !== null ? g.override : (st.length ? subjHits > 0 : g.userOpen);
+          if (!gShown) want = false;
+          sxeSetOpen(g, want, false);
+        });
+
+        $('sxeBar').classList.toggle('has-q', st.length > 0);
+        E.area.classList.toggle('ssx-searching', st.length > 0 || anyGroupQ);
+        sxeText($('sxeCount')).nodeValue = st.length ? (rowsShown + (rowsShown === 1 ? ' chapter' : ' chapters')) : '';
+        $('sxeEmpty').classList.toggle('is-on', st.length > 0 && groupsShown === 0);
+
+        if (window.CSS && CSS.highlights && window.Highlight) {
+          if (ranges.length) CSS.highlights.set('ssx-hit', new Highlight(...ranges));
+          else CSS.highlights.delete('ssx-hit');
+        }
+      }
+
+      function sxeClearSubject(focus) {
+        const input = $('sxeInput');
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));   // updates the list AND hides the content box
+        if (focus) input.focus();
+      }
+
+      function sxeBindOnce(area) {
+        if (SXE_BOUND) return;
+        SXE_BOUND = true;
+
+        const input = $('sxeInput');
+        input.addEventListener('input', () => { if (SXE) { SXE.sq = input.value; sxeSchedule(); } });
+        input.addEventListener('keydown', (e) => {
+          e.stopPropagation();
+          if (e.key === 'Escape') { if (input.value) sxeClearSubject(false); else input.blur(); }
+        });
+        $('sxeClear').addEventListener('click', (e) => { e.preventDefault(); sxeClearSubject(true); });
+        $('sxeEmptyClear').addEventListener('click', () => sxeClearSubject(true));
+
+        // "/" jumps to the subject search (only on the subject screen, never while typing elsewhere)
+        document.addEventListener('keydown', (e) => {
+          if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+          if (!$('subjectView').classList.contains('active') || document.body.classList.contains('modal-open')) return;
+          const t = e.target;
+          if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+          e.preventDefault(); input.focus();
+        });
+
+        const groupOf = (el) => { const col = el.closest('[data-g]'); return col && SXE ? SXE.groups[+col.dataset.g] : null; };
+
+        area.addEventListener('input', (e) => {
+          const t = e.target;
+          if (t.getAttribute && t.getAttribute('data-role') === 'ginput') {
+            const g = groupOf(t); if (g) { g.q = t.value; sxeSchedule(); }
+          }
+        });
+
+        area.addEventListener('keydown', (e) => {
+          const t = e.target;
+          if (t.getAttribute && t.getAttribute('data-role') === 'ginput') {
+            e.stopPropagation();
+            if (e.key === 'Escape' && t.value) { t.value = ''; t.dispatchEvent(new Event('input', { bubbles: true })); }
+          }
+        });
+
+        area.addEventListener('click', (e) => {
+          const t = e.target;
+          const act = t.closest('[data-act]');
+          if (act) {
+            const g = groupOf(act); if (!g) return;
+            const a = act.getAttribute('data-act');
+            if (a === 'toggle') {
+              const next = !g.open;
+              if (SXE.sq.trim()) g.override = next; else g.userOpen = next;
+              sxeSetOpen(g, next, true);
+              return;
+            }
+            if (a === 'gclear') { g.input.value = ''; g.input.dispatchEvent(new Event('input', { bubbles: true })); g.input.focus(); return; }
+            const row = act.closest('.subtopic-row'); if (!row) return;
+            const st = g.tg.subtopics[+row.dataset.s];
+            if (a === 'start') {
+              startTestFromPortal({ subjectTitle: SXE.subject.title, topicName: g.tg.name, subtopicName: st.name, fileKey: st.file });
+            } else if (a === 'share') {
               e.stopPropagation();
-              const fileKey   = btn.getAttribute('data-file');
-              const subj      = btn.getAttribute('data-subject');
-              const topic     = btn.getAttribute('data-topic');
-              const subtopic  = btn.getAttribute('data-subtopic');
               const url = new URL(location.href);
               url.search = '';
               url.searchParams.set('launch', '1');
-              url.searchParams.set('file', fileKey);
-              url.searchParams.set('subject', subj);
-              url.searchParams.set('topic', topic);
-              url.searchParams.set('subtopic', subtopic);
+              url.searchParams.set('file', st.file);
+              url.searchParams.set('subject', SXE.subject.title);
+              url.searchParams.set('topic', g.tg.name);
+              url.searchParams.set('subtopic', st.name);
               const link = url.toString();
-              navigator.clipboard.writeText(link).then(() => {
-                showShareToast(subtopic);
-              }).catch(() => {
-                prompt('Copy this link:', link);
-              });
-            });
-          });
-
-          // dropdown header toggle (collapsed by default)
-          const dropdownHeader = topicCol.querySelector('.topic-dropdown-header');
-          const collapseEl = topicCol.querySelector('.subtopic-collapse');
-          const collapseInner = topicCol.querySelector('.subtopic-collapse-inner');
-
-          dropdownHeader.addEventListener('click', () => {
-            const isOpen = dropdownHeader.classList.contains('is-open');
-            if (isOpen) {
-              collapseEl.style.height = collapseEl.scrollHeight + 'px';
-              requestAnimationFrame(() => { collapseEl.style.height = '0px'; });
-              dropdownHeader.classList.remove('is-open');
-              dropdownHeader.setAttribute('aria-expanded', 'false');
-            } else {
-              dropdownHeader.classList.add('is-open');
-              dropdownHeader.setAttribute('aria-expanded', 'true');
-              collapseEl.style.height = collapseInner.scrollHeight + 'px';
+              navigator.clipboard.writeText(link).then(() => { showShareToast(st.name); }).catch(() => { prompt('Copy this link:', link); });
             }
-          });
-
-          // keep open panels correctly sized if content reflows (e.g. window resize)
-          collapseEl.addEventListener('transitionend', () => {
-            if (dropdownHeader.classList.contains('is-open')) {
-              collapseEl.style.height = 'auto';
-            }
-          });
-
-          // PDF drop/click handling
-          const pdfBox = topicCol.querySelector('.pdf-upload-box');
-          const pdfInput = topicCol.querySelector('.chapter-pdf-input');
-          const pdfChosen = topicCol.querySelector('.pdf-chosen-name');
-
-          pdfBox.addEventListener('click', () => pdfInput.click());
-
-          pdfBox.addEventListener('dragover', e => {
-            e.preventDefault();
-            pdfBox.style.borderColor = 'rgba(34,197,94,.8)';
-            pdfBox.style.background = 'rgba(34,197,94,.07)';
-          });
-          pdfBox.addEventListener('dragleave', () => {
-            pdfBox.style.borderColor = 'rgba(59, 130, 246,.4)';
-            pdfBox.style.background = '';
-          });
-          pdfBox.addEventListener('drop', e => {
-            e.preventDefault();
-            pdfBox.style.borderColor = 'rgba(59, 130, 246,.4)';
-            pdfBox.style.background = '';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type === 'application/pdf') {
-              pdfChosen.textContent = '✅ ' + file.name;
-              pdfChosen.style.display = 'block';
-            }
-          });
-          pdfInput.addEventListener('change', () => {
-            if (pdfInput.files[0]) {
-              pdfChosen.textContent = '✅ ' + pdfInput.files[0].name;
-              pdfChosen.style.display = 'block';
-            }
-          });
-
-          topicsArea.appendChild(topicCol);
+            return;
+          }
+          const box = t.closest('.pdf-upload-box');
+          if (box && t.tagName !== 'INPUT') { const inp = box.querySelector('.chapter-pdf-input'); if (inp) inp.click(); }
         });
 
-        showView('subject');
+        // height animation finished -> let the open panel size itself (ignore bubbled child transitions)
+        area.addEventListener('transitionend', (e) => {
+          if (e.propertyName !== 'height' || !e.target.classList || !e.target.classList.contains('subtopic-collapse')) return;
+          const col = e.target.closest('[data-g]'); const g = col && SXE ? SXE.groups[+col.dataset.g] : null;
+          if (g && g.open) e.target.style.height = 'auto';
+        });
+
+        // PDF drop zone (hidden feature, behaviour kept)
+        const pdfName = (box, f) => { const n = box.querySelector('.pdf-chosen-name'); n.textContent = '✅ ' + f.name; n.style.display = 'block'; };
+        area.addEventListener('dragover', (e) => { const b = e.target.closest && e.target.closest('.pdf-upload-box'); if (!b) return; e.preventDefault(); b.style.borderColor = 'rgba(34,197,94,.8)'; b.style.background = 'rgba(34,197,94,.07)'; });
+        area.addEventListener('dragleave', (e) => { const b = e.target.closest && e.target.closest('.pdf-upload-box'); if (!b) return; b.style.borderColor = 'rgba(59, 130, 246,.4)'; b.style.background = ''; });
+        area.addEventListener('drop', (e) => {
+          const b = e.target.closest && e.target.closest('.pdf-upload-box'); if (!b) return;
+          e.preventDefault(); b.style.borderColor = 'rgba(59, 130, 246,.4)'; b.style.background = '';
+          const f = e.dataTransfer.files[0]; if (f && f.type === 'application/pdf') pdfName(b, f);
+        });
+        area.addEventListener('change', (e) => {
+          const t = e.target;
+          if (t.classList && t.classList.contains('chapter-pdf-input') && t.files[0]) pdfName(t.closest('.pdf-upload-box'), t.files[0]);
+        });
       }
+
 
       // Back button listeners are handled by initBackGuard() above
 
@@ -6527,27 +6707,32 @@ window.rtView = {
          "Found inside tests" box below it. Files are read lazily (first time
          the search box is used), one at a time, only while the browser is idle,
          and cached for the session — so typing and scrolling stay smooth.      */
-      (function initContentSearch() {
-        const wrap = $('contentSearch');
-        const inp = $('searchInput');
-        if (!wrap || !inp) return;
+      const SX_SHARED = { cache: new Map(), chain: Promise.resolve(), insts: [] };   // shared by every search box: ONE load queue (scripts share window.TEST_DATA) + one cache
+      const SX_META = {}, SX_ALL_FILES = [];
+      SEARCH_INDEX.forEach(x => {
+        if (!x.fileKey || SX_META[x.fileKey]) return;
+        SX_META[x.fileKey] = x;
+        SX_ALL_FILES.push(x.fileKey);
+      });
+      function createContentSearch(wrap, inp, scopeFiles, scopeLabel0, manual) {
+        if (!wrap || !inp) return null;
 
         const PAGE = 10;           // cards shown before "Show more"
         const MIN_CHARS = 2;
         const SEP = ' \u2503 ';    // joins the parts of one entry (question | options | explanation)
-        const FILES = [];          // unique file keys, in portal order
-        const META = {};           // fileKey -> { subjectTitle, topicName, subtopicName, fileKey }
-        SEARCH_INDEX.forEach(x => {
-          if (!x.fileKey || META[x.fileKey]) return;
-          META[x.fileKey] = x;
-          FILES.push(x.fileKey);
-        });
+        const META = SX_META;      // fileKey -> { subjectTitle, topicName, subtopicName, fileKey }
+        let FILES = (scopeFiles || SX_ALL_FILES).slice();   // the files THIS box may scan (whole portal, one subject, or one topic group)
+        let SCOPE = new Set(FILES);
+        let scopeLabel = scopeLabel0 || '';
+        let gen = 0;               // bumped whenever the scope changes, so an old scan loop stops itself
+        let shownAt = 0;           // when the results box was last drawn (used to ignore accidental taps on a freshly appeared button)
 
-        const cache = new Map();   // fileKey -> { status:'ok'|'missing'|'bad', entries:[] }
-        let pumping = false, paused = false, active = false, stopped = false, inflight = Promise.resolve(), skipped = 0;   // active = user pressed "Search inside tests"
+        const cache = SX_SHARED.cache;   // fileKey -> { status:'ok'|'missing'|'bad', entries:[] } (shared, so a file is never read twice)
+        let pumping = false, paused = false, active = false, stopped = false, inflight = Promise.resolve();   // active = user pressed "Search inside tests"
         let lastQ = '', sig = '', shown = PAGE, typeTimer = null, renderTimer = null;
-        let chain = Promise.resolve();                 // every script load goes through this queue
-        const enqueue = fn => (chain = chain.then(fn, fn));
+        const enqueue = fn => (SX_SHARED.chain = SX_SHARED.chain.then(fn, fn));
+        const loadedCount = () => { let c = 0; for (let i = 0; i < FILES.length; i++) if (cache.has(FILES[i])) c++; return c; };
+        const skippedCount = () => { let c = 0; for (let i = 0; i < FILES.length; i++) { const r = cache.get(FILES[i]); if (r && r.status !== 'ok') c++; } return c; };
         let viewMap = {}, viewPhrase = '';             // what the cards on screen show (used by the reader)
 
         const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -6637,7 +6822,6 @@ window.rtView = {
               window.TEST_DATA = prev;
               if (s.parentNode) s.parentNode.removeChild(s);
               cache.set(fileKey, { status, entries });
-              if (status !== 'ok') skipped++;
               resolve();
             };
             s.onload = () => finish('ok');
@@ -6655,18 +6839,19 @@ window.rtView = {
         async function pump() {
           if (pumping) return;
           pumping = true;
+          const my = gen;
           try {
             for (const f of FILES) {
-              if (paused) break;
+              if (paused || my !== gen) break;
               if (cache.has(f)) continue;
               await idle();
-              if (paused) break;
-              inflight = enqueue(() => loadOne(f));
+              if (paused || my !== gen) break;
+              inflight = enqueue(() => (cache.has(f) ? undefined : loadOne(f)));
               await inflight;
               scheduleRender();
             }
           } finally {
-            pumping = false;
+            if (my === gen) pumping = false;
             scheduleRender();
           }
         }
@@ -6677,7 +6862,7 @@ window.rtView = {
           const res = [];
           let total = 0;
           cache.forEach((rec, fk) => {
-            if (rec.status !== 'ok') return;
+            if (rec.status !== 'ok' || !SCOPE.has(fk)) return;
             const hits = [];
             for (let i = 0; i < rec.entries.length; i++) {
               const e = rec.entries[i];
@@ -6763,9 +6948,9 @@ window.rtView = {
           const fresh = q !== lastQ;
           if (fresh) shown = PAGE;
 
-          const { res, total, phrase } = search(q);
+          const { res, total, phrase } = active ? search(q) : { res: [], total: 0, phrase: q.toLowerCase().replace(/\s+/g, ' ').trim() };
           viewMap = {}; res.forEach(r => { viewMap[r.fk] = r; }); viewPhrase = phrase;
-          const loaded = cache.size, all = FILES.length;
+          const loaded = loadedCount(), all = FILES.length, skipped = skippedCount();
           const indexing = active && !stopped && loaded < all;
 
           // nothing visible changed (only the scan counter moved) -> leave the DOM alone
@@ -6780,7 +6965,7 @@ window.rtView = {
           let body = '';
           if (!active) {
             body = '<div class="sx-idle"><div class="sx-idle-ic">🔍</div><div><b>Ready when you are</b>' +
-              '<span>Press <em>Search inside tests</em> to look for “' + escapeHtml(q) + '” in every question, option, explanation &amp; concept page.</span></div></div>';
+              '<span>Press <em>Search inside tests</em> to look for “' + escapeHtml(q) + '” in every question, option, explanation &amp; concept page' + (scopeLabel ? ' of <b>' + escapeHtml(scopeLabel) + '</b>' : '') + '.</span></div></div>';
           } else if (res.length) {
             body = '<div class="sx-list">' + res.slice(0, shown).map((r, i) => cardHtml(r, i, phrase)).join('') + '</div>';
             if (res.length > shown) {
@@ -6806,7 +6991,7 @@ window.rtView = {
             '<section class="sx-box' + (fresh ? ' sx-anim' : '') + '" aria-label="Search results inside tests">' +
               '<header class="sx-head">' +
                 '<div class="sx-left"><div class="sx-title"><div class="sx-spark">✦</div><div><b>Found inside tests</b>' +
-                '<small>Questions, options, explanations &amp; concept pages of every file</small></div></div>' + runBtn + '</div>' +
+                '<small>' + (scopeLabel ? 'Questions, options, explanations &amp; concept pages — only in <b>' + escapeHtml(scopeLabel) + '</b>' : 'Questions, options, explanations &amp; concept pages of every file') + '</small></div></div>' + runBtn + '</div>' +
                 '<div class="sx-stat" aria-live="polite">' +
                   (res.length ? '<span class="sx-chip"><b>' + total + '</b> ' + (total === 1 ? 'match' : 'matches') + '</span><span class="sx-chip"><b>' + res.length + '</b> ' + (res.length === 1 ? 'test' : 'tests') + '</span>' : '') +
                   (indexing ? '<span class="sx-chip sx-chip-live"><i></i>Scanning <span class="sx-live-n">' + loaded + '/' + all + '</span></span>' : '') +
@@ -6818,6 +7003,7 @@ window.rtView = {
               (!indexing && skipped ? '<div class="sx-note">' + skipped + ' file' + (skipped === 1 ? '' : 's') + ' could not be read and ' + (skipped === 1 ? 'was' : 'were') + ' skipped.</div>' : '') +
             '</section>';
 
+          shownAt = Date.now();
           const list = wrap.querySelector('.sx-list');
           if (list && oldScroll) list.scrollTop = oldScroll;
           lastQ = q;
@@ -6825,7 +7011,7 @@ window.rtView = {
 
         function scheduleRender() {
           if (renderTimer) return;
-          const busy = cache.size < FILES.length;
+          const busy = loadedCount() < FILES.length;
           renderTimer = setTimeout(() => { renderTimer = null; render(); }, busy ? 500 : 80);
         }
 
@@ -6834,8 +7020,8 @@ window.rtView = {
           const meta = META[fk];
           if (!meta) return;
           window.__sxJump = (k === 'q' || k === 'c') && n !== null && n !== '' && !isNaN(Number(n)) ? { k: k, n: Number(n) } : null;
-          paused = true;                       // never load a file while the real test is loading
-          try { await chain; } catch (e) { }
+          SX_SHARED.insts.forEach(i => i.pause());   // never load a file while the real test is loading
+          try { await SX_SHARED.chain; } catch (e) { }
           startTestFromPortal(meta);
         }
 
@@ -7075,7 +7261,7 @@ window.rtView = {
 
         wrap.addEventListener('click', (e) => {
           if (e.target.closest('[data-stop]')) { stopped = true; paused = true; render(); return; }          // abort: the file being read finishes, then it stops
-          if (e.target.closest('[data-run]')) { active = true; stopped = false; paused = false; render(); pump(); return; }   // start / resume scanning ONLY on this click
+          if (e.target.closest('[data-run]')) { if (manual && Date.now() - shownAt < 400) return; active = true; stopped = false; paused = false; render(); pump(); return; }   // start / resume scanning ONLY on this click
           if (e.target.closest('[data-more]')) { shown += PAGE; render(); return; }
           const card = e.target.closest('.sx-card');
           if (!card) return;
@@ -7100,11 +7286,36 @@ window.rtView = {
         const wake = () => { if (!active || stopped) return; paused = false; pump(); };
         inp.addEventListener('focus', wake);
         inp.addEventListener('input', () => {
+          if (manual && active) { gen++; pumping = false; active = false; stopped = false; paused = false; }   // new text -> back to "press Search inside tests"
           wake();
           clearTimeout(typeTimer);
           typeTimer = setTimeout(render, 220);
         });
-      })();
+
+        /* ---------- scope control (used by the subject / topic-group search boxes) ---------- */
+        const api = {
+          pause() { paused = true; },
+          setScope(files, label) {                 // new subject/group: start clean (nothing scanned, box hidden)
+            gen++; pumping = false; paused = false; active = false; stopped = false;
+            FILES = (files || []).slice(); SCOPE = new Set(FILES); scopeLabel = label || '';
+            lastQ = ''; sig = ''; shown = PAGE; viewMap = {}; viewPhrase = '';
+            clearTimeout(typeTimer); clearTimeout(renderTimer); renderTimer = null;
+            closeReader();
+            wrap.hidden = true; wrap.innerHTML = '';
+          },
+          dispose() {
+            gen++; paused = true; stopped = true;
+            clearTimeout(typeTimer); clearTimeout(renderTimer); renderTimer = null;
+            closeReader();
+            if (rdEl && rdEl.parentNode) rdEl.parentNode.removeChild(rdEl);
+            rdEl = null;
+            const k = SX_SHARED.insts.indexOf(api); if (k > -1) SX_SHARED.insts.splice(k, 1);
+          }
+        };
+        SX_SHARED.insts.push(api);
+        return api;
+      }
+      createContentSearch($('contentSearch'), $('searchInput'), null, '');   // the main-page box: whole portal
 
       /* ========= ENGINE LOADER (data-driven external scripts) ========= */
       function loadScript(src) {
@@ -27153,6 +27364,95 @@ html:not(#px) .sxp-open:hover span{transform:translateX(3px)}
   html:not(#px) .sx-act>*{flex:1;justify-content:center}
 }
 
+</style>
+
+<style id="subjectSearchCSS">
+/* ═══ SUBJECT EXPLORER — scoped search boxes + lag fixes (appended last) ═══ */
+.ssx-hide{display:none!important}
+
+/* ── search bars ── */
+.ssx{position:relative}
+.ssx-subject{margin-bottom:1rem;animation:ssxIn .55s cubic-bezier(.2,.8,.2,1) both}
+.ssx-field{display:flex;align-items:center;gap:.6rem;margin:0;padding:.18rem .4rem .18rem .9rem;border-radius:16px;cursor:text;
+  background:var(--px-surface,#fff);border:1px solid var(--px-line,#e1e6f0);
+  box-shadow:0 1px 2px rgba(16,24,40,.05),0 10px 26px -16px rgba(47,84,235,.35);
+  transition:border-color .2s,box-shadow .2s}
+.ssx-field:focus-within{border-color:var(--px-accent,#2f54eb);box-shadow:0 0 0 4px rgba(59,130,246,.18),0 14px 30px -16px rgba(47,84,235,.5)}
+.ssx-ico{flex:0 0 auto;display:inline-flex;color:var(--px-mute,#586177);transition:color .2s,transform .25s}
+.ssx-field:focus-within .ssx-ico{color:var(--px-accent,#2f54eb);transform:scale(1.08)}
+html:not(#px) .ssx .ssx-input{flex:1 1 auto;min-width:0;width:100%;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;
+  outline:none!important;padding:.66rem 0!important;font-size:1rem;color:var(--px-ink,inherit)!important;-webkit-appearance:none;appearance:none}
+.ssx .ssx-input::placeholder{color:var(--px-mute,#586177);opacity:.75}
+.ssx .ssx-input::-webkit-search-cancel-button,.ssx .ssx-input::-webkit-search-decoration{-webkit-appearance:none;display:none}
+.ssx-count{flex:0 0 auto;font-size:.72rem;font-weight:700;letter-spacing:.2px;padding:.22rem .6rem;border-radius:999px;white-space:nowrap;
+  background:var(--px-soft,#eef2ff);color:var(--px-accent,#2f54eb);opacity:0;transform:translateX(6px);transition:opacity .2s,transform .2s;pointer-events:none}
+.ssx.has-q .ssx-count{opacity:1;transform:none}
+.ssx-count:empty{display:none}
+.ssx-clear{flex:0 0 auto;display:grid;place-items:center;width:28px;height:28px;min-height:0!important;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:var(--px-soft,#eef2ff);color:var(--px-mute,#586177);opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .15s,transform .2s,background .15s,color .15s}
+.ssx.has-q .ssx-clear{opacity:1;transform:none;pointer-events:auto}
+.ssx-clear:hover{background:var(--px-accent,#2f54eb);color:#fff}
+.ssx-kbd{flex:0 0 auto;font:600 .72rem/1 inherit;padding:.28rem .5rem;border-radius:7px;color:var(--px-mute,#586177);border:1px solid var(--px-line,#e1e6f0);background:var(--px-soft,#eef2ff)}
+.ssx:focus-within .ssx-kbd,.ssx.has-q .ssx-kbd{display:none}
+@media (hover:none){.ssx-kbd{display:none}}
+.ssx-scope{overflow:hidden;max-height:0;opacity:0;padding-left:.35rem;font-size:.78rem;color:var(--px-mute,#586177);transition:max-height .3s ease,opacity .3s ease,margin .3s ease}
+.ssx-scope b{color:var(--px-accent,#2f54eb);font-weight:700}
+.ssx-subject:focus-within .ssx-scope,.ssx-subject.has-q .ssx-scope{max-height:30px;opacity:1;margin-top:.5rem}
+
+/* group box (inside each topic group) */
+.ssx-group{margin-top:.65rem}
+.ssx-group .ssx-field{border-radius:13px;padding-left:.75rem;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#px) .ssx-group .ssx-input{font-size:.92rem;padding:.5rem 0!important}
+.topic-dropdown-header.is-open ~ .subtopic-collapse .ssx-group{animation:ssxIn .4s .06s cubic-bezier(.2,.8,.2,1) both}
+.ssx-gempty{display:none;text-align:center;padding:1.1rem .5rem .6rem;font-size:.88rem;color:var(--px-mute,#586177)}
+.ssx-gempty.is-on{display:block}
+
+/* empty state (subject search) */
+.ssx-empty{display:none;text-align:center;padding:2.2rem 1rem 2.6rem}
+.ssx-empty.is-on{display:block;animation:ssxIn .35s ease both}
+.ssx-empty-ico{font-size:2.2rem;margin-bottom:.4rem}
+.ssx-empty-t{font-weight:800;font-size:1.1rem;color:var(--px-ink,inherit)}
+.ssx-empty-s{margin:.25rem 0 1rem;font-size:.9rem;color:var(--px-mute,#586177)}
+.ssx-empty-btn{padding:.55rem 1.1rem;border-radius:12px;border:1px solid var(--px-line,#e1e6f0);cursor:pointer;font-weight:700;font-size:.85rem;
+  background:var(--px-soft,#eef2ff);color:var(--px-accent,#2f54eb);transition:background .15s,color .15s}
+.ssx-empty-btn:hover{background:var(--px-accent,#2f54eb);color:#fff}
+
+/* match highlight — Custom Highlight API: paints matches without touching the DOM */
+::highlight(ssx-hit){background-color:rgba(250,204,21,.55);color:#1a1300}
+
+/* no entry animation while typing (rows re-appearing would otherwise replay it on every keystroke) */
+.ssx-searching .subtopic-row{animation:none!important}
+
+@keyframes ssxIn{from{opacity:0;transform:translateY(-8px) scale(.985)}to{opacity:1;transform:none}}
+
+/* "Search inside tests" boxes (same look as the main page) inside the subject / group */
+html:not(#px) #sxeContent{margin:.2rem 0 1.1rem}
+html:not(#px) .ssx-gcontent{margin-top:.75rem}
+html:not(#px) .ssx-gcontent .sx-list{max-height:min(60vh,520px)}
+html:not(#px) .sx-title small b{font-weight:700;color:var(--px-accent,#2f54eb)}
+.ssx-gempty em,.ssx-empty-s em{font-style:normal;font-weight:700;color:var(--px-accent,#2f54eb)}
+
+/* ── share button (was inline-styled + JS hover handlers on every row) ── */
+.share-btn{flex-shrink:0;width:36px;height:36px;padding:0;border-radius:10px;border:1px solid rgba(59,130,246,.4);background:rgba(59,130,246,.10);color:#3b82f6;
+  font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.share-btn:hover{background:rgba(59,130,246,.22);border-color:rgba(59,130,246,.8);transform:scale(1.08)}
+
+/* ── less lag ── */
+/* one GPU layer per chapter button (will-change + translateZ) was the main cost of a long list */
+.subtopic-row .subtopic-btn{will-change:auto;transform:none}
+.subtopic-row .subtopic-btn:active{transform:translateY(1px) scale(.99)}
+/* the sheen animated background-position on hover = a main-thread repaint every frame; use a cheap fade instead */
+.topic-dropdown-header:hover::before{animation:none;opacity:.55;background-position:60% 0}
+/* background-attachment:fixed forces the whole page to repaint on every scroll frame */
+html:not(#px) body{background-attachment:scroll!important}
+
+@media (max-width:575.98px){
+  .ssx-field{border-radius:14px;padding-left:.75rem}
+  html:not(#px) .ssx .ssx-input{font-size:16px}   /* 16px stops iOS zooming into the field */
+}
+@media (prefers-reduced-motion:reduce){
+  .ssx-subject,.ssx-empty.is-on,.topic-dropdown-header.is-open ~ .subtopic-collapse .ssx-group{animation:none}
+}
 </style>
 
 </body>
