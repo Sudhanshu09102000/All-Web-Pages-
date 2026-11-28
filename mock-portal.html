@@ -27455,6 +27455,50 @@ html:not(#px) body{background-attachment:scroll!important}
 }
 </style>
 
+
+<style id="themeBridgeFix">
+/* ═══ THEME BRIDGE — the "premium UI" layer above hard-codes its own palette (--px-*), which is why many boxes
+   ignored the colours chosen in the Control Panel. Here --px-* is re-pointed at the theme variables (--gp-*),
+   so every box that uses it follows Background / Box / Text / Accent colours. Light Mode keeps its plain white look. ═══ */
+html:not(#px):not(.lite-mode){
+  --px-bg:var(--gp-bg1); --px-surface:var(--gp-box1); --px-soft:var(--gp-tx-12); --px-line:var(--gp-boxb);
+  --px-ink:var(--gp-text); --px-mute:color-mix(in srgb,var(--gp-text) 68%,transparent);
+  --px-accent:var(--gp-glow,#6f8cff); --px-accent-2:color-mix(in srgb,var(--gp-glow,#6f8cff) 70%,#fff);
+  --px-hero:linear-gradient(135deg,var(--gp-box2) 0%,var(--gp-box1) 55%,var(--gp-boxb) 130%);
+}
+/* page background (colour + optional image) */
+html:not(#px):not(.lite-mode) body{
+  background-image:linear-gradient(160deg,var(--gp-bg1-tint),var(--gp-bg2-tint)),var(--gp-bg-img)!important;
+  background-size:cover,cover!important;background-position:center,center!important;background-repeat:no-repeat,no-repeat!important;background-attachment:scroll,scroll!important}
+/* boxes: theme colour (+ optional box image) */
+html:not(#px):not(.lite-mode) :is(.glass,.card,.modal-content,.subject-card,.option,.btn,.btn-glass,.topic-btn,.subtopic-btn,.timer-pill,.nav-panel,#bmScoreboard,#bmChatPanel,.bm-opt,.form-control,.form-select,
+  .test-resizable-box,#conceptBox,.topic-dropdown-header,.pdf-upload-box,.cp-hero,.cp-card,.cp-note,.cp-footer,.cp-steps>li,.ctb-sum,.ctb-subj,.ctb-stat,.ctb-chap,.ctb-tool,.ctb-step,.ctb-note,.ctb-mbar,.hud-dock,#hudDock,.engine-topbar,.summary-q-card){
+  background-color:var(--gp-box1)!important;
+  background-image:linear-gradient(135deg,var(--gp-box1-tint),var(--gp-box2-tint)),var(--gp-box-img)!important;
+  background-size:cover,cover!important;background-position:center,center!important;background-repeat:no-repeat,no-repeat!important;background-attachment:scroll,scroll!important;
+  border-color:var(--gp-boxb)!important}
+html:not(#px):not(.lite-mode) :is(.btn,.btn-glass,.topic-btn,.subtopic-btn,.option,.ctb-chap):hover{background-color:var(--gp-tx-12)!important}
+html:not(#px):not(.lite-mode) .option.selected, html:not(#px):not(.lite-mode) .ctb-chap.on{background-color:var(--gp-tx-12)!important;border-color:var(--gp-glow,#6f8cff)!important}
+html:not(#px):not(.lite-mode) .engine-topbar{background-color:color-mix(in srgb,var(--gp-box1) 88%,transparent)!important}
+/* hero banners: text follows the theme text colour */
+html:not(#px):not(.lite-mode) .subject-hero :is(.subject-hero-title,.subject-hero-hint,.subject-hero-eyebrow,.subject-hero-eyebrow span,.btn),
+html:not(#px):not(.lite-mode) #portalView>.container>div:first-child :is(div,span,p,a):not(.btn):not(.brand-title),
+html:not(#px):not(.lite-mode) .ctb-cta :is(.ctb-cta-title,.ctb-cta-sub,.ctb-eyebrow,.ctb-mini,.ctb-cta-icon){color:var(--gp-text)!important;-webkit-text-fill-color:var(--gp-text)!important}
+html:not(#px):not(.lite-mode) .ctb-cta{background:var(--px-hero)!important;background-image:var(--px-hero)!important}
+html:not(#px):not(.lite-mode) .ctb-cta .ctb-btn{background:var(--gp-text)!important;color:var(--gp-box1)!important;-webkit-text-fill-color:var(--gp-box1)!important}
+/* primary (filled) buttons: theme accent with a readable foreground */
+html:not(#px):not(.lite-mode) :is(#saveNextBtn,#cpNextBtn,#ctbStart,#ctbMGo,#scConfirmBtn,.btn-primary){
+  background:linear-gradient(135deg,var(--gp-accent2),var(--gp-boxb))!important;background-image:linear-gradient(135deg,var(--gp-accent2),var(--gp-boxb))!important;
+  color:var(--gp-accent-fg)!important;-webkit-text-fill-color:var(--gp-accent-fg)!important;border:1px solid var(--gp-tx-25)!important}
+
+/* PERFORMANCE (non-light mode): fixed-attachment backgrounds and live blur force a full repaint on every scroll frame — use plain scrolling backgrounds, no blur */
+html:not(#px):not(.lite-mode) body{background-attachment:scroll,scroll!important}
+html:not(#px):not(.lite-mode) *,html:not(#px):not(.lite-mode) *::before,html:not(#px):not(.lite-mode) *::after{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html:not(#px):not(.lite-mode) :is(.glass,.card,.modal-content,.subject-card,.option,.btn,.btn-glass,.topic-btn,.subtopic-btn,.nav-panel,.engine-topbar,.test-resizable-box,#conceptBox,.cp-card,.ctb-chap,.ctb-subj){
+  background-attachment:scroll,scroll!important;box-shadow:none!important;transition:none!important}
+html:not(#px):not(.lite-mode) .subject-card:hover,html:not(#px):not(.lite-mode) .btn:hover,html:not(#px):not(.lite-mode) .btn-glass:hover{transform:none!important}
+</style>
 </body>
 
 
