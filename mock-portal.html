@@ -27786,11 +27786,23 @@ mark.au-hl[data-c="0"]{background:rgba(250,204,21,.55)}
 mark.au-hl[data-c="1"]{background:rgba(74,222,128,.48)}
 mark.au-hl[data-c="2"]{background:rgba(244,114,182,.48)}
 mark.au-hl[data-c="3"]{background:rgba(96,165,250,.5)}
+mark.au-hl[data-c="4"]{background:rgba(251,146,60,.52)}
+mark.au-hl[data-c="5"]{background:rgba(192,132,252,.5)}
+mark.au-hl[data-c="6"]{background:rgba(45,212,191,.46)}
+mark.au-hl[data-c="7"]{background:rgba(248,113,113,.5)}
+mark.au-hl[data-c="8"]{background:rgba(163,230,53,.5)}
+mark.au-hl[data-c="9"]{background:rgba(148,163,184,.5)}
 html.lite-mode mark.au-hl{color:#000}
 html.lite-mode mark.au-hl[data-c="0"]{background:#fde047}
 html.lite-mode mark.au-hl[data-c="1"]{background:#86efac}
 html.lite-mode mark.au-hl[data-c="2"]{background:#f9a8d4}
 html.lite-mode mark.au-hl[data-c="3"]{background:#93c5fd}
+html.lite-mode mark.au-hl[data-c="4"]{background:#fdba74}
+html.lite-mode mark.au-hl[data-c="5"]{background:#d8b4fe}
+html.lite-mode mark.au-hl[data-c="6"]{background:#5eead4}
+html.lite-mode mark.au-hl[data-c="7"]{background:#fca5a5}
+html.lite-mode mark.au-hl[data-c="8"]{background:#bef264}
+html.lite-mode mark.au-hl[data-c="9"]{background:#cbd5e1}
 /* while highlight mode is ON the page text must be selectable (it is normally locked) */
 body.hl-mode .question-scroll-area,body.hl-mode .question-scroll-area *,
 body.hl-mode #cpScroll,body.hl-mode #cpScroll *,
@@ -27800,12 +27812,27 @@ body.hl-mode #mobileHintPanel-body,body.hl-mode #mobileHintPanel-body *{-webkit-
 body.hl-mode mark.au-hl{cursor:pointer}
 body.hl-mode ::selection{background:rgba(250,204,21,.45)}
 #auSelBar{position:fixed;z-index:100001;display:none;align-items:center;gap:7px;padding:7px 9px;border-radius:14px;background:#0f172a;border:1px solid rgba(59,130,246,.55);box-shadow:0 10px 30px rgba(0,0,0,.55);-webkit-user-select:none;user-select:none;touch-action:manipulation}
+#auSelBar{flex-direction:column;align-items:stretch;gap:8px}
+#auSelBar .au-row{display:flex;align-items:center;gap:7px}
+#auSelBar .au-row2{gap:6px;padding-top:7px;border-top:1px solid rgba(148,163,184,.28)}
 #auSelBar.on{display:flex}
+html body #auSelBar button.au-x,html body #auSelBar button.au-xp,html body #auSelBar button.au-xt{width:auto!important;height:32px!important;border-radius:10px!important;padding:0 12px!important;font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif!important;letter-spacing:.2px!important;white-space:nowrap!important;text-shadow:none!important;opacity:1!important;filter:none!important;border:1px solid transparent!important;transition:transform .12s,filter .12s}
+html body #auSelBar button.au-x{margin-left:auto;background:#ef4444!important;color:#fff!important;border-color:#fca5a5!important}
+html body #auSelBar button.au-xp{flex:1;background:#f59e0b!important;color:#1f1300!important;border-color:#fcd34d!important}
+html body #auSelBar button.au-xt{flex:1;background:#7f1d1d!important;color:#fff!important;border-color:#f87171!important}
+html body #auSelBar button.au-x:hover,html body #auSelBar button.au-xp:hover,html body #auSelBar button.au-xt:hover{filter:brightness(1.12)!important;transform:translateY(-1px)}
 #auSelBar button{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.75);cursor:pointer;padding:0;flex:none}
 #auSelBar button[data-c="0"]{background:#facc15}
 #auSelBar button[data-c="1"]{background:#4ade80}
 #auSelBar button[data-c="2"]{background:#f472b6}
 #auSelBar button[data-c="3"]{background:#60a5fa}
+#auSelBar button[data-c="4"]{background:#fb923c}
+#auSelBar button[data-c="5"]{background:#c084fc}
+#auSelBar button[data-c="6"]{background:#2dd4bf}
+#auSelBar button[data-c="7"]{background:#f87171}
+#auSelBar button[data-c="8"]{background:#a3e635}
+#auSelBar button[data-c="9"]{background:#94a3b8}
+#auSelBar .au-row.au-colors{flex-wrap:wrap}
 #auSelBar button.au-x{width:auto;border-radius:10px;padding:0 11px;background:transparent;color:#fca5a5;border:1px solid rgba(248,113,113,.6);font-size:13px;font-weight:700;height:32px}
 </style>
 
@@ -28492,13 +28519,14 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
   function ensureBar() {
     if (bar) return;
     bar = document.createElement('div'); bar.id = 'auSelBar';
-    bar.innerHTML = '<button data-c="0" aria-label="Yellow"></button><button data-c="1" aria-label="Green"></button><button data-c="2" aria-label="Pink"></button><button data-c="3" aria-label="Blue"></button><button class="au-x" data-x="1">🗑 Remove</button>';
+    bar.innerHTML = '<div class="au-row"><button data-c="0" aria-label="Yellow"></button><button data-c="1" aria-label="Green"></button><button data-c="2" aria-label="Pink"></button><button data-c="3" aria-label="Blue"></button><button data-c="4" aria-label="Orange"></button><button class="au-x" data-x="one">🗑 Remove</button></div><div class="au-row"><button data-c="5" aria-label="Purple"></button><button data-c="6" aria-label="Teal"></button><button data-c="7" aria-label="Red"></button><button data-c="8" aria-label="Lime"></button><button data-c="9" aria-label="Grey"></button></div><div class="au-row au-row2"><button class="au-xp" data-x="page">🧹 Clear this page</button><button class="au-xt" data-x="test">🗑 Clear whole test</button></div>';
     document.body.appendChild(bar);
     var lastTouch = 0;
     function run(e) {
       var b = e.target.closest('button'); if (!b) return;
       e.preventDefault(); e.stopPropagation();
-      if (b.hasAttribute('data-x')) removeFromBar(); else barColor(+b.getAttribute('data-c'));
+      var dx = b.getAttribute('data-x');
+      if (dx === 'page') clearPageHl(); else if (dx === 'test') clearTestHl(); else if (dx) removeFromBar(); else barColor(+b.getAttribute('data-c'));
     }
     bar.addEventListener('mousedown', function (e) { e.preventDefault(); });
     bar.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
@@ -28550,6 +28578,26 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
       if (sel) sel.removeAllRanges();
     }
     hideBar();
+  }
+
+  function clearPageHl() {
+    var b = curBucket(); if (!b) return;
+    var ids = {}; $$('mark.au-hl').forEach(function (m) { var id = m.getAttribute('data-hid'); if (id) ids[id] = 1; });
+    var n = Object.keys(ids).length;
+    if (!n) { toast('No highlights on this page.'); hideBar(); return; }
+    Object.keys(ids).forEach(function (id) { delHl(b, id); });
+    var sel = window.getSelection(); if (sel) sel.removeAllRanges();
+    hideBar(); toast('🧹 Removed ' + n + ' highlight' + (n > 1 ? 's' : '') + ' from this page.');
+  }
+  function clearTestHl() {
+    var b = curBucket(); if (!b) return;
+    var ids = Object.keys(AU.hl[b] || {}), n = ids.length;
+    if (!n) { toast('No highlights in this test.'); hideBar(); return; }
+    if (!window.confirm('Remove all ' + n + ' highlight' + (n > 1 ? 's' : '') + ' from this whole test? This cannot be undone.')) return;
+    ids.forEach(function (id) { delHl(b, id); });
+    $$('mark.au-hl').forEach(function (m) { unwrapHl(m.getAttribute('data-hid')); });
+    var sel = window.getSelection(); if (sel) sel.removeAllRanges();
+    hideBar(); toast('🗑 Removed all ' + n + ' highlight' + (n > 1 ? 's' : '') + ' from this test.');
   }
 
   function setHlMode(on) {
