@@ -17142,7 +17142,6 @@ body.qa-only-mode #qaToolbarRow {
       </div>
 
       <div class="rec-out"><span>🎞️ One file<br>MP4 · video + audio</span><span id="rec-out-aud">🔊 Sound<br>built into the video</span></div>
-      <div class="rec-tip">💡 In the share picker choose <b>Chrome Tab</b> or <b>Entire Screen</b> and tick <b>“Share audio”</b>. Use headphones to avoid echo. While recording, the panel closes — hotkeys: <b>Alt+Shift+P</b> pause · <b>Alt+Shift+R</b> stop.</div>
       <div class="rec-tip rec-warn" id="rec-unsupported" hidden>⚠️ Screen recording isn’t supported on this browser/device (mobile browsers block it). Use Chrome or Edge on desktop.</div>
       <button class="rec-primary" id="rec-start"><span class="dot"></span> Start Recording</button>
     </div>
@@ -17167,18 +17166,6 @@ body.qa-only-mode #qaToolbarRow {
       <button type="button" class="rec-dl" id="rec-dl-video"><span class="ic">🎞️</span><span class="tx"><b id="rec-dl-video-t">Video · MP4</b><small id="rec-dl-video-s"></small></span><span class="ic">⬇</span></button>
       <div class="rec-pair"><button type="button" class="rec-ghost" id="rec-again">● Record again</button><button type="button" class="rec-ghost danger" id="rec-discard">🗑 Discard</button></div>
     </div>
-  </div>
-
-  <!-- SHORTCUTS -->
-  <div class="gcp-section">
-    <div class="gcp-section-title">⌨️ Shortcuts</div>
-    <div class="gcp-shortcut-row"><span class="k">Space</span><span class="desc">Screen pen &#8596; mouse cursor</span></div>
-    <div class="gcp-shortcut-row"><span class="k">?</span><span class="desc">Pen shortcuts (in pen mode)</span></div>
-    <div class="gcp-shortcut-row"><span class="k">1-4</span><span class="desc">Select answer</span></div>
-    <div class="gcp-shortcut-row"><span class="k">Enter</span><span class="desc">Next question</span></div>
-    <div class="gcp-shortcut-row"><span class="k">←→</span><span class="desc">Navigate questions</span></div>
-    <div class="gcp-shortcut-row"><span class="k">0</span><span class="desc">Toggle hint</span></div>
-    <div class="gcp-shortcut-row"><span class="k">Esc</span><span class="desc">Close panel / back to cursor</span></div>
   </div>
 
   <!-- QUESTION ANSWER MODE -->
@@ -17311,7 +17298,6 @@ body.qa-only-mode #qaToolbarRow {
   <!-- TEXT STUDIO -->
   <div class="gcp-section" id="gpTextStudioSec">
     <div class="gcp-section-title">✍️ Text Studio</div>
-    <div class="ts-intro">Style each kind of text on its own — colour, font, bold, italic, underline.</div>
     <div id="gpTextStudio"></div>
   </div>
 
@@ -27498,6 +27484,43 @@ html:not(#px):not(.lite-mode) *,html:not(#px):not(.lite-mode) *::before,html:not
 html:not(#px):not(.lite-mode) :is(.glass,.card,.modal-content,.subject-card,.option,.btn,.btn-glass,.topic-btn,.subtopic-btn,.nav-panel,.engine-topbar,.test-resizable-box,#conceptBox,.cp-card,.ctb-chap,.ctb-subj){
   background-attachment:scroll,scroll!important;box-shadow:none!important;transition:none!important}
 html:not(#px):not(.lite-mode) .subject-card:hover,html:not(#px):not(.lite-mode) .btn:hover,html:not(#px):not(.lite-mode) .btn-glass:hover{transform:none!important}
+</style>
+
+<style id="gcpPremium">
+/* ═══ CONTROL PANEL — clean premium look (flat, theme-aware, no glow/blur so it stays fast) ═══ */
+html:not(.lite-mode) body #gcp-panel{--g-line:var(--gp-tx-12);--g-soft:var(--gp-tx-06);--g-acc:var(--gp-glow,#6f8cff);padding-bottom:18px}
+html:not(.lite-mode) body #gcp-panel .gcp-header{padding:20px 20px 16px;border-bottom:1px solid var(--g-line)!important;background:none!important}
+html:not(.lite-mode) body #gcp-panel .gcp-header-title{font-size:15px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:8px}
+html:not(.lite-mode) body #gcp-panel .gcp-header-sub{margin-top:3px;font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;opacity:.5;color:var(--gp-text)!important}
+html:not(.lite-mode) body #gcp-panel .gcp-close{border-radius:50%;background:var(--g-soft)!important;border:1px solid var(--g-line)!important}
+/* sections = quiet cards */
+html:not(.lite-mode) body #gcp-panel .gcp-section{margin:12px 14px 0;padding:16px 14px 14px;border:1px solid var(--g-line)!important;border-radius:18px;background:var(--g-soft)!important;box-shadow:none!important;overflow:visible}
+html:not(.lite-mode) body #gcp-panel .gcp-section::before{display:none!important}
+html:not(.lite-mode) body #gcp-panel .gcp-section-title{margin:0 0 13px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.72}
+html:not(.lite-mode) body #gcp-panel .gcp-section-title::after{background:var(--g-line)!important}
+html:not(.lite-mode) body #gcp-panel .gcp-appear-label{margin:18px 0 9px;font-size:9.5px;letter-spacing:1.6px;opacity:.6}
+html:not(.lite-mode) body #gcp-panel .gcp-appear-label::before{width:4px;height:4px;box-shadow:none;background:var(--g-acc)}
+/* buttons */
+html:not(.lite-mode) body #gcp-panel .gcp-btn{padding:11px 13px;border-radius:13px;margin-bottom:8px;background:var(--g-soft)!important;border:1px solid var(--g-line)!important;box-shadow:none!important;transform:none!important;transition:background .12s,border-color .12s}
+html:not(.lite-mode) body #gcp-panel .gcp-btn:hover{background:var(--gp-tx-12)!important;border-color:var(--gp-tx-25)!important}
+html:not(.lite-mode) body #gcp-panel .gcp-btn[class*="accent-"]{border-color:var(--gp-glow-40)!important;background:var(--gp-glow-10)!important}
+html:not(.lite-mode) body #gcp-panel .gcp-btn .gcp-icon{border-radius:10px;box-shadow:none;background:var(--gp-tx-06)}
+/* toggles + switch rows */
+html:not(.lite-mode) body #gcp-panel :is(.lite-toggle-row,.rec-row){border-radius:13px;background:var(--g-soft)!important;border:1px solid var(--g-line)!important;box-shadow:none!important;transition:none}
+html:not(.lite-mode) body #gcp-panel :is(.lite-toggle-row,.rec-row).on{border-color:var(--gp-glow-40)!important;background:var(--gp-glow-10)!important}
+/* segmented controls */
+html:not(.lite-mode) body #gcp-panel .rec-seg{padding:3px;border-radius:12px;background:var(--g-soft)!important;border:1px solid var(--g-line)!important;gap:3px}
+html:not(.lite-mode) body #gcp-panel .rec-seg button{border-radius:9px;border:0!important;background:transparent!important;box-shadow:none!important}
+html:not(.lite-mode) body #gcp-panel .rec-seg button.on{background:var(--gp-glow-22)!important;box-shadow:inset 0 0 0 1px var(--gp-glow-40)!important}
+html:not(.lite-mode) body #gcp-panel .rec-lbl{font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;opacity:.6;margin:14px 0 7px}
+/* appearance widgets */
+html:not(.lite-mode) body #gcp-panel :is(.gcp-font-item,.gcp-size-btn,.gcp-color-row,.gcp-img-upload-btn,.ab-row select,.rec-select){border-radius:11px;box-shadow:none!important;transform:none!important;transition:none;background:var(--g-soft)!important;border:1px solid var(--g-line)!important}
+html:not(.lite-mode) body #gcp-panel .gcp-font-item.gp-active{background:var(--gp-glow-10)!important;border-color:var(--g-acc)!important;box-shadow:none!important}
+html:not(.lite-mode) body #gcp-panel .gcp-presets-grid>*{box-shadow:none!important;transform:none!important}
+/* instructions / helper copy removed */
+html:not(.lite-mode) body #gcp-panel :is(.rec-tip:not(.rec-warn),.ts-intro,.gcp-shortcut-row,.rec-nc-note,.rec-mic-foot span,#tlOnlySub,.ab-hint){display:none!important}
+html:not(.lite-mode) body #gcp-panel .rec-mic-foot{justify-content:flex-end}
+html body #gcp-panel :is(.rec-tip:not(.rec-warn),.ts-intro,.gcp-shortcut-row,.rec-nc-note,.rec-mic-foot span,#tlOnlySub){display:none!important}
 </style>
 </body>
 
