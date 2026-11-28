@@ -147,11 +147,10 @@ const PORTAL_DATA = [
       {
         name: "Environment",
         subtopics: [
-          { name: "1. Basics of Environmental Sciences", file: "General_Awareness/Environment/Basics_of_Environmental_Sciences" },
-          { name: "2. Ecosystem", file: "General_Awareness/Environment/Ecosystem" },
-          { name: "3. Trophic Dynamics and Energy Transfer", file: "General_Awareness/Environment/Trophic_Dynamics_and_Energy_Transfer" },
-          { name: "4. Biogeochemical Cycles", file: "General_Awareness/Environment/Biogeochemical_Cycles" },
-          { name: "5. Environmental Conventions", file: "General_Awareness/Environment/Environmental_Conventions" }
+          { name: "1. Basics of Environmental Science", file: "General_Awareness/Environment/Basics_of_Environmental_Science" },
+          { name: "2. Pollution", file: "General_Awareness/Environment/Pollution" },
+          { name: "3. Greenhouse Effect, Ozone Layer and Protocols", file: "General_Awareness/Environment/Greenhouse_Ozone_and_Protocols" },
+          { name: "4. Important One-Liners", file: "General_Awareness/Environment/Important_One_Liners" }
         ]
       },
       {
