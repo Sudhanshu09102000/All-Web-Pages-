@@ -27735,6 +27735,39 @@ html.lite-mode .au-subjprog{color:#000}
 /* ---------- login / account dialog ---------- */
 #auOverlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,23,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #auOverlay.on{display:flex}
+#auLogoutOv{position:fixed;inset:0;z-index:100002;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(10,16,38,.55);-webkit-backdrop-filter:blur(8px) saturate(120%);backdrop-filter:blur(8px) saturate(120%)}
+#auLogoutOv.on{display:flex;animation:lgFade .18s ease-out}
+#auLogoutOv .lg-card{position:relative;overflow:hidden;width:100%;max-width:400px;text-align:center;padding:34px 28px 22px;border-radius:26px;background:#fff;color:#0e1526;border:1px solid #e6eaf5;box-shadow:0 30px 80px -20px rgba(16,24,60,.45),0 2px 6px rgba(16,24,60,.06);animation:lgPop .28s cubic-bezier(.2,.9,.3,1.25)}
+#auLogoutOv .lg-glow{position:absolute;left:50%;top:-90px;width:320px;height:200px;margin-left:-160px;border-radius:50%;background:radial-gradient(closest-side,rgba(239,68,68,.20),rgba(244,114,182,.10) 55%,transparent);pointer-events:none}
+#auLogoutOv .lg-ico{position:relative;width:74px;height:74px;margin:0 auto 16px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e11d48;background:linear-gradient(145deg,#fff1f2,#ffe4e6);box-shadow:0 0 0 7px rgba(244,63,94,.08),inset 0 0 0 1px rgba(244,63,94,.22)}
+#auLogoutOv .lg-ico svg{transform:translateX(1px)}
+#auLogoutOv h3{position:relative;margin:0 0 14px;font:800 1.32rem/1.25 'Plus Jakarta Sans','Inter',system-ui,sans-serif;letter-spacing:-.01em;color:#0e1526}
+#auLogoutOv .lg-user{position:relative;display:inline-flex;align-items:center;gap:10px;max-width:100%;padding:7px 16px 7px 8px;margin-bottom:14px;border-radius:999px;background:#f3f5fb;border:1px solid #e3e8f4;text-align:left}
+#auLogoutOv .lg-av{flex:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 .9rem/1 system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#2f54eb,#7c4dff)}
+#auLogoutOv .lg-who{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+#auLogoutOv .lg-who b{font:700 .88rem/1.25 'Plus Jakarta Sans',system-ui,sans-serif;color:#0e1526;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#auLogoutOv .lg-who i{font:500 .76rem/1.25 system-ui,sans-serif;font-style:normal;color:#586177;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#auLogoutOv p{position:relative;margin:0 0 22px;font:500 .9rem/1.6 'Plus Jakarta Sans','Inter',system-ui,sans-serif;color:#586177}
+#auLogoutOv .lg-btns{position:relative;display:flex;gap:10px}
+#auLogoutOv .lg-btns button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:14px;cursor:pointer;font:700 .95rem/1 'Plus Jakarta Sans','Inter',system-ui,sans-serif;white-space:nowrap;-webkit-text-fill-color:currentColor;transition:transform .12s ease,box-shadow .15s ease,filter .15s ease,background .15s ease}
+#auLogoutOv .lg-btns button:active{transform:scale(.97)}
+#auLogoutOv .lg-btns button:focus-visible{outline:3px solid rgba(47,84,235,.45);outline-offset:2px}
+#auLogoutOv .lg-stay{background:linear-gradient(135deg,#2f54eb,#5b7cff)!important;color:#fff!important;border:0!important;box-shadow:0 10px 22px -10px rgba(47,84,235,.7)}
+#auLogoutOv .lg-stay:hover{filter:brightness(1.07);box-shadow:0 14px 26px -10px rgba(47,84,235,.8)}
+#auLogoutOv .lg-out{background:#fff!important;color:#e11d48!important;border:1.5px solid #fda4af!important}
+#auLogoutOv .lg-out:hover{background:#fff1f2!important;border-color:#fb7185!important}
+#auLogoutOv .lg-hint{position:relative;margin-top:14px;font:500 .72rem/1 system-ui,sans-serif;color:#8b94ab}
+#auLogoutOv .lg-hint kbd{padding:2px 6px;border-radius:5px;border:1px solid #d7dcea;background:#f6f8fc;font:600 .7rem/1 system-ui,sans-serif;color:#586177}
+@keyframes lgFade{from{opacity:0}to{opacity:1}}
+@keyframes lgPop{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
+@media (max-width:420px){#auLogoutOv .lg-card{padding:28px 20px 18px}#auLogoutOv .lg-btns{flex-direction:column-reverse}#auLogoutOv .lg-hint{display:none}}
+@media (prefers-reduced-motion:reduce){#auLogoutOv.on,#auLogoutOv .lg-card{animation:none}}
+html:not(.lite-mode) #auLogoutOv .lg-card{background:#111832;color:#eef2ff;border-color:rgba(255,255,255,.1)}
+html:not(.lite-mode) #auLogoutOv h3,html:not(.lite-mode) #auLogoutOv .lg-who b{color:#eef2ff}
+html:not(.lite-mode) #auLogoutOv p,html:not(.lite-mode) #auLogoutOv .lg-who i,html:not(.lite-mode) #auLogoutOv .lg-hint{color:#9aa6c4}
+html:not(.lite-mode) #auLogoutOv .lg-user{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+html:not(.lite-mode) #auLogoutOv .lg-out{background:transparent!important;color:#fca5a5!important;border-color:rgba(248,113,113,.55)!important}
+html:not(.lite-mode) #auLogoutOv .lg-hint kbd{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#c7d0ea}
 .au-dlg{width:100%;max-width:410px;max-height:92vh;overflow:auto;border-radius:20px;padding:22px 22px 18px;background:#0f172a;color:#f1f5f9;border:1px solid rgba(59,130,246,.4);box-shadow:0 24px 70px rgba(0,0,0,.6);font-family:inherit}
 html.lite-mode .au-dlg{background:#fff;color:#000;border:1px solid #000;box-shadow:none}
 .au-h{font-size:1.3rem;font-weight:800;margin:0 0 4px}
@@ -28100,6 +28133,63 @@ html body #auSelBar button.au-x:hover,html body #auSelBar button.au-xp:hover,htm
 
   /* ───────────────────────── login / account dialog ───────────────────────── */
   var ov, mode = 'login', note = '';
+  /* ───────────────────────── beautiful logout confirmation ───────────────────────── */
+  var lgOv = null, lgPrevFocus = null;
+  function doLogoutNow() {
+    closeDlg(); toast('Logged out');
+    Promise.race([Promise.resolve(flushBoard()), new Promise(function (r) { setTimeout(r, 2500); })])   // let the last strokes reach the cloud first
+      .then(function () { if (fb.ok) fb.auth.signOut(); });
+  }
+  function closeLogoutConfirm() {
+    if (!lgOv) return;
+    lgOv.classList.remove('on');
+    document.removeEventListener('keydown', lgKey, true);
+    try { if (lgPrevFocus && lgPrevFocus.focus) lgPrevFocus.focus(); } catch (e) {}
+  }
+  function lgKey(e) {
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeLogoutConfirm(); }
+    else if (e.key === 'Tab' && lgOv) {                                  // keep focus inside the card
+      var f = lgOv.querySelectorAll('button'); if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+  function confirmLogout() {
+    if (!lgOv) {
+      lgOv = document.createElement('div'); lgOv.id = 'auLogoutOv';
+      lgOv.innerHTML =
+        '<div class="lg-card" role="alertdialog" aria-modal="true" aria-labelledby="lgTitle" aria-describedby="lgSub">' +
+          '<div class="lg-glow"></div>' +
+          '<div class="lg-ico"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></div>' +
+          '<h3 id="lgTitle">Log out of your account?</h3>' +
+          '<div class="lg-user" id="lgUser"></div>' +
+          '<p id="lgSub">Your progress and highlights are safely saved to your account. You can log back in any time to pick up right where you left off.</p>' +
+          '<div class="lg-btns">' +
+            '<button type="button" class="lg-stay" data-lg="stay">Stay logged in</button>' +
+            '<button type="button" class="lg-out" data-lg="out"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log out</button>' +
+          '</div>' +
+          '<div class="lg-hint">Press <kbd>Esc</kbd> to cancel</div>' +
+        '</div>';
+      document.body.appendChild(lgOv);
+      lgOv.addEventListener('mousedown', function (e) { if (e.target === lgOv) closeLogoutConfirm(); });
+      lgOv.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-lg]'); if (!b) return;
+        var a = b.getAttribute('data-lg');
+        if (a === 'out') { closeLogoutConfirm(); doLogoutNow(); } else closeLogoutConfirm();
+      });
+    }
+    var nm = (AU.name || '').trim(), em = AU.email || '';
+    $('#lgUser', lgOv).innerHTML =
+      '<span class="lg-av">' + esc((nm || em || 'U').charAt(0).toUpperCase()) + '</span>' +
+      '<span class="lg-who"><b>' + esc(nm || 'My account') + '</b>' + (em ? '<i>' + esc(em) + '</i>' : '') + '</span>';
+    lgPrevFocus = document.activeElement;
+    lgOv.classList.add('on');
+    document.addEventListener('keydown', lgKey, true);
+    setTimeout(function () { var b = $('.lg-stay', lgOv); if (b) b.focus(); }, 40);
+  }
+
   function ensureOverlay() {
     if (ov) return;
     ov = document.createElement('div'); ov.id = 'auOverlay';
@@ -28369,11 +28459,7 @@ html body #auSelBar button.au-x:hover,html body #auSelBar button.au-xp:hover,htm
     else if (a === 'verified') checkVerified(false);
     else if (a === 'resend') doResend();
     else if (a === 'switch') doSwitch();
-    else if (a === 'logout') {
-      closeDlg(); toast('Logged out');
-      Promise.race([Promise.resolve(flushBoard()), new Promise(function (r) { setTimeout(r, 2500); })])   // let the last strokes reach the cloud first
-        .then(function () { if (fb.ok) fb.auth.signOut(); });
-    }
+    else if (a === 'logout') confirmLogout();
     else if (a === 'eye') {
       var f = $('#auPw', ov); if (f) f.type = f.type === 'password' ? 'text' : 'password';
     }
