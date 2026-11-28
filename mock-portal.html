@@ -28874,6 +28874,96 @@ html body #auSelBar button.au-x:hover,html body #auSelBar button.au-xp:hover,htm
 })();
 </script>
 
+<style id="hudDeckMobileFix">
+/* ═══════════════════════════════════════════════════════════════════
+   📱 CONTROL DECK FIX — the strip above "Question navigator"
+   Problem: in the open state the dock stayed a single 28px row, so
+   mode switch / Translate / timer / ✓ / 🖍 / view toggle ran off-screen.
+   Fix: a tidy 3-row grid that always fits the panel width.
+   Row 1: [ Exam | Practice | Concept ]  [ ✕ ]
+   Row 2: [ 🌐 Translate ]  [ ⏱ timer ]
+   Row 3: [ ✓ Mark done ] [ 🖍 Highlight ] [ ▭ Page view ]
+   ═══════════════════════════════════════════════════════════════════ */
+html:not(#zz) #hudDock.nav-open{
+  --dk-bg:var(--gp-box1,#0b1220); --dk-soft:var(--nv-soft,rgba(255,255,255,.07));
+  --dk-line:var(--nv-line,rgba(148,163,184,.3)); --dk-text:var(--nv-text,#f1f5f9);
+  --dk-accent:var(--nv-accent,#3b82f6); --dk-h:158px;
+}
+html.lite-mode:not(#zz) #hudDock.nav-open{ --dk-bg:#fff; --dk-soft:#f6f7f9; --dk-line:#111; --dk-text:#000; --dk-accent:#000; }
+
+html:not(#zz) #engineView > #hudDock.hud-dock.nav-open{
+  display:grid !important; grid-template-columns:repeat(6,minmax(0,1fr)); grid-auto-rows:40px;
+  gap:8px; align-content:start; align-items:stretch;
+  top:0 !important; right:0 !important; left:auto !important;
+  width:min(360px,92vw) !important; max-width:100vw; height:auto !important; min-height:var(--dk-h);
+  box-sizing:border-box; padding:16px 12px 12px !important; overflow:hidden; flex-wrap:nowrap;
+  border-radius:24px 0 0 0 !important; border:1px solid var(--dk-line) !important; border-right:0 !important; border-bottom:0 !important;
+  background:var(--dk-bg) !important;
+  background-image:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899) !important; background-size:100% 4px !important;
+  background-repeat:no-repeat !important; background-position:top left !important;
+  box-shadow:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+}
+html.lite-mode:not(#zz) #engineView > #hudDock.hud-dock.nav-open{ background-image:linear-gradient(#000,#000) !important; background-size:100% 3px !important; }
+html:not(#zz) #hudDock.nav-open::after{ display:none !important; }
+html:not(#zz) #hudDock.nav-open::before{ content:''; position:absolute; left:12px; right:12px; bottom:0; height:1px; background:var(--dk-line); pointer-events:none; }
+html:not(#zz) #hudDock.nav-open .hud-sep{ display:none !important; }
+
+/* row 1 */
+html:not(#zz) #hudDock.nav-open .mode-switch{ grid-column:1 / 6; grid-row:1; order:0 !important; height:40px !important; margin:0 !important; padding:3px !important; gap:3px !important;
+  border-radius:14px !important; background:var(--dk-soft) !important; border:1px solid var(--dk-line) !important; min-width:0; }
+html:not(#zz) #hudDock.nav-open .mode-switch button{ flex:1 1 0; min-width:0; height:32px !important; padding:0 4px !important; justify-content:center; gap:4px !important; border-radius:11px !important; font-size:12px !important; white-space:nowrap; }
+html:not(#zz) #hudDock.nav-open .mode-switch button .ms-tx{ display:inline !important; }
+html:not(#zz) #hudDock.nav-open #navToggleIcon.nav-toggle-icon{ grid-column:6; grid-row:1; order:0 !important; justify-self:end; width:40px !important; height:40px !important; margin:0 !important; border-radius:50% !important;
+  background:var(--dk-soft) !important; border:1px solid var(--dk-line) !important; box-shadow:none !important; }
+html:not(#zz) #hudDock.nav-open #navToggleIcon span{ background:var(--dk-text) !important; box-shadow:none !important; width:16px !important; }
+
+/* shared look for every control in rows 2–3 */
+html:not(#zz) #hudDock.nav-open :is(#dualLangBtn,#hideEnBtn,#timerShowBtn,#timerPill,.au-dbtn,#svToggleBtn){
+  order:0 !important; box-sizing:border-box; width:100% !important; min-width:0; height:40px !important; min-height:0 !important; margin:0 !important; padding:0 8px !important;
+  align-items:center; justify-content:center; gap:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:13px !important; font-weight:700 !important; line-height:1;
+  border:1px solid var(--dk-line) !important; border-radius:12px !important; background:var(--dk-soft) !important;
+  color:var(--dk-text) !important; -webkit-text-fill-color:var(--dk-text) !important; box-shadow:none !important;
+}
+html:not(#zz) #hudDock.nav-open :is(#dualLangBtn,#hideEnBtn,#svToggleBtn){ display:inline-flex; }
+html:not(#zz) #hudDock.nav-open :is(#dualLangBtn,#timerShowBtn,#timerPill,#auDoneBtn,#auHlBtn,#svToggleBtn,#hideEnBtn):active{ transform:scale(.97) !important; }
+
+/* row 2 */
+html:not(#zz) #hudDock.nav-open #dualLangBtn{ grid-row:2; grid-column:span 3; }
+html:not(#zz) #hudDock.nav-open :is(#timerPill,#timerShowBtn){ grid-row:2; grid-column:span 3; }
+html:not(#zz) #hudDock.nav-open:not(:has(#timerPill[style*="flex"])):not(:has(#timerShowBtn[style*="flex"])) #dualLangBtn{ grid-column:1 / -1; }
+html:not(#zz) #hudDock.nav-open #timerText{ font-family:'Courier New',monospace !important; font-size:15px !important; font-weight:800 !important; color:var(--dk-text) !important; -webkit-text-fill-color:var(--dk-text) !important; text-shadow:none !important; letter-spacing:.5px; }
+html:not(#zz) #hudDock.nav-open #timerHideBtn{ flex:none; width:24px !important; height:24px !important; border-radius:50% !important; background:rgba(127,127,127,.18) !important; color:var(--dk-text) !important; -webkit-text-fill-color:var(--dk-text) !important; font-size:11px !important; }
+html:not(#zz) #hudDock.nav-open #hideEnBtn{ grid-row:4; grid-column:1 / -1; }
+
+/* row 3 */
+html:not(#zz) #hudDock.nav-open :is(#auDoneBtn,#auHlBtn,#svToggleBtn){ grid-row:3; grid-column:span 2; }
+html:not(#zz) #hudDock.nav-open .au-dbtn .au-tx{ display:inline !important; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn.sv-toggle{ flex:none; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn .sv-ic{ width:18px !important; height:18px !important; color:var(--dk-text) !important; stroke:var(--dk-text) !important; flex:none; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn::after{ content:'Page view'; font-size:13px; font-weight:700; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn.on::after{ content:'Single page'; }
+html:not(#zz) #hudDock.nav-open .au-dbtn.on{ background:#fde047 !important; border-color:#ca8a04 !important; color:#000 !important; -webkit-text-fill-color:#000 !important; }
+html:not(#zz) #hudDock.nav-open #auDoneBtn.done{ background:#86efac !important; border-color:#16a34a !important; color:#052e16 !important; -webkit-text-fill-color:#052e16 !important; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn.on{ background:var(--dk-accent) !important; color:#fff !important; -webkit-text-fill-color:#fff !important; }
+html:not(#zz) #hudDock.nav-open #svToggleBtn.on .sv-ic{ color:#fff !important; stroke:#fff !important; }
+html.lite-mode:not(#zz) #hudDock.nav-open #svToggleBtn .sv-ic *{ stroke:currentColor !important; }
+
+/* lite-mode segmented switch: selected = black pill, white text */
+html.lite-mode:not(#zz) #hudDock.nav-open .mode-switch button{ color:#000 !important; -webkit-text-fill-color:#000 !important; opacity:.75; }
+html.lite-mode:not(#zz) #hudDock.nav-open .mode-switch button.on{ background:#000 !important; color:#fff !important; -webkit-text-fill-color:#fff !important; opacity:1; }
+
+/* make the navigator content start exactly below the deck (no overlap, no gap) */
+html:not(#zz) .nav-panel .nav-panel-inner{ padding-top:calc(var(--dk-h,158px) + 14px) !important; }
+@media (max-width:576px){
+  html:not(#zz) #engineView > #hudDock.hud-dock.nav-open{ width:92vw !important; }
+}
+@media (max-width:360px){
+  html:not(#zz) #hudDock.nav-open :is(#dualLangBtn,#hideEnBtn,#timerShowBtn,#timerPill,.au-dbtn,#svToggleBtn){ font-size:12px !important; padding:0 4px !important; }
+  html:not(#zz) #hudDock.nav-open #svToggleBtn::after{ display:none; }
+}
+</style>
+
 </body>
 
 
