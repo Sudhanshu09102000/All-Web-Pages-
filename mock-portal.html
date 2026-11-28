@@ -7010,7 +7010,7 @@ window.rtView = {
         }
 
         function scheduleRender() {
-          if (renderTimer) return;
+          if (renderTimer || rd) return;      // popup open -> leave the page behind it alone
           const busy = loadedCount() < FILES.length;
           renderTimer = setTimeout(() => { renderTimer = null; render(); }, busy ? 500 : 80);
         }
@@ -7155,6 +7155,7 @@ window.rtView = {
               '<header class="sxp-head">' +
                 '<div class="sxp-ic" data-r="ic">📖</div>' +
                 '<div class="sxp-ttl"><div class="sxp-chips" data-r="chips"></div><b data-r="title"></b><small data-r="crumb"></small></div>' +
+                '<button type="button" class="sxp-x sxp-mx" data-r="max" aria-label="Maximize" title="Maximize (M)"></button>' +
                 '<button type="button" class="sxp-x" data-r="close" aria-label="Close" title="Close (Esc)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>' +
               '</header>' +
               '<div class="sxp-tools"><span class="sxp-hlcount" data-r="count"></span>' +
@@ -7166,12 +7167,14 @@ window.rtView = {
               '</footer>' +
             '</div>';
           document.body.appendChild(rdEl);
+          rdEl.querySelector('.sxp-head').addEventListener('dblclick', (e) => { if (!e.target.closest('button')) toggleMax(); });
           rdEl.addEventListener('mousedown', (e) => { if (e.target === rdEl) closeReader(); });   // click outside = close
           rdEl.addEventListener('click', (e) => {
             const b = e.target.closest('[data-r]');
             if (!b || !rd) return;
             const a = b.getAttribute('data-r');
             if (a === 'close') closeReader();
+            else if (a === 'max') toggleMax();
             else if (a === 'pprev') { if (rd.pos > 0) showPage(rd.pos - 1); }
             else if (a === 'pnext') { if (rd.pos < rd.hits.length - 1) showPage(rd.pos + 1); }
             else if (a === 'hprev') goMark(rd.cur - 1);
@@ -7181,6 +7184,23 @@ window.rtView = {
           return rdEl;
         }
 
+        const MAX_ICO = ['<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>',
+                         '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>'];
+        let rdMax = false;
+        try { rdMax = localStorage.getItem('sxpMax') === '1'; } catch (e) {}
+        function applyMax() {
+          if (!rdEl) return;
+          rdEl.classList.toggle('is-max', rdMax);
+          const b = rq('max');
+          if (b) { b.innerHTML = MAX_ICO[rdMax ? 1 : 0]; b.title = rdMax ? 'Restore (M)' : 'Maximize (M)'; b.setAttribute('aria-label', b.title); }
+        }
+        function toggleMax() {
+          rdMax = !rdMax;
+          try { localStorage.setItem('sxpMax', rdMax ? '1' : '0'); } catch (e) {}
+          applyMax();
+          if (rd && rd.groups) goMark(rd.cur);       // keep the highlight in view after the resize
+        }
+
         function goMark(i) {
           if (!rd || !rd.groups) return;
           rd.cur = (i + rd.groups) % rd.groups;
@@ -7188,7 +7208,7 @@ window.rtView = {
           body.querySelectorAll('mark.sx-hl.is-cur').forEach(m => m.classList.remove('is-cur'));
           const list = body.querySelectorAll('mark.sx-hl[data-m="' + rd.cur + '"]');
           list.forEach(m => m.classList.add('is-cur'));
-          if (list[0]) list[0].scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+          if (list[0]) list[0].scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' });
           rq('count').innerHTML = '<b>' + (rd.cur + 1) + '</b> of <b>' + rd.groups + '</b> highlighted';
         }
 
@@ -7228,6 +7248,7 @@ window.rtView = {
         function onReaderKey(e) {
           if (!rd) return;
           if (e.key === 'Escape') closeReader();
+          else if ((e.key === 'm' || e.key === 'M') && !e.ctrlKey && !e.metaKey && !e.altKey) toggleMax();
           else if (e.key === 'ArrowRight') { if (rd.pos < rd.hits.length - 1) showPage(rd.pos + 1); }
           else if (e.key === 'ArrowLeft') { if (rd.pos > 0) showPage(rd.pos - 1); }
           else return;
@@ -7245,6 +7266,8 @@ window.rtView = {
           rdEl.hidden = false;
           document.documentElement.classList.add('sxp-lock');
           window.addEventListener('keydown', onReaderKey, true);
+          paused = true;                       // stop background scanning while reading (main cause of lag)
+          applyMax();
           showPage(pos);
           const x = rq('close'); if (x) x.focus({ preventScroll: true });
         }
@@ -7257,6 +7280,8 @@ window.rtView = {
           rq('body').innerHTML = '';
           document.documentElement.classList.remove('sxp-lock');
           window.removeEventListener('keydown', onReaderKey, true);
+          if (active && !stopped) { paused = false; pump(); }   // resume the scan
+          scheduleRender();
         }
 
         wrap.addEventListener('click', (e) => {
@@ -27280,11 +27305,11 @@ html:not(#px) .sx-snip .sx-txt{flex:1 1 auto}
 html.sxp-lock,html.sxp-lock body{overflow:hidden!important}
 html:not(#px) .sxp-overlay[hidden]{display:none!important}
 html:not(#px) .sxp-overlay{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:clamp(8px,3vw,32px);
-  background:rgba(8,12,26,.58);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:sxpFade .22s ease both}
+  background:rgba(8,12,26,.72);animation:sxpFade .18s ease both}
 html:not(#px) .sxp-panel{position:relative;display:flex;flex-direction:column;width:min(940px,100%);max-height:min(90vh,100%);border-radius:26px;overflow:hidden;
   border:1.5px solid transparent;
   background:linear-gradient(var(--px-surface,#fff),var(--px-surface,#fff)) padding-box,linear-gradient(135deg,#6f8cff,#a78bfa 48%,#f5b942) border-box;
-  box-shadow:0 40px 90px -30px rgba(10,20,60,.7),0 0 0 1px rgba(255,255,255,.04);animation:sxpIn .32s cubic-bezier(.2,.9,.25,1) both;color:var(--px-ink,#0e1526)}
+  box-shadow:0 20px 50px -20px rgba(10,20,60,.65);animation:sxpIn .22s ease-out both;color:var(--px-ink,#0e1526);contain:layout paint}
 html:not(#px) .sxp-bar{height:5px;flex:0 0 5px;background:linear-gradient(90deg,#4f6bff,#8b5cf6,#f5b942)}
 html:not(#px) .sxp-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1.2rem .85rem}
 html:not(#px) .sxp-ic{width:46px;height:46px;flex:0 0 46px;border-radius:15px;display:grid;place-items:center;font-size:1.35rem;
@@ -27304,7 +27329,7 @@ html:not(#px) .sxp-hlnav button{width:30px;height:28px;border-radius:9px;cursor:
 html:not(#px) .sxp-hlnav button:hover:not(:disabled){background:rgba(111,140,255,.2)}
 html:not(#px) .sxp-hlnav button:disabled,html:not(#px) .sxp-pager button:disabled{opacity:.4;cursor:default}
 
-html:not(#px) .sxp-body{flex:1 1 auto;min-height:120px;overflow:auto;padding:1.2rem 1.4rem 1.5rem;font-size:1rem;line-height:1.75;scrollbar-width:thin;overscroll-behavior:contain}
+html:not(#px) .sxp-body{flex:1 1 auto;min-height:120px;overflow:auto;contain:content;will-change:scroll-position;padding:1.2rem 1.4rem 1.5rem;font-size:1rem;line-height:1.75;scrollbar-width:thin;overscroll-behavior:contain}
 html:not(#px) .sxp-body img{max-width:100%;height:auto;border-radius:12px}
 html:not(#px) .sxp-body table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.94em}
 html:not(#px) .sxp-body th,html:not(#px) .sxp-body td{border:1px solid var(--px-line,#e1e6f0);padding:.45rem .65rem;vertical-align:top}
@@ -27338,7 +27363,16 @@ html:not(#px) .sxp-open span{transition:transform .2s}
 html:not(#px) .sxp-open:hover span{transform:translateX(3px)}
 
 @keyframes sxpFade{from{opacity:0}to{opacity:1}}
-@keyframes sxpIn{from{opacity:0;transform:translateY(18px) scale(.965)}to{opacity:1;transform:none}}
+/* no hover / transition / animation work inside the reader body */
+html:not(#px) .sxp-body *,html:not(#px) .sxp-body *::before,html:not(#px) .sxp-body *::after{animation:none!important;transition:none!important}
+html:not(#px) .sxp-body .cp-body tbody tr:hover td{background:inherit}
+/* maximize */
+html:not(#px) .sxp-mx{margin-right:-.4rem}
+html:not(#px) .sxp-mx:hover{transform:none!important;background:rgba(111,140,255,.2)!important;color:var(--px-accent,#2f54eb)!important}
+html:not(#px) .sxp-overlay.is-max{padding:0}
+html:not(#px) .sxp-overlay.is-max .sxp-panel{width:100vw;height:100vh;height:100dvh;max-height:none;border-radius:0}
+html:not(#px) .sxp-overlay.is-max .sxp-body{padding:1.2rem clamp(1rem,4vw,3rem) 1.5rem}
+@keyframes sxpIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){html:not(#px) .sxp-overlay,html:not(#px) .sxp-panel{animation:none}}
 @media (max-width:640px){
   html:not(#px) .sxp-overlay{align-items:flex-end;padding:0}
@@ -27522,6 +27556,989 @@ html:not(.lite-mode) body #gcp-panel :is(.rec-tip:not(.rec-warn),.ts-intro,.gcp-
 html:not(.lite-mode) body #gcp-panel .rec-mic-foot{justify-content:flex-end}
 html body #gcp-panel :is(.rec-tip:not(.rec-warn),.ts-intro,.gcp-shortcut-row,.rec-nc-note,.rec-mic-foot span,#tlOnlySub){display:none!important}
 </style>
+
+<!-- ============================================================
+     ACCOUNTS — email + password login (verified email only), syllabus "mark as done",
+     and text highlights. Everything is saved under the user's own
+     account (Firebase Auth + Realtime Database  users/<uid>/…)
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<style id="auCss">
+/* ---------- account chip ---------- */
+.au-chip{display:inline-flex;align-items:center;gap:8px;padding:.6rem 1.15rem;margin:4px 0 4px 10px;border-radius:999px;font-weight:650;font-size:.95rem;line-height:1.2;cursor:pointer;color:var(--txt,#f1f5f9);border:1px solid rgba(59,130,246,.45);background:linear-gradient(135deg,rgba(59,130,246,.14),rgba(37,99,235,.06));transition:background .2s,border-color .2s;vertical-align:middle}
+.au-chip:hover{background:rgba(59,130,246,.26);border-color:rgba(59,130,246,.8)}
+.au-av{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;background:#3b82f6;color:#fff;font-size:12px;font-weight:800;flex:none}
+html.lite-mode .au-chip{background:#fff!important;color:#000!important;border:1px solid #000!important}
+html.lite-mode .au-av{background:#000;color:#fff}
+
+/* ---------- syllabus ticks ---------- */
+.subtopic-row .au-tick{flex:none;width:36px;height:36px;border-radius:10px;border:1.5px solid rgba(148,163,184,.6);background:transparent;color:transparent;display:grid;place-items:center;font-size:18px;font-weight:900;line-height:1;cursor:pointer;padding:0;transition:background .15s,border-color .15s,color .15s,transform .1s;-webkit-tap-highlight-color:transparent}
+.subtopic-row .au-tick:hover{border-color:#22c55e}
+.subtopic-row .au-tick:active{transform:scale(.92)}
+.subtopic-row.au-done .au-tick{background:#22c55e;border-color:#22c55e;color:#fff}
+.subtopic-row.au-done .st-name{text-decoration:line-through;text-decoration-color:rgba(34,197,94,.8);text-decoration-thickness:2px;opacity:.7}
+html.lite-mode .subtopic-row .au-tick{border-color:#000!important;background:#fff!important}
+html.lite-mode .subtopic-row.au-done .au-tick{background:#16a34a!important;border-color:#16a34a!important;color:#fff!important}
+.au-gprog{margin-left:8px;font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.4);color:#22c55e;white-space:nowrap;letter-spacing:.2px}
+.au-gprog.full{background:#22c55e;color:#fff}
+html.lite-mode .au-gprog{background:#fff!important;color:#000!important;border:1px solid #000!important}
+.au-bar{height:6px;border-radius:99px;background:rgba(148,163,184,.28);overflow:hidden;margin-top:7px}
+.au-bar>i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .35s ease}
+html.lite-mode .au-bar{background:#ddd}
+.au-sprog{margin-top:8px;font-size:.78rem;font-weight:700;color:#22c55e}
+html.lite-mode .au-sprog{color:#000}
+.au-subjprog{max-width:380px;margin:14px auto 0;font-size:.85rem;font-weight:700;text-align:center;color:#22c55e;position:relative;z-index:1}
+html.lite-mode .au-subjprog{color:#000}
+
+/* ---------- login / account dialog ---------- */
+#auOverlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,23,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#auOverlay.on{display:flex}
+.au-dlg{width:100%;max-width:410px;max-height:92vh;overflow:auto;border-radius:20px;padding:22px 22px 18px;background:#0f172a;color:#f1f5f9;border:1px solid rgba(59,130,246,.4);box-shadow:0 24px 70px rgba(0,0,0,.6);font-family:inherit}
+html.lite-mode .au-dlg{background:#fff;color:#000;border:1px solid #000;box-shadow:none}
+.au-h{font-size:1.3rem;font-weight:800;margin:0 0 4px}
+.au-sub{font-size:.86rem;opacity:.72;margin:0}
+.au-note{font-size:.84rem;font-weight:650;padding:9px 12px;border-radius:10px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);margin-top:12px}
+.au-tabs{display:flex;gap:6px;background:rgba(148,163,184,.16);padding:4px;border-radius:12px;margin:16px 0 14px}
+.au-tabs button{flex:1;padding:9px 6px;border:0;border-radius:9px;background:transparent;color:inherit;font-weight:700;font-size:.9rem;cursor:pointer}
+.au-tabs button.on{background:#3b82f6;color:#fff}
+html.lite-mode .au-tabs button.on{background:#000}
+.au-f{display:block;margin:0 0 12px}
+.au-f>span{display:block;font-size:12px;font-weight:700;opacity:.78;margin-bottom:5px}
+.au-in{width:100%;padding:11px 13px;border-radius:11px;border:1px solid rgba(148,163,184,.5);background:rgba(148,163,184,.1);color:inherit;font-size:16px;outline:none;font-family:inherit;box-sizing:border-box}
+.au-in:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.28)}
+html.lite-mode .au-in{background:#fff;border-color:#000}
+.au-ph{display:flex;gap:8px}
+.au-cc{flex:none;display:grid;place-items:center;padding:0 12px;border-radius:11px;border:1px solid rgba(148,163,184,.5);background:rgba(148,163,184,.14);font-weight:700;font-size:15px}
+.au-pw{position:relative}
+.au-pw .au-in{padding-right:46px}
+.au-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:38px;height:36px;border:0;background:transparent;color:inherit;font-size:17px;cursor:pointer;opacity:.75}
+.au-err{min-height:20px;color:#f87171;font-size:13px;font-weight:650;margin:2px 0 10px}
+html.lite-mode .au-err{color:#b00020}
+.au-go{width:100%;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit}
+html.lite-mode #auOverlay .au-go,html.lite-mode #auOverlay .au-tabs button.on{background:#000!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+html.lite-mode #auOverlay .au-tabs button:not(.on){color:#000!important;-webkit-text-fill-color:#000!important;background:transparent!important}
+html.lite-mode #auOverlay .au-ghost,html.lite-mode #auOverlay .au-eye,html.lite-mode #auOverlay .au-close{color:#000!important;-webkit-text-fill-color:#000!important}
+html.lite-mode #auOverlay .au-ghost.red{color:#b00020!important;-webkit-text-fill-color:#b00020!important;border-color:#b00020!important}
+html.lite-mode .au-chip,html.lite-mode .au-chip *{color:#000!important;-webkit-text-fill-color:#000!important}
+html.lite-mode .au-chip .au-av{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html.lite-mode .subtopic-row.au-done .au-tick{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.au-go[disabled]{opacity:.6;cursor:wait}
+.au-ghost{width:100%;padding:11px;margin-top:9px;border-radius:12px;border:1px solid rgba(148,163,184,.55);background:transparent;color:inherit;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.au-ghost.red{border-color:rgba(248,113,113,.7);color:#f87171}
+html.lite-mode .au-ghost{border-color:#000;color:#000}
+.au-foot{font-size:11.5px;opacity:.6;margin:12px 0 0;text-align:center;line-height:1.45}
+.au-close{float:right;border:0;background:transparent;color:inherit;font-size:20px;line-height:1;cursor:pointer;opacity:.7;padding:2px 6px}
+.au-stats{display:flex;gap:10px;margin:14px 0}
+.au-stat{flex:1;text-align:center;padding:11px 6px;border-radius:12px;background:rgba(148,163,184,.13);border:1px solid rgba(148,163,184,.3)}
+.au-stat b{display:block;font-size:1.25rem}
+.au-stat small{font-size:11px;opacity:.7}
+.au-hr{border:0;border-top:1px solid rgba(148,163,184,.3);margin:14px 0}
+.au-lnk{background:none;border:0;padding:4px 2px;color:#60a5fa;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;text-decoration:underline}
+html.lite-mode #auOverlay .au-lnk{color:#000!important;-webkit-text-fill-color:#000!important}
+
+/* ---------- toast ---------- */
+#auToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:100002;max-width:min(92vw,460px);padding:11px 16px;border-radius:12px;background:#0f172a;color:#f1f5f9;border:1px solid rgba(59,130,246,.5);font-size:13.5px;font-weight:650;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;text-align:center}
+#auToast.on{opacity:1;transform:translate(-50%,0)}
+html.lite-mode #auToast{background:#fff;color:#000;border:1px solid #000}
+
+/* ---------- dock buttons (inside the top-right HUD dock) ---------- */
+#hudDock .au-dbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;flex:none;height:24px;min-height:0!important;margin:0!important;padding:0 8px!important;font-size:12px!important;font-weight:800!important;line-height:1;white-space:nowrap;border:0!important;border-radius:8px!important;box-shadow:none!important;transform:none!important;background:transparent!important;color:#60a5fa!important;cursor:pointer;user-select:none}
+#hudDock .au-dbtn:hover{background:rgba(59,130,246,.22)!important}
+#hudDock .au-dbtn.on{background:rgba(250,204,21,.28)!important;color:#fde047!important}
+#hudDock #auDoneBtn.done{background:rgba(34,197,94,.28)!important;color:#4ade80!important}
+html.lite-mode #hudDock .au-dbtn{color:#000!important;-webkit-text-fill-color:#000!important}
+html.lite-mode #hudDock .au-dbtn.on{background:#fde047!important}
+html.lite-mode #hudDock #auDoneBtn.done{background:#86efac!important}
+@media (max-width:576px){#hudDock .au-dbtn .au-tx{display:none}#hudDock .au-dbtn{padding:0 6px!important}}
+@media (min-width:577px){#engineView .engine-topbar .container-fluid{padding-right:560px!important}}
+
+/* ---------- highlights ---------- */
+mark.au-hl{color:inherit;border-radius:3px;padding:0 1px;margin:0 -1px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+mark.au-hl[data-c="0"]{background:rgba(250,204,21,.55)}
+mark.au-hl[data-c="1"]{background:rgba(74,222,128,.48)}
+mark.au-hl[data-c="2"]{background:rgba(244,114,182,.48)}
+mark.au-hl[data-c="3"]{background:rgba(96,165,250,.5)}
+html.lite-mode mark.au-hl{color:#000}
+html.lite-mode mark.au-hl[data-c="0"]{background:#fde047}
+html.lite-mode mark.au-hl[data-c="1"]{background:#86efac}
+html.lite-mode mark.au-hl[data-c="2"]{background:#f9a8d4}
+html.lite-mode mark.au-hl[data-c="3"]{background:#93c5fd}
+/* while highlight mode is ON the page text must be selectable (it is normally locked) */
+body.hl-mode .question-scroll-area,body.hl-mode .question-scroll-area *,
+body.hl-mode #cpScroll,body.hl-mode #cpScroll *,
+body.hl-mode #svView,body.hl-mode #svView *,
+body.hl-mode #stickyExpPanel-body,body.hl-mode #stickyExpPanel-body *,
+body.hl-mode #mobileHintPanel-body,body.hl-mode #mobileHintPanel-body *{-webkit-user-select:text!important;user-select:text!important}
+body.hl-mode mark.au-hl{cursor:pointer}
+body.hl-mode ::selection{background:rgba(250,204,21,.45)}
+#auSelBar{position:fixed;z-index:100001;display:none;align-items:center;gap:7px;padding:7px 9px;border-radius:14px;background:#0f172a;border:1px solid rgba(59,130,246,.55);box-shadow:0 10px 30px rgba(0,0,0,.55);-webkit-user-select:none;user-select:none;touch-action:manipulation}
+#auSelBar.on{display:flex}
+#auSelBar button{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.75);cursor:pointer;padding:0;flex:none}
+#auSelBar button[data-c="0"]{background:#facc15}
+#auSelBar button[data-c="1"]{background:#4ade80}
+#auSelBar button[data-c="2"]{background:#f472b6}
+#auSelBar button[data-c="3"]{background:#60a5fa}
+#auSelBar button.au-x{width:auto;border-radius:10px;padding:0 11px;background:transparent;color:#fca5a5;border:1px solid rgba(248,113,113,.6);font-size:13px;font-weight:700;height:32px}
+</style>
+
+<script id="auJs">
+(function () {
+  'use strict';
+  if (window.__auInit) return;
+  window.__auInit = true;
+
+  /* ───────────────────────── tiny helpers ───────────────────────── */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function cyrb53(str) {                       // small, fast, well-distributed string hash
+    var h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (var i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  }
+  function hkey(prefix, str) { return prefix + cyrb53(String(str)).toString(36); }   // Firebase-safe key
+
+  var toastEl, toastT;
+  function toast(msg, ms) {
+    if (!toastEl) { toastEl = document.createElement('div'); toastEl.id = 'auToast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove('on'); }, ms || 2600);
+  }
+
+  /* ───────────────────────── phone → login id ───────────────────────── */
+  function normPhone(v) {
+    var d = String(v || '').replace(/\D/g, '');
+    if (d.length === 12 && d.indexOf('91') === 0) d = d.slice(2);
+    if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+    return /^[6-9]\d{9}$/.test(d) ? d : '';
+  }
+  function phoneEmail(p) { return p + '@phone.mockportal.app'; }
+  function phoneFromEmail(e) { return String(e || '').split('@')[0]; }
+
+  /* Old accounts were "<mobile>@phone.mockportal.app" — that address can never receive mail, so those
+     accounts are unverifiable. They can still log in once, but must attach a real, verified email. */
+  var LEGACY_DOMAIN = '@phone.mockportal.app';
+  function normEmail(v) {
+    var e = String(v || '').trim().toLowerCase();
+    return (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e) && e.indexOf(LEGACY_DOMAIN) < 0) ? e : '';
+  }
+  function isLegacyUser(u) { return !!u && String(u.email || '').toLowerCase().slice(-LEGACY_DOMAIN.length) === LEGACY_DOMAIN; }
+
+  /* ───────────────────────── Firebase ───────────────────────── */
+  var fb = { auth: null, db: null, ok: false };
+  function initFb() {
+    if (fb.ok) return true;
+    try {
+      if (typeof firebase === 'undefined' || !firebase.auth) return false;
+      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      fb.auth = firebase.auth();
+      fb.db = firebase.database();
+      fb.ok = true;
+    } catch (e) { console.error('[accounts] Firebase init failed', e); fb.ok = false; }
+    return fb.ok;
+  }
+
+  /* ───────────────────────── account state ───────────────────────── */
+  var AU = { uid: null, name: '', email: '', phone: '', done: {}, hl: {}, ready: false, hlOn: false, hv: 0, warned: false, after: null };
+  var LS = 'mp_acct_v1_';
+  function cacheSave() { try { localStorage.setItem(LS + AU.uid, JSON.stringify({ done: AU.done, hl: AU.hl, name: AU.name })); } catch (e) {} }
+  function cacheLoad(uid) { try { return JSON.parse(localStorage.getItem(LS + uid) || 'null'); } catch (e) { return null; } }
+  function uref(path) { return fb.db.ref('users/' + AU.uid + (path ? '/' + path : '')); }
+  function syncFail(e) {
+    console.warn('[accounts] cloud sync failed', e);
+    if (!AU.warned) { AU.warned = true; toast('⚠️ Saved on this device, but cloud sync failed. Check the Firebase database rules.', 5200); }
+  }
+  function rset(path, val) {
+    if (!fb.ok || !AU.uid) return;
+    try { (val === null ? uref(path).remove() : uref(path).set(val)).catch(syncFail); } catch (e) { syncFail(e); }
+  }
+
+  /* ───────────────────────── syllabus model (from PORTAL_DATA) ───────────────────────── */
+  function portal() { return (typeof PORTAL_DATA !== 'undefined' && PORTAL_DATA) || []; }
+  var keyCache = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
+  function keyOf(file, subj, tg, name) {
+    return file ? hkey('c', file) : hkey('c', subj + '\u0001' + tg + '\u0001' + name);
+  }
+  function chKey(subj, tg, st) {
+    var k = keyCache && keyCache.get(st);
+    if (!k) { k = keyOf(st.file, subj, tg, st.name); if (keyCache) keyCache.set(st, k); }
+    return k;
+  }
+  function curSubject() {
+    var i = window.state && window.state.selectedSubjectIndex;
+    return portal()[i] || null;
+  }
+  function countSubject(s) {
+    var t = 0, d = 0;
+    (s.topics || []).forEach(function (tg) {
+      (tg.subtopics || []).forEach(function (st) { t++; if (AU.done[chKey(s.title, tg.name, st)]) d++; });
+    });
+    return { t: t, d: d };
+  }
+  function curTest() {
+    var t = window.state && window.state.selectedTest;
+    return t && (t.fileKey || t.subtopicName) ? t : null;
+  }
+  function testKey(t) { return keyOf(t.fileKey, t.subjectTitle, t.topicName, t.subtopicName); }
+
+  function setDone(key, on) {
+    if (on) { AU.done[key] = Date.now(); rset('done/' + key, AU.done[key]); }
+    else { delete AU.done[key]; rset('done/' + key, null); }
+    cacheSave();
+    refreshProgress();
+  }
+  function toggleDone(key) {
+    if (!AU.uid) { openAuth('login', 'Log in to tick off chapters and track your syllabus.'); return; }
+    if (!AU.ready) { toast('Loading your account…'); return; }
+    var on = !AU.done[key];
+    setDone(key, on);
+    toast(on ? '✅ Marked as done' : '↩️ Marked as not done', 1400);
+  }
+
+  /* ───────────────────────── UI: ticks, progress, chips ───────────────────────── */
+  function decorateSubject() {
+    var subj = curSubject(), area = $('#topicsArea');
+    if (!subj || !area) return;
+    Array.prototype.forEach.call(area.children, function (col) {
+      var tg = (subj.topics || [])[+col.getAttribute('data-g')];
+      if (!tg) return;
+      var title = $('.topic-dropdown-title', col);
+      if (title && !$('.au-gprog', title)) { var sp = document.createElement('span'); sp.className = 'au-gprog'; title.appendChild(sp); }
+      $$('.subtopic-row', col).forEach(function (row) {
+        if (row.getAttribute('data-au')) return;
+        var st = (tg.subtopics || [])[+row.getAttribute('data-s')];
+        if (!st) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'au-tick'; b.textContent = '✓';
+        b.setAttribute('data-k', chKey(subj.title, tg.name, st));
+        b.title = 'Mark as done / not done';
+        b.setAttribute('aria-label', 'Mark "' + st.name + '" as done');
+        row.insertBefore(b, row.firstChild);
+        row.setAttribute('data-au', '1');
+      });
+    });
+    refreshProgress();
+  }
+
+  function refreshProgress() {
+    var any = !!AU.uid;
+    $$('.au-tick').forEach(function (b) {
+      var on = any && !!AU.done[b.getAttribute('data-k')];
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      var row = b.closest('.subtopic-row'); if (row) row.classList.toggle('au-done', on);
+    });
+    var subj = curSubject(), area = $('#topicsArea');
+    if (subj && area) {
+      subj.topics.forEach(function (tg, gi) {
+        var col = area.querySelector('[data-g="' + gi + '"]'), sp = col && col.querySelector('.au-gprog');
+        if (!sp) return;
+        var n = 0, d = 0;
+        (tg.subtopics || []).forEach(function (st) { n++; if (AU.done[chKey(subj.title, tg.name, st)]) d++; });
+        sp.style.display = any ? '' : 'none';
+        sp.textContent = d + '/' + n + (n && d === n ? ' ✓' : '');
+        sp.classList.toggle('full', n > 0 && d === n);
+      });
+      var hint = $('#subjectHint'), box = $('#auSubjProg');
+      if (hint && !box) { box = document.createElement('div'); box.id = 'auSubjProg'; box.className = 'au-subjprog'; hint.parentNode.insertBefore(box, hint.nextSibling); }
+      if (box) {
+        var c = countSubject(subj), pct = c.t ? Math.round(c.d * 100 / c.t) : 0;
+        box.style.display = any ? '' : 'none';
+        box.innerHTML = '✅ ' + c.d + ' of ' + c.t + ' chapters done · ' + pct + '%<div class="au-bar"><i style="width:' + pct + '%"></i></div>';
+      }
+    }
+    $$('#subjectsGrid .subject-card').forEach(function (card, i) {
+      var s = portal()[i]; if (!s) return;
+      var host = $('.flex-grow-1', card); if (!host) return;
+      var el = $('.au-sprog', host);
+      if (!any) { if (el) el.remove(); return; }
+      if (!el) { el = document.createElement('div'); el.className = 'au-sprog'; host.appendChild(el); }
+      var c = countSubject(s), pct = c.t ? Math.round(c.d * 100 / c.t) : 0;
+      el.innerHTML = c.d + ' / ' + c.t + ' done' + '<div class="au-bar"><i style="width:' + pct + '%"></i></div>';
+    });
+    updateDock();
+  }
+
+  function chipHtml() {
+    return AU.uid
+      ? '<span class="au-av">' + esc((AU.name || 'U').trim().charAt(0).toUpperCase()) + '</span><span>' + esc(AU.name || 'My account') + '</span>'
+      : '<span>👤</span><span>Login / Sign up</span>';
+  }
+  function mountChips() {
+    [$('.action-btn-row'), $('#subjectView .subject-hero-actions')].forEach(function (host, i) {
+      if (!host) return;
+      var chip = $('.au-chip', host);
+      if (!chip) {
+        chip = document.createElement('button');
+        chip.type = 'button'; chip.className = 'au-chip';
+        chip.addEventListener('click', function (e) { e.stopPropagation(); AU.uid ? openAccount() : openAuth('login'); });
+        host.appendChild(chip);
+      }
+      chip.innerHTML = chipHtml();
+    });
+  }
+
+  /* ───────────────────────── HUD dock buttons (inside a test) ───────────────────────── */
+  function mountDock() {
+    var dock = $('#hudDock');
+    if (!dock || $('#auHlBtn')) return;
+    var anchor = $('#svToggleBtn', dock) || $('#navToggleIcon', dock);
+    function mk(id, ic, tx, title) {
+      var d = document.createElement('div');
+      d.id = id; d.className = 'btn au-dbtn'; d.setAttribute('role', 'button'); d.tabIndex = 0; d.title = title;
+      d.innerHTML = '<span class="au-ic">' + ic + '</span><span class="au-tx">' + tx + '</span>';
+      return d;
+    }
+    var done = mk('auDoneBtn', '✓', 'Mark done', 'Mark this chapter as done / not done');
+    var hl = mk('auHlBtn', '🖍', 'Highlight', 'Highlighter — select any text to highlight it');
+    var sep = document.createElement('span'); sep.className = 'hud-sep'; sep.setAttribute('aria-hidden', 'true');
+    dock.insertBefore(done, anchor); dock.insertBefore(hl, anchor); dock.insertBefore(sep, anchor);
+    function act(fn) { return function (e) { if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); e.stopPropagation(); fn(); }; }
+    [['click', 'keydown']].forEach(function (evs) {
+      evs.forEach(function (ev) {
+        done.addEventListener(ev, act(function () { var t = curTest(); if (t && !t.custom) toggleDone(testKey(t)); }));
+        hl.addEventListener(ev, act(function () { setHlMode(!AU.hlOn); }));
+      });
+    });
+    updateDock();
+  }
+  function updateDock() {
+    var d = $('#auDoneBtn'); if (!d) return;
+    var t = curTest(), show = !!t && !t.custom;
+    d.style.display = show ? '' : 'none';
+    if (show) {
+      var on = !!AU.uid && !!AU.done[testKey(t)];
+      d.classList.toggle('done', on);
+      $('.au-tx', d).textContent = on ? 'Done' : 'Mark done';
+      d.title = on ? 'Done — tap to undo' : 'Mark this chapter as done';
+    }
+    var h = $('#auHlBtn'); if (h) h.classList.toggle('on', AU.hlOn);
+  }
+
+  /* ───────────────────────── login / account dialog ───────────────────────── */
+  var ov, mode = 'login', note = '';
+  function ensureOverlay() {
+    if (ov) return;
+    ov = document.createElement('div'); ov.id = 'auOverlay';
+    ov.innerHTML = '<div class="au-dlg" role="dialog" aria-modal="true" aria-label="Account"></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('mousedown', function (e) { if (e.target === ov) closeDlg(); });
+    ov.addEventListener('click', onDlgClick);
+  }
+  function dlg() { return $('.au-dlg', ov); }
+  function closeDlg() { stopTimers(); if (ov) ov.classList.remove('on'); }
+  /* ── account-gate state: a Firebase user can exist but NOT be usable yet (unverified email / old phone account) ── */
+  var fbUser = null, reloadedFor = null, pollT = null, tickT = null, resendUntil = 0;
+
+  function gateMode() {
+    if (!fbUser) return null;
+    if (isLegacyUser(fbUser)) return 'upgrade';
+    return fbUser.emailVerified ? null : 'verify';
+  }
+  function dlgOpen() { return !!ov && ov.classList.contains('on'); }
+  function stopTimers() {
+    if (pollT) { clearInterval(pollT); pollT = null; }
+    if (tickT) { clearInterval(tickT); tickT = null; }
+  }
+  function resendLabel() {
+    var s = Math.ceil((resendUntil - Date.now()) / 1000);
+    return s > 0 ? 'Resend email (' + s + 's)' : 'Resend email';
+  }
+  function startVerifyTimers() {
+    stopTimers();
+    pollT = setInterval(function () {                       // auto-detect the click on the emailed link
+      if (mode !== 'verify' || !dlgOpen() || !fbUser) { stopTimers(); return; }
+      checkVerified(true);
+    }, 4000);
+    tickT = setInterval(function () {                       // resend cooldown label
+      var b = dlgOpen() && $('[data-au="resend"]', ov);
+      if (!b || mode !== 'verify') return;
+      b.textContent = resendLabel(); b.disabled = Date.now() < resendUntil;
+    }, 1000);
+  }
+  function checkVerified(silent) {
+    var u = fb.auth && fb.auth.currentUser;
+    if (!u) return;
+    if (!silent) busy(true, 'Checking…');
+    u.reload().then(function () {
+      if (u.emailVerified) return u.getIdToken(true).then(function () { handleUser(u); });   // refresh token so DB rules see email_verified
+      if (!silent) showErr('Not verified yet — open the link in the email we sent, then tap again.');
+    }).catch(function (e) { if (!silent) authError(e); })
+      .then(function () { if (!silent) busy(false); });
+  }
+
+  function openAuth(m, msg, after) {
+    ensureOverlay();
+    var g = gateMode();
+    mode = g || m || 'login'; note = msg || ''; AU.after = after || null;
+    renderDlg(); ov.classList.add('on');
+    if (mode === 'verify') startVerifyTimers();
+    var sel = mode === 'signup' ? '#auName' : (mode === 'login' || mode === 'forgot' || mode === 'upgrade') ? '#auEm' : mode === 'legacy' ? '#auPh' : '';
+    setTimeout(function () { var f = sel && $(sel, ov); if (f) f.focus(); }, 60);
+  }
+  function openAccount() { ensureOverlay(); mode = 'account'; note = ''; renderDlg(); ov.classList.add('on'); }
+
+  function overallCount() {
+    var t = 0, d = 0; portal().forEach(function (s) { var c = countSubject(s); t += c.t; d += c.d; }); return { t: t, d: d };
+  }
+  function hlCount() {
+    var n = 0; Object.keys(AU.hl).forEach(function (b) { n += Object.keys(AU.hl[b] || {}).length; }); return n;
+  }
+
+  function emailField() {
+    return '<label class="au-f"><span>Email</span><input class="au-in" id="auEm" type="email" inputmode="email" maxlength="120" placeholder="you@gmail.com" autocomplete="email" autocapitalize="off" spellcheck="false"></label>';
+  }
+  function pwField(su) {
+    return '<label class="au-f"><span>Password</span><div class="au-pw"><input class="au-in" id="auPw" type="password" placeholder="' + (su ? 'At least 8 characters' : 'Your password') + '" autocomplete="' + (su ? 'new-password' : 'current-password') + '">' +
+      '<button type="button" class="au-eye" data-au="eye" aria-label="Show password">👁</button></div></label>';
+  }
+
+  function renderDlg() {
+    var h = '<button class="au-close" data-au="close" aria-label="Close">✕</button>';
+    var noteHtml = note ? '<div class="au-note">' + esc(note) + '</div>' : '';
+    if (mode === 'account') {
+      var c = overallCount();
+      h += '<h3 class="au-h">👤 ' + esc(AU.name || 'My account') + '</h3><p class="au-sub">' + esc(AU.email) + ' ✅</p>' +
+        '<div class="au-stats"><div class="au-stat"><b>' + c.d + '/' + c.t + '</b><small>Chapters done</small></div>' +
+        '<div class="au-stat"><b>' + hlCount() + '</b><small>Highlights</small></div></div>' +
+        '<p class="au-sub">Your ticks and highlights are saved to this account — log in on any device to continue.</p>' +
+        '<hr class="au-hr"><div class="au-f"><span>Change password</span>' +
+        '<input class="au-in" id="auOld" type="password" placeholder="Current password" autocomplete="current-password" style="margin-bottom:8px">' +
+        '<input class="au-in" id="auNew" type="password" placeholder="New password (min 8)" autocomplete="new-password"></div>' +
+        '<div class="au-err" id="auErr"></div>' +
+        '<button class="au-go" data-au="chpw">Update password</button>' +
+        '<button class="au-ghost red" data-au="logout">Log out</button>';
+    } else if (mode === 'verify') {
+      var left = resendUntil - Date.now() > 0;
+      h += '<h3 class="au-h">📧 Verify your email</h3>' +
+        '<p class="au-sub">We sent a verification link to <b>' + esc(fbUser && fbUser.email) + '</b>. Open it, then come back — this window continues automatically.</p>' +
+        noteHtml +
+        '<div class="au-note">Can’t see it? Check Spam / Promotions. Your account stays locked until the link is clicked.</div>' +
+        '<div class="au-err" id="auErr" style="margin-top:12px"></div>' +
+        '<button class="au-go" data-au="verified">I’ve verified — continue</button>' +
+        '<button class="au-ghost" data-au="resend"' + (left ? ' disabled' : '') + '>' + resendLabel() + '</button>' +
+        '<button class="au-ghost" data-au="switch">Use a different email</button>';
+    } else if (mode === 'upgrade') {
+      h += '<h3 class="au-h">🔐 Secure your account</h3>' +
+        '<p class="au-sub">Mobile-number logins can’t be verified, so they’re being retired. Add your email — we’ll send a verification link and <b>all your progress and highlights stay with you</b>.</p>' +
+        emailField() +
+        '<div class="au-err" id="auErr"></div>' +
+        '<button class="au-go" data-au="upgrade">Send verification link</button>' +
+        '<button class="au-ghost red" data-au="logout">Log out</button>';
+    } else if (mode === 'legacy') {
+      h += '<h3 class="au-h">Old account login</h3>' +
+        '<p class="au-sub">Log in once with your mobile number and password, then link a verified email.</p>' + noteHtml +
+        '<label class="au-f" style="margin-top:14px"><span>Mobile number</span><div class="au-ph"><div class="au-cc">+91</div>' +
+        '<input class="au-in" id="auPh" type="tel" inputmode="numeric" maxlength="14" placeholder="10-digit number" autocomplete="tel-national"></div></label>' +
+        pwField(false) +
+        '<div class="au-err" id="auErr"></div>' +
+        '<button class="au-go" data-au="legacylogin">Continue</button>' +
+        '<button class="au-ghost" data-au="tab-login">Back</button>';
+    } else if (mode === 'forgot') {
+      h += '<h3 class="au-h">Reset your password</h3>' +
+        '<p class="au-sub">Enter your email and we’ll send you a reset link.</p>' + noteHtml +
+        '<div style="height:14px"></div>' + emailField() +
+        '<div class="au-err" id="auErr"></div>' +
+        '<button class="au-go" data-au="sendreset">Send reset link</button>' +
+        '<button class="au-ghost" data-au="tab-login">Back to log in</button>';
+    } else {
+      var su = mode === 'signup';
+      h += '<h3 class="au-h">' + (su ? 'Create your account' : 'Welcome back') + '</h3>' +
+        '<p class="au-sub">' + (su ? 'Use your Gmail (or any email) — we’ll verify it with a link.' : 'Log in with your email and password.') + '</p>' +
+        noteHtml +
+        '<div class="au-tabs"><button class="' + (su ? '' : 'on') + '" data-au="tab-login">Log in</button><button class="' + (su ? 'on' : '') + '" data-au="tab-signup">Create account</button></div>' +
+        (su ? '<label class="au-f"><span>Your name</span><input class="au-in" id="auName" maxlength="30" placeholder="e.g. Rahul" autocomplete="name"></label>' : '') +
+        emailField() + pwField(su) +
+        (su ? '<label class="au-f"><span>Confirm password</span><input class="au-in" id="auPw2" type="password" placeholder="Type it again" autocomplete="new-password"></label>' : '') +
+        '<div class="au-err" id="auErr"></div>' +
+        '<button class="au-go" data-au="' + (su ? 'signup' : 'login') + '">' + (su ? 'Create account' : 'Log in') + '</button>' +
+        (su ? '<p class="au-foot">Your account activates only after you click the link we email you — so nobody can sign up with an address that isn’t theirs.</p>'
+            : '<p class="au-foot"><button type="button" class="au-lnk" data-au="forgot">Forgot password?</button> &nbsp;·&nbsp; <button type="button" class="au-lnk" data-au="legacy">Old mobile-number account?</button></p>');
+    }
+    dlg().innerHTML = h;
+  }
+
+  function showErr(m) { var e = $('#auErr', ov); if (e) e.textContent = m || ''; }
+  function val(id) { var e = $('#' + id, ov); return e ? e.value : ''; }
+  function busy(on, label) {
+    var b = $('.au-go', ov); if (!b) return;
+    b.disabled = !!on;
+    if (on) { b.setAttribute('data-t', b.textContent); b.textContent = label || 'Please wait…'; }
+    else if (b.getAttribute('data-t')) b.textContent = b.getAttribute('data-t');
+  }
+  function authError(e) {
+    var c = (e && e.code) || '', m;
+    console.error('[accounts]', e);
+    if (c === 'auth/email-already-in-use') m = 'This email is already registered. Use “Log in” (or “Forgot password?”).';
+    else if (/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) m = mode === 'legacy' ? 'Wrong number or password.' : 'Wrong email or password. New here? Use “Create account”.';
+    else if (c === 'auth/invalid-email' || c === 'auth/invalid-new-email') m = 'Enter a valid email address.';
+    else if (c === 'auth/weak-password') m = 'Password must be at least 8 characters.';
+    else if (c === 'auth/requires-recent-login') m = 'For security, please log out, log in again with your old number + password, and retry.';
+    else if (c === 'auth/user-disabled') m = 'This account has been disabled.';
+    else if (c === 'auth/network-request-failed') m = 'No internet connection. Please try again.';
+    else if (c === 'auth/too-many-requests') m = 'Too many attempts. Wait a few minutes and try again.';
+    else if (/operation-not-allowed|configuration-not-found|admin-restricted/.test(c)) m = 'Login is not switched on yet. Owner: Firebase Console → Authentication → Sign-in method → enable “Email/Password”.';
+    else m = 'Something went wrong (' + (c || 'unknown') + '). Please try again.';
+    showErr(m);
+  }
+  function needFb() { if (initFb()) return false; showErr('Could not reach the login service. Check your internet and reload.'); return true; }
+
+  function doLogin() {
+    if (needFb()) return;
+    var em = normEmail(val('auEm')), pw = val('auPw');
+    if (!em) return showErr('Enter a valid email address.');
+    if (!pw) return showErr('Enter your password.');
+    showErr(''); busy(true, 'Logging in…');
+    fb.auth.signInWithEmailAndPassword(em, pw)
+      .then(function (cred) {
+        if (!cred.user.emailVerified) { mode = 'verify'; note = 'Please verify your email to finish logging in.'; renderDlg(); startVerifyTimers(); return; }
+        closeDlg(); toast('👋 Welcome back!');
+      })
+      .catch(authError).then(function () { busy(false); });
+  }
+  function doSignup() {
+    if (needFb()) return;
+    var name = val('auName').trim(), em = normEmail(val('auEm')), pw = val('auPw'), pw2 = val('auPw2');
+    if (name.length < 2) return showErr('Enter your name.');
+    if (!em) return showErr('Enter a valid email address.');
+    if (pw.length < 8) return showErr('Password must be at least 8 characters.');
+    if (pw !== pw2) return showErr('The two passwords do not match.');
+    showErr(''); busy(true, 'Creating account…');
+    fb.auth.createUserWithEmailAndPassword(em, pw).then(function (cred) {
+      var u = cred.user; fbUser = u; AU.name = name;
+      return u.updateProfile({ displayName: name }).catch(function () {})
+        .then(function () { return u.sendEmailVerification(); })
+        .then(function () {
+          resendUntil = Date.now() + 60000;
+          mode = 'verify'; note = ''; renderDlg(); startVerifyTimers();
+        });
+    }).catch(authError).then(function () { busy(false); });
+  }
+  function doResend() {
+    if (!fbUser || Date.now() < resendUntil) return;
+    resendUntil = Date.now() + 60000;
+    renderDlg(); startVerifyTimers();
+    fbUser.sendEmailVerification().then(function () { toast('📧 Verification email sent'); })
+      .catch(function (e) { resendUntil = 0; renderDlg(); startVerifyTimers(); authError(e); });
+  }
+  function doSwitch() {
+    stopTimers();
+    fb.auth.signOut().then(function () { mode = 'signup'; note = ''; renderDlg(); });
+  }
+  function doForgot() {
+    if (needFb()) return;
+    var em = normEmail(val('auEm'));
+    if (!em) return showErr('Enter the email you signed up with.');
+    showErr(''); busy(true, 'Sending…');
+    function sent() { mode = 'login'; note = 'If an account exists for ' + em + ', a reset link is on its way. Check Spam too.'; renderDlg(); }
+    fb.auth.sendPasswordResetEmail(em).then(sent, function (e) { if (e && e.code === 'auth/user-not-found') sent(); else authError(e); })
+      .then(function () { busy(false); });
+  }
+  function doLegacyLogin() {
+    if (needFb()) return;
+    var ph = normPhone(val('auPh')), pw = val('auPw');
+    if (!ph) return showErr('Enter the 10-digit number you registered with.');
+    if (!pw) return showErr('Enter your password.');
+    showErr(''); busy(true, 'Logging in…');
+    fb.auth.signInWithEmailAndPassword(phoneEmail(ph), pw)
+      .then(function () { mode = 'upgrade'; note = ''; renderDlg(); })
+      .catch(authError).then(function () { busy(false); });
+  }
+  function doUpgrade() {
+    var em = normEmail(val('auEm'));
+    if (!em) return showErr('Enter a valid email address.');
+    if (!fbUser) return;
+    showErr(''); busy(true, 'Sending link…');
+    fbUser.verifyBeforeUpdateEmail(em)
+      .then(function () { return fb.auth.signOut(); })
+      .then(function () {
+        mode = 'login';
+        note = '📧 Link sent to ' + em + '. Click it, then log in with that email and your old password.';
+        renderDlg();
+      })
+      .catch(authError).then(function () { busy(false); });
+  }
+  function doChangePw() {
+    var old = val('auOld'), nw = val('auNew');
+    if (!old || nw.length < 8) return showErr('Enter your current password and a new one (min 8 characters).');
+    var u = fb.auth.currentUser; if (!u) return;
+    showErr(''); busy(true, 'Updating…');
+    var cred = firebase.auth.EmailAuthProvider.credential(u.email, old);
+    u.reauthenticateWithCredential(cred).then(function () { return u.updatePassword(nw); })
+      .then(function () { closeDlg(); toast('🔒 Password updated'); })
+      .catch(authError).then(function () { busy(false); });
+  }
+
+  function onDlgClick(e) {
+    var b = e.target.closest('[data-au]'); if (!b) return;
+    var a = b.getAttribute('data-au');
+    if (a === 'close') closeDlg();
+    else if (a === 'tab-login') { mode = 'login'; renderDlg(); }
+    else if (a === 'tab-signup') { mode = 'signup'; renderDlg(); }
+    else if (a === 'forgot') { mode = 'forgot'; note = ''; renderDlg(); }
+    else if (a === 'legacy') { mode = 'legacy'; note = ''; renderDlg(); }
+    else if (a === 'login') doLogin();
+    else if (a === 'signup') doSignup();
+    else if (a === 'chpw') doChangePw();
+    else if (a === 'sendreset') doForgot();
+    else if (a === 'legacylogin') doLegacyLogin();
+    else if (a === 'upgrade') doUpgrade();
+    else if (a === 'verified') checkVerified(false);
+    else if (a === 'resend') doResend();
+    else if (a === 'switch') doSwitch();
+    else if (a === 'logout') { closeDlg(); if (fb.ok) fb.auth.signOut(); toast('Logged out'); }
+    else if (a === 'eye') {
+      var f = $('#auPw', ov); if (f) f.type = f.type === 'password' ? 'text' : 'password';
+    }
+  }
+
+  /* keep the quiz keyboard shortcuts (1-4, Enter, Space…) away from the dialog's inputs */
+  window.addEventListener('keydown', function (e) {
+    if (!ov || !ov.classList.contains('on') || !ov.contains(e.target)) return;
+    e.stopImmediatePropagation();
+    if (e.key === 'Escape') { closeDlg(); return; }
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      e.preventDefault();
+      var fn = { login: doLogin, signup: doSignup, account: doChangePw, forgot: doForgot, legacy: doLegacyLogin, upgrade: doUpgrade, verify: function () { checkVerified(false); } }[mode];
+      if (fn) fn();
+    }
+  }, true);
+  window.addEventListener('keyup', function (e) { if (ov && ov.classList.contains('on') && ov.contains(e.target)) e.stopImmediatePropagation(); }, true);
+  window.addEventListener('keypress', function (e) { if (ov && ov.classList.contains('on') && ov.contains(e.target)) e.stopImmediatePropagation(); }, true);
+
+  /* ───────────────────────── tick clicks (capture so the portal's own handler never sees them) ───────────────────────── */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.au-tick');
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    toggleDone(b.getAttribute('data-k'));
+  }, true);
+
+  /* ───────────────────────── HIGHLIGHTS: text-quote anchoring ───────────────────────── */
+  var ROOTS = '.question-scroll-area,#cpScroll,#stickyExpPanel-body,#mobileHintPanel-body,#svView';
+  var PL = 24;                                       // prefix / suffix length saved with each highlight
+  function elOf(n) { return n && (n.nodeType === 1 ? n : n.parentElement); }
+  function rootOf(n) { var el = elOf(n); return el && el.closest ? el.closest(ROOTS) : null; }
+  function kindOf(root) { return (root.id === 'stickyExpPanel-body' || root.id === 'mobileHintPanel-body') ? 'x' : 'm'; }
+  function curBucket() { var t = curTest(); return t ? hkey('b', t.fileKey || (t.subjectTitle + '|' + t.topicName + '|' + t.subtopicName)) : null; }
+
+  function buildIndex(root) {
+    var nodes = [], starts = [], parts = [], pos = 0, w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n;
+    while ((n = w.nextNode())) { nodes.push(n); starts.push(pos); parts.push(n.data); pos += n.data.length; }
+    return { nodes: nodes, starts: starts, full: parts.join('') };
+  }
+  function offsetIn(root, node, off) {
+    var r = document.createRange(); r.selectNodeContents(root); r.setEnd(node, off); return r.toString().length;
+  }
+  function skipNode(n) {
+    var p = n.parentElement;
+    return !p || !!p.closest('script,style,textarea,input,mark.au-hl,#auSelBar');
+  }
+  function wrapRange(idx, s, e, hid, c) {
+    for (var i = 0; i < idx.nodes.length; i++) {
+      var n = idx.nodes[i], ns = idx.starts[i], len = n.data.length, ne = ns + len;
+      if (ne <= s) continue;
+      if (ns >= e) break;
+      var a = Math.max(s, ns) - ns, b = Math.min(e, ne) - ns;
+      if (!n.data.slice(a, b).trim() || skipNode(n)) continue;
+      var target = n;
+      if (b < len) target.splitText(b);
+      if (a > 0) target = target.splitText(a);
+      var m = document.createElement('mark');
+      m.className = 'au-hl'; m.setAttribute('data-hid', hid); m.setAttribute('data-c', String(c));
+      target.parentNode.insertBefore(m, target);
+      m.appendChild(target);
+    }
+  }
+  function locate(idx, rec) {
+    var full = idx.full, t = rec.t, hits = [], from = 0, i;
+    while ((i = full.indexOf(t, from)) >= 0 && hits.length < 300) { hits.push(i); from = i + 1; }
+    if (!hits.length) return -1;
+    var best = -1, bs = -1;
+    hits.forEach(function (p) {
+      var pOk = rec.p.length ? (p >= rec.p.length && full.slice(p - rec.p.length, p) === rec.p) : p === 0;
+      var q = p + t.length;
+      var sOk = rec.s.length ? full.slice(q, q + rec.s.length) === rec.s : q === full.length;
+      var sc = (pOk ? 1 : 0) + (sOk ? 1 : 0);
+      if (sc > bs) { bs = sc; best = p; }
+    });
+    return bs >= (t.length >= 25 ? 0 : 1) ? best : -1;     // short phrases must also match their surroundings
+  }
+
+  var sigs = new WeakMap();
+  function applyAll(force) {
+    if (!AU.uid) return;
+    var eng = $('#engineView');
+    if (!eng || !eng.classList.contains('active')) return;
+    var b = curBucket(), items = b && AU.hl[b];
+    if (!items) return;
+    var ids = Object.keys(items);
+    if (!ids.length) return;
+    stopObs();
+    try {
+      $$(ROOTS).forEach(function (root) {
+        if (!root.getClientRects().length) return;                       // hidden panel
+        var txt = root.textContent, sig = txt.length + '|' + txt.slice(0, 40) + '|' + txt.slice(-40) + '|' + ids.length + '|' + AU.hv;
+        if (!force && sigs.get(root) === sig) return;
+        var k = kindOf(root), idx = null, jobs = [];
+        ids.forEach(function (id) {
+          var rec = items[id];
+          if (!rec || !rec.t || (rec.k || 'm') !== k) return;
+          if (root.querySelector('mark.au-hl[data-hid="' + id + '"]')) return;
+          idx = idx || buildIndex(root);
+          var p = locate(idx, rec);
+          if (p >= 0) jobs.push({ id: id, s: p, e: p + rec.t.length, c: rec.c });
+        });
+        jobs.sort(function (x, y) { return y.s - x.s; });                // last-in-text first keeps earlier offsets valid
+        var lim = Infinity;
+        jobs.forEach(function (j) { if (j.e > lim) return; wrapRange(idx, j.s, j.e, j.id, j.c); lim = j.s; });
+        sigs.set(root, sig);
+      });
+    } finally { startObs(); }
+  }
+  var applyT;
+  function scheduleApply(force) { clearTimeout(applyT); applyT = setTimeout(function () { applyAll(force); }, 120); }
+
+  function unwrapHl(id) {
+    $$('mark.au-hl[data-hid="' + id + '"]').forEach(function (m) {
+      var p = m.parentNode; if (!p) return;
+      while (m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m); p.normalize();
+    });
+  }
+  function clearMarks() { stopObs(); try { $$('mark.au-hl').forEach(function (m) { var p = m.parentNode; while (m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m); p.normalize(); }); } finally { startObs(); } }
+
+  function putHl(bucket, id, rec) {
+    (AU.hl[bucket] = AU.hl[bucket] || {})[id] = rec; AU.hv++;
+    cacheSave(); rset('hl/' + bucket + '/' + id, rec);
+  }
+  function delHl(bucket, id) {
+    if (AU.hl[bucket]) { delete AU.hl[bucket][id]; if (!Object.keys(AU.hl[bucket]).length) delete AU.hl[bucket]; }
+    AU.hv++; unwrapHl(id);
+    cacheSave(); rset('hl/' + bucket + '/' + id, null);
+  }
+
+  function createFromSelection(c) {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+    var r = sel.getRangeAt(0).cloneRange(), root = rootOf(r.commonAncestorContainer);
+    if (!root) { toast('Select text inside one question, option or concept block.'); return; }
+    var bucket = curBucket();
+    if (!bucket) { toast('Open a chapter to highlight.'); return; }
+    var full = root.textContent;
+    var s = offsetIn(root, r.startContainer, r.startOffset), e = offsetIn(root, r.endContainer, r.endOffset);
+    while (s < e && /\s/.test(full.charAt(s))) s++;
+    while (e > s && /\s/.test(full.charAt(e - 1))) e--;
+    if (e - s < 1) return;
+    if (e - s > 3000) { toast('That selection is too long — highlight a smaller part.'); return; }
+    var overlap = {};
+    $$('mark.au-hl', root).forEach(function (m) { try { if (r.intersectsNode(m)) overlap[m.getAttribute('data-hid')] = 1; } catch (x) {} });
+    Object.keys(overlap).forEach(function (id) { delHl(bucket, id); });
+    var rec = { t: full.slice(s, e), p: full.slice(Math.max(0, s - PL), s), s: full.slice(e, e + PL), c: c, k: kindOf(root), ts: Date.now() };
+    putHl(bucket, 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), rec);
+    sel.removeAllRanges();
+    hideBar();
+    applyAll(true);
+  }
+
+  /* ───────────────────────── highlight mode + floating colour bar ───────────────────────── */
+  var bar, barTarget = null, barT;
+  function ensureBar() {
+    if (bar) return;
+    bar = document.createElement('div'); bar.id = 'auSelBar';
+    bar.innerHTML = '<button data-c="0" aria-label="Yellow"></button><button data-c="1" aria-label="Green"></button><button data-c="2" aria-label="Pink"></button><button data-c="3" aria-label="Blue"></button><button class="au-x" data-x="1">🗑 Remove</button>';
+    document.body.appendChild(bar);
+    var lastTouch = 0;
+    function run(e) {
+      var b = e.target.closest('button'); if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      if (b.hasAttribute('data-x')) removeFromBar(); else barColor(+b.getAttribute('data-c'));
+    }
+    bar.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    bar.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
+    bar.addEventListener('touchend', function (e) { lastTouch = Date.now(); run(e); }, { passive: false });
+    bar.addEventListener('click', function (e) { if (Date.now() - lastTouch < 600) return; run(e); });
+  }
+  function hideBar() { if (bar) bar.classList.remove('on'); barTarget = null; }
+  function placeBar(rect) {
+    ensureBar(); bar.classList.add('on');
+    var bw = bar.offsetWidth, bh = bar.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    var coarse = false; try { coarse = window.matchMedia('(pointer: coarse)').matches; } catch (x) {}
+    var top = coarse ? rect.bottom + 30 : rect.top - bh - 10;
+    if (top < 8) top = rect.bottom + 12;
+    if (top + bh > vh - 8) top = Math.max(8, rect.top - bh - 10);
+    var left = Math.min(Math.max(8, rect.left + rect.width / 2 - bw / 2), vw - bw - 8);
+    bar.style.top = top + 'px'; bar.style.left = left + 'px';
+  }
+  function showBarForSelection() {
+    var sel = window.getSelection();
+    if (!AU.hlOn || !sel || !sel.rangeCount || sel.isCollapsed) { if (barTarget && barTarget.type === 'sel') hideBar(); return; }
+    var r = sel.getRangeAt(0), root = rootOf(r.commonAncestorContainer);
+    if (!root) { if (barTarget && barTarget.type === 'sel') hideBar(); return; }
+    var rect = r.getBoundingClientRect(); if (!rect || (!rect.width && !rect.height)) return;
+    ensureBar(); barTarget = { type: 'sel' };
+    var hasOverlap = false;
+    $$('mark.au-hl', root).forEach(function (m) { try { if (r.intersectsNode(m)) hasOverlap = true; } catch (x) {} });
+    $('.au-x', bar).style.display = hasOverlap ? '' : 'none';
+    placeBar(rect);
+  }
+  function showBarForMark(m) {
+    ensureBar(); barTarget = { type: 'mark', id: m.getAttribute('data-hid') };
+    $('.au-x', bar).style.display = '';
+    placeBar(m.getBoundingClientRect());
+  }
+  function barColor(c) {
+    if (!barTarget) return;
+    if (barTarget.type === 'sel') { createFromSelection(c); return; }
+    var b = curBucket(), id = barTarget.id, rec = b && AU.hl[b] && AU.hl[b][id];
+    if (rec) { rec.c = c; AU.hv++; cacheSave(); rset('hl/' + b + '/' + id + '/c', c); $$('mark.au-hl[data-hid="' + id + '"]').forEach(function (m) { m.setAttribute('data-c', String(c)); }); }
+    hideBar();
+  }
+  function removeFromBar() {
+    var b = curBucket(); if (!b || !barTarget) return;
+    if (barTarget.type === 'mark') delHl(b, barTarget.id);
+    else {
+      var sel = window.getSelection(), r = sel && sel.rangeCount ? sel.getRangeAt(0) : null, root = r && rootOf(r.commonAncestorContainer), ids = {};
+      if (root) $$('mark.au-hl', root).forEach(function (m) { try { if (r.intersectsNode(m)) ids[m.getAttribute('data-hid')] = 1; } catch (x) {} });
+      Object.keys(ids).forEach(function (id) { delHl(b, id); });
+      if (sel) sel.removeAllRanges();
+    }
+    hideBar();
+  }
+
+  function setHlMode(on) {
+    if (on && !AU.uid) { openAuth('login', 'Log in to save your highlights to your account.', function () { setHlMode(true); }); return; }
+    if (on && !AU.ready) { toast('Loading your account…'); return; }
+    AU.hlOn = !!on;
+    document.body.classList.toggle('hl-mode', AU.hlOn);
+    var eng = $('#engineView'); if (eng) { if (AU.hlOn) eng.setAttribute('data-no-wd', '1'); else eng.removeAttribute('data-no-wd'); }
+    if (!AU.hlOn) { hideBar(); var s = window.getSelection(); if (s) s.removeAllRanges(); }
+    else toast('🖍 Highlighter ON — select any text. Tap a highlight to recolour or remove it.', 3600);
+    updateDock();
+    if (AU.hlOn) scheduleApply(true);
+  }
+
+  var selT;
+  document.addEventListener('selectionchange', function () {
+    if (!AU.hlOn) return;
+    clearTimeout(selT); selT = setTimeout(showBarForSelection, 150);
+  });
+  /* let the protected content be selected while the highlighter is on (the portal normally blocks it) */
+  window.addEventListener('selectstart', function (e) { if (AU.hlOn && rootOf(e.target)) e.stopImmediatePropagation(); }, true);
+  window.addEventListener('contextmenu', function (e) {
+    var coarse = false; try { coarse = window.matchMedia('(pointer: coarse)').matches; } catch (x) {}
+    if (AU.hlOn && coarse && rootOf(e.target)) e.stopImmediatePropagation();
+  }, true);
+  window.addEventListener('click', function (e) {
+    if (!AU.hlOn) return;
+    if (bar && bar.contains(e.target)) return;
+    var m = e.target.closest && e.target.closest('mark.au-hl');
+    if (m) { e.preventDefault(); e.stopPropagation(); showBarForMark(m); return; }
+    var sel = window.getSelection();
+    if (sel && !sel.isCollapsed && rootOf(e.target) && rootOf(sel.anchorNode)) { e.preventDefault(); e.stopPropagation(); return; }   // finishing a drag-select must not answer an option
+    if (barTarget && barTarget.type === 'mark') hideBar();
+  }, true);
+  window.addEventListener('scroll', function () { if (AU.hlOn && barTarget && barTarget.type === 'sel') { clearTimeout(selT); selT = setTimeout(showBarForSelection, 60); } }, true);
+
+  /* ───────────────────────── observers (re-apply highlights whenever a page re-renders) ───────────────────────── */
+  var mo = null, moTargets = [];
+  function moCb(list) {
+    for (var i = 0; i < list.length; i++) {
+      var t = list[i].target;
+      if (rootOf(t) || (t.nodeType === 1 && t.querySelector && t.querySelector(ROOTS))) { scheduleApply(); return; }
+    }
+  }
+  function startObs() {
+    if (!mo) mo = new MutationObserver(moCb);
+    ['#engineView', '#stickyExpPanel', '#mobileHintPanel'].forEach(function (s) {
+      var el = $(s); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true });
+    });
+  }
+  function stopObs() { if (mo) mo.disconnect(); }
+
+  /* ───────────────────────── sign-in state ───────────────────────── */
+  function renderAll() { mountChips(); refreshProgress(); updateDock(); }
+
+  function onAuth(user) {
+    /* a freshly-restored session may hold a stale emailVerified flag — refresh it once before deciding */
+    if (user && !isLegacyUser(user) && !user.emailVerified && reloadedFor !== user.uid) {
+      reloadedFor = user.uid;
+      user.reload().then(function () { return user.emailVerified ? user.getIdToken(true) : null; })
+        .catch(function () {}).then(function () { handleUser(user); });
+      return;
+    }
+    handleUser(user);
+  }
+
+  function handleUser(user) {
+    fbUser = user || null;
+    if (!user) reloadedFor = null;
+    var g = gateMode();                        // 'verify' | 'upgrade' | null
+    if (!user || g) {                          // signed out, OR signed in but NOT allowed in yet → behave as logged out
+      AU.uid = null; AU.name = ''; AU.email = ''; AU.phone = ''; AU.done = {}; AU.hl = {}; AU.ready = false;
+      if (!g) AU.after = null;
+      AU.hv++;
+      setHlMode(false); clearMarks(); renderAll();
+      if (dlgOpen()) {
+        if (g) { if (mode !== g) { mode = g; renderDlg(); } if (g === 'verify') startVerifyTimers(); }
+        else if (mode === 'verify' || mode === 'upgrade') { stopTimers(); mode = 'login'; renderDlg(); }
+      }
+      return;
+    }
+    if (mode === 'verify' && dlgOpen()) { closeDlg(); toast('✅ Email verified — welcome!'); }
+    stopTimers();
+    AU.uid = user.uid; AU.email = user.email || ''; AU.phone = ''; AU.name = user.displayName || AU.name || '';
+    var c = cacheLoad(user.uid);
+    AU.done = (c && c.done) || {}; AU.hl = (c && c.hl) || {}; if (c && c.name && !AU.name) AU.name = c.name;
+    AU.ready = false; AU.hv++;
+    renderAll();
+    var uid = user.uid;
+    uref('').once('value').then(function (snap) {
+      if (uid !== AU.uid) return;
+      var v = snap.val() || {};
+      AU.done = v.done || {}; AU.hl = v.hl || {};
+      if (v.profile && v.profile.name) AU.name = v.profile.name;
+      cacheSave();
+      if (!v.profile || v.profile.email !== user.email) {      // first verified login (or migrated old account) → save profile
+        uref('profile').update({ name: AU.name || '', email: user.email || '', created: (v.profile && v.profile.created) || Date.now() }).catch(syncFail);
+      }
+    }).catch(syncFail).then(function () {
+      if (uid !== AU.uid) return;
+      AU.ready = true; AU.hv++; renderAll(); scheduleApply(true);
+      if (AU.after) { var f = AU.after; AU.after = null; f(); }
+    });
+  }
+
+  /* ───────────────────────── boot ───────────────────────── */
+  function boot() {
+    mountChips(); mountDock();
+    var area = $('#topicsArea'), grid = $('#subjectsGrid'), ti = $('#testInfoTop');
+    if (area) new MutationObserver(function () { decorateSubject(); }).observe(area, { childList: true });
+    if (grid) new MutationObserver(function () { mountChips(); refreshProgress(); }).observe(grid, { childList: true });
+    if (ti) new MutationObserver(function () { updateDock(); scheduleApply(true); }).observe(ti, { childList: true, characterData: true, subtree: true });
+    decorateSubject();
+    startObs();
+    setInterval(function () { if (AU.uid) { updateDock(); applyAll(false); } }, 2000);   // catches panels that were only shown/hidden
+    if (initFb()) { fb.auth.onAuthStateChanged(onAuth); }
+    else { renderAll(); console.warn('[accounts] Firebase Auth SDK not available'); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+
+  if (window.__AU_EXPOSE) window.__auApi = { buildIndex: buildIndex, wrapRange: wrapRange, locate: locate, offsetIn: offsetIn, normPhone: normPhone, keyOf: keyOf, AU: AU, applyAll: applyAll, createFromSelection: createFromSelection, putHl: putHl, curBucket: curBucket };
+})();
+</script>
+
 </body>
 
 
