@@ -6261,17 +6261,17 @@ window.rtView = {
           const totalSubs = (s.topics || []).reduce((acc, t) => acc + (t.subtopics ? t.subtopics.length : 0), 0);
           col.innerHTML = `
       <div class="glass subject-card ${s.colorClass} p-3 p-md-4 h-100" role="button" tabindex="0">
-        <div class="d-flex align-items-start gap-3">
+        <div class="d-flex align-items-start gap-3" style="flex-wrap:wrap;">
           <div class="subject-accent" style="flex-shrink:0;">
             <span style="position:relative;z-index:1;font-size:18px;">${icon}</span>
           </div>
-          <div class="flex-grow-1" style="min-width:0;">
-            <div class="fs-5 fw-bold" style="overflow-wrap:anywhere;">${escapeHtml(s.title)}</div>
+          <div class="flex-grow-1" style="min-width:0;flex:1 1 190px;">
+            <div class="fs-5 fw-bold" style="overflow-wrap:break-word;word-break:normal;hyphens:manual;">${escapeHtml(s.title)}</div>
             <div class="subtle mt-1" style="font-size:.82rem;">
               ${s.topics?.length || 0} topic groups &nbsp;·&nbsp; ${totalSubs} subtopics
             </div>
           </div>
-          <span class="pill" style="flex-shrink:0;white-space:nowrap;align-self:center;background:rgba(59, 130, 246,.12);border-color:rgba(59, 130, 246,.3);color:#3b82f6;">Open →</span>
+          <span class="pill" style="flex-shrink:0;white-space:nowrap;align-self:center;margin-left:auto;background:rgba(59, 130, 246,.12);border-color:rgba(59, 130, 246,.3);color:#3b82f6;">Open →</span>
         </div>
       </div>
     `;
@@ -7365,7 +7365,7 @@ window.rtView = {
             keyboard: false,
           });
 
-          nameEl.value = defaultName || " ";
+          nameEl.value = (window.getLoggedInName && window.getLoggedInName()) || defaultName || " ";
           timeEl.value = "";
           if (window.candSetMode) window.candSetMode("practice");   // always start on Practice
 
@@ -12747,6 +12747,11 @@ function addBattleButtons() {
 // ── MODAL OPEN/CLOSE ─────────────────────────────────────────────────────────
 function openModal() {
   document.getElementById('bmOverlay').classList.add('open');
+  try {
+    const _bn = document.getElementById('bmName');
+    const _ln = window.getLoggedInName && window.getLoggedInName();
+    if (_bn && _ln && !_bn.value.trim()) _bn.value = _ln.slice(0, 24);
+  } catch (e) {}
   // Check firebase
   if (!B.db && !initFirebase()) {
     document.getElementById('bmFirebaseErr').style.display = 'block';
@@ -27875,6 +27880,9 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
 
   /* ───────────────────────── account state ───────────────────────── */
   var AU = { uid: null, name: '', email: '', phone: '', done: {}, hl: {}, ready: false, hlOn: false, hv: 0, warned: false, after: null };
+  window.getLoggedInName = function () {
+    try { return ((AU && AU.name) || (fb && fb.auth && fb.auth.currentUser && fb.auth.currentUser.displayName) || '').trim(); } catch (e) { return ''; }
+  };
   var LS = 'mp_acct_v1_';
   function cacheSave() { try { localStorage.setItem(LS + AU.uid, JSON.stringify({ done: AU.done, hl: AU.hl, name: AU.name })); } catch (e) {} }
   function cacheLoad(uid) { try { return JSON.parse(localStorage.getItem(LS + uid) || 'null'); } catch (e) { return null; } }
