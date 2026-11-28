@@ -20001,6 +20001,8 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   var lctx = lcv.getContext('2d');
   var base = document.createElement('canvas');
   var bctx = base.getContext('2d');
+  var liveBase = document.createElement('canvas');   // frozen (already-finished) part of the stroke being drawn
+  var lbctx = liveBase.getContext('2d');
   var ring = document.getElementById('sp-ring');
   var laser = document.getElementById('sp-laser');
   var toastEl = document.getElementById('sp-toast');
@@ -20027,11 +20029,13 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   function setup() {
     dpr = Math.min(window.devicePixelRatio || 1, 3);
     W = window.innerWidth; H = window.innerHeight;
-    [cv, base, lcv].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
+    [cv, base, lcv, liveBase].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    [ctx, bctx, lctx].forEach(function (c) { c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high'; });
+    lbctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    [ctx, bctx, lctx, lbctx].forEach(function (c) { c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high'; });
+    if (live) { live._fz = undefined; live._ei = undefined; }
     rebuild(); render();
   }
   window.addEventListener('resize', setup);
@@ -20056,6 +20060,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   }
   function shiftOf(it) {
     if (!it.o0) return ZERO;
+    if (it.ancD) { fixAnc(it); if (!it.anc) return ZERO; }      // restored ink: anchor not on screen yet
     var o = originOf(it.anc || null);
     return o ? { x: o.x - it.o0.x, y: o.y - it.o0.y } : ZERO;
   }
@@ -20117,6 +20122,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   function sigOf() {
     var seen = [], parts = [];
     items.forEach(function (it) {
+      if (it.ancD) fixAnc(it);
       var k = it.anc || DOCK;
       if (seen.indexOf(k) < 0) { seen.push(k); var o = originOf(it.anc || null); parts.push(o ? Math.round(o.x * 10) + ',' + Math.round(o.y * 10) : 'x'); }
     });
@@ -20246,7 +20252,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     c.lineWidth = effW(it);
     var t = it.t;
     if (t === 'pen' || t === 'highlight' || t === 'eraser') {
-      if (t === 'highlight') { c.globalAlpha = 0.38; c.lineCap = 'butt'; c.lineJoin = 'round'; }
+      if (t === 'highlight') { if (!it._opq) c.globalAlpha = 0.38; c.lineCap = 'butt'; c.lineJoin = 'round'; }
       if (t === 'eraser') { c.globalCompositeOperation = 'destination-out'; c.strokeStyle = '#000'; c.fillStyle = '#000'; }
       var pts = (it._fin && !it.tail) ? (it._sp || (it._sp = smoothPath(it.pts))) : smoothPath(it.pts, it.tail);
       if (pts.length === 1) {
@@ -20286,26 +20292,64 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     _oc = new Map();
     bctx.clearRect(0, 0, W, H);
     items.forEach(function (it) { drawItem(bctx, it); });
+    if (live) { live._fz = undefined; live._ei = undefined; }   // base was rebuilt: live caches must be redone
     lastSig = sigOf(); _oc = null;
   }
   function render() {
     ctx.clearRect(0, 0, W, H);
     ctx.drawImage(base, 0, 0, W, H);
-    if (live && live.t === 'eraser') drawItem(ctx, live);
     selSanitize(); renderLive(); positionSelBar();
+  }
+
+  /* ───────── incremental live ink ─────────
+     Before, every frame re-smoothed and re-stroked the WHOLE stroke being drawn, so a long scribble got
+     slower and slower (17 ms -> 180 ms per frame). Now the older part of the stroke is frozen once into
+     'liveBase' and each frame only the newest few points are drawn on top (cost no longer grows with length).
+     Highlighter is drawn opaque and the live layer is dimmed as a whole, so overlaps never double-darken.
+     Eraser erases straight into the base layer step by step. The finished stroke is still redrawn in full
+     on pen-up, exactly as before. */
+  var LIVE_KEEP = 10, LIVE_CHUNK = 20, _lop = '';
+  function segItem(it, a, b, tail) {
+    return { t: it.t, color: it.color, size: it.size, vp: it.vp, anc: it.anc, o0: it.o0, _opq: true,
+             pts: it.pts.slice(Math.max(0, a), b + 1), tail: tail || null };
+  }
+  function drawLiveInk(it) {
+    var n = it.pts.length;
+    if (it._fz !== undefined && it._fz >= n) it._fz = undefined;            // shift-line mode replaced the points
+    if (it._fz === undefined) { it._fz = 0; lbctx.clearRect(0, 0, W, H); }
+    if (n - it._fz > LIVE_KEEP + LIVE_CHUNK) {
+      var to = n - 1 - LIVE_KEEP;
+      drawItem(lbctx, segItem(it, it._fz - 2, to, null));
+      it._fz = to;
+    }
+    lctx.drawImage(liveBase, 0, 0, W, H);
+    drawItem(lctx, segItem(it, it._fz - 2, n - 1, it.tail));
+  }
+  function eraseLiveStep() {
+    var it = live, n = it.pts.length, from = it._ei === undefined ? 0 : it._ei;
+    drawItem(bctx, segItem(it, from - 2, n - 1, it.tail));
+    it._ei = n - 1;
   }
   function renderLive() {
     lctx.clearRect(0, 0, W, H);
-    if (live && live.t !== 'eraser') drawItem(lctx, live);
+    var inc = !!(live && live.pts && (live.t === 'pen' || live.t === 'highlight'));
+    var op = (inc && live.t === 'highlight') ? '0.38' : '';
+    if (op !== _lop) { lcv.style.opacity = op; _lop = op; }
+    if (inc) drawLiveInk(live);
+    else if (live && live.t !== 'eraser') drawItem(lctx, live);
     drawSelOverlay(lctx);
   }
   function schedule() {
     if (raf) return;
-    raf = requestAnimationFrame(function () { raf = 0; if (live && live.t === 'eraser') render(); renderLive(); });
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      if (live && live.t === 'eraser' && live.pts) { eraseLiveStep(); render(); }
+      else renderLive();
+    });
   }
 
   /* ───────── history ───────── */
-  function pushOp(op) { undoStack.push(op); redoStack.length = 0; }
+  function pushOp(op) { undoStack.push(op); redoStack.length = 0; markDirty(); }
   function undo() {
     var op = undoStack.pop();
     if (!op) return toast('Nothing to undo');
@@ -20314,7 +20358,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     else if (op.k === 'xf') { op.list.forEach(function (d) { applySnap(d.item, d.before); }); }
     else if (op.k === 'addm') { op.list.forEach(function (it) { var i = items.indexOf(it); if (i > -1) items.splice(i, 1); }); }
     else if (op.k === 'clear') { items = op.list.slice(); }
-    redoStack.push(op); rebuild(); render();
+    redoStack.push(op); rebuild(); render(); markDirty();
   }
   function redo() {
     var op = redoStack.pop();
@@ -20324,7 +20368,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     else if (op.k === 'xf') { op.list.forEach(function (d) { applySnap(d.item, d.after); }); }
     else if (op.k === 'addm') { op.list.forEach(function (it) { items.push(it); }); }
     else if (op.k === 'clear') { items = []; }
-    undoStack.push(op); rebuild(); render();
+    undoStack.push(op); rebuild(); render(); markDirty();
   }
   function clearAll() {
     if (!items.length) return toast('This page is already clean');
@@ -20465,12 +20509,12 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
   }
   function moveRing(e) {
     if (!drawMode || (tool !== 'pen' && tool !== 'highlight' && tool !== 'eraser' && tool !== 'strokeera')) { ring.style.display = 'none'; return; }
-    var d = ringDiameter();
-    ring.style.width = ring.style.height = d + 'px';
+    var d = ringDiameter(), bg = (tool === 'pen' || tool === 'highlight') ? color : 'transparent', op = tool === 'highlight' ? '.55' : '1';
+    if (d !== ring._d) { ring.style.width = ring.style.height = d + 'px'; ring._d = d; }
     ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
-    ring.style.display = 'block';
-    ring.style.background = (tool === 'pen' || tool === 'highlight') ? color : 'transparent';
-    ring.style.opacity = tool === 'highlight' ? '.55' : '1';
+    if (ring.style.display !== 'block') ring.style.display = 'block';
+    if (bg !== ring._bg) { ring.style.background = bg; ring._bg = bg; }
+    if (op !== ring._op) { ring.style.opacity = op; ring._op = op; }
   }
   /* laser: glowing dot + fading trail, never stored */
   var tcv = document.getElementById('sp-trail'), tctx = tcv.getContext('2d');
@@ -21480,7 +21524,7 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     if (pages.length === 1) return clearAll();
     if (items.length && !window.confirm('Delete page ' + (cur + 1) + ' and everything drawn on it?')) return;
     pages.splice(cur, 1); if (cur >= pages.length) cur = pages.length - 1;
-    loadPage(); toast('Page deleted  —  now ' + (cur + 1) + ' / ' + pages.length, true);
+    loadPage(); markDirty(); toast('Page deleted  —  now ' + (cur + 1) + ' / ' + pages.length, true);
   }
   function toggleInvisible() {
     barHidden = !barHidden; refreshBar();
@@ -21539,6 +21583,85 @@ html.lite-mode #sp-pick .spp-foot .spp-go:disabled{opacity:.4!important}
     var i = document.getElementById('gcp-bg-color'); return (i && i.value) || '#0d1117';
   }
   function hasInk(pg) { return pg.items.some(function (it) { return it.t !== 'eraser'; }); }
+
+  /* ───────── save / restore the board to the signed-in account (driven by the accounts script) ─────────
+     One record per question / concept page. Ink is anchored to page elements, which can't be stored, so each
+     anchor is saved as a small description (card key / id / unique class) and re-attached when that page shows. */
+  var _onDirty = null;
+  function markDirty() { if (_onDirty && viewKey && viewKey !== 'g') { try { _onDirty(viewKey, svSig()); } catch (e) { } } }
+  function ancDesc(a) {
+    if (!a) return null;
+    if (a._ck) return { c: a._ck };
+    if (a.id) return { i: a.id };
+    var cls = typeof a.className === 'string' ? a.className.trim().split(/\s+/) : [];
+    for (var i = 0; i < cls.length; i++) { var s = '.' + cls[i]; try { if (cls[i] && document.querySelectorAll(s).length === 1) return { s: s }; } catch (e) { } }
+    return null;
+  }
+  function serItem(it) {
+    var o = {};
+    Object.keys(it).forEach(function (k) {
+      if (k.charAt(0) === '_' || k === 'anc' || k === 'ancD' || k === 'tail' || k === 'pred') return;
+      var v = it[k];
+      if (k === 'pts' && Array.isArray(v)) o.pts = v.map(function (p) { return [Math.round(p.x * 10) / 10, Math.round(p.y * 10) / 10, Math.round((p.p == null ? 0.5 : p.p) * 100) / 100]; });
+      else o[k] = v;
+    });
+    var d = it.anc ? ancDesc(it.anc) : (it.ancD || null);
+    if (d) o.ak = d; else if (it.anc) delete o.o0;              // anchor can't be described: keep it where it was drawn
+    return o;
+  }
+  function deserItem(o) {
+    var it = {};
+    Object.keys(o).forEach(function (k) { if (k !== 'ak') it[k] = o[k]; });
+    if (it.pts) it.pts = it.pts.map(function (p) { return { x: p[0], y: p[1], p: p[2] }; });
+    if (it.t === 'pen' || it.t === 'highlight' || it.t === 'eraser') it._fin = true;
+    if (o.ak) it.ancD = o.ak;
+    return it;
+  }
+  function fixAnc(it) {
+    if (!it.ancD || it.anc) return;
+    var now = Date.now(); if (it._try && now - it._try < 1200) return; it._try = now;
+    var d = it.ancD, el = null;
+    try {
+      if (d.c) svCards().forEach(function (r) { if (r.el._ck === d.c) el = r.el; });
+      else if (d.i) el = document.getElementById(d.i);
+      else if (d.s) el = document.querySelector(d.s);
+    } catch (e) { }
+    if (el) { it.anc = el; it.ancD = null; }
+  }
+  function exportView(key) {
+    var v = viewStore[key]; if (!v) return null;
+    if (key === viewKey) { savePage(); v.cur = cur; }
+    if (!v.pages.some(hasInk)) return null;
+    try {
+      return JSON.stringify({ k: key, pos: v.pos, kind: v.kind, cur: v.cur || 0,
+        pages: v.pages.map(function (pg) { return pg.items.map(serItem); }) },
+        function (k, val) { return (val && val.nodeType) ? undefined : val; });
+    } catch (e) { console.warn('[board] export failed', e); return null; }
+  }
+  function importView(key, d) {
+    if (!d || !d.pages || !d.pages.length) return;
+    var pgs = d.pages.map(function (list) { return { items: (list || []).map(deserItem), undo: [], redo: [] }; });
+    var v = viewStore[key], c0 = Math.max(0, Math.min(d.cur || 0, pgs.length - 1));
+    if (key === viewKey) savePage();
+    if (v && v.pages.some(hasInk)) {                             // already wrote here before the saved board arrived: keep both
+      v.pages = v.pages.concat(pgs.filter(hasInk)); if (key === viewKey) pages = v.pages;
+    } else if (v) {
+      v.pages = pgs; v.cur = c0;
+      if (key === viewKey) { pages = v.pages; cur = c0; loadPage(); }
+    } else viewStore[key] = { pos: d.pos, kind: d.kind, pages: pgs, cur: c0 };
+  }
+  function keysFor(sig) { return Object.keys(viewStore).filter(function (k) { return k.indexOf(sig + '#') === 0 && viewStore[k].pages.some(hasInk); }); }
+  function boardReset() {                                        // signed out: nothing of this account may stay on screen
+    if (textEl) commitText();
+    down = false; live = null; liveTool = null;
+    viewStore = {}; viewKey = '__reset'; pages = [{ items: [], undo: [], redo: [] }]; cur = 0; sel = [];
+    loadPage(); syncView();
+  }
+  window.__spBoard = {
+    sig: function () { return svSig(); }, busy: function () { return down || !!textEl; },
+    export: exportView, import: importView, keys: keysFor, reset: boardReset,
+    onDirty: function (f) { _onDirty = f; }
+  };
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function loadH2C() {
     if (window.html2canvas) return Promise.resolve();
@@ -27762,7 +27885,7 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
   }
   function rset(path, val) {
     if (!fb.ok || !AU.uid) return;
-    try { (val === null ? uref(path).remove() : uref(path).set(val)).catch(syncFail); } catch (e) { syncFail(e); }
+    try { return (val === null ? uref(path).remove() : uref(path).set(val)).catch(syncFail); } catch (e) { syncFail(e); }
   }
 
   /* ───────────────────────── syllabus model (from PORTAL_DATA) ───────────────────────── */
@@ -28197,7 +28320,11 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
     else if (a === 'verified') checkVerified(false);
     else if (a === 'resend') doResend();
     else if (a === 'switch') doSwitch();
-    else if (a === 'logout') { closeDlg(); if (fb.ok) fb.auth.signOut(); toast('Logged out'); }
+    else if (a === 'logout') {
+      closeDlg(); toast('Logged out');
+      Promise.race([Promise.resolve(flushBoard()), new Promise(function (r) { setTimeout(r, 2500); })])   // let the last strokes reach the cloud first
+        .then(function () { if (fb.ok) fb.auth.signOut(); });
+    }
     else if (a === 'eye') {
       var f = $('#auPw', ov); if (f) f.type = f.type === 'password' ? 'text' : 'password';
     }
@@ -28467,6 +28594,55 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
   }
   function stopObs() { if (mo) mo.disconnect(); }
 
+  /* ───────────────────────── BOARD: pen / highlighter / shapes saved to the account ─────────────────────────
+     users/<uid>/board/<test>/<page>  — one small record per question / concept page you wrote on. */
+  var BD = { loaded: {}, loading: {}, pending: {}, retry: {}, timer: null };
+  function sp() { return window.__spBoard || null; }
+  function boardDirty(key, sig) {
+    if (!AU.uid || !AU.ready || !key || !sig) return;
+    BD.pending[key] = sig; clearTimeout(BD.timer); BD.timer = setTimeout(flushBoard, 1800);
+  }
+  function flushBoard() {
+    clearTimeout(BD.timer);
+    var s = sp(), jobs = [];
+    if (!s || !AU.uid || !AU.ready) return Promise.resolve();
+    Object.keys(BD.pending).forEach(function (key) {
+      var sig = BD.pending[key];
+      if (!BD.loaded[sig]) return;                               // never overwrite a saved board before it has been loaded
+      delete BD.pending[key];
+      jobs.push(rset('board/' + hkey('t', sig) + '/' + hkey('v', key), s.export(key)));   // null (page emptied) removes the record
+    });
+    return Promise.all(jobs);
+  }
+  function whenIdle(fn) { var s = sp(); if (s && s.busy()) setTimeout(function () { whenIdle(fn); }, 400); else fn(); }
+  function loadBoard(sig) {
+    var s = sp(); if (!s || !fb.ok || !AU.uid) return;
+    var uid = AU.uid;
+    uref('board/' + hkey('t', sig)).once('value').then(function (snap) {
+      if (uid !== AU.uid) return;
+      var v = snap.val() || {};
+      whenIdle(function () {
+        if (uid !== AU.uid) return;
+        Object.keys(v).forEach(function (h) { try { var d = JSON.parse(v[h]); if (d && d.k) s.import(d.k, d); } catch (e) { console.warn('[board] bad record', e); } });
+        BD.loaded[sig] = true; delete BD.loading[sig];
+        s.keys(sig).forEach(function (k) { BD.pending[k] = sig; });   // ink drawn before login / before the load also gets saved
+        clearTimeout(BD.timer); BD.timer = setTimeout(flushBoard, 1800);
+      });
+    }).catch(function (e) { delete BD.loading[sig]; BD.retry[sig] = Date.now() + 10000; syncFail(e); });
+  }
+  function boardSync() {
+    var s = sp(); if (!s || !AU.uid || !AU.ready) return;
+    var sig = s.sig();
+    if (!sig || BD.loaded[sig] || BD.loading[sig] || Date.now() < (BD.retry[sig] || 0)) return;
+    BD.loading[sig] = true; loadBoard(sig);
+  }
+  function boardLogout() {
+    clearTimeout(BD.timer); BD.loaded = {}; BD.loading = {}; BD.pending = {}; BD.retry = {};
+    var s = sp(); if (s) { try { s.reset(); } catch (e) { console.warn(e); } }
+  }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) flushBoard(); });
+  window.addEventListener('pagehide', function () { flushBoard(); });
+
   /* ───────────────────────── sign-in state ───────────────────────── */
   function renderAll() { mountChips(); refreshProgress(); updateDock(); }
 
@@ -28486,10 +28662,12 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
     if (!user) reloadedFor = null;
     var g = gateMode();                        // 'verify' | 'upgrade' | null
     if (!user || g) {                          // signed out, OR signed in but NOT allowed in yet → behave as logged out
+      var wasIn = !!AU.uid;
       AU.uid = null; AU.name = ''; AU.email = ''; AU.phone = ''; AU.done = {}; AU.hl = {}; AU.ready = false;
       if (!g) AU.after = null;
       AU.hv++;
       setHlMode(false); clearMarks(); renderAll();
+      if (wasIn) boardLogout();
       if (dlgOpen()) {
         if (g) { if (mode !== g) { mode = g; renderDlg(); } if (g === 'verify') startVerifyTimers(); }
         else if (mode === 'verify' || mode === 'upgrade') { stopTimers(); mode = 'login'; renderDlg(); }
@@ -28504,9 +28682,9 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
     AU.ready = false; AU.hv++;
     renderAll();
     var uid = user.uid;
-    uref('').once('value').then(function (snap) {
+    Promise.all(['done', 'hl', 'profile'].map(function (k) { return uref(k).once('value'); })).then(function (snaps) {
       if (uid !== AU.uid) return;
-      var v = snap.val() || {};
+      var v = { done: snaps[0].val(), hl: snaps[1].val(), profile: snaps[2].val() };
       AU.done = v.done || {}; AU.hl = v.hl || {};
       if (v.profile && v.profile.name) AU.name = v.profile.name;
       cacheSave();
@@ -28515,7 +28693,7 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
       }
     }).catch(syncFail).then(function () {
       if (uid !== AU.uid) return;
-      AU.ready = true; AU.hv++; renderAll(); scheduleApply(true);
+      AU.ready = true; AU.hv++; renderAll(); scheduleApply(true); boardSync();
       if (AU.after) { var f = AU.after; AU.after = null; f(); }
     });
   }
@@ -28526,10 +28704,11 @@ body.hl-mode ::selection{background:rgba(250,204,21,.45)}
     var area = $('#topicsArea'), grid = $('#subjectsGrid'), ti = $('#testInfoTop');
     if (area) new MutationObserver(function () { decorateSubject(); }).observe(area, { childList: true });
     if (grid) new MutationObserver(function () { mountChips(); refreshProgress(); }).observe(grid, { childList: true });
-    if (ti) new MutationObserver(function () { updateDock(); scheduleApply(true); }).observe(ti, { childList: true, characterData: true, subtree: true });
+    if (ti) new MutationObserver(function () { updateDock(); scheduleApply(true); boardSync(); }).observe(ti, { childList: true, characterData: true, subtree: true });
     decorateSubject();
     startObs();
-    setInterval(function () { if (AU.uid) { updateDock(); applyAll(false); } }, 2000);   // catches panels that were only shown/hidden
+    if (sp()) sp().onDirty(boardDirty);
+    setInterval(function () { if (AU.uid) { updateDock(); applyAll(false); boardSync(); } }, 2000);   // catches panels that were only shown/hidden
     if (initFb()) { fb.auth.onAuthStateChanged(onAuth); }
     else { renderAll(); console.warn('[accounts] Firebase Auth SDK not available'); }
   }
