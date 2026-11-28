@@ -15,7 +15,7 @@
   <meta name="copyright" content="© 2026 Sudhanshu Sharma. All Rights Reserved." />
   <meta name="robots" content="noarchive" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
-  <noscript><style>#ssSplashHost{display:none!important}</style></noscript>
+  <noscript><style>#ssSplashHost{display:none!important}html.ss-boot body>*{visibility:visible!important}</style></noscript>
 
   <!-- ===== Content protection: styles ===== -->
   <style id="ssProtectCss">
@@ -125,6 +125,8 @@
   <meta name="theme-color" content="#0d1117" />
   <script>try{if(localStorage.getItem("gpPerfBoost")!=="0")document.documentElement.classList.add("perf-boost");}catch(e){document.documentElement.classList.add("perf-boost");}</script>
   <script>document.documentElement.classList.add("lite-mode");</script><!-- launch in Light theme (no dark flash) -->
+  <style id="ssBootGuard">html.ss-boot{background:#f3f5fa}html.ss-boot body>*:not(#ssSplashHost){visibility:hidden!important}</style>
+  <script>(function(){var d=document.documentElement;d.classList.add("ss-boot");window.__ssReveal=function(){d.classList.remove("ss-boot");};setTimeout(window.__ssReveal,6000);})();</script><!-- failsafe: never stay hidden more than 6 s -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -4840,7 +4842,7 @@ window.rtView = {
     var host = document.getElementById('ssSplashHost');
     if (!host) return;
     var root;
-    try { root = host.attachShadow({ mode: 'closed' }); } catch (e) { host.remove(); return; }
+    try { root = host.attachShadow({ mode: 'closed' }); } catch (e) { host.remove(); if (window.__ssReveal) window.__ssReveal(); return; }
 
     root.innerHTML =
     '<style>' +
@@ -4941,11 +4943,23 @@ window.rtView = {
     bar.style.transition = 'width .3s linear';
     requestAnimationFrame(function () { bar.style.width = '100%'; });
     pct.textContent = '100%'; status.textContent = 'Ready';
-    setTimeout(function () { stage.classList.add('out'); }, 300);
-    setTimeout(function () {
-      try { host.remove(); } catch (e) {}
-      try { document.dispatchEvent(new Event('ss:splash-done')); } catch (e) {}
-    }, 500);
+    /* keep the splash up until (a) 0.3 s have passed AND (b) the whole page + its final theme CSS has been parsed,
+       so the unstyled / old layout is never visible; then reveal and fade the splash out */
+    var minDone = false, domReady = document.readyState !== 'loading', fired = false;
+    function finish() {
+      if (fired || !minDone || !domReady) return;
+      fired = true;
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        if (window.__ssReveal) window.__ssReveal();        /* page is already styled underneath the splash */
+        stage.classList.add('out');
+        setTimeout(function () {
+          try { host.remove(); } catch (e) {}
+          try { document.dispatchEvent(new Event('ss:splash-done')); } catch (e) {}
+        }, 200);
+      }); });
+    }
+    setTimeout(function () { minDone = true; finish(); }, 300);
+    if (!domReady) document.addEventListener('DOMContentLoaded', function () { domReady = true; finish(); });
   })();
   </script>
   <canvas id="particleCanvas"></canvas>
